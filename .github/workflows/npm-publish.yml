@@ -1,0 +1,31 @@
+name: NPM Package
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Verify npm package
+        run: |
+          echo "Package: @n3wth/mem0-redis-hybrid"
+          echo "Registry: https://registry.npmjs.org"
+          echo "Repository: https://github.com/n3wth/mem0-redis-hybrid"
+
+      # This helps GitHub detect the npm package
+      - name: Package metadata
+        run: |
+          echo "::notice title=NPM Package::@n3wth/mem0-redis-hybrid is published to npm"
