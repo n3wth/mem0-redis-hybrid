@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Zap, TrendingUp, Shield, Globe } from 'lucide-react'
+import React from 'react'
 
 interface MetricData {
   label: string
@@ -64,7 +65,7 @@ export function PerformanceChart() {
             <div className="relative p-6 rounded-lg border border-white/10 bg-white/[0.01] hover:bg-white/[0.02] transition-all">
               <div className="flex items-center justify-between mb-4">
                 <div className={`p-2 rounded-lg bg-gradient-to-r ${metric.color} bg-opacity-10`}>
-                  <Icon className="h-5 w-5 text-white" />
+                  {React.createElement(Icon, { className: "h-5 w-5 text-white" })}
                 </div>
                 <span className="text-xs text-gray-500">{metric.label}</span>
               </div>
