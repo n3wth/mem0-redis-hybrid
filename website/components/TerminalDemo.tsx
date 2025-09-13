@@ -6,7 +6,7 @@ import {
 
 export function TerminalDemo() {
   return (
-    <div className="w-full h-[400px] flex items-center justify-center p-4">
+    <div className="w-full h-auto min-h-[300px] sm:h-[400px] flex items-center justify-center p-2 sm:p-4">
       <Terminal>
         <TypingAnimation delay={0}>$ claude mcp add recall</TypingAnimation>
 
