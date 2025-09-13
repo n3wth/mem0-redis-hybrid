@@ -206,6 +206,380 @@ sync_status()
 // Returns: pending jobs, queue depth, processing times
 ```
 
+## Installation & Integration
+
+### Prerequisites
+- Node.js 18+
+- Redis server (local or remote)
+- Mem0 API key from [mem0.ai](https://mem0.ai)
+
+### Quick Install
+```bash
+# Clone the repository
+git clone https://github.com/n3wth/mem0-redis-hybrid.git
+cd mem0-redis-hybrid
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+export MEM0_API_KEY="your-mem0-api-key"
+export MEM0_USER_ID="your-user-id"
+export REDIS_URL="redis://localhost:6379"  # or your Redis URL
+```
+
+### Integration with Claude Code
+
+#### 1. Add to MCP Settings
+Edit your Claude Code settings file (`~/.claude/claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "mem0-hybrid": {
+      "command": "node",
+      "args": ["/path/to/mem0-redis-hybrid/index.js"],
+      "env": {
+        "MEM0_API_KEY": "your-mem0-api-key",
+        "MEM0_USER_ID": "your-user-id",
+        "REDIS_URL": "redis://localhost:6379"
+      }
+    }
+  }
+}
+```
+
+#### 2. Restart Claude Code
+After adding the configuration, restart Claude Code to load the MCP server.
+
+#### 3. Use in Claude Code
+```javascript
+// Add a memory with caching
+mcp__mem0-hybrid__add_memory({
+  content: "Important fact to remember",
+  priority: "high",
+  async: true
+})
+
+// Search with cache-first strategy
+mcp__mem0-hybrid__search_memory({
+  query: "important fact",
+  prefer_cache: true
+})
+
+// Get cache statistics
+mcp__mem0-hybrid__cache_stats()
+```
+
+### Integration with Gemini CLI
+
+The mem0-hybrid server can be used with Gemini CLI to enhance prompts with persistent memory context.
+
+#### 1. Setup Gemini CLI with MCP Support
+```bash
+# Install Gemini CLI if not already installed
+npm install -g @google/generative-ai-cli
+
+# Configure Gemini API key
+export GEMINI_API_KEY="your-gemini-api-key"
+```
+
+#### 2. Create Integration Script
+Create a file `~/gm` (Gemini with mem0) with enhanced memory support:
+
+```bash
+#!/bin/bash
+# Enhanced Gemini CLI with mem0-hybrid integration
+
+# Start mem0-hybrid server if not running
+if ! pgrep -f "mem0-redis-hybrid/index.js" > /dev/null; then
+    node /path/to/mem0-redis-hybrid/index.js &
+    sleep 2
+fi
+
+# Function to query mem0 for context
+get_memory_context() {
+    local query="$1"
+    # Use MCP protocol to search memories
+    echo "Searching memories for: $query" >&2
+
+    # Call the MCP server via Node.js script
+    node -e "
+    const fetch = require('node-fetch');
+    (async () => {
+        const response = await fetch('http://localhost:3000/mcp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                method: 'search_memory',
+                params: { query: '$query', prefer_cache: true }
+            })
+        });
+        const data = await response.json();
+        console.log(JSON.stringify(data.memories || []));
+    })();
+    " 2>/dev/null
+}
+
+# Enhanced Gemini prompt with memory context
+query="$*"
+memory_context=$(get_memory_context "$query")
+
+# Build enhanced prompt with memory context
+enhanced_prompt="<context>
+Personal Knowledge from mem0:
+$memory_context
+</context>
+
+$query"
+
+# Run Gemini with enhanced context
+gemini "$enhanced_prompt"
+
+# Optional: Save important responses back to mem0
+read -p "Save this response to memory? (y/n) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    node -e "
+    const fetch = require('node-fetch');
+    (async () => {
+        await fetch('http://localhost:3000/mcp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                method: 'add_memory',
+                params: {
+                    content: process.argv[1],
+                    priority: 'medium',
+                    async: true
+                }
+            })
+        });
+    })();
+    " "$query: $enhanced_prompt"
+    echo "Saved to mem0!"
+fi
+```
+
+Make it executable:
+```bash
+chmod +x ~/gm
+```
+
+#### 3. Usage Examples with Gemini CLI
+
+```bash
+# Basic usage - automatically enriches with mem0 context
+gm "What did we discuss about performance optimization?"
+
+# Code analysis with memory context
+gm -p "@./ analyze this codebase for security issues"
+
+# Research mode with cached knowledge
+gm --research "latest React 19 features"
+
+# Save learnings back to mem0
+gm --save "React 19 introduces use() hook for promises"
+```
+
+### Integration with Other AI Tools
+
+#### LangChain Integration
+```python
+from langchain.memory import ConversationBufferMemory
+import requests
+
+class Mem0HybridMemory(ConversationBufferMemory):
+    def __init__(self, server_url="http://localhost:3000"):
+        super().__init__()
+        self.server_url = server_url
+
+    def save_context(self, inputs, outputs):
+        # Save to mem0-hybrid
+        requests.post(f"{self.server_url}/mcp", json={
+            "method": "add_memory",
+            "params": {
+                "content": f"Q: {inputs['input']} A: {outputs['output']}",
+                "priority": "medium",
+                "async": True
+            }
+        })
+        super().save_context(inputs, outputs)
+
+    def load_memory_variables(self, inputs):
+        # Search relevant memories
+        response = requests.post(f"{self.server_url}/mcp", json={
+            "method": "search_memory",
+            "params": {
+                "query": inputs.get('input', ''),
+                "prefer_cache": True
+            }
+        })
+        memories = response.json().get('memories', [])
+
+        # Add to context
+        context = super().load_memory_variables(inputs)
+        context['mem0_context'] = memories
+        return context
+
+# Usage
+memory = Mem0HybridMemory()
+chain = ConversationChain(memory=memory, llm=llm)
+```
+
+#### OpenAI Assistant Integration
+```javascript
+const OpenAI = require('openai');
+const fetch = require('node-fetch');
+
+class Mem0EnhancedAssistant {
+    constructor(apiKey, mem0ServerUrl = 'http://localhost:3000') {
+        this.openai = new OpenAI({ apiKey });
+        this.mem0Url = mem0ServerUrl;
+    }
+
+    async searchContext(query) {
+        const response = await fetch(`${this.mem0Url}/mcp`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                method: 'search_memory',
+                params: { query, prefer_cache: true }
+            })
+        });
+        const data = await response.json();
+        return data.memories || [];
+    }
+
+    async saveMemory(content, priority = 'medium') {
+        await fetch(`${this.mem0Url}/mcp`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                method: 'add_memory',
+                params: { content, priority, async: true }
+            })
+        });
+    }
+
+    async chat(message) {
+        // Get relevant context from mem0
+        const memories = await this.searchContext(message);
+
+        // Build enhanced prompt
+        const systemPrompt = memories.length > 0
+            ? `Context from memory:\n${memories.map(m => m.memory).join('\n')}\n\n`
+            : '';
+
+        // Call OpenAI with context
+        const completion = await this.openai.chat.completions.create({
+            model: 'gpt-4',
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: message }
+            ]
+        });
+
+        const response = completion.choices[0].message.content;
+
+        // Save important exchanges
+        if (response.length > 100) {
+            await this.saveMemory(`Q: ${message}\nA: ${response}`);
+        }
+
+        return response;
+    }
+}
+
+// Usage
+const assistant = new Mem0EnhancedAssistant(process.env.OPENAI_API_KEY);
+const response = await assistant.chat("What's our deployment process?");
+```
+
+#### Shell Aliases for Quick Access
+Add to your `~/.zshrc` or `~/.bashrc`:
+
+```bash
+# Mem0 quick commands
+alias m0add='node -e "require(\"node-fetch\")(\"http://localhost:3000/mcp\", {method: \"POST\", headers: {\"Content-Type\": \"application/json\"}, body: JSON.stringify({method: \"add_memory\", params: {content: process.argv[1], priority: \"high\", async: true}})}).then(() => console.log(\"Added to memory!\"))"'
+
+alias m0search='node -e "require(\"node-fetch\")(\"http://localhost:3000/mcp\", {method: \"POST\", headers: {\"Content-Type\": \"application/json\"}, body: JSON.stringify({method: \"search_memory\", params: {query: process.argv[1], prefer_cache: true}})}).then(r => r.json()).then(d => console.log(JSON.stringify(d.memories, null, 2)))"'
+
+alias m0stats='node -e "require(\"node-fetch\")(\"http://localhost:3000/mcp\", {method: \"POST\", headers: {\"Content-Type\": \"application/json\"}, body: JSON.stringify({method: \"cache_stats\"})}).then(r => r.json()).then(d => console.log(JSON.stringify(d, null, 2)))"'
+
+# Usage examples:
+# m0add "Important meeting notes from today"
+# m0search "meeting notes"
+# m0stats
+```
+
+### Running as a Service
+
+#### macOS (launchd)
+Create `~/Library/LaunchAgents/com.mem0hybrid.plist`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.mem0hybrid</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/node</string>
+        <string>/path/to/mem0-redis-hybrid/index.js</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>MEM0_API_KEY</key>
+        <string>your-key</string>
+        <key>MEM0_USER_ID</key>
+        <string>your-id</string>
+        <key>REDIS_URL</key>
+        <string>redis://localhost:6379</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+</dict>
+</plist>
+```
+
+Load the service:
+```bash
+launchctl load ~/Library/LaunchAgents/com.mem0hybrid.plist
+```
+
+#### Linux (systemd)
+Create `/etc/systemd/system/mem0-hybrid.service`:
+
+```ini
+[Unit]
+Description=Mem0 Redis Hybrid MCP Server
+After=network.target redis.service
+
+[Service]
+Type=simple
+User=youruser
+WorkingDirectory=/path/to/mem0-redis-hybrid
+ExecStart=/usr/bin/node index.js
+Restart=always
+Environment="MEM0_API_KEY=your-key"
+Environment="MEM0_USER_ID=your-id"
+Environment="REDIS_URL=redis://localhost:6379"
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start:
+```bash
+sudo systemctl enable mem0-hybrid
+sudo systemctl start mem0-hybrid
+```
+
 ## Configuration
 
 ### Environment Variables
