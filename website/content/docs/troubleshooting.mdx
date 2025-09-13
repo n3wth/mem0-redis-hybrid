@@ -18,13 +18,13 @@ Error: Redis connection failed: ECONNREFUSED 127.0.0.1:6379
 
 **Solutions:**
 
-1. **Verify Redis is running:**
+- **Verify Redis is running:**
 ```bash
 redis-cli ping
 # Should return: PONG
 ```
 
-2. **Start Redis if needed:**
+- **Start Redis if needed:**
 ```bash
 # macOS
 brew services start redis
@@ -36,7 +36,7 @@ sudo systemctl start redis
 docker run -d -p 6379:6379 redis:alpine
 ```
 
-3. **Check Redis URL format:**
+- **Check Redis URL format:**
 ```typescript
 // Correct formats
 redis://localhost:6379
@@ -53,19 +53,19 @@ Error: Mem0 API error: 401 Unauthorized
 
 **Solutions:**
 
-1. **Verify API key:**
+- **Verify API key:**
 ```bash
 curl -H "Authorization: Bearer $MEM0_API_KEY" \
   https://api.mem0.ai/v1/memories
 ```
 
-2. **Check environment variables:**
+- **Check environment variables:**
 ```typescript
 console.log(process.env.MEM0_API_KEY);
 // Should not be undefined
 ```
 
-3. **Regenerate API key** at [mem0.ai/dashboard](https://mem0.ai)
+- **Regenerate API key** at [mem0.ai/dashboard](https://mem0.ai)
 
 ## Performance Issues
 
@@ -77,14 +77,14 @@ console.log(process.env.MEM0_API_KEY);
 
 **Solutions:**
 
-1. **Check cache hit rate:**
+- **Check cache hit rate:**
 ```typescript
 const stats = await recall.cache.stats();
 console.log('Hit rate:', stats.hit_rate);
 // Should be >90% for warm cache
 ```
 
-2. **Optimize cache strategy:**
+- **Optimize cache strategy:**
 ```typescript
 const recall = new Recall({
   cacheStrategy: 'aggressive',  // For read-heavy
@@ -97,7 +97,7 @@ const recall = new Recall({
 });
 ```
 
-3. **Warm cache for active users:**
+- **Warm cache for active users:**
 ```typescript
 await recall.cache.optimize({
   force_refresh: true,
@@ -113,14 +113,14 @@ await recall.cache.optimize({
 
 **Solutions:**
 
-1. **Set max memory policy:**
+- **Set max memory policy:**
 ```bash
 # In redis.conf
 maxmemory 2gb
 maxmemory-policy allkeys-lru
 ```
 
-2. **Reduce cache size:**
+- **Reduce cache size:**
 ```typescript
 const recall = new Recall({
   cache: {
@@ -129,7 +129,7 @@ const recall = new Recall({
 });
 ```
 
-3. **Clear old data:**
+- **Clear old data:**
 ```typescript
 await recall.cache.clear();
 ```
@@ -170,7 +170,7 @@ async function addUnique(content: string, userId: string) {
 
 **Solutions:**
 
-1. **Force cloud search:**
+- **Force cloud search:**
 ```typescript
 const results = await recall.search({
   query: 'your query',
@@ -178,7 +178,7 @@ const results = await recall.search({
 });
 ```
 
-2. **Check user ID:**
+- **Check user ID:**
 ```typescript
 // Ensure consistent user IDs
 const results = await recall.search({
@@ -187,7 +187,7 @@ const results = await recall.search({
 });
 ```
 
-3. **Refresh cache:**
+- **Refresh cache:**
 ```typescript
 await recall.cache.optimize({
   force_refresh: true
@@ -204,13 +204,13 @@ await recall.cache.optimize({
 
 **Solutions:**
 
-1. **Check job queue:**
+- **Check job queue:**
 ```typescript
 const status = await recall.sync.status();
 console.log('Pending jobs:', status.pending);
 ```
 
-2. **Force synchronous mode:**
+- **Force synchronous mode:**
 ```typescript
 await recall.add({
   content: 'Important data',
@@ -218,7 +218,7 @@ await recall.add({
 });
 ```
 
-3. **Restart background worker:**
+- **Restart background worker:**
 ```bash
 # Restart the MCP server
 pkill -f recall
@@ -236,7 +236,7 @@ MCP server connection failed
 
 **Solutions:**
 
-1. **Verify configuration path:**
+- **Verify configuration path:**
 ```bash
 # macOS/Linux
 cat ~/.claude/claude_desktop_config.json
@@ -245,7 +245,7 @@ cat ~/.claude/claude_desktop_config.json
 type %APPDATA%\Claude\claude_desktop_config.json
 ```
 
-2. **Check JSON syntax:**
+- **Check JSON syntax:**
 ```json
 {
   "mcpServers": {
@@ -261,7 +261,7 @@ type %APPDATA%\Claude\claude_desktop_config.json
 }
 ```
 
-3. **Test manually:**
+- **Test manually:**
 ```bash
 MEM0_API_KEY=your_key REDIS_URL=redis://localhost:6379 \
   npx @n3wth/recall
@@ -329,10 +329,10 @@ async function checkHealth() {
 
 If you're still experiencing issues:
 
-1. **Check the examples** in `/docs/examples`
-2. **Search existing issues** on [GitHub](https://github.com/n3wth/recall/issues)
-3. **Join our Discord** for community support
-4. **Open an issue** with:
+- **Check the examples** in `/docs/examples`
+- **Search existing issues** on [GitHub](https://github.com/n3wth/recall/issues)
+- **Join our Discord** for community support
+- **Open an issue** with:
    - Error message
    - Code snippet
    - Environment details

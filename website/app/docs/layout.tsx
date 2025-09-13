@@ -14,23 +14,23 @@ export default function DocsLayout({
       <Navigation />
       <DocsHeader />
 
-      <div className="mx-auto px-6 py-8 lg:px-8">
+      <div className="mx-auto max-w-[1600px] px-6 py-8 lg:px-8">
         <div className="flex gap-8">
           {/* Sidebar */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky top-24">
+          <aside className="hidden lg:block w-[260px] flex-shrink-0">
+            <div className="sticky top-32">
               <DocsSidebar />
             </div>
           </aside>
 
           {/* Main Content */}
-          <main className="flex-1 min-w-0 max-w-3xl">
+          <main className="min-w-0 max-w-4xl flex-grow">
             {children}
           </main>
 
           {/* Table of Contents */}
-          <aside className="hidden xl:block w-56 flex-shrink-0">
-            <div className="sticky top-24">
+          <aside className="hidden xl:block w-[240px] flex-shrink-0">
+            <div className="sticky top-32">
               <TableOfContents />
             </div>
           </aside>

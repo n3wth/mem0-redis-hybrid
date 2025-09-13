@@ -19,7 +19,7 @@ await recall.add('User prefers executive summaries');
 
 // Retrieve relevant memories
 const context = await recall.search('summarization style');
-// Returns in <5ms from cache
+// Returns in &lt;5ms from cache
 ```
 
 ## Key Benefits
@@ -40,9 +40,9 @@ Built specifically for AI workloads with semantic search, vector embeddings, and
 
 Recall uses a multi-tier architecture optimized for AI workloads:
 
-1. **L1 Cache** - Hot data stored in Redis with 24-hour TTL
-2. **L2 Cache** - Warm data with 7-day TTL for less frequent access
-3. **Cloud Storage** - Permanent storage in Mem0 cloud with vector search
+- **L1 Cache** - Hot data stored in Redis with 24-hour TTL
+- **L2 Cache** - Warm data with 7-day TTL for less frequent access
+- **Cloud Storage** - Permanent storage in Mem0 cloud with vector search
 
 <ArchitectureDiagram />
 

@@ -44,7 +44,7 @@ Traditional AI memory systems force you to choose between:
 ### The Solution
 
 Recall automatically manages a hybrid memory system that:
-- Serves frequently accessed memories from cache in <1ms
+- Serves frequently accessed memories from cache in &lt;1ms
 - Persists all memories to the cloud for reliability
 - Synchronizes changes automatically
 - Handles failures gracefully with automatic fallback
@@ -61,9 +61,9 @@ A memory is a piece of information stored with metadata including:
 
 ### Cache Layers
 Recall uses a multi-tier caching strategy:
-1. **Hot Cache**: Most frequently accessed memories (Redis)
-2. **Warm Storage**: Recent or important memories (Mem0)
-3. **Cold Storage**: All historical memories (Cloud)
+- **Hot Cache**: Most frequently accessed memories (Redis)
+- **Warm Storage**: Recent or important memories (Mem0)
+- **Cold Storage**: All historical memories (Cloud)
 
 ### Synchronization
 Automatic bi-directional sync ensures:

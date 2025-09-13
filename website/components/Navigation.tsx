@@ -17,7 +17,7 @@ export function Navigation() {
             </Link>
             <div className="hidden md:ml-10 md:flex md:space-x-2">
               <Link
-                href="/docs/introduction"
+                href="/docs/getting-started/introduction"
                 className="px-4 py-2 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all"
               >
                 Documentation
