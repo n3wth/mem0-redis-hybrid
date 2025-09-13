@@ -62,14 +62,14 @@ await memory.add({
                 <a href="#features" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
                   Features
                 </a>
-                <a href="#pricing" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-                  Pricing
-                </a>
-                <a href="#docs" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                <a href="/docs" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
                   Documentation
                 </a>
-                <a href="#company" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-                  Company
+                <a href="https://github.com/n3wth/mem0-redis-hybrid" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                  GitHub
+                </a>
+                <a href="https://www.npmjs.com/package/@n3wth/mem0-redis-hybrid" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                  NPM
                 </a>
               </div>
             </div>
