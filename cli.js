@@ -68,7 +68,7 @@ class Mem0CLI {
     this.server = spawn('node', ['index.js'], {
       env: {
         ...process.env,
-        MEM0_API_KEY: process.env.MEM0_API_KEY || 'm0-gnCuvpqLGpFS0yHit5rubtU0Fqa0z7rZxotNoKP9',
+        MEM0_API_KEY: process.env.MEM0_API_KEY,
         MEM0_USER_ID: process.env.MEM0_USER_ID || 'cli-user',
         REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379'
       },
@@ -379,7 +379,7 @@ class Mem0CLI {
     try {
       const response = await fetch('https://api.mem0.ai/v1/memories/', {
         headers: {
-          'Authorization': `Token ${process.env.MEM0_API_KEY || 'm0-gnCuvpqLGpFS0yHit5rubtU0Fqa0z7rZxotNoKP9'}`,
+          'Authorization': `Token ${process.env.MEM0_API_KEY}`,
           'Content-Type': 'application/json'
         }
       });

@@ -11,7 +11,13 @@ import { createClient } from 'redis';
 import crypto from 'crypto';
 
 // Configuration
-const MEM0_API_KEY = process.env.MEM0_API_KEY || 'm0-gnCuvpqLGpFS0yHit5rubtU0Fqa0z7rZxotNoKP9';
+const MEM0_API_KEY = process.env.MEM0_API_KEY;
+if (!MEM0_API_KEY) {
+  console.error('❌ MEM0_API_KEY environment variable is required');
+  console.error('Get your API key from https://mem0.ai and set it:');
+  console.error('export MEM0_API_KEY="your-api-key"');
+  process.exit(1);
+}
 const MEM0_USER_ID = process.env.MEM0_USER_ID || 'oliver';
 const MEM0_BASE_URL = process.env.MEM0_BASE_URL || 'https://api.mem0.ai';
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';

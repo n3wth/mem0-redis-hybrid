@@ -1,6 +1,6 @@
 {
   "name": "@n3wth/mem0-redis-hybrid",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "High-performance MCP server combining Mem0 cloud storage with Redis caching for AI memory management",
   "main": "index.js",
   "type": "module",
