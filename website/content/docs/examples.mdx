@@ -1,0 +1,536 @@
+---
+order: 6
+title: Examples
+---
+
+# Examples
+
+Real-world examples and patterns for using Recall in production applications.
+
+## Chat Applications
+
+### Stateful Conversation Management
+
+<CodeTabs tabs={[
+  {
+    label: 'TypeScript',
+    language: 'typescript',
+    code: `import { Recall } from '@n3wth/recall';
+import OpenAI from 'openai';
+
+class ConversationManager {
+  private recall: Recall;
+  private openai: OpenAI;
+
+  constructor() {
+    this.recall = new Recall({
+      apiKey: process.env.MEM0_API_KEY,
+      cacheStrategy: 'aggressive'
+    });
+
+    this.openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
+    });
+  }
+
+  async chat(userId: string, message: string) {
+    // Retrieve conversation context
+    const memories = await this.recall.search({
+      query: message,
+      userId,
+      limit: 10
+    });
+
+    // Build contextual prompt
+    const context = memories
+      .map(m => m.content)
+      .join('\\n');
+
+    const response = await this.openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        {
+          role: 'system',
+          content: \`Previous context:\\n\${context}\`
+        },
+        {
+          role: 'user',
+          content: message
+        }
+      ]
+    });
+
+    const reply = response.choices[0].message.content;
+
+    // Store the exchange
+    await this.recall.add({
+      content: \`User: \${message}\\nAssistant: \${reply}\`,
+      userId,
+      metadata: {
+        type: 'conversation',
+        timestamp: Date.now()
+      }
+    });
+
+    return reply;
+  }
+}`
+  },
+  {
+    label: 'Python',
+    language: 'python',
+    code: `from recall import Recall
+import openai
+
+class ConversationManager:
+    def __init__(self):
+        self.recall = Recall(
+            api_key=os.getenv('MEM0_API_KEY'),
+            cache_strategy='aggressive'
+        )
+        openai.api_key = os.getenv('OPENAI_API_KEY')
+
+    async def chat(self, user_id: str, message: str):
+        # Retrieve conversation context
+        memories = await self.recall.search(
+            query=message,
+            user_id=user_id,
+            limit=10
+        )
+
+        # Build contextual prompt
+        context = '\\n'.join([m['content'] for m in memories])
+
+        response = openai.ChatCompletion.create(
+            model='gpt-4',
+            messages=[
+                {
+                    'role': 'system',
+                    'content': f'Previous context:\\n{context}'
+                },
+                {
+                    'role': 'user',
+                    'content': message
+                }
+            ]
+        )
+
+        reply = response.choices[0].message.content
+
+        # Store the exchange
+        await self.recall.add({
+            'content': f'User: {message}\\nAssistant: {reply}',
+            'user_id': user_id,
+            'metadata': {
+                'type': 'conversation',
+                'timestamp': time.time()
+            }
+        })
+
+        return reply`
+  }
+]} />
+
+## Personalization Engine
+
+### User Preference Learning
+
+```typescript
+class PersonalizationEngine {
+  private recall: Recall;
+
+  async learnPreference(userId: string, action: any) {
+    // Extract preference signals
+    const preference = this.extractPreference(action);
+
+    // Check for existing similar preferences
+    const existing = await this.recall.search({
+      query: preference.category,
+      userId,
+      metadata_filter: { type: 'preference' }
+    });
+
+    if (existing.length > 0) {
+      // Update existing preference
+      await this.recall.update(existing[0].id, {
+        content: preference.description,
+        metadata: {
+          ...existing[0].metadata,
+          weight: (existing[0].metadata.weight || 1) + 1,
+          last_updated: Date.now()
+        }
+      });
+    } else {
+      // Add new preference
+      await this.recall.add({
+        content: preference.description,
+        userId,
+        priority: 'high',
+        metadata: {
+          type: 'preference',
+          category: preference.category,
+          weight: 1
+        }
+      });
+    }
+  }
+
+  async getRecommendations(userId: string, context: string) {
+    const preferences = await this.recall.search({
+      query: context,
+      userId,
+      metadata_filter: { type: 'preference' }
+    });
+
+    // Sort by weight and recency
+    return preferences
+      .sort((a, b) => {
+        const weightDiff = b.metadata.weight - a.metadata.weight;
+        if (weightDiff !== 0) return weightDiff;
+        return b.metadata.last_updated - a.metadata.last_updated;
+      })
+      .slice(0, 5);
+  }
+}
+```
+
+## RAG (Retrieval-Augmented Generation)
+
+### Document Q&A System
+
+```typescript
+class DocumentQA {
+  private recall: Recall;
+  private documents: Map<string, string> = new Map();
+
+  async indexDocument(docId: string, content: string) {
+    // Split document into chunks
+    const chunks = this.chunkDocument(content, 500);
+
+    // Store each chunk with metadata
+    for (let i = 0; i < chunks.length; i++) {
+      await this.recall.add({
+        content: chunks[i],
+        userId: 'system',
+        metadata: {
+          doc_id: docId,
+          chunk_index: i,
+          total_chunks: chunks.length,
+          type: 'document'
+        }
+      });
+    }
+
+    this.documents.set(docId, content);
+  }
+
+  async answer(question: string) {
+    // Search for relevant chunks
+    const relevantChunks = await this.recall.search({
+      query: question,
+      userId: 'system',
+      metadata_filter: { type: 'document' },
+      limit: 5
+    });
+
+    // Build context from chunks
+    const context = relevantChunks
+      .map(chunk => chunk.content)
+      .join('\n\n');
+
+    // Generate answer using context
+    return this.generateAnswer(question, context);
+  }
+
+  private chunkDocument(content: string, chunkSize: number): string[] {
+    const words = content.split(' ');
+    const chunks: string[] = [];
+
+    for (let i = 0; i < words.length; i += chunkSize) {
+      chunks.push(words.slice(i, i + chunkSize).join(' '));
+    }
+
+    return chunks;
+  }
+}
+```
+
+## Multi-Agent Systems
+
+### Agent Memory Sharing
+
+```typescript
+class AgentMemoryPool {
+  private recall: Recall;
+  private agents: Map<string, Agent> = new Map();
+
+  constructor() {
+    this.recall = new Recall({
+      apiKey: process.env.MEM0_API_KEY,
+      cacheStrategy: 'balanced'
+    });
+  }
+
+  async shareMemory(
+    fromAgent: string,
+    toAgent: string,
+    memory: any
+  ) {
+    await this.recall.add({
+      content: memory.content,
+      userId: toAgent,
+      metadata: {
+        source_agent: fromAgent,
+        shared_at: Date.now(),
+        visibility: 'shared',
+        ...memory.metadata
+      }
+    });
+  }
+
+  async getSharedMemories(agentId: string) {
+    return await this.recall.search({
+      query: '',
+      userId: agentId,
+      metadata_filter: { visibility: 'shared' }
+    });
+  }
+
+  async broadcastMemory(memory: any) {
+    const agents = Array.from(this.agents.keys());
+
+    await Promise.all(
+      agents.map(agentId =>
+        this.recall.add({
+          content: memory.content,
+          userId: agentId,
+          priority: 'high',
+          metadata: {
+            type: 'broadcast',
+            timestamp: Date.now()
+          }
+        })
+      )
+    );
+  }
+}
+```
+
+## Analytics & Insights
+
+### User Behavior Tracking
+
+```typescript
+class BehaviorAnalytics {
+  private recall: Recall;
+
+  async trackEvent(userId: string, event: any) {
+    await this.recall.add({
+      content: JSON.stringify(event),
+      userId,
+      metadata: {
+        type: 'event',
+        category: event.category,
+        action: event.action,
+        timestamp: Date.now()
+      }
+    });
+  }
+
+  async getUserJourney(userId: string, timeRange: number) {
+    const endTime = Date.now();
+    const startTime = endTime - timeRange;
+
+    const events = await this.recall.search({
+      query: '',
+      userId,
+      metadata_filter: {
+        type: 'event',
+        timestamp: { $gte: startTime, $lte: endTime }
+      },
+      limit: 100
+    });
+
+    return events
+      .sort((a, b) => a.metadata.timestamp - b.metadata.timestamp)
+      .map(e => JSON.parse(e.content));
+  }
+
+  async getInsights(userId: string) {
+    const journey = await this.getUserJourney(
+      userId,
+      7 * 24 * 60 * 60 * 1000 // Last 7 days
+    );
+
+    return {
+      total_events: journey.length,
+      most_common_action: this.getMostCommon(journey, 'action'),
+      peak_activity_hour: this.getPeakHour(journey),
+      engagement_score: this.calculateEngagement(journey)
+    };
+  }
+}
+```
+
+## Performance Patterns
+
+### Cache Warming
+
+```typescript
+class CacheWarmer {
+  private recall: Recall;
+
+  async warmCache(userIds: string[]) {
+    const results = await Promise.allSettled(
+      userIds.map(async userId => {
+        // Get user's most accessed memories
+        const memories = await this.recall.get_all_memories({
+          user_id: userId
+        });
+
+        // Sort by access count
+        const topMemories = memories
+          .sort((a, b) => b.access_count - a.access_count)
+          .slice(0, 100);
+
+        // Force cache population
+        return Promise.all(
+          topMemories.map(m =>
+            this.recall.get(m.id)
+          )
+        );
+      })
+    );
+
+    const successful = results.filter(r => r.status === 'fulfilled').length;
+    console.log(\`Warmed cache for \${successful}/\${userIds.length} users\`);
+  }
+
+  async scheduleWarmup() {
+    // Run every 5 minutes
+    setInterval(() => {
+      this.warmActiveUsers();
+    }, 5 * 60 * 1000);
+  }
+
+  private async warmActiveUsers() {
+    // Get active users from your system
+    const activeUsers = await this.getActiveUsers();
+    await this.warmCache(activeUsers);
+  }
+}
+```
+
+## Error Handling
+
+### Resilient Memory Operations
+
+```typescript
+class ResilientRecall {
+  private recall: Recall;
+  private fallbackStore: Map<string, any> = new Map();
+
+  async safeAdd(params: any, maxRetries = 3) {
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        return await this.recall.add(params);
+      } catch (error) {
+        if (i === maxRetries - 1) {
+          // Final attempt failed, use fallback
+          return this.addToFallback(params);
+        }
+
+        // Exponential backoff
+        await this.sleep(Math.pow(2, i) * 1000);
+      }
+    }
+  }
+
+  async safeSearch(params: any) {
+    try {
+      return await this.recall.search(params);
+    } catch (error) {
+      // Try fallback store
+      return this.searchFallback(params);
+    }
+  }
+
+  private addToFallback(params: any) {
+    const id = \`fallback_\${Date.now()}\`;
+    this.fallbackStore.set(id, params);
+
+    // Schedule retry
+    setTimeout(() => {
+      this.syncFallback(id);
+    }, 60000);
+
+    return { id, status: 'fallback' };
+  }
+
+  private async syncFallback(id: string) {
+    const params = this.fallbackStore.get(id);
+    if (!params) return;
+
+    try {
+      await this.recall.add(params);
+      this.fallbackStore.delete(id);
+    } catch (error) {
+      // Retry later
+      setTimeout(() => this.syncFallback(id), 300000);
+    }
+  }
+}
+```
+
+## Testing Patterns
+
+### Memory Mocking for Tests
+
+```typescript
+class MockRecall {
+  private memories: Map<string, any> = new Map();
+
+  async add(params: any) {
+    const id = \`mock_\${Date.now()}\`;
+    this.memories.set(id, params);
+    return { id, status: 'completed' };
+  }
+
+  async search(params: any) {
+    const results = Array.from(this.memories.values())
+      .filter(m => m.userId === params.user_id)
+      .filter(m => m.content.includes(params.query))
+      .slice(0, params.limit || 10);
+
+    return {
+      memories: results,
+      source: 'mock'
+    };
+  }
+
+  async clear() {
+    this.memories.clear();
+  }
+}
+
+// Usage in tests
+describe('ConversationManager', () => {
+  let manager: ConversationManager;
+  let mockRecall: MockRecall;
+
+  beforeEach(() => {
+    mockRecall = new MockRecall();
+    manager = new ConversationManager(mockRecall as any);
+  });
+
+  afterEach(() => {
+    mockRecall.clear();
+  });
+
+  it('should remember context', async () => {
+    await manager.chat('user123', 'My name is Alice');
+    const response = await manager.chat('user123', 'What is my name?');
+    expect(response).toContain('Alice');
+  });
+});
+```

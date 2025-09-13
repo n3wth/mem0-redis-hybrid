@@ -44,23 +44,7 @@ Recall uses a multi-tier architecture optimized for AI workloads:
 2. **L2 Cache** - Warm data with 7-day TTL for less frequent access
 3. **Cloud Storage** - Permanent storage in Mem0 cloud with vector search
 
-```
-┌─────────────┐
-│ Application │
-└──────┬──────┘
-       │ <5ms
-┌──────▼──────┐
-│  L1 Cache   │ ← Hot data (24h TTL)
-└──────┬──────┘
-       │ <20ms
-┌──────▼──────┐
-│  L2 Cache   │ ← Warm data (7d TTL)
-└──────┬──────┘
-       │ <200ms
-┌──────▼──────┐
-│    Cloud    │ ← Permanent storage
-└─────────────┘
-```
+<ArchitectureDiagram />
 
 ## Use Cases
 

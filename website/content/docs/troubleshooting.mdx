@@ -1,0 +1,339 @@
+---
+order: 7
+title: Troubleshooting
+---
+
+# Troubleshooting
+
+Common issues and solutions when working with Recall.
+
+## Connection Issues
+
+### Redis Connection Failed
+
+**Error:**
+```
+Error: Redis connection failed: ECONNREFUSED 127.0.0.1:6379
+```
+
+**Solutions:**
+
+1. **Verify Redis is running:**
+```bash
+redis-cli ping
+# Should return: PONG
+```
+
+2. **Start Redis if needed:**
+```bash
+# macOS
+brew services start redis
+
+# Linux
+sudo systemctl start redis
+
+# Docker
+docker run -d -p 6379:6379 redis:alpine
+```
+
+3. **Check Redis URL format:**
+```typescript
+// Correct formats
+redis://localhost:6379
+redis://username:password@host:6379
+redis://host:6379/0  // With database number
+```
+
+### Mem0 API Connection Failed
+
+**Error:**
+```
+Error: Mem0 API error: 401 Unauthorized
+```
+
+**Solutions:**
+
+1. **Verify API key:**
+```bash
+curl -H "Authorization: Bearer $MEM0_API_KEY" \
+  https://api.mem0.ai/v1/memories
+```
+
+2. **Check environment variables:**
+```typescript
+console.log(process.env.MEM0_API_KEY);
+// Should not be undefined
+```
+
+3. **Regenerate API key** at [mem0.ai/dashboard](https://mem0.ai)
+
+## Performance Issues
+
+### Slow Response Times
+
+**Symptoms:**
+- Response times >100ms for cache hits
+- Degraded performance over time
+
+**Solutions:**
+
+1. **Check cache hit rate:**
+```typescript
+const stats = await recall.cache.stats();
+console.log('Hit rate:', stats.hit_rate);
+// Should be >90% for warm cache
+```
+
+2. **Optimize cache strategy:**
+```typescript
+const recall = new Recall({
+  cacheStrategy: 'aggressive',  // For read-heavy
+  cache: {
+    ttl: {
+      l1: 86400,    // Increase L1 TTL
+      l2: 604800    // Increase L2 TTL
+    }
+  }
+});
+```
+
+3. **Warm cache for active users:**
+```typescript
+await recall.cache.optimize({
+  force_refresh: true,
+  max_memories: 1000
+});
+```
+
+### High Memory Usage
+
+**Symptoms:**
+- Redis memory usage growing unbounded
+- OOM errors
+
+**Solutions:**
+
+1. **Set max memory policy:**
+```bash
+# In redis.conf
+maxmemory 2gb
+maxmemory-policy allkeys-lru
+```
+
+2. **Reduce cache size:**
+```typescript
+const recall = new Recall({
+  cache: {
+    maxSize: 5000  // Reduce from default 10000
+  }
+});
+```
+
+3. **Clear old data:**
+```typescript
+await recall.cache.clear();
+```
+
+## Data Issues
+
+### Duplicate Memories
+
+**Symptoms:**
+- Same content appearing multiple times
+- Search returning duplicates
+
+**Solution:**
+Mem0 handles deduplication automatically, but you can prevent client-side duplicates:
+
+```typescript
+async function addUnique(content: string, userId: string) {
+  // Check for existing
+  const existing = await recall.search({
+    query: content,
+    userId,
+    limit: 1
+  });
+
+  if (existing.length === 0 || existing[0].score < 0.95) {
+    return await recall.add({ content, userId });
+  }
+
+  return existing[0];
+}
+```
+
+### Missing Search Results
+
+**Symptoms:**
+- Known memories not appearing in search
+- Empty results despite data existing
+
+**Solutions:**
+
+1. **Force cloud search:**
+```typescript
+const results = await recall.search({
+  query: 'your query',
+  prefer_cache: false  // Bypass cache
+});
+```
+
+2. **Check user ID:**
+```typescript
+// Ensure consistent user IDs
+const results = await recall.search({
+  query: 'test',
+  userId: 'user_123'  // Must match exactly
+});
+```
+
+3. **Refresh cache:**
+```typescript
+await recall.cache.optimize({
+  force_refresh: true
+});
+```
+
+## Async Processing Issues
+
+### Jobs Not Processing
+
+**Symptoms:**
+- Memories stuck in 'queued' status
+- Background sync not working
+
+**Solutions:**
+
+1. **Check job queue:**
+```typescript
+const status = await recall.sync.status();
+console.log('Pending jobs:', status.pending);
+```
+
+2. **Force synchronous mode:**
+```typescript
+await recall.add({
+  content: 'Important data',
+  async: false  // Process immediately
+});
+```
+
+3. **Restart background worker:**
+```bash
+# Restart the MCP server
+pkill -f recall
+npx @n3wth/recall
+```
+
+## Integration Issues
+
+### Claude Desktop Not Connecting
+
+**Error:**
+```
+MCP server connection failed
+```
+
+**Solutions:**
+
+1. **Verify configuration path:**
+```bash
+# macOS/Linux
+cat ~/.claude/claude_desktop_config.json
+
+# Windows
+type %APPDATA%\Claude\claude_desktop_config.json
+```
+
+2. **Check JSON syntax:**
+```json
+{
+  "mcpServers": {
+    "recall": {
+      "command": "npx",
+      "args": ["@n3wth/recall"],
+      "env": {
+        "MEM0_API_KEY": "mem0_...",
+        "REDIS_URL": "redis://localhost:6379"
+      }
+    }
+  }
+}
+```
+
+3. **Test manually:**
+```bash
+MEM0_API_KEY=your_key REDIS_URL=redis://localhost:6379 \
+  npx @n3wth/recall
+```
+
+### TypeScript Type Errors
+
+**Error:**
+```
+Type 'unknown' is not assignable to type 'Memory'
+```
+
+**Solution:**
+```typescript
+import { Recall, Memory, SearchResult } from '@n3wth/recall';
+
+// Type your responses
+const results: SearchResult = await recall.search({
+  query: 'test'
+});
+
+results.memories.forEach((memory: Memory) => {
+  console.log(memory.content);
+});
+```
+
+## Debugging Tips
+
+### Enable Debug Logging
+
+```typescript
+const recall = new Recall({
+  apiKey: process.env.MEM0_API_KEY,
+  debug: true  // Enable verbose logging
+});
+```
+
+### Monitor Network Traffic
+
+```bash
+# Watch Redis commands
+redis-cli monitor
+
+# Check API calls
+export DEBUG=recall:*
+npx @n3wth/recall
+```
+
+### Health Checks
+
+```typescript
+async function checkHealth() {
+  try {
+    const health = await recall.health();
+    console.log('Redis:', health.redis);
+    console.log('Mem0:', health.mem0);
+    console.log('Cache:', health.cache);
+  } catch (error) {
+    console.error('Health check failed:', error);
+  }
+}
+```
+
+## Getting Help
+
+If you're still experiencing issues:
+
+1. **Check the examples** in `/docs/examples`
+2. **Search existing issues** on [GitHub](https://github.com/n3wth/recall/issues)
+3. **Join our Discord** for community support
+4. **Open an issue** with:
+   - Error message
+   - Code snippet
+   - Environment details
+   - Steps to reproduce

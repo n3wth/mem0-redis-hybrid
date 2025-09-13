@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { ArrowRight } from 'lucide-react'
 
 export function Navigation() {
   return (
@@ -14,24 +15,34 @@ export function Navigation() {
             <Link href="/" className="text-xl font-semibold text-white">
               Recall
             </Link>
-            <div className="hidden md:ml-10 md:flex md:space-x-8">
-              <Link href="/docs" className="text-gray-300 hover:text-white px-3 py-2 text-sm transition-colors">
+            <div className="hidden md:ml-10 md:flex md:space-x-2">
+              <Link
+                href="/docs/introduction"
+                className="px-4 py-2 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all"
+              >
                 Documentation
               </Link>
-              <Link href="/docs#api-reference" className="text-gray-300 hover:text-white px-3 py-2 text-sm transition-colors">
-                API reference
+              <Link
+                href="/docs/api-reference"
+                className="px-4 py-2 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all"
+              >
+                API
               </Link>
-              <a href="https://github.com/n3wth/recall" className="text-gray-300 hover:text-white px-3 py-2 text-sm transition-colors">
+              <a
+                href="https://github.com/n3wth/recall"
+                className="px-4 py-2 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all"
+              >
                 GitHub
               </a>
             </div>
           </div>
           <div className="flex items-center space-x-4">
             <Link
-              href="/docs"
-              className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-black bg-white hover:bg-gray-100 transition-all"
+              href="/docs/quickstart"
+              className="group inline-flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg bg-white text-black hover:bg-gray-100 transition-all"
             >
               Get started
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
         </div>

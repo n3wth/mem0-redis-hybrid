@@ -87,12 +87,12 @@ print(response.id)`,
         <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
           <div className="mx-auto max-w-4xl">
             {/* Simple badge */}
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1.5 text-xs font-medium text-gray-400 border border-white/10">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-lg bg-white/5 px-3 py-1.5 text-xs font-medium text-gray-400 border border-white/10">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
               </span>
-              API Available
+              Now Available
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-6">
@@ -107,18 +107,18 @@ print(response.id)`,
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/docs">
-                <RainbowButton>
-                  Get started
-                  <ArrowRight className="inline-block ml-2 h-4 w-4" />
-                </RainbowButton>
+              <Link
+                href="/docs/quickstart"
+                className="group inline-flex items-center gap-2 px-6 py-3 text-base font-medium rounded-lg bg-white text-black hover:bg-gray-100 transition-all"
+              >
+                Get started
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
-              <Link href="/docs">
-                <ShimmerButton className="shadow-2xl">
-                  <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white lg:text-base">
-                    Documentation
-                  </span>
-                </ShimmerButton>
+              <Link
+                href="/docs/introduction"
+                className="px-6 py-3 text-base font-medium rounded-lg border border-white/20 text-white hover:bg-white/5 transition-all"
+              >
+                Documentation
               </Link>
             </div>
 
@@ -276,7 +276,7 @@ print(response.id)`,
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href="/docs"
+                href="/docs/quickstart"
                 className="px-6 py-3 bg-white text-black font-medium rounded-lg transition-all hover:bg-gray-100"
               >
                 Get started →
