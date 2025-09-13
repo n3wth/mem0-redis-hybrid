@@ -13,6 +13,22 @@
 
 </div>
 
+## 🚀 Quick Start
+
+```bash
+# Install the package
+npm install -g @n3wth/mem0-redis-hybrid
+
+# Set up environment variables
+export MEM0_API_KEY="your-mem0-api-key"  # Get from https://mem0.ai
+export REDIS_URL="redis://localhost:6379"
+
+# Run the CLI to test
+npx mem0-cli
+
+# Or add to Claude Code (see Integration section below)
+```
+
 ## Overview
 
 The Mem0-Redis Hybrid MCP Server provides a high-performance memory layer for AI applications, combining the reliability of Mem0's cloud storage with the speed of Redis caching. It implements the [Model Context Protocol (MCP)](https://modelcontextprotocol.io) for seamless integration with Claude, Gemini, and other AI tools.
@@ -284,14 +300,35 @@ npx mem0-cli
 ### Integration with Claude Code
 
 #### 1. Add to MCP Settings
+
+##### Option A: Using NPM Package (Recommended)
 Edit your Claude Code settings file (`~/.claude/claude_desktop_config.json`):
 
 ```json
 {
   "mcpServers": {
     "mem0-hybrid": {
+      "command": "npx",
+      "args": ["@n3wth/mem0-redis-hybrid"],
+      "env": {
+        "MEM0_API_KEY": "your-mem0-api-key",
+        "MEM0_USER_ID": "your-user-id",
+        "REDIS_URL": "redis://localhost:6379"
+      }
+    }
+  }
+}
+```
+
+##### Option B: Using Local Installation
+If you installed locally:
+
+```json
+{
+  "mcpServers": {
+    "mem0-hybrid": {
       "command": "node",
-      "args": ["/path/to/mem0-redis-hybrid/index.js"],
+      "args": ["./node_modules/@n3wth/mem0-redis-hybrid/index.js"],
       "env": {
         "MEM0_API_KEY": "your-mem0-api-key",
         "MEM0_USER_ID": "your-user-id",
@@ -672,6 +709,92 @@ node test.js
 - ✅ Memory deletion with invalidation
 - ✅ Redis failure handling
 - ✅ Get all memories with stats
+
+## API Reference
+
+### Available MCP Tools
+
+#### `add_memory`
+Add a new memory to the system.
+
+```javascript
+{
+  content: string,           // Memory content (required if no messages)
+  messages: Array,           // Array of {role, content} objects (alternative to content)
+  metadata: object,          // Custom metadata
+  priority: string,          // 'low' | 'normal' | 'high' | 'critical'
+  async: boolean,           // Use async processing (default: true)
+  user_id: string           // Override default user ID
+}
+```
+
+#### `search_memory`
+Search for memories.
+
+```javascript
+{
+  query: string,            // Search query (required)
+  limit: number,            // Max results (default: 10)
+  user_id: string,          // User to search for
+  prefer_cache: boolean,    // Use cache first (default: true)
+  metadata_filter: object   // Filter by metadata
+}
+```
+
+#### `get_all_memories`
+Retrieve all memories for a user.
+
+```javascript
+{
+  user_id: string          // User ID (optional, uses default)
+}
+```
+
+#### `update_memory`
+Update an existing memory.
+
+```javascript
+{
+  memory_id: string,       // Memory ID (required)
+  content: string,         // New content (required)
+  metadata: object         // New metadata
+}
+```
+
+#### `delete_memory`
+Delete a specific memory.
+
+```javascript
+{
+  memory_id: string        // Memory ID to delete (required)
+}
+```
+
+#### `cache_stats`
+Get cache performance statistics.
+
+```javascript
+// No parameters required
+// Returns: hits, misses, hit_rate, size, memory_usage, etc.
+```
+
+#### `optimize_cache`
+Optimize cache by promoting/demoting memories.
+
+```javascript
+{
+  force_refresh: boolean,  // Force complete refresh
+  max_memories: number     // Maximum memories to keep
+}
+```
+
+#### `health`
+Check system health status.
+
+```javascript
+// No parameters required
+// Returns: redis status, mem0 status, cache stats, uptime
+```
 
 ## Troubleshooting
 
