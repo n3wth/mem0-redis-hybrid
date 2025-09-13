@@ -12,11 +12,11 @@
 
 Combine the speed of local caching with the reliability of cloud storage. Built for AI applications that need instant access to contextual memory.
 
-[🌐 Website](https://mem0-hybrid.vercel.app) • [📦 NPM](https://www.npmjs.com/package/@n3wth/mem0-redis-hybrid) • [📚 Docs](#architecture) • [🚀 Quick Start](#quick-install)
+[Website](https://mem0-hybrid.vercel.app) • [NPM](https://www.npmjs.com/package/@n3wth/mem0-redis-hybrid) • [Docs](#architecture) • [Quick Start](#quick-install)
 
 </div>
 
-## 🚀 Quick Start
+## Quick Start
 
 **Try it instantly (no API key needed):**
 ```bash
@@ -48,16 +48,16 @@ mem0-cli
 
 The Mem0-Redis Hybrid MCP Server is an intelligent memory layer for modern AI systems. It combines the speed of local Redis caching with the reliability of Mem0 cloud storage, providing sub-5ms response times with 99.9% uptime SLA. Built for AI applications that need instant access to contextual memory at scale.
 
-### ✨ Why Mem0-Redis Hybrid?
+### Why Mem0-Redis Hybrid?
 
 - **Lightning Fast**: Sub-5ms cache hits with intelligent prefetching
 - **Enterprise Security**: Bank-level encryption with SOC 2 compliance
 - **Infinite Scale**: Automatically scales from prototype to production
 - **AI Optimized**: Purpose-built for LLMs with semantic search and vector support
 
-> 🌐 **Visit our website**: [https://mem0-hybrid.vercel.app](https://mem0-hybrid.vercel.app) for interactive demos and detailed documentation.
+> **Visit our website**: [https://mem0-hybrid.vercel.app](https://mem0-hybrid.vercel.app) for interactive demos and detailed documentation.
 
-## 📊 Key Metrics
+## Key Metrics
 
 <div align="center">
 
@@ -72,7 +72,7 @@ The Mem0-Redis Hybrid MCP Server is an intelligent memory layer for modern AI sy
 
 ## Key Features
 
-### 🚀 Performance Optimizations
+### Performance Optimizations
 - **Two-tier caching**: L1 (hot data, 24h TTL) and L2 (warm data, 7d TTL)
 - **Connection pooling**: Efficient Redis connection management with health checks
 - **Async memory processing**: Non-blocking memory addition with background jobs
@@ -80,21 +80,21 @@ The Mem0-Redis Hybrid MCP Server is an intelligent memory layer for modern AI sy
 - **Keyword indexing**: Fast cache-based search using extracted keywords
 - **Background sync**: Automatic cache warming every 5 minutes
 
-### 🧠 Intelligent Cache Management
+### Intelligent Cache Management
 - **Smart routing**: `prefer_cache` parameter for cache-first or cloud-first strategies
 - **Access tracking**: Promotes frequently accessed memories to L1 cache
 - **Cache invalidation**: Pub/Sub based invalidation on delete/update
 - **Relevance scoring**: Search results include relevance scores from keyword matches
 - **Circuit breaker**: Automatic failure detection and recovery
 
-### 🛡️ Resilience Features
+### Resilience Features
 - **Graceful degradation**: Falls back to mem0-only mode if Redis unavailable
 - **Advanced error handling**: Custom error classes with recovery strategies
 - **Retry logic**: Exponential backoff with jitter for Redis reconnection
 - **Error isolation**: Separate Redis clients for cache, pub/sub, and subscriptions
 - **Job timeouts**: 30-second timeout for async operations
 
-### 📦 Developer Experience
+### Developer Experience
 - **TypeScript support**: Full type definitions included
 - **CLI tool**: Interactive command-line interface for testing and management
 - **Comprehensive examples**: Ready-to-use integration patterns
@@ -737,15 +737,15 @@ node test.js
 ```
 
 ### Test Coverage
-- ✅ Server initialization
-- ✅ Sync/async memory addition
-- ✅ Cache/cloud search strategies
-- ✅ Cache statistics
-- ✅ Sync status monitoring
-- ✅ Cache optimization
-- ✅ Memory deletion with invalidation
-- ✅ Redis failure handling
-- ✅ Get all memories with stats
+- Server initialization
+- Sync/async memory addition
+- Cache/cloud search strategies
+- Cache statistics
+- Sync status monitoring
+- Cache optimization
+- Memory deletion with invalidation
+- Redis failure handling
+- Get all memories with stats
 
 ## API Reference
 
@@ -837,7 +837,7 @@ Check system health status.
 
 ### Redis Connection Issues
 ```
-✗ Redis connection failed
+Redis connection failed
 Falling back to mem0-only mode
 ```
 **Solution**: Check Redis is running, verify REDIS_URL
@@ -966,9 +966,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <div align="center">
-Made with ❤️ by the AI community
+Made with care by the AI community
 
-⭐ Star us on GitHub — it helps!
+Star us on GitHub — it helps!
 
 [Report Bug](https://github.com/n3wth/mem0-redis-hybrid/issues) • [Request Feature](https://github.com/n3wth/mem0-redis-hybrid/issues)
 </div>
