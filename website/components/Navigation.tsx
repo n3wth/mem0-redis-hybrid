@@ -29,7 +29,7 @@ export function Navigation() {
           <div className="flex items-center space-x-4">
             <Link
               href="/docs"
-              className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all"
+              className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-black bg-white hover:bg-gray-100 transition-all"
             >
               Get started
             </Link>
