@@ -12,11 +12,24 @@ import crypto from 'crypto';
 
 // Configuration
 const MEM0_API_KEY = process.env.MEM0_API_KEY;
-if (!MEM0_API_KEY) {
+const DEMO_MODE = process.env.DEMO_MODE === 'true' || (!MEM0_API_KEY && process.argv.includes('--demo'));
+
+if (!MEM0_API_KEY && !DEMO_MODE) {
   console.error('❌ MEM0_API_KEY environment variable is required');
-  console.error('Get your API key from https://mem0.ai and set it:');
-  console.error('export MEM0_API_KEY="your-api-key"');
+  console.error('');
+  console.error('Quick start options:');
+  console.error('1. Try demo mode (no API key needed):');
+  console.error('   npx @n3wth/mem0-redis-hybrid --demo');
+  console.error('');
+  console.error('2. Use with your API key:');
+  console.error('   MEM0_API_KEY="your-key" npx @n3wth/mem0-redis-hybrid');
+  console.error('');
+  console.error('Get a free API key at https://mem0.ai');
   process.exit(1);
+}
+
+if (DEMO_MODE) {
+  console.error('🎮 Running in DEMO MODE - Using local memory only (no cloud storage)');
 }
 const MEM0_USER_ID = process.env.MEM0_USER_ID || 'oliver';
 const MEM0_BASE_URL = process.env.MEM0_BASE_URL || 'https://api.mem0.ai';
@@ -443,8 +456,19 @@ const server = new Server(
   }
 );
 
+// Demo mode in-memory storage
+const demoStorage = {
+  memories: new Map(),
+  idCounter: 1
+};
+
 // Helper function for mem0 API calls
 async function callMem0API(endpoint, method = 'GET', body = null) {
+  // Demo mode: simulate API with local storage
+  if (DEMO_MODE) {
+    return simulateMem0API(endpoint, method, body);
+  }
+
   const url = `${MEM0_BASE_URL}${endpoint}`;
   const options = {
     method,
@@ -471,6 +495,54 @@ async function callMem0API(endpoint, method = 'GET', body = null) {
     console.error(`Mem0 API call failed: ${error.message}`);
     throw error;
   }
+}
+
+// Simulate Mem0 API for demo mode
+function simulateMem0API(endpoint, method, body) {
+  const userId = body?.user_id || MEM0_USER_ID;
+
+  // Handle different endpoints
+  if (endpoint.includes('/memories/') && method === 'POST') {
+    // Add memory
+    const id = `demo-${demoStorage.idCounter++}`;
+    const memory = {
+      id,
+      memory: body.messages ? body.messages.map(m => m.content).join(' ') : body.content,
+      metadata: body.metadata || {},
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      user_id: userId
+    };
+    demoStorage.memories.set(id, memory);
+    return { id, message: 'Memory added successfully (demo mode)' };
+  }
+
+  if (endpoint.includes('/memories/search/') && method === 'POST') {
+    // Search memories
+    const query = body.query.toLowerCase();
+    const results = Array.from(demoStorage.memories.values())
+      .filter(m => m.user_id === userId && m.memory.toLowerCase().includes(query))
+      .map(m => ({ ...m, score: Math.random() }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, body.limit || 10);
+    return { results };
+  }
+
+  if (endpoint.includes('/memories/') && method === 'GET') {
+    // Get all memories
+    const memories = Array.from(demoStorage.memories.values())
+      .filter(m => m.user_id === userId);
+    return { memories };
+  }
+
+  if (endpoint.includes('/memories/') && method === 'DELETE') {
+    // Delete memory
+    const memoryId = endpoint.split('/').pop();
+    demoStorage.memories.delete(memoryId);
+    return { message: 'Memory deleted successfully (demo mode)' };
+  }
+
+  return { message: 'Demo mode - operation simulated' };
 }
 
 // Redis cache helpers

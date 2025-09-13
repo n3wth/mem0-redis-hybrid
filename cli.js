@@ -65,12 +65,16 @@ class Mem0CLI {
   }
 
   async startServer() {
-    this.server = spawn('node', ['index.js'], {
+    // Check if running in demo mode
+    const isDemoMode = !process.env.MEM0_API_KEY && process.argv.includes('--demo');
+
+    this.server = spawn('node', ['index.js', ...(isDemoMode ? ['--demo'] : [])], {
       env: {
         ...process.env,
         MEM0_API_KEY: process.env.MEM0_API_KEY,
         MEM0_USER_ID: process.env.MEM0_USER_ID || 'cli-user',
-        REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379'
+        REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379',
+        DEMO_MODE: isDemoMode ? 'true' : 'false'
       },
       stdio: ['pipe', 'pipe', 'pipe']
     });

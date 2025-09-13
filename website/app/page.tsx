@@ -1,14 +1,8 @@
 'use client'
 
 import { ArrowRight, Zap, Shield, Database, Github, Code2, Cpu, Cloud, Lock } from 'lucide-react'
-import { useState, useEffect } from 'react'
 
 export default function Home() {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
@@ -51,47 +45,43 @@ export default function Home() {
       <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
-            {mounted && (
-              <>
-                <div className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-full mb-8">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                  </span>
-                  <span className="text-sm text-gray-300">v1.0.0 - Production Ready</span>
-                </div>
+            <div className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 rounded-full mb-8">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span className="text-sm text-gray-300">v1.0.0 - Production Ready</span>
+            </div>
 
-                <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight">
-                  <span className="block bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent animate-gradient">
-                    Intelligent memory
-                  </span>
-                  <span className="block text-4xl sm:text-5xl md:text-6xl mt-2 bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient">
-                    for AI applications
-                  </span>
-                </h1>
+            <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight">
+              <span className="block bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent animate-gradient">
+                Intelligent memory
+              </span>
+              <span className="block text-4xl sm:text-5xl md:text-6xl mt-2 bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient">
+                for AI applications
+              </span>
+            </h1>
 
-                <p className="mt-8 text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-                  Combine the reliability of cloud storage with the performance of local caching.
-                  Built for production AI systems at scale.
-                </p>
+            <p className="mt-8 text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+              Combine the reliability of cloud storage with the performance of local caching.
+              Built for production AI systems at scale.
+            </p>
 
-                <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <a
-                    href="https://github.com/n3wth/mem0-redis-hybrid"
-                    className="group relative inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:from-purple-500 hover:to-blue-500 transition-all transform hover:scale-105 shadow-lg shadow-purple-500/25"
-                  >
-                    <span>Start Building</span>
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </a>
-                  <a
-                    href="https://github.com/n3wth/mem0-redis-hybrid#readme"
-                    className="inline-flex items-center px-8 py-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl font-semibold hover:bg-white/10 transition-all"
-                  >
-                    View Documentation
-                  </a>
-                </div>
-              </>
-            )}
+            <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a
+                href="https://github.com/n3wth/mem0-redis-hybrid"
+                className="group relative inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:from-purple-500 hover:to-blue-500 transition-all transform hover:scale-105 shadow-lg shadow-purple-500/25"
+              >
+                <span>Start Building</span>
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </a>
+              <a
+                href="https://github.com/n3wth/mem0-redis-hybrid#readme"
+                className="inline-flex items-center px-8 py-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl font-semibold hover:bg-white/10 transition-all"
+              >
+                View Documentation
+              </a>
+            </div>
           </div>
 
           {/* Animated Stats */}

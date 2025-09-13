@@ -15,11 +15,16 @@
 
 ## 🚀 Quick Start
 
-**One-liner to try it out:**
+**Try it instantly (no API key needed):**
+```bash
+npx mem0-cli --demo
+```
+
+**With your own API key for cloud storage:**
 ```bash
 MEM0_API_KEY="your-api-key" npx mem0-cli
 ```
-*Get your API key from [mem0.ai](https://mem0.ai) (free tier available)*
+*Get a free API key from [mem0.ai](https://mem0.ai)*
 
 **Full installation:**
 ```bash
