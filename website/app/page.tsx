@@ -1,23 +1,14 @@
 'use client'
 
-import { Check, Sparkles, Zap, Shield, ArrowRight } from 'lucide-react'
+import { Check, Zap, Shield, ArrowRight, Code, Database, Lock, Globe } from 'lucide-react'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Navigation } from '@/components/Navigation'
 import { Footer } from '@/components/Footer'
 import { Container } from '@/components/Grid'
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('node')
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
 
   const codeExamples = {
     node: `import Recall from '@n3wth/recall';
@@ -58,121 +49,84 @@ print(response.id)`,
   }
 
   return (
-    <div className="min-h-screen bg-black overflow-hidden">
+    <div className="min-h-screen bg-black">
       <Navigation />
 
-      {/* Hero with Dynamic Movement */}
-      <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Hero - Clean and minimal */}
+      <div className="relative min-h-[85vh] flex items-center justify-center">
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] opacity-5" />
 
-        {/* Animated morphing blobs */}
-        <div className="absolute inset-0">
-          <div
-            className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-[100px] opacity-10"
-            style={{ animation: 'morph 20s ease-in-out infinite, float 30s ease-in-out infinite' }}
-          />
-          <div
-            className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-screen filter blur-[100px] opacity-10"
-            style={{ animation: 'morph 25s ease-in-out infinite reverse, float 35s ease-in-out infinite reverse' }}
-          />
-          <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-500 rounded-full mix-blend-screen filter blur-[120px] opacity-10"
-            style={{ animation: 'pulse-glow 8s ease-in-out infinite' }}
-          />
-        </div>
-
-        {/* Grid pattern overlay - more subtle */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)`,
-            backgroundSize: '80px 80px'
-          }}
-        />
-
-        {/* Content */}
-        <div className="relative z-10 mx-auto max-w-7xl px-6 text-center">
-          <div className="mx-auto max-w-3xl">
-            {/* Animated badge */}
-            <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-4 py-2 backdrop-blur-sm border border-white/10">
-              <Sparkles className="h-4 w-4 text-blue-400" />
-              <span className="text-sm text-gray-300">Powered by AI • Redis • Cloud</span>
+        <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
+          <div className="mx-auto max-w-4xl">
+            {/* Simple badge */}
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1.5 text-xs font-medium text-gray-400 border border-white/10">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              API Available
             </div>
 
-            <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tight mb-8">
-              <span className="text-blue-400">Intelligent Memory</span>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-6">
+              <span className="text-white">Intelligent memory</span>
               <br />
-              <span className="text-white">for AI Applications</span>
+              <span className="text-gray-500">for AI systems</span>
             </h1>
 
-            <p className="mx-auto max-w-2xl text-xl text-gray-400 mb-12">
-              Combine cloud persistence with edge caching. Sub-5ms response times with 99.9% uptime SLA.
-              Built for the future of AI.
+            <p className="mx-auto max-w-2xl text-lg text-gray-400 mb-10 font-light">
+              Hybrid caching with Redis and cloud persistence. Sub-5ms latency.
+              Built for production AI applications.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/docs"
-                className="group relative px-8 py-4 bg-blue-600 text-white font-semibold rounded-xl shadow-2xl shadow-blue-500/25 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 hover:scale-105"
+                className="group px-6 py-3 bg-white text-black font-medium rounded-lg transition-all hover:bg-gray-100"
               >
-                <span className="relative z-10 flex items-center gap-2">
-                  Get Started
-                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </span>
+                Get started
+                <ArrowRight className="inline-block ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
                 href="/docs"
-                className="px-8 py-4 glass-effect text-white font-semibold rounded-xl transition-all hover:bg-white/10"
+                className="px-6 py-3 text-white font-medium rounded-lg border border-white/20 transition-all hover:bg-white/5"
               >
-                View Documentation
+                Documentation
               </Link>
             </div>
 
-            {/* Stats */}
-            <div className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-8">
+            {/* Clean metrics */}
+            <div className="mt-20 grid grid-cols-4 gap-8 max-w-2xl mx-auto">
               {[
-                { label: 'Response Time', value: '<5ms', icon: Zap },
-                { label: 'Uptime SLA', value: '99.9%', icon: Shield },
-                { label: 'Requests/sec', value: '1M+', icon: Zap },
-                { label: 'Data Centers', value: '12', icon: Shield },
-              ].map((stat, i) => (
-                <div
-                  key={i}
-                  className="text-center"
-                  style={{
-                    animation: `slide-up 0.8s ease-out ${i * 0.15}s both`,
-                    opacity: 0
-                  }}
-                >
-                  <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
-                  <div className="text-sm text-gray-500">{stat.label}</div>
+                { label: 'Latency', value: '<5ms' },
+                { label: 'Uptime', value: '99.9%' },
+                { label: 'Throughput', value: '1M/s' },
+                { label: 'Regions', value: '12' },
+              ].map((stat) => (
+                <div key={stat.label} className="text-center">
+                  <div className="text-2xl font-light text-white mb-1">{stat.value}</div>
+                  <div className="text-xs text-gray-500 uppercase tracking-wider">{stat.label}</div>
                 </div>
               ))}
             </div>
           </div>
         </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
-          <div className="w-6 h-10 rounded-full border-2 border-white/20 flex items-start justify-center p-1">
-            <div className="w-1 h-3 bg-white/50 rounded-full animate-bounce" />
-          </div>
-        </div>
       </div>
 
-      {/* Code Example section */}
-      <section className="bg-gray-950 relative py-24">
+      {/* Code Example - Clean tabs */}
+      <section className="py-24 border-t border-white/5">
         <Container size="lg">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Start Building in Minutes
-            </h2>
-            <p className="text-xl text-gray-400">
-              Install our SDK and make your first API call
-            </p>
-          </div>
-
           <div className="max-w-4xl mx-auto">
-            <div className="rounded-2xl overflow-hidden glass-effect">
+            <div className="mb-12">
+              <h2 className="text-3xl font-normal text-white mb-3">
+                Simple integration
+              </h2>
+              <p className="text-gray-400">
+                Get started with just a few lines of code
+              </p>
+            </div>
+
+            <div className="rounded-xl overflow-hidden border border-white/10 bg-white/[0.01]">
               <div className="border-b border-white/10">
                 <nav className="flex" aria-label="Tabs">
                   {Object.keys(codeExamples).map((lang) => (
@@ -180,10 +134,10 @@ print(response.id)`,
                       key={lang}
                       onClick={() => setActiveTab(lang)}
                       className={`
-                        flex-1 px-6 py-4 text-sm font-medium capitalize transition-all
+                        flex-1 px-4 py-3 text-sm font-medium capitalize transition-all
                         ${activeTab === lang
-                          ? 'text-blue-400 bg-blue-500/10 border-b-2 border-blue-400'
-                          : 'text-gray-400 hover:text-white hover:bg-white/5'
+                          ? 'text-white bg-white/5 border-b border-white'
+                          : 'text-gray-500 hover:text-gray-300'
                         }
                       `}
                     >
@@ -192,9 +146,9 @@ print(response.id)`,
                   ))}
                 </nav>
               </div>
-              <div className="p-8 bg-black/50">
+              <div className="p-6">
                 <pre className="overflow-x-auto text-sm">
-                  <code className="text-gray-300">
+                  <code className="text-gray-300 font-mono">
                     {codeExamples[activeTab as keyof typeof codeExamples]}
                   </code>
                 </pre>
@@ -204,87 +158,87 @@ print(response.id)`,
         </Container>
       </section>
 
-      {/* Features Grid */}
-      <section className="bg-black relative py-24">
+      {/* Features - Card grid */}
+      <section className="py-24 border-t border-white/5">
         <Container size="lg">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Enterprise-Ready Features
+          <div className="mb-12">
+            <h2 className="text-3xl font-normal text-white mb-3">
+              Enterprise features
             </h2>
-            <p className="text-xl text-gray-400">
-              Built for production workloads at any scale
+            <p className="text-gray-400">
+              Everything you need for production workloads
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
               {
-                name: 'Two-tier Caching',
-                description: 'L1 cache for hot data (24h TTL) and L2 cache for warm data (7d TTL) with automatic promotion.',
+                icon: Zap,
+                name: 'Two-tier caching',
+                description: 'L1 hot cache (24h) and L2 warm cache (7d) with automatic promotion',
               },
               {
-                name: 'Automatic Failover',
-                description: 'Seamless fallback to cloud storage when Redis is unavailable with circuit breaker pattern.',
+                icon: Shield,
+                name: 'Automatic failover',
+                description: 'Seamless fallback with circuit breaker pattern for high availability',
               },
               {
-                name: 'Real-time Sync',
-                description: 'Pub/Sub based cache invalidation with background synchronization every 5 minutes.',
+                icon: Database,
+                name: 'Real-time sync',
+                description: 'Pub/Sub invalidation with 5-minute background synchronization',
               },
               {
-                name: 'Edge Optimized',
-                description: 'Deploy close to your users with support for 12 global data centers.',
+                icon: Globe,
+                name: 'Edge optimized',
+                description: '12 global regions for low-latency access worldwide',
               },
               {
-                name: 'Type Safe',
-                description: 'Full TypeScript support with comprehensive type definitions and IDE autocomplete.',
+                icon: Code,
+                name: 'Type safe',
+                description: 'Full TypeScript support with comprehensive type definitions',
               },
               {
-                name: 'SOC 2 Compliant',
-                description: 'Enterprise-grade security with end-to-end encryption and regular compliance audits.',
+                icon: Lock,
+                name: 'SOC 2 compliant',
+                description: 'Enterprise security with end-to-end encryption',
               },
-            ].map((feature, i) => (
-              <div
-                key={feature.name}
-                className="group relative p-6 rounded-2xl glass-effect transition-all hover:scale-105 hover:bg-white/10"
-                style={{
-                  animation: `slide-up 0.8s ease-out ${i * 0.1}s both`,
-                  opacity: 0
-                }}
-              >
-                <div className="absolute inset-0 rounded-2xl bg-blue-500 opacity-0 group-hover:opacity-10 transition-opacity" />
-                <div className="relative z-10">
-                  <div className="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center mb-4">
-                    <Check className="h-6 w-6 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-white mb-2">{feature.name}</h3>
-                  <p className="text-gray-400">{feature.description}</p>
+            ].map((feature) => {
+              const Icon = feature.icon
+              return (
+                <div
+                  key={feature.name}
+                  className="group p-6 rounded-xl border border-white/10 bg-white/[0.01] hover:bg-white/[0.03] transition-all"
+                >
+                  <Icon className="h-5 w-5 text-white mb-4" />
+                  <h3 className="text-base font-medium text-white mb-2">{feature.name}</h3>
+                  <p className="text-sm text-gray-400 leading-relaxed">{feature.description}</p>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </Container>
       </section>
 
-      {/* CTA section */}
-      <section className="bg-gray-950 relative py-24">
+      {/* CTA - Minimal */}
+      <section className="py-24 border-t border-white/5">
         <Container size="sm">
           <div className="text-center">
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Ready to Get Started?
+            <h2 className="text-3xl font-normal text-white mb-3">
+              Ready to build?
             </h2>
-            <p className="text-xl text-gray-400 mb-8">
-              Join thousands of developers using Recall to power their AI applications.
+            <p className="text-gray-400 mb-8">
+              Start using Recall in your AI applications today
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/docs"
-                className="px-8 py-4 bg-blue-600 text-white font-semibold rounded-xl shadow-2xl shadow-blue-500/25 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 hover:scale-105"
+                className="px-6 py-3 bg-white text-black font-medium rounded-lg transition-all hover:bg-gray-100"
               >
-                Start Building →
+                Get started →
               </Link>
               <a
                 href="https://github.com/n3wth/recall"
-                className="px-8 py-4 glass-effect text-white font-semibold rounded-xl transition-all hover:bg-white/10"
+                className="px-6 py-3 text-white font-medium rounded-lg border border-white/20 transition-all hover:bg-white/5"
               >
                 View on GitHub
               </a>

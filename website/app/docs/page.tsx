@@ -1,7 +1,7 @@
 'use client'
 
-import { Book, Code2, Terminal, Zap, Shield, Database, ChevronRight, Copy, Check, Github, Search, ArrowLeft } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { Book, Code2, Terminal, Zap, Shield, Database, ChevronRight, Copy, Check, Search, ArrowLeft } from 'lucide-react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { Navigation } from '@/components/Navigation'
 import { Footer } from '@/components/Footer'
@@ -116,18 +116,17 @@ await memory.sync.status()        // Check sync status`,
 
   const CodeBlock = ({ code, language = 'typescript', id }: { code: string; language?: string; id: string }) => (
     <div className="relative group">
-      <div className="absolute inset-0 bg-blue-600/20 rounded-lg blur-xl group-hover:blur-2xl transition-all" />
-      <div className="relative rounded-lg overflow-hidden glass-effect">
+      <div className="relative rounded-lg overflow-hidden border border-white/10 bg-white/[0.01]">
         <div className="flex items-center justify-between px-4 py-2 border-b border-white/10">
-          <span className="text-xs text-gray-400">{language}</span>
+          <span className="text-xs text-gray-500">{language}</span>
           <button
             onClick={() => copyToClipboard(code, id)}
-            className="flex items-center gap-1 text-xs text-gray-400 hover:text-white transition-colors"
+            className="flex items-center gap-1 text-xs text-gray-500 hover:text-white transition-colors"
           >
             {copiedCode === id ? (
               <>
                 <Check className="h-3 w-3" />
-                Copied!
+                Copied
               </>
             ) : (
               <>
@@ -138,7 +137,7 @@ await memory.sync.status()        // Check sync status`,
           </button>
         </div>
         <pre className="p-4 overflow-x-auto">
-          <code className="text-sm text-gray-300">{code}</code>
+          <code className="text-sm text-gray-300 font-mono">{code}</code>
         </pre>
       </div>
     </div>
@@ -148,51 +147,35 @@ await memory.sync.status()        // Check sync status`,
     <div className="min-h-screen bg-black">
       <Navigation />
 
-      {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gray-950 py-20">
-        {/* Animated background */}
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute top-0 left-1/4 h-96 w-96 rounded-full bg-blue-500/10 blur-3xl animate-pulse" />
-          <div className="absolute bottom-0 right-1/4 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl animate-pulse animation-delay-2000" />
-        </div>
-
+      {/* Header */}
+      <div className="border-b border-white/5 py-16">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center"
-          >
-            <h1 className="text-5xl font-bold text-white mb-4">
+          <div>
+            <h1 className="text-4xl font-normal text-white mb-3">
               Documentation
             </h1>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Everything you need to integrate intelligent memory into your AI applications
+            <p className="text-lg text-gray-400">
+              Learn how to integrate Recall into your AI applications
             </p>
-          </motion.div>
+          </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-        <div className="flex gap-8">
+        <div className="flex gap-12">
           {/* Sidebar */}
-          <motion.aside
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="hidden lg:block w-64 flex-shrink-0"
-          >
+          <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="sticky top-20">
               <div className="mb-6">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
                   <input
                     type="text"
                     placeholder="Search docs..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full rounded-lg bg-gray-900/50 border border-white/10 py-2 pl-10 pr-3 text-sm text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-lg bg-white/5 border border-white/10 py-2 pl-10 pr-3 text-sm text-white placeholder-gray-500 focus:border-white/20 focus:outline-none"
                   />
                 </div>
               </div>
@@ -207,42 +190,34 @@ await memory.sync.status()        // Check sync status`,
                       className={`
                         w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-all
                         ${activeSection === section.id
-                          ? 'bg-blue-600/20 text-white border border-white/10'
-                          : 'text-gray-400 hover:text-white hover:bg-white/5'
+                          ? 'bg-white/5 text-white'
+                          : 'text-gray-400 hover:text-white hover:bg-white/[0.02]'
                         }
                       `}
                     >
                       <Icon className="h-4 w-4" />
                       {section.label}
-                      {activeSection === section.id && (
-                        <ChevronRight className="h-4 w-4 ml-auto" />
-                      )}
                     </button>
                   )
                 })}
               </nav>
             </div>
-          </motion.aside>
+          </aside>
 
           {/* Main Content Area */}
-          <motion.main
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex-1 min-w-0"
-          >
+          <main className="flex-1 min-w-0">
             <AnimatePresence mode="wait">
               {activeSection === 'getting-started' && (
                 <motion.div
                   key="getting-started"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
                   className="space-y-8"
                 >
                   <div>
-                    <h2 className="text-3xl font-bold text-white mb-4">Getting Started</h2>
+                    <h2 className="text-2xl font-normal text-white mb-4">Getting Started</h2>
                     <p className="text-gray-400 mb-8">
                       Get up and running with Recall in minutes. This guide will walk you through
                       installation, configuration, and your first API calls.
@@ -250,18 +225,18 @@ await memory.sync.status()        // Check sync status`,
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-semibold text-white mb-4">Quick Start</h3>
+                    <h3 className="text-lg font-medium text-white mb-4">Quick Start</h3>
                     <CodeBlock code={codeExamples.quickStart} language="bash" id="quickstart" />
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-semibold text-white mb-4">Basic Usage</h3>
+                    <h3 className="text-lg font-medium text-white mb-4">Basic Usage</h3>
                     <CodeBlock code={codeExamples.basicUsage} language="typescript" id="basic" />
                   </div>
 
-                  <div className="rounded-lg bg-blue-500/10 border border-blue-500/20 p-6">
-                    <h4 className="text-lg font-semibold text-blue-400 mb-2">Pro Tip</h4>
-                    <p className="text-gray-300">
+                  <div className="rounded-lg bg-blue-500/10 border border-blue-500/20 p-4">
+                    <h4 className="text-sm font-medium text-blue-400 mb-2">Pro Tip</h4>
+                    <p className="text-sm text-gray-300">
                       Use aggressive caching strategy for read-heavy workloads to achieve sub-5ms response times.
                       The system automatically handles cache invalidation and synchronization.
                     </p>
@@ -272,38 +247,38 @@ await memory.sync.status()        // Check sync status`,
               {activeSection === 'installation' && (
                 <motion.div
                   key="installation"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
                   className="space-y-8"
                 >
                   <div>
-                    <h2 className="text-3xl font-bold text-white mb-4">Installation</h2>
+                    <h2 className="text-2xl font-normal text-white mb-4">Installation</h2>
                     <p className="text-gray-400 mb-8">
                       Multiple installation methods are available depending on your environment and requirements.
                     </p>
                   </div>
 
                   <div className="grid gap-6">
-                    <div className="rounded-lg glass-effect p-6">
-                      <h3 className="text-lg font-semibold text-white mb-3">Node.js / npm</h3>
+                    <div className="rounded-lg border border-white/10 p-6">
+                      <h3 className="text-lg font-medium text-white mb-3">Node.js / npm</h3>
                       <CodeBlock code="npm install @n3wth/recall" language="bash" id="npm" />
                     </div>
 
-                    <div className="rounded-lg glass-effect p-6">
-                      <h3 className="text-lg font-semibold text-white mb-3">Yarn</h3>
+                    <div className="rounded-lg border border-white/10 p-6">
+                      <h3 className="text-lg font-medium text-white mb-3">Yarn</h3>
                       <CodeBlock code="yarn add @n3wth/recall" language="bash" id="yarn" />
                     </div>
 
-                    <div className="rounded-lg glass-effect p-6">
-                      <h3 className="text-lg font-semibold text-white mb-3">pnpm</h3>
+                    <div className="rounded-lg border border-white/10 p-6">
+                      <h3 className="text-lg font-medium text-white mb-3">pnpm</h3>
                       <CodeBlock code="pnpm add @n3wth/recall" language="bash" id="pnpm" />
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-semibold text-white mb-4">Claude Integration</h3>
+                    <h3 className="text-lg font-medium text-white mb-4">Claude Integration</h3>
                     <p className="text-gray-400 mb-4">
                       Add to your Claude Desktop configuration file:
                     </p>
@@ -315,35 +290,35 @@ await memory.sync.status()        // Check sync status`,
               {activeSection === 'api-reference' && (
                 <motion.div
                   key="api-reference"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
                   className="space-y-8"
                 >
                   <div>
-                    <h2 className="text-3xl font-bold text-white mb-4">API Reference</h2>
+                    <h2 className="text-2xl font-normal text-white mb-4">API Reference</h2>
                     <p className="text-gray-400 mb-8">
                       Complete reference for all available methods and configuration options.
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-semibold text-white mb-4">Configuration</h3>
+                    <h3 className="text-lg font-medium text-white mb-4">Configuration</h3>
                     <CodeBlock code={codeExamples.advancedConfig} language="typescript" id="config" />
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-semibold text-white mb-4">Available Methods</h3>
+                    <h3 className="text-lg font-medium text-white mb-4">Available Methods</h3>
                     <CodeBlock code={codeExamples.apiMethods} language="typescript" id="methods" />
                   </div>
 
-                  <div className="grid gap-4 mt-8">
+                  <div className="grid gap-3 mt-8">
                     {['add', 'search', 'get', 'update', 'delete'].map((method) => (
-                      <div key={method} className="rounded-lg glass-effect p-4">
+                      <div key={method} className="rounded-lg border border-white/10 p-4">
                         <div className="flex items-center justify-between mb-2">
-                          <code className="text-blue-400 font-mono">memory.{method}()</code>
-                          <span className="text-xs text-gray-500 bg-gray-900 px-2 py-1 rounded">
+                          <code className="text-blue-400 font-mono text-sm">memory.{method}()</code>
+                          <span className="text-xs text-gray-500 bg-white/5 px-2 py-1 rounded">
                             Returns: Promise
                           </span>
                         </div>
@@ -360,7 +335,7 @@ await memory.sync.status()        // Check sync status`,
                 </motion.div>
               )}
             </AnimatePresence>
-          </motion.main>
+          </main>
         </div>
       </div>
 
