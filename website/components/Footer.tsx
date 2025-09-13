@@ -6,16 +6,16 @@ export function Footer() {
           <a href="/docs" className="text-gray-400 hover:text-white transition-colors">
             Documentation
           </a>
-          <a href="https://github.com/n3wth/mem0-redis-hybrid" className="text-gray-400 hover:text-white transition-colors">
+          <a href="https://github.com/n3wth/recall" className="text-gray-400 hover:text-white transition-colors">
             GitHub
           </a>
-          <a href="https://www.npmjs.com/package/@n3wth/mem0-redis-hybrid" className="text-gray-400 hover:text-white transition-colors">
+          <a href="https://www.npmjs.com/package/@n3wth/recall" className="text-gray-400 hover:text-white transition-colors">
             NPM
           </a>
         </div>
         <div className="mt-8 md:order-1 md:mt-0">
           <p className="text-center text-xs leading-5 text-gray-500">
-            &copy; 2025 Mem0 Hybrid. All rights reserved.
+            &copy; 2025 Recall. All rights reserved.
           </p>
         </div>
       </div>

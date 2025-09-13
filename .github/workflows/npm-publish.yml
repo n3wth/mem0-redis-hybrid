@@ -21,11 +21,11 @@ jobs:
 
       - name: Verify npm package
         run: |
-          echo "Package: @n3wth/mem0-redis-hybrid"
+          echo "Package: @n3wth/recall"
           echo "Registry: https://registry.npmjs.org"
-          echo "Repository: https://github.com/n3wth/mem0-redis-hybrid"
+          echo "Repository: https://github.com/n3wth/recall"
 
       # This helps GitHub detect the npm package
       - name: Package metadata
         run: |
-          echo "::notice title=NPM Package::@n3wth/mem0-redis-hybrid is published to npm"
+          echo "::notice title=NPM Package::@n3wth/recall is published to npm"

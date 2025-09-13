@@ -5,7 +5,7 @@ import readline from 'readline';
 import { createClient } from 'redis';
 import fetch from 'node-fetch';
 
-// CLI for mem0-redis-hybrid MCP server
+// CLI for Recall MCP server
 
 const commands = {
   help: 'Show available commands',
@@ -28,7 +28,7 @@ class Mem0CLI {
     this.rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
-      prompt: 'mem0> '
+      prompt: 'recall> '
     });
 
     this.server = null;
@@ -37,7 +37,7 @@ class Mem0CLI {
   }
 
   async start() {
-    console.log('🚀 Mem0-Redis Hybrid CLI');
+    console.log('🚀 Recall CLI');
     console.log('Type "help" for available commands\n');
 
     // Start the MCP server

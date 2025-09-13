@@ -28,15 +28,15 @@ export default function DocsPage() {
   ]
 
   const codeExamples = {
-    quickStart: `npm install @n3wth/mem0-redis-hybrid
+    quickStart: `npm install @n3wth/recall
 
 # Set environment variables
 export MEM0_API_KEY="your-api-key"
 export REDIS_URL="redis://localhost:6379"`,
 
-    basicUsage: `import { Mem0Hybrid } from '@n3wth/mem0-redis-hybrid';
+    basicUsage: `import { Recall } from '@n3wth/recall';
 
-const memory = new Mem0Hybrid({
+const memory = new Recall({
   redis: 'redis://localhost:6379',
   apiKey: process.env.MEM0_KEY,
   cacheStrategy: 'aggressive'
@@ -57,9 +57,9 @@ const results = await memory.search({
 
     claudeIntegration: `{
   "mcpServers": {
-    "mem0-hybrid": {
+    "recall": {
       "command": "npx",
-      "args": ["@n3wth/mem0-redis-hybrid"],
+      "args": ["@n3wth/recall"],
       "env": {
         "MEM0_API_KEY": "your-api-key",
         "REDIS_URL": "redis://localhost:6379"
@@ -68,7 +68,7 @@ const results = await memory.search({
   }
 }`,
 
-    advancedConfig: `const memory = new Mem0Hybrid({
+    advancedConfig: `const memory = new Recall({
   redis: {
     url: 'redis://localhost:6379',
     maxRetries: 3,
@@ -116,7 +116,7 @@ await memory.sync.status()        // Check sync status`,
 
   const CodeBlock = ({ code, language = 'typescript', id }: { code: string; language?: string; id: string }) => (
     <div className="relative group">
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-lg blur-xl group-hover:blur-2xl transition-all" />
+      <div className="absolute inset-0 bg-blue-600/20 rounded-lg blur-xl group-hover:blur-2xl transition-all" />
       <div className="relative rounded-lg overflow-hidden glass-effect">
         <div className="flex items-center justify-between px-4 py-2 border-b border-white/10">
           <span className="text-xs text-gray-400">{language}</span>
@@ -149,7 +149,7 @@ await memory.sync.status()        // Check sync status`,
       <Navigation />
 
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-gray-950 to-black py-20">
+      <div className="relative overflow-hidden bg-gray-950 py-20">
         {/* Animated background */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-0 left-1/4 h-96 w-96 rounded-full bg-blue-500/10 blur-3xl animate-pulse" />
@@ -207,7 +207,7 @@ await memory.sync.status()        // Check sync status`,
                       className={`
                         w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-all
                         ${activeSection === section.id
-                          ? 'bg-gradient-to-r from-blue-600/20 to-cyan-600/20 text-white border border-white/10'
+                          ? 'bg-blue-600/20 text-white border border-white/10'
                           : 'text-gray-400 hover:text-white hover:bg-white/5'
                         }
                       `}
@@ -244,7 +244,7 @@ await memory.sync.status()        // Check sync status`,
                   <div>
                     <h2 className="text-3xl font-bold text-white mb-4">Getting Started</h2>
                     <p className="text-gray-400 mb-8">
-                      Get up and running with Mem0 Hybrid in minutes. This guide will walk you through
+                      Get up and running with Recall in minutes. This guide will walk you through
                       installation, configuration, and your first API calls.
                     </p>
                   </div>
@@ -288,17 +288,17 @@ await memory.sync.status()        // Check sync status`,
                   <div className="grid gap-6">
                     <div className="rounded-lg glass-effect p-6">
                       <h3 className="text-lg font-semibold text-white mb-3">Node.js / npm</h3>
-                      <CodeBlock code="npm install @n3wth/mem0-redis-hybrid" language="bash" id="npm" />
+                      <CodeBlock code="npm install @n3wth/recall" language="bash" id="npm" />
                     </div>
 
                     <div className="rounded-lg glass-effect p-6">
                       <h3 className="text-lg font-semibold text-white mb-3">Yarn</h3>
-                      <CodeBlock code="yarn add @n3wth/mem0-redis-hybrid" language="bash" id="yarn" />
+                      <CodeBlock code="yarn add @n3wth/recall" language="bash" id="yarn" />
                     </div>
 
                     <div className="rounded-lg glass-effect p-6">
                       <h3 className="text-lg font-semibold text-white mb-3">pnpm</h3>
-                      <CodeBlock code="pnpm add @n3wth/mem0-redis-hybrid" language="bash" id="pnpm" />
+                      <CodeBlock code="pnpm add @n3wth/recall" language="bash" id="pnpm" />
                     </div>
                   </div>
 

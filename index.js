@@ -19,10 +19,10 @@ if (!MEM0_API_KEY && !DEMO_MODE) {
   console.error('');
   console.error('Quick start options:');
   console.error('1. Try demo mode (no API key needed):');
-  console.error('   npx @n3wth/mem0-redis-hybrid --demo');
+  console.error('   npx @n3wth/recall --demo');
   console.error('');
   console.error('2. Use with your API key:');
-  console.error('   MEM0_API_KEY="your-key" npx @n3wth/mem0-redis-hybrid');
+  console.error('   MEM0_API_KEY="your-key" npx @n3wth/recall');
   console.error('');
   console.error('Get a free API key at https://mem0.ai');
   process.exit(1);

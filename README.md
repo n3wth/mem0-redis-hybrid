@@ -1,9 +1,9 @@
-# Mem0-Redis Hybrid MCP Server
+# Recall - Intelligent Memory API
 
 <div align="center">
 
-[![Website](https://img.shields.io/badge/Website-Live-blueviolet)](https://mem0-hybrid.vercel.app)
-[![GitHub Release](https://img.shields.io/github/v/release/n3wth/mem0-redis-hybrid)](https://github.com/n3wth/mem0-redis-hybrid/releases)
+[![Website](https://img.shields.io/badge/Website-Live-blueviolet)](https://recall.newth.ai)
+[![GitHub Release](https://img.shields.io/github/v/release/n3wth/recall)](https://github.com/n3wth/recall/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org)
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-blue)](https://modelcontextprotocol.io)
@@ -12,7 +12,7 @@
 
 Combine the speed of local caching with the reliability of cloud storage. Built for AI applications that need instant access to contextual memory.
 
-[Website](https://mem0-hybrid.vercel.app) • [NPM](https://www.npmjs.com/package/@n3wth/mem0-redis-hybrid) • [Docs](#architecture) • [Quick Start](#quick-install)
+[Website](https://recall.newth.ai) • [NPM](https://www.npmjs.com/package/@n3wth/recall) • [Docs](#architecture) • [Quick Start](#quick-install)
 
 </div>
 
@@ -20,42 +20,42 @@ Combine the speed of local caching with the reliability of cloud storage. Built 
 
 **Try it instantly (no API key needed):**
 ```bash
-npx mem0-cli --demo
+npx recall-cli --demo
 ```
 
 **With your own API key for cloud storage:**
 ```bash
-MEM0_API_KEY="your-api-key" npx mem0-cli
+MEM0_API_KEY="your-api-key" npx recall-cli
 ```
 *Get a free API key from [mem0.ai](https://mem0.ai)*
 
 **Full installation:**
 ```bash
 # Install the package
-npm install -g @n3wth/mem0-redis-hybrid
+npm install -g @n3wth/recall
 
 # Set up environment variables
 export MEM0_API_KEY="your-mem0-api-key"  # Get from https://mem0.ai
 export REDIS_URL="redis://localhost:6379"  # Optional
 
 # Run the CLI to test
-mem0-cli
+recall-cli
 
 # Or add to Claude Code (see Integration section below)
 ```
 
 ## Overview
 
-The Mem0-Redis Hybrid MCP Server is an intelligent memory layer for modern AI systems. It combines the speed of local Redis caching with the reliability of Mem0 cloud storage, providing sub-5ms response times with 99.9% uptime SLA. Built for AI applications that need instant access to contextual memory at scale.
+Recall is an intelligent memory API for modern AI systems. It combines the speed of local Redis caching with the reliability of Mem0 cloud storage, providing sub-5ms response times with 99.9% uptime SLA. Built for AI applications that need instant access to contextual memory at scale.
 
-### Why Mem0-Redis Hybrid?
+### Why Recall?
 
 - **Lightning Fast**: Sub-5ms cache hits with intelligent prefetching
 - **Enterprise Security**: Bank-level encryption with SOC 2 compliance
 - **Infinite Scale**: Automatically scales from prototype to production
 - **AI Optimized**: Purpose-built for LLMs with semantic search and vector support
 
-> **Visit our website**: [https://mem0-hybrid.vercel.app](https://mem0-hybrid.vercel.app) for interactive demos and detailed documentation.
+> **Visit our website**: [https://recall.newth.ai](https://recall.newth.ai) for interactive demos and detailed documentation.
 
 ## Key Metrics
 
@@ -294,17 +294,17 @@ sync_status()
 #### NPM Package (Recommended)
 ```bash
 # Install globally
-npm install -g @n3wth/mem0-redis-hybrid
+npm install -g @n3wth/recall
 
 # Or install locally in your project
-npm install @n3wth/mem0-redis-hybrid
+npm install @n3wth/recall
 ```
 
 #### From Source
 ```bash
 # Clone the repository
-git clone https://github.com/n3wth/mem0-redis-hybrid.git
-cd mem0-redis-hybrid
+git clone https://github.com/n3wth/recall.git
+cd recall
 
 # Install dependencies
 npm install
@@ -321,7 +321,7 @@ The package includes an interactive CLI for testing and management:
 
 ```bash
 # Run the CLI
-npx mem0-cli
+npx recall-cli
 
 # Available commands:
 # - add <content>     Add a memory
@@ -344,9 +344,9 @@ Edit your Claude Code settings file (`~/.claude/claude_desktop_config.json`):
 ```json
 {
   "mcpServers": {
-    "mem0-hybrid": {
+    "recall": {
       "command": "npx",
-      "args": ["@n3wth/mem0-redis-hybrid"],
+      "args": ["@n3wth/recall"],
       "env": {
         "MEM0_API_KEY": "your-mem0-api-key",
         "MEM0_USER_ID": "your-user-id",
@@ -363,9 +363,9 @@ If you installed locally:
 ```json
 {
   "mcpServers": {
-    "mem0-hybrid": {
+    "recall": {
       "command": "node",
-      "args": ["./node_modules/@n3wth/mem0-redis-hybrid/index.js"],
+      "args": ["./node_modules/@n3wth/recall/index.js"],
       "env": {
         "MEM0_API_KEY": "your-mem0-api-key",
         "MEM0_USER_ID": "your-user-id",
@@ -382,25 +382,25 @@ After adding the configuration, restart Claude Code to load the MCP server.
 #### 3. Use in Claude Code
 ```javascript
 // Add a memory with caching
-mcp__mem0-hybrid__add_memory({
+mcp__recall__add_memory({
   content: "Important fact to remember",
   priority: "high",
   async: true
 })
 
 // Search with cache-first strategy
-mcp__mem0-hybrid__search_memory({
+mcp__recall__search_memory({
   query: "important fact",
   prefer_cache: true
 })
 
 // Get cache statistics
-mcp__mem0-hybrid__cache_stats()
+mcp__recall__cache_stats()
 ```
 
 ### Integration with Gemini CLI
 
-The mem0-hybrid server can be used with Gemini CLI to enhance prompts with persistent memory context.
+Recall can be used with Gemini CLI to enhance prompts with persistent memory context.
 
 #### 1. Setup Gemini CLI with MCP Support
 ```bash
@@ -416,11 +416,11 @@ Create a file `~/gm` (Gemini with mem0) with enhanced memory support:
 
 ```bash
 #!/bin/bash
-# Enhanced Gemini CLI with mem0-hybrid integration
+# Enhanced Gemini CLI with Recall integration
 
-# Start mem0-hybrid server if not running
-if ! pgrep -f "mem0-redis-hybrid/index.js" > /dev/null; then
-    node /path/to/mem0-redis-hybrid/index.js &
+# Start Recall server if not running
+if ! pgrep -f "recall/index.js" > /dev/null; then
+    node /path/to/recall/index.js &
     sleep 2
 fi
 
@@ -655,7 +655,7 @@ Create `~/Library/LaunchAgents/com.mem0hybrid.plist`:
     <key>ProgramArguments</key>
     <array>
         <string>/usr/local/bin/node</string>
-        <string>/path/to/mem0-redis-hybrid/index.js</string>
+        <string>/path/to/recall/index.js</string>
     </array>
     <key>EnvironmentVariables</key>
     <dict>
@@ -684,13 +684,13 @@ Create `/etc/systemd/system/mem0-hybrid.service`:
 
 ```ini
 [Unit]
-Description=Mem0 Redis Hybrid MCP Server
+Description=Recall Memory API Server
 After=network.target redis.service
 
 [Service]
 Type=simple
 User=youruser
-WorkingDirectory=/path/to/mem0-redis-hybrid
+WorkingDirectory=/path/to/recall
 ExecStart=/usr/bin/node index.js
 Restart=always
 Environment="MEM0_API_KEY=your-key"
@@ -886,8 +886,8 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ```bash
 # Clone the repo
-git clone https://github.com/n3wth/mem0-redis-hybrid.git
-cd mem0-redis-hybrid
+git clone https://github.com/n3wth/recall.git
+cd recall
 
 # Install dependencies
 npm install
@@ -948,8 +948,8 @@ GitHub Actions automatically publishes to npm when you push a tag starting with 
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/n3wth/mem0-redis-hybrid/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/n3wth/mem0-redis-hybrid/discussions)
+- **Issues**: [GitHub Issues](https://github.com/n3wth/recall/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/n3wth/recall/discussions)
 - **Security**: Please report security vulnerabilities to [security@example.com](mailto:security@example.com)
 
 ## Acknowledgments
@@ -970,5 +970,5 @@ Made with care by the AI community
 
 Star us on GitHub — it helps!
 
-[Report Bug](https://github.com/n3wth/mem0-redis-hybrid/issues) • [Request Feature](https://github.com/n3wth/mem0-redis-hybrid/issues)
+[Report Bug](https://github.com/n3wth/recall/issues) • [Request Feature](https://github.com/n3wth/recall/issues)
 </div>

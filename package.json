@@ -1,12 +1,12 @@
 {
-  "name": "@n3wth/mem0-redis-hybrid",
+  "name": "@n3wth/recall",
   "version": "1.2.0",
-  "description": "High-performance MCP server combining Mem0 cloud storage with Redis caching for AI memory management",
+  "description": "Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence",
   "main": "index.js",
   "type": "module",
   "bin": {
-    "mem0-hybrid": "./index.js",
-    "mem0-cli": "./cli.js"
+    "recall": "./index.js",
+    "recall-cli": "./cli.js"
   },
   "scripts": {
     "start": "node index.js",
@@ -42,12 +42,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/n3wth/mem0-redis-hybrid.git"
+    "url": "git+https://github.com/n3wth/recall.git"
   },
   "bugs": {
-    "url": "https://github.com/n3wth/mem0-redis-hybrid/issues"
+    "url": "https://github.com/n3wth/recall/issues"
   },
-  "homepage": "https://github.com/n3wth/mem0-redis-hybrid#readme",
+  "homepage": "https://recall.newth.ai",
   "engines": {
     "node": ">=18.0.0"
   },

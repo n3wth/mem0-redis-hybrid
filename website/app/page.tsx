@@ -20,9 +20,9 @@ export default function Home() {
   }, [])
 
   const codeExamples = {
-    node: `import Mem0Hybrid from '@n3wth/mem0-redis-hybrid';
+    node: `import Recall from '@n3wth/recall';
 
-const client = new Mem0Hybrid({
+const client = new Recall({
   apiKey: process.env.MEM0_API_KEY,
   redis: process.env.REDIS_URL
 });
@@ -33,9 +33,9 @@ const response = await client.memories.add({
 });
 
 console.log(response.id);`,
-    python: `from mem0_hybrid import Mem0Hybrid
+    python: `from recall import Recall
 
-client = Mem0Hybrid(
+client = Recall(
     api_key=os.environ["MEM0_API_KEY"],
     redis_url=os.environ["REDIS_URL"]
 )
@@ -46,7 +46,7 @@ response = client.memories.add(
 )
 
 print(response.id)`,
-    curl: `curl https://api.mem0hybrid.com/v1/memories \\
+    curl: `curl https://api.recall.newth.ai/v1/memories \\
   -H "Authorization: Bearer $MEM0_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -63,37 +63,29 @@ print(response.id)`,
 
       {/* Hero with Dynamic Movement */}
       <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Interactive gradient that follows mouse */}
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, #3b82f6 0%, transparent 50%)`
-          }}
-        />
 
         {/* Animated morphing blobs */}
         <div className="absolute inset-0">
           <div
-            className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"
-            style={{ animation: 'morph 8s ease-in-out infinite, float 15s ease-in-out infinite' }}
+            className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-[100px] opacity-10"
+            style={{ animation: 'morph 20s ease-in-out infinite, float 30s ease-in-out infinite' }}
           />
           <div
-            className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"
-            style={{ animation: 'morph 8s ease-in-out infinite reverse, float 20s ease-in-out infinite reverse' }}
+            className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-screen filter blur-[100px] opacity-10"
+            style={{ animation: 'morph 25s ease-in-out infinite reverse, float 35s ease-in-out infinite reverse' }}
           />
           <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"
-            style={{ animation: 'pulse-glow 4s ease-in-out infinite' }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-500 rounded-full mix-blend-screen filter blur-[120px] opacity-10"
+            style={{ animation: 'pulse-glow 8s ease-in-out infinite' }}
           />
         </div>
 
-        {/* Grid pattern overlay */}
+        {/* Grid pattern overlay - more subtle */}
         <div
-          className="absolute inset-0 opacity-10"
+          className="absolute inset-0 opacity-[0.03]"
           style={{
-            backgroundImage: `linear-gradient(rgba(59, 130, 246, 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.5) 1px, transparent 1px)`,
-            backgroundSize: '50px 50px',
-            animation: 'slide-up 20s linear infinite'
+            backgroundImage: `linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)`,
+            backgroundSize: '80px 80px'
           }}
         />
 
@@ -101,13 +93,13 @@ print(response.id)`,
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-center">
           <div className="mx-auto max-w-3xl">
             {/* Animated badge */}
-            <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500/10 to-cyan-500/10 px-4 py-2 backdrop-blur-sm border border-white/10">
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-4 py-2 backdrop-blur-sm border border-white/10">
               <Sparkles className="h-4 w-4 text-blue-400" />
               <span className="text-sm text-gray-300">Powered by AI • Redis • Cloud</span>
             </div>
 
             <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tight mb-8">
-              <span className="gradient-text">Intelligent Memory</span>
+              <span className="text-blue-400">Intelligent Memory</span>
               <br />
               <span className="text-white">for AI Applications</span>
             </h1>
@@ -120,7 +112,7 @@ print(response.id)`,
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/docs"
-                className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold rounded-xl shadow-2xl shadow-blue-500/25 transition-all hover:shadow-blue-500/40 hover:scale-105"
+                className="group relative px-8 py-4 bg-blue-600 text-white font-semibold rounded-xl shadow-2xl shadow-blue-500/25 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 hover:scale-105"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   Get Started
@@ -147,7 +139,7 @@ print(response.id)`,
                   key={i}
                   className="text-center"
                   style={{
-                    animation: `slide-up 0.5s ease-out ${i * 0.1}s both`,
+                    animation: `slide-up 0.8s ease-out ${i * 0.15}s both`,
                     opacity: 0
                   }}
                 >
@@ -229,45 +221,39 @@ print(response.id)`,
               {
                 name: 'Two-tier Caching',
                 description: 'L1 cache for hot data (24h TTL) and L2 cache for warm data (7d TTL) with automatic promotion.',
-                gradient: 'from-blue-500 to-cyan-500',
               },
               {
                 name: 'Automatic Failover',
                 description: 'Seamless fallback to cloud storage when Redis is unavailable with circuit breaker pattern.',
-                gradient: 'from-purple-500 to-pink-500',
               },
               {
                 name: 'Real-time Sync',
                 description: 'Pub/Sub based cache invalidation with background synchronization every 5 minutes.',
-                gradient: 'from-cyan-500 to-teal-500',
               },
               {
                 name: 'Edge Optimized',
                 description: 'Deploy close to your users with support for 12 global data centers.',
-                gradient: 'from-pink-500 to-orange-500',
               },
               {
                 name: 'Type Safe',
                 description: 'Full TypeScript support with comprehensive type definitions and IDE autocomplete.',
-                gradient: 'from-orange-500 to-yellow-500',
               },
               {
                 name: 'SOC 2 Compliant',
                 description: 'Enterprise-grade security with end-to-end encryption and regular compliance audits.',
-                gradient: 'from-green-500 to-blue-500',
               },
             ].map((feature, i) => (
               <div
                 key={feature.name}
                 className="group relative p-6 rounded-2xl glass-effect transition-all hover:scale-105 hover:bg-white/10"
                 style={{
-                  animation: `slide-up 0.5s ease-out ${i * 0.1}s both`,
+                  animation: `slide-up 0.8s ease-out ${i * 0.1}s both`,
                   opacity: 0
                 }}
               >
-                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity`} />
+                <div className="absolute inset-0 rounded-2xl bg-blue-500 opacity-0 group-hover:opacity-10 transition-opacity" />
                 <div className="relative z-10">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4`}>
+                  <div className="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center mb-4">
                     <Check className="h-6 w-6 text-white" />
                   </div>
                   <h3 className="text-xl font-semibold text-white mb-2">{feature.name}</h3>
@@ -287,17 +273,17 @@ print(response.id)`,
               Ready to Get Started?
             </h2>
             <p className="text-xl text-gray-400 mb-8">
-              Join thousands of developers using Mem0 Hybrid to power their AI applications.
+              Join thousands of developers using Recall to power their AI applications.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/docs"
-                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold rounded-xl shadow-2xl shadow-blue-500/25 transition-all hover:shadow-blue-500/40 hover:scale-105"
+                className="px-8 py-4 bg-blue-600 text-white font-semibold rounded-xl shadow-2xl shadow-blue-500/25 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 hover:scale-105"
               >
                 Start Building →
               </Link>
               <a
-                href="https://github.com/n3wth/mem0-redis-hybrid"
+                href="https://github.com/n3wth/recall"
                 className="px-8 py-4 glass-effect text-white font-semibold rounded-xl transition-all hover:bg-white/10"
               >
                 View on GitHub
