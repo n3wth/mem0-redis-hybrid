@@ -1,383 +1,313 @@
 'use client'
 
-import { ArrowRight, Zap, Shield, Database, Github, Sparkles, ChevronRight, Check, ArrowUpRight, Play, Cpu, Cloud, Lock } from 'lucide-react'
-import { useState } from 'react'
+import { Check, Sparkles, Zap, Shield, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
+import { useState, useEffect } from 'react'
+import { Navigation } from '@/components/Navigation'
+import { Footer } from '@/components/Footer'
+import { Container } from '@/components/Grid'
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState('javascript')
+  const [activeTab, setActiveTab] = useState('node')
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY })
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
 
   const codeExamples = {
-    javascript: `import { Mem0Hybrid } from '@n3wth/mem0-redis-hybrid';
+    node: `import Mem0Hybrid from '@n3wth/mem0-redis-hybrid';
 
-const memory = new Mem0Hybrid({
-  redis: 'redis://localhost:6379',
-  apiKey: process.env.MEM0_KEY,
-  cacheStrategy: 'aggressive'
+const client = new Mem0Hybrid({
+  apiKey: process.env.MEM0_API_KEY,
+  redis: process.env.REDIS_URL
 });
 
-// Store with priority
-await memory.add({
-  content: 'User preferences and context',
-  priority: 'high',
-  ttl: 3600
-});`,
+const response = await client.memories.add({
+  content: 'User prefers dark mode UI',
+  metadata: { user_id: 'user_123' }
+});
+
+console.log(response.id);`,
     python: `from mem0_hybrid import Mem0Hybrid
 
-memory = Mem0Hybrid(
-    redis_url='redis://localhost:6379',
-    api_key=os.environ['MEM0_KEY'],
-    cache_strategy='aggressive'
+client = Mem0Hybrid(
+    api_key=os.environ["MEM0_API_KEY"],
+    redis_url=os.environ["REDIS_URL"]
 )
 
-# Store with priority
-await memory.add({
-    'content': 'User preferences and context',
-    'priority': 'high',
-    'ttl': 3600
-})`,
-    curl: `curl -X POST https://api.mem0hybrid.com/v1/memory \\
-  -H "Authorization: Bearer $MEM0_KEY" \\
+response = client.memories.add(
+    content="User prefers dark mode UI",
+    metadata={"user_id": "user_123"}
+)
+
+print(response.id)`,
+    curl: `curl https://api.mem0hybrid.com/v1/memories \\
+  -H "Authorization: Bearer $MEM0_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "content": "User preferences and context",
-    "priority": "high",
-    "ttl": 3600
+    "content": "User prefers dark mode UI",
+    "metadata": {
+      "user_id": "user_123"
+    }
   }'`
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-8">
-              <a href="/" className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">M</span>
-                </div>
-                <span className="font-semibold text-gray-900">Mem0 Hybrid</span>
-              </a>
-              <div className="hidden md:flex items-center gap-6">
-                <a href="#features" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-                  Features
-                </a>
-                <a href="/docs" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-                  Documentation
-                </a>
-                <a href="https://github.com/n3wth/mem0-redis-hybrid" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-                  GitHub
-                </a>
-                <a href="https://www.npmjs.com/package/@n3wth/mem0-redis-hybrid" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-                  NPM
-                </a>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <a
-                href="https://github.com/n3wth/mem0-redis-hybrid"
-                className="text-gray-600 hover:text-gray-900 transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Github className="h-5 w-5" />
-              </a>
-              <button className="hidden sm:block px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                Sign in
-              </button>
-              <button className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
-                Get started
-              </button>
-            </div>
-          </div>
+    <div className="min-h-screen bg-black overflow-hidden">
+      <Navigation />
+
+      {/* Hero with Dynamic Movement */}
+      <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Interactive gradient that follows mouse */}
+        <div
+          className="absolute inset-0 opacity-30"
+          style={{
+            background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, #3b82f6 0%, transparent 50%)`
+          }}
+        />
+
+        {/* Animated morphing blobs */}
+        <div className="absolute inset-0">
+          <div
+            className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"
+            style={{ animation: 'morph 8s ease-in-out infinite, float 15s ease-in-out infinite' }}
+          />
+          <div
+            className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"
+            style={{ animation: 'morph 8s ease-in-out infinite reverse, float 20s ease-in-out infinite reverse' }}
+          />
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-20"
+            style={{ animation: 'pulse-glow 4s ease-in-out infinite' }}
+          />
         </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-50 via-white to-indigo-50 opacity-50" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24">
-          <div className="text-center max-w-3xl mx-auto">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-violet-50 border border-violet-200 rounded-full mb-6">
-              <Sparkles className="h-4 w-4 text-violet-600" />
-              <span className="text-sm font-medium text-violet-700">Now with 99.9% uptime SLA</span>
+        {/* Grid pattern overlay */}
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `linear-gradient(rgba(59, 130, 246, 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.5) 1px, transparent 1px)`,
+            backgroundSize: '50px 50px',
+            animation: 'slide-up 20s linear infinite'
+          }}
+        />
+
+        {/* Content */}
+        <div className="relative z-10 mx-auto max-w-7xl px-6 text-center">
+          <div className="mx-auto max-w-3xl">
+            {/* Animated badge */}
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500/10 to-cyan-500/10 px-4 py-2 backdrop-blur-sm border border-white/10">
+              <Sparkles className="h-4 w-4 text-blue-400" />
+              <span className="text-sm text-gray-300">Powered by AI • Redis • Cloud</span>
             </div>
 
-            <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 leading-tight">
-              Intelligent memory layer
+            <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tight mb-8">
+              <span className="gradient-text">Intelligent Memory</span>
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-indigo-600">
-                for modern AI systems
-              </span>
+              <span className="text-white">for AI Applications</span>
             </h1>
 
-            <p className="mt-6 text-xl text-gray-600 leading-relaxed">
-              Combine the speed of local caching with the reliability of cloud storage.
-              Built for AI applications that need instant access to contextual memory.
+            <p className="mx-auto max-w-2xl text-xl text-gray-400 mb-12">
+              Combine cloud persistence with edge caching. Sub-5ms response times with 99.9% uptime SLA.
+              Built for the future of AI.
             </p>
 
-            <div className="mt-10 flex items-center justify-center gap-4">
-              <button className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors">
-                Start building
-                <ArrowRight className="h-4 w-4" />
-              </button>
-              <button className="inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-700 font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
-                <Play className="h-4 w-4" />
-                Watch demo
-              </button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href="/docs"
+                className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold rounded-xl shadow-2xl shadow-blue-500/25 transition-all hover:shadow-blue-500/40 hover:scale-105"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  Get Started
+                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+              <Link
+                href="/docs"
+                className="px-8 py-4 glass-effect text-white font-semibold rounded-xl transition-all hover:bg-white/10"
+              >
+                View Documentation
+              </Link>
             </div>
 
-            <div className="mt-12 flex items-center justify-center gap-8 text-sm text-gray-600">
-              <div className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-green-600" />
-                <span>SOC 2 Compliant</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-green-600" />
-                <span>GDPR Ready</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-green-600" />
-                <span>99.9% Uptime</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-16 border-y border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { label: 'Response Time', value: '<5ms', subtext: 'p99 latency' },
-              { label: 'Uptime SLA', value: '99.9%', subtext: 'guaranteed' },
-              { label: 'Data Centers', value: '12', subtext: 'worldwide' },
-              { label: 'Requests/sec', value: '1M+', subtext: 'at scale' }
-            ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <div className="text-3xl font-bold text-gray-900">{stat.value}</div>
-                <div className="text-sm font-medium text-gray-600 mt-1">{stat.label}</div>
-                <div className="text-xs text-gray-500 mt-1">{stat.subtext}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section id="features" className="py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Everything you need for production
-            </h2>
-            <p className="mt-4 text-lg text-gray-600">
-              Enterprise-grade features with developer-friendly APIs
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: Zap,
-                title: 'Lightning fast',
-                description: 'Sub-5ms cache hits with intelligent prefetching and two-tier caching.',
-                features: ['Redis L1 cache', 'Smart prefetching', 'Edge locations']
-              },
-              {
-                icon: Shield,
-                title: 'Enterprise security',
-                description: 'Bank-level encryption with SOC 2 compliance and regular audits.',
-                features: ['End-to-end encryption', 'Role-based access', 'Audit logs']
-              },
-              {
-                icon: Database,
-                title: 'Infinite scale',
-                description: 'Automatically scales with your application from prototype to production.',
-                features: ['Auto-scaling', 'Multi-region', 'No rate limits']
-              },
-              {
-                icon: Cloud,
-                title: 'Hybrid storage',
-                description: 'Best of both worlds with local Redis and cloud Mem0 persistence.',
-                features: ['Dual-layer cache', 'Automatic sync', 'Conflict resolution']
-              },
-              {
-                icon: Lock,
-                title: 'Privacy first',
-                description: 'Your data stays yours with zero-knowledge architecture.',
-                features: ['Data isolation', 'GDPR compliant', 'Right to deletion']
-              },
-              {
-                icon: Cpu,
-                title: 'AI optimized',
-                description: 'Purpose-built for LLMs with semantic search and vector support.',
-                features: ['Vector search', 'Semantic matching', 'Context windows']
-              }
-            ].map((feature, i) => (
-              <div key={i} className="group relative bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-lg hover:border-gray-200 transition-all">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-violet-50 to-indigo-50 rounded-lg flex items-center justify-center">
-                    <feature.icon className="h-5 w-5 text-violet-600" />
-                  </div>
-                  <ArrowUpRight className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+            {/* Stats */}
+            <div className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-8">
+              {[
+                { label: 'Response Time', value: '<5ms', icon: Zap },
+                { label: 'Uptime SLA', value: '99.9%', icon: Shield },
+                { label: 'Requests/sec', value: '1M+', icon: Zap },
+                { label: 'Data Centers', value: '12', icon: Shield },
+              ].map((stat, i) => (
+                <div
+                  key={i}
+                  className="text-center"
+                  style={{
+                    animation: `slide-up 0.5s ease-out ${i * 0.1}s both`,
+                    opacity: 0
+                  }}
+                >
+                  <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
+                  <div className="text-sm text-gray-500">{stat.label}</div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                <p className="text-sm text-gray-600 mb-4">{feature.description}</p>
-                <ul className="space-y-2">
-                  {feature.features.map((item, j) => (
-                    <li key={j} className="flex items-center gap-2 text-xs text-gray-500">
-                      <Check className="h-3 w-3 text-green-600" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
-      </section>
 
-      {/* Code Example */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Simple, intuitive API
-              </h2>
-              <p className="text-lg text-gray-600 mb-6">
-                Get started in minutes with our comprehensive SDKs and documentation.
-                Works with your existing infrastructure.
-              </p>
-              <ul className="space-y-3">
-                {[
-                  'Drop-in replacement for existing cache layers',
-                  'Automatic failover and retry logic',
-                  'Real-time synchronization across regions',
-                  'Compatible with Redis protocol'
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-gray-700">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-8">
-                <a href="#" className="inline-flex items-center gap-2 text-violet-600 font-medium hover:text-violet-700 transition-colors">
-                  View documentation
-                  <ChevronRight className="h-4 w-4" />
-                </a>
-              </div>
-            </div>
+        {/* Scroll indicator */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
+          <div className="w-6 h-10 rounded-full border-2 border-white/20 flex items-start justify-center p-1">
+            <div className="w-1 h-3 bg-white/50 rounded-full animate-bounce" />
+          </div>
+        </div>
+      </div>
 
-            <div className="relative">
-              <div className="bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
-                <div className="flex items-center gap-2 px-4 py-3 bg-gray-800 border-b border-gray-700">
-                  {['javascript', 'python', 'curl'].map((lang) => (
+      {/* Code Example section */}
+      <section className="bg-gray-950 relative py-24">
+        <Container size="lg">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Start Building in Minutes
+            </h2>
+            <p className="text-xl text-gray-400">
+              Install our SDK and make your first API call
+            </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="rounded-2xl overflow-hidden glass-effect">
+              <div className="border-b border-white/10">
+                <nav className="flex" aria-label="Tabs">
+                  {Object.keys(codeExamples).map((lang) => (
                     <button
                       key={lang}
                       onClick={() => setActiveTab(lang)}
-                      className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
-                        activeTab === lang
-                          ? 'bg-gray-700 text-white'
-                          : 'text-gray-400 hover:text-white'
-                      }`}
+                      className={`
+                        flex-1 px-6 py-4 text-sm font-medium capitalize transition-all
+                        ${activeTab === lang
+                          ? 'text-blue-400 bg-blue-500/10 border-b-2 border-blue-400'
+                          : 'text-gray-400 hover:text-white hover:bg-white/5'
+                        }
+                      `}
                     >
-                      {lang}
+                      {lang === 'node' ? 'Node.js' : lang}
                     </button>
                   ))}
-                </div>
-                <div className="p-6">
-                  <pre className="text-sm text-gray-300 overflow-x-auto">
-                    <code>{codeExamples[activeTab as keyof typeof codeExamples]}</code>
-                  </pre>
-                </div>
+                </nav>
               </div>
-              <div className="absolute -bottom-4 -right-4 w-full h-full bg-gradient-to-br from-violet-200 to-indigo-200 rounded-xl -z-10 opacity-50" />
+              <div className="p-8 bg-black/50">
+                <pre className="overflow-x-auto text-sm">
+                  <code className="text-gray-300">
+                    {codeExamples[activeTab as keyof typeof codeExamples]}
+                  </code>
+                </pre>
+              </div>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Ready to build something amazing?
-          </h2>
-          <p className="text-lg text-gray-600 mb-8">
-            Join thousands of developers using Mem0 Hybrid to power their AI applications.
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            <button className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors">
-              Get started free
-              <ArrowRight className="h-4 w-4" />
-            </button>
-            <button className="inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-700 font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
-              Talk to sales
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
-            <div className="col-span-2">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">M</span>
-                </div>
-                <span className="font-semibold text-gray-900">Mem0 Hybrid</span>
-              </div>
-              <p className="text-sm text-gray-600 max-w-xs">
-                The intelligent memory layer for modern AI applications.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-medium text-gray-900 mb-3">Product</h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:text-gray-900 transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-gray-900 transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-gray-900 transition-colors">Documentation</a></li>
-                <li><a href="#" className="hover:text-gray-900 transition-colors">API Reference</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-medium text-gray-900 mb-3">Company</h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:text-gray-900 transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-gray-900 transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-gray-900 transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-gray-900 transition-colors">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-medium text-gray-900 mb-3">Legal</h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:text-gray-900 transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-gray-900 transition-colors">Terms</a></li>
-                <li><a href="#" className="hover:text-gray-900 transition-colors">Security</a></li>
-                <li><a href="#" className="hover:text-gray-900 transition-colors">Compliance</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center">
-            <p className="text-sm text-gray-600">
-              © 2025 Mem0 Hybrid. All rights reserved.
+      {/* Features Grid */}
+      <section className="bg-black relative py-24">
+        <Container size="lg">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Enterprise-Ready Features
+            </h2>
+            <p className="text-xl text-gray-400">
+              Built for production workloads at any scale
             </p>
-            <div className="flex items-center gap-4 mt-4 sm:mt-0">
-              <a href="https://github.com/n3wth/mem0-redis-hybrid" className="text-gray-400 hover:text-gray-600 transition-colors">
-                <Github className="h-5 w-5" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                name: 'Two-tier Caching',
+                description: 'L1 cache for hot data (24h TTL) and L2 cache for warm data (7d TTL) with automatic promotion.',
+                gradient: 'from-blue-500 to-cyan-500',
+              },
+              {
+                name: 'Automatic Failover',
+                description: 'Seamless fallback to cloud storage when Redis is unavailable with circuit breaker pattern.',
+                gradient: 'from-purple-500 to-pink-500',
+              },
+              {
+                name: 'Real-time Sync',
+                description: 'Pub/Sub based cache invalidation with background synchronization every 5 minutes.',
+                gradient: 'from-cyan-500 to-teal-500',
+              },
+              {
+                name: 'Edge Optimized',
+                description: 'Deploy close to your users with support for 12 global data centers.',
+                gradient: 'from-pink-500 to-orange-500',
+              },
+              {
+                name: 'Type Safe',
+                description: 'Full TypeScript support with comprehensive type definitions and IDE autocomplete.',
+                gradient: 'from-orange-500 to-yellow-500',
+              },
+              {
+                name: 'SOC 2 Compliant',
+                description: 'Enterprise-grade security with end-to-end encryption and regular compliance audits.',
+                gradient: 'from-green-500 to-blue-500',
+              },
+            ].map((feature, i) => (
+              <div
+                key={feature.name}
+                className="group relative p-6 rounded-2xl glass-effect transition-all hover:scale-105 hover:bg-white/10"
+                style={{
+                  animation: `slide-up 0.5s ease-out ${i * 0.1}s both`,
+                  opacity: 0
+                }}
+              >
+                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity`} />
+                <div className="relative z-10">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4`}>
+                    <Check className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-2">{feature.name}</h3>
+                  <p className="text-gray-400">{feature.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* CTA section */}
+      <section className="bg-gray-950 relative py-24">
+        <Container size="sm">
+          <div className="text-center">
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Ready to Get Started?
+            </h2>
+            <p className="text-xl text-gray-400 mb-8">
+              Join thousands of developers using Mem0 Hybrid to power their AI applications.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href="/docs"
+                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold rounded-xl shadow-2xl shadow-blue-500/25 transition-all hover:shadow-blue-500/40 hover:scale-105"
+              >
+                Start Building →
+              </Link>
+              <a
+                href="https://github.com/n3wth/mem0-redis-hybrid"
+                className="px-8 py-4 glass-effect text-white font-semibold rounded-xl transition-all hover:bg-white/10"
+              >
+                View on GitHub
               </a>
             </div>
           </div>
-        </div>
-      </footer>
+        </Container>
+      </section>
+
+      <Footer />
     </div>
   )
 }
