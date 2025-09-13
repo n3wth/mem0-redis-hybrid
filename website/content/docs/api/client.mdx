@@ -1,0 +1,784 @@
+---
+title: Client API
+description: Complete API reference for the Recall client
+order: 1
+category: API Reference
+---
+
+# Client API Reference
+
+Complete reference for the RecallClient class and all available methods.
+
+## RecallClient
+
+The main client class for interacting with Recall's hybrid memory system.
+
+### Constructor
+
+<CodeTabs>
+```python tab="Python"
+RecallClient(
+    redis_url: str | None = None,
+    mem0_api_key: str | None = None,
+    environment: str = "development",
+    cache_config: CacheConfig | None = None,
+    sync_config: SyncConfig | None = None,
+    **kwargs
+)
+```
+
+```typescript tab="TypeScript"
+new RecallClient(options?: RecallClientOptions)
+
+interface RecallClientOptions {
+  redisUrl?: string;
+  mem0ApiKey?: string;
+  environment?: string;
+  cacheConfig?: CacheConfig;
+  syncConfig?: SyncConfig;
+  [key: string]: any;
+}
+```
+</CodeTabs>
+
+#### Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `redis_url` | `string` | `"redis://localhost:6379"` | Redis connection URL |
+| `mem0_api_key` | `string` | `None` | Mem0 API key for cloud storage |
+| `environment` | `string` | `"development"` | Environment name (development, staging, production) |
+| `cache_config` | `CacheConfig` | `None` | Cache configuration options |
+| `sync_config` | `SyncConfig` | `None` | Synchronization configuration |
+
+#### Example
+
+<CodeTabs>
+```python tab="Python"
+from recall import RecallClient
+
+# Basic initialization
+client = RecallClient(
+    redis_url="redis://localhost:6379",
+    mem0_api_key="m0-xxxxxxxxxxxx"
+)
+
+# With configuration
+client = RecallClient(
+    redis_url="redis://localhost:6379",
+    mem0_api_key="m0-xxxxxxxxxxxx",
+    environment="production",
+    cache_config=CacheConfig(ttl=3600),
+    sync_config=SyncConfig(mode="eager")
+)
+```
+
+```typescript tab="TypeScript"
+import { RecallClient } from '@recall/client';
+
+// Basic initialization
+const client = new RecallClient({
+  redisUrl: "redis://localhost:6379",
+  mem0ApiKey: "m0-xxxxxxxxxxxx"
+});
+
+// With configuration
+const client = new RecallClient({
+  redisUrl: "redis://localhost:6379",
+  mem0ApiKey: "m0-xxxxxxxxxxxx",
+  environment: "production",
+  cacheConfig: { ttl: 3600 },
+  syncConfig: { mode: "eager" }
+});
+```
+</CodeTabs>
+
+## Core Methods
+
+### add()
+
+Add a new memory to the system.
+
+<CodeTabs>
+```python tab="Python"
+add(
+    content: str,
+    user_id: str,
+    priority: str = "medium",
+    metadata: dict | None = None,
+    async_mode: bool = False
+) -> dict
+```
+
+```typescript tab="TypeScript"
+add(options: AddMemoryOptions): Promise<Memory>
+
+interface AddMemoryOptions {
+  content: string;
+  userId: string;
+  priority?: Priority;
+  metadata?: Record<string, any>;
+  asyncMode?: boolean;
+}
+```
+</CodeTabs>
+
+#### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `content` | `string` | Yes | The memory content to store |
+| `user_id` | `string` | Yes | User identifier |
+| `priority` | `string` | No | Priority level: "critical", "high", "medium", "low" |
+| `metadata` | `object` | No | Additional metadata |
+| `async_mode` | `boolean` | No | If true, returns immediately without waiting for cloud sync |
+
+#### Returns
+
+A dictionary/object containing:
+- `id`: Unique memory identifier
+- `content`: The stored content
+- `user_id`: Associated user ID
+- `priority`: Assigned priority level
+- `created_at`: Creation timestamp
+- `metadata`: Any additional metadata
+
+#### Example
+
+<CodeTabs>
+```python tab="Python"
+memory = client.add(
+    content="User prefers dark theme",
+    user_id="user_123",
+    priority="high",
+    metadata={
+        "category": "preferences",
+        "source": "settings_update"
+    }
+)
+
+print(f"Memory ID: {memory['id']}")
+# Output: Memory ID: mem_abc123xyz
+```
+
+```typescript tab="TypeScript"
+const memory = await client.add({
+  content: "User prefers dark theme",
+  userId: "user_123",
+  priority: "high",
+  metadata: {
+    category: "preferences",
+    source: "settings_update"
+  }
+});
+
+console.log(`Memory ID: ${memory.id}`);
+// Output: Memory ID: mem_abc123xyz
+```
+</CodeTabs>
+
+### search()
+
+Search for relevant memories using semantic search.
+
+<CodeTabs>
+```python tab="Python"
+search(
+    query: str,
+    user_id: str | None = None,
+    limit: int = 10,
+    filters: dict | None = None,
+    threshold: float = 0.0
+) -> list[dict]
+```
+
+```typescript tab="TypeScript"
+search(options: SearchOptions): Promise<Memory[]>
+
+interface SearchOptions {
+  query: string;
+  userId?: string;
+  limit?: number;
+  filters?: Record<string, any>;
+  threshold?: number;
+}
+```
+</CodeTabs>
+
+#### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | `string` | Yes | Search query |
+| `user_id` | `string` | No | Filter by user ID |
+| `limit` | `integer` | No | Maximum results to return (default: 10) |
+| `filters` | `object` | No | Metadata filters |
+| `threshold` | `float` | No | Minimum relevance score (0.0 to 1.0) |
+
+#### Returns
+
+Array of memory objects, each containing:
+- All memory fields
+- `score`: Relevance score (0.0 to 1.0)
+- `source`: Whether from "cache" or "cloud"
+
+#### Example
+
+<CodeTabs>
+```python tab="Python"
+results = client.search(
+    query="user preferences for UI",
+    user_id="user_123",
+    limit=5,
+    filters={"category": "preferences"},
+    threshold=0.7
+)
+
+for memory in results:
+    print(f"{memory['content']} (score: {memory['score']:.2f})")
+```
+
+```typescript tab="TypeScript"
+const results = await client.search({
+  query: "user preferences for UI",
+  userId: "user_123",
+  limit: 5,
+  filters: { category: "preferences" },
+  threshold: 0.7
+});
+
+results.forEach(memory => {
+  console.log(`${memory.content} (score: ${memory.score.toFixed(2)})`);
+});
+```
+</CodeTabs>
+
+### get()
+
+Retrieve a specific memory by ID.
+
+<CodeTabs>
+```python tab="Python"
+get(memory_id: str) -> dict | None
+```
+
+```typescript tab="TypeScript"
+get(memoryId: string): Promise<Memory | null>
+```
+</CodeTabs>
+
+#### Example
+
+<CodeTabs>
+```python tab="Python"
+memory = client.get("mem_abc123xyz")
+if memory:
+    print(f"Content: {memory['content']}")
+else:
+    print("Memory not found")
+```
+
+```typescript tab="TypeScript"
+const memory = await client.get("mem_abc123xyz");
+if (memory) {
+  console.log(`Content: ${memory.content}`);
+} else {
+  console.log("Memory not found");
+}
+```
+</CodeTabs>
+
+### update()
+
+Update an existing memory.
+
+<CodeTabs>
+```python tab="Python"
+update(
+    memory_id: str,
+    content: str | None = None,
+    priority: str | None = None,
+    metadata: dict | None = None
+) -> dict
+```
+
+```typescript tab="TypeScript"
+update(options: UpdateOptions): Promise<Memory>
+
+interface UpdateOptions {
+  memoryId: string;
+  content?: string;
+  priority?: Priority;
+  metadata?: Record<string, any>;
+}
+```
+</CodeTabs>
+
+#### Example
+
+<CodeTabs>
+```python tab="Python"
+updated = client.update(
+    memory_id="mem_abc123xyz",
+    priority="critical",
+    metadata={"last_accessed": datetime.now().isoformat()}
+)
+```
+
+```typescript tab="TypeScript"
+const updated = await client.update({
+  memoryId: "mem_abc123xyz",
+  priority: "critical",
+  metadata: { lastAccessed: new Date().toISOString() }
+});
+```
+</CodeTabs>
+
+### delete()
+
+Delete a memory from both cache and cloud storage.
+
+<CodeTabs>
+```python tab="Python"
+delete(memory_id: str) -> bool
+```
+
+```typescript tab="TypeScript"
+delete(memoryId: string): Promise<boolean>
+```
+</CodeTabs>
+
+#### Example
+
+<CodeTabs>
+```python tab="Python"
+success = client.delete("mem_abc123xyz")
+print(f"Deleted: {success}")
+```
+
+```typescript tab="TypeScript"
+const success = await client.delete("mem_abc123xyz");
+console.log(`Deleted: ${success}`);
+```
+</CodeTabs>
+
+### get_all()
+
+Retrieve all memories for a user.
+
+<CodeTabs>
+```python tab="Python"
+get_all(
+    user_id: str,
+    limit: int | None = None,
+    offset: int = 0
+) -> list[dict]
+```
+
+```typescript tab="TypeScript"
+getAll(options: GetAllOptions): Promise<Memory[]>
+
+interface GetAllOptions {
+  userId: string;
+  limit?: number;
+  offset?: number;
+}
+```
+</CodeTabs>
+
+#### Example
+
+<CodeTabs>
+```python tab="Python"
+memories = client.get_all(
+    user_id="user_123",
+    limit=100,
+    offset=0
+)
+print(f"Total memories: {len(memories)}")
+```
+
+```typescript tab="TypeScript"
+const memories = await client.getAll({
+  userId: "user_123",
+  limit: 100,
+  offset: 0
+});
+console.log(`Total memories: ${memories.length}`);
+```
+</CodeTabs>
+
+## Batch Operations
+
+### add_batch()
+
+Add multiple memories in a single operation.
+
+<CodeTabs>
+```python tab="Python"
+add_batch(memories: list[dict]) -> list[dict]
+```
+
+```typescript tab="TypeScript"
+addBatch(memories: AddMemoryOptions[]): Promise<Memory[]>
+```
+</CodeTabs>
+
+#### Example
+
+<CodeTabs>
+```python tab="Python"
+memories = [
+    {
+        "content": "Prefers email notifications",
+        "user_id": "user_123",
+        "priority": "high"
+    },
+    {
+        "content": "Works in tech industry",
+        "user_id": "user_123",
+        "priority": "medium"
+    }
+]
+
+results = client.add_batch(memories)
+print(f"Added {len(results)} memories")
+```
+
+```typescript tab="TypeScript"
+const memories = [
+  {
+    content: "Prefers email notifications",
+    userId: "user_123",
+    priority: "high"
+  },
+  {
+    content: "Works in tech industry",
+    userId: "user_123",
+    priority: "medium"
+  }
+];
+
+const results = await client.addBatch(memories);
+console.log(`Added ${results.length} memories`);
+```
+</CodeTabs>
+
+### delete_batch()
+
+Delete multiple memories by ID.
+
+<CodeTabs>
+```python tab="Python"
+delete_batch(memory_ids: list[str]) -> dict
+```
+
+```typescript tab="TypeScript"
+deleteBatch(memoryIds: string[]): Promise<BatchDeleteResult>
+```
+</CodeTabs>
+
+## Cache Management
+
+### cache_stats()
+
+Get detailed cache statistics.
+
+<CodeTabs>
+```python tab="Python"
+cache_stats() -> dict
+```
+
+```typescript tab="TypeScript"
+cacheStats(): Promise<CacheStats>
+```
+</CodeTabs>
+
+#### Returns
+
+<CodeTabs>
+```python tab="Python"
+{
+    "size": 1234,           # Number of cached items
+    "memory_usage": "45.6MB", # Memory used
+    "hit_rate": 0.92,       # Cache hit rate
+    "miss_rate": 0.08,      # Cache miss rate
+    "evictions": 156,       # Number of evictions
+    "avg_ttl": 3600,        # Average TTL in seconds
+    "by_priority": {
+        "critical": 10,
+        "high": 234,
+        "medium": 567,
+        "low": 423
+    }
+}
+```
+
+```typescript tab="TypeScript"
+interface CacheStats {
+  size: number;
+  memoryUsage: string;
+  hitRate: number;
+  missRate: number;
+  evictions: number;
+  avgTtl: number;
+  byPriority: {
+    critical: number;
+    high: number;
+    medium: number;
+    low: number;
+  };
+}
+```
+</CodeTabs>
+
+### optimize_cache()
+
+Optimize cache by removing stale entries and reorganizing based on access patterns.
+
+<CodeTabs>
+```python tab="Python"
+optimize_cache(
+    aggressive: bool = False
+) -> dict
+```
+
+```typescript tab="TypeScript"
+optimizeCache(options?: OptimizeOptions): Promise<OptimizeResult>
+```
+</CodeTabs>
+
+### clear_cache()
+
+Clear cache for specific user or entirely.
+
+<CodeTabs>
+```python tab="Python"
+clear_cache(user_id: str | None = None) -> bool
+```
+
+```typescript tab="TypeScript"
+clearCache(userId?: string): Promise<boolean>
+```
+</CodeTabs>
+
+## Synchronization
+
+### sync()
+
+Manually trigger synchronization between cache and cloud.
+
+<CodeTabs>
+```python tab="Python"
+sync(
+    direction: str = "bidirectional",
+    force: bool = False
+) -> dict
+```
+
+```typescript tab="TypeScript"
+sync(options?: SyncOptions): Promise<SyncResult>
+
+interface SyncOptions {
+  direction?: "bidirectional" | "to_cloud" | "from_cloud";
+  force?: boolean;
+}
+```
+</CodeTabs>
+
+## Health & Monitoring
+
+### health_check()
+
+Check the health status of all components.
+
+<CodeTabs>
+```python tab="Python"
+health_check() -> dict
+```
+
+```typescript tab="TypeScript"
+healthCheck(): Promise<HealthStatus>
+```
+</CodeTabs>
+
+#### Returns
+
+<CodeTabs>
+```python tab="Python"
+{
+    "status": "healthy",
+    "timestamp": "2024-01-15T10:30:00Z",
+    "components": {
+        "redis": {
+            "status": "healthy",
+            "latency_ms": 1.2,
+            "version": "7.0.5"
+        },
+        "mem0": {
+            "status": "healthy",
+            "latency_ms": 45.3,
+            "quota_used": 0.23
+        },
+        "cache": {
+            "status": "healthy",
+            "size": 1234,
+            "memory_usage": "45.6MB"
+        }
+    },
+    "version": "1.0.0"
+}
+```
+
+```typescript tab="TypeScript"
+interface HealthStatus {
+  status: "healthy" | "degraded" | "unhealthy";
+  timestamp: string;
+  components: {
+    redis: ComponentHealth;
+    mem0: ComponentHealth;
+    cache: ComponentHealth;
+  };
+  version: string;
+}
+```
+</CodeTabs>
+
+## Configuration Classes
+
+### CacheConfig
+
+<CodeTabs>
+```python tab="Python"
+class CacheConfig:
+    ttl: int | dict[str, int | None] = 3600
+    max_memory: str = "512mb"
+    eviction_policy: str = "allkeys-lru"
+    compression: bool = False
+    warm_cache: bool = True
+```
+
+```typescript tab="TypeScript"
+interface CacheConfig {
+  ttl?: number | Record<Priority, number | null>;
+  maxMemory?: string;
+  evictionPolicy?: string;
+  compression?: boolean;
+  warmCache?: boolean;
+}
+```
+</CodeTabs>
+
+### SyncConfig
+
+<CodeTabs>
+```python tab="Python"
+class SyncConfig:
+    mode: str = "lazy"  # lazy, eager, manual
+    batch_size: int = 100
+    interval: int = 60
+    retry_policy: str = "exponential"
+    max_retries: int = 3
+```
+
+```typescript tab="TypeScript"
+interface SyncConfig {
+  mode?: "lazy" | "eager" | "manual";
+  batchSize?: number;
+  interval?: number;
+  retryPolicy?: string;
+  maxRetries?: number;
+}
+```
+</CodeTabs>
+
+## Error Handling
+
+### Exception Types
+
+<CodeTabs>
+```python tab="Python"
+from recall.exceptions import (
+    RecallError,           # Base exception
+    ConnectionError,       # Redis/Mem0 connection issues
+    AuthenticationError,   # Invalid API key
+    ValidationError,       # Invalid parameters
+    CacheError,           # Cache-specific errors
+    SyncError,            # Synchronization errors
+    RateLimitError        # API rate limiting
+)
+
+try:
+    client.add(content="", user_id="")
+except ValidationError as e:
+    print(f"Invalid input: {e}")
+except RecallError as e:
+    print(f"Recall error: {e}")
+```
+
+```typescript tab="TypeScript"
+import {
+  RecallError,
+  ConnectionError,
+  AuthenticationError,
+  ValidationError,
+  CacheError,
+  SyncError,
+  RateLimitError
+} from '@recall/client';
+
+try {
+  await client.add({ content: "", userId: "" });
+} catch (error) {
+  if (error instanceof ValidationError) {
+    console.log(`Invalid input: ${error.message}`);
+  } else if (error instanceof RecallError) {
+    console.log(`Recall error: ${error.message}`);
+  }
+}
+```
+</CodeTabs>
+
+## Async Support
+
+### Async Client (Python)
+
+<CodeTabs>
+```python tab="Python"
+from recall import AsyncRecallClient
+import asyncio
+
+async def main():
+    client = AsyncRecallClient(
+        redis_url="redis://localhost:6379",
+        mem0_api_key="your-api-key"
+    )
+
+    # Async methods
+    memory = await client.add(
+        content="Async memory",
+        user_id="user_123"
+    )
+
+    results = await client.search(
+        query="async operations",
+        user_id="user_123"
+    )
+
+    # Concurrent operations
+    tasks = [
+        client.add(content=f"Memory {i}", user_id="user_123")
+        for i in range(10)
+    ]
+    memories = await asyncio.gather(*tasks)
+
+asyncio.run(main())
+```
+</CodeTabs>
+
+## Next Steps
+
+- Explore [advanced features](/docs/features/advanced)
+- Learn about [webhooks and events](/docs/api/webhooks)
+- Review [best practices](/docs/guides/best-practices)
+- Check [SDK references](/docs/sdks/python) for language-specific details

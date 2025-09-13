@@ -1,0 +1,577 @@
+---
+title: Installation
+description: Detailed installation and setup instructions for Recall
+order: 3
+category: Getting Started
+---
+
+# Installation
+
+Complete setup guide for Recall in different environments and configurations.
+
+## System Requirements
+
+### Minimum Requirements
+
+- **Python**: 3.8+ or **Node.js**: 16+
+- **Redis**: 6.0+ (or Redis-compatible service)
+- **Memory**: 512MB RAM minimum
+- **Storage**: 100MB for cache data
+
+### Recommended Requirements
+
+- **Python**: 3.10+ or **Node.js**: 18+
+- **Redis**: 7.0+ with persistence enabled
+- **Memory**: 2GB+ RAM for production
+- **Storage**: SSD with 10GB+ for optimal cache performance
+
+## Package Installation
+
+### Python
+
+<CodeTabs>
+```bash tab="pip"
+# Basic installation
+pip install recall-memory
+
+# With all optional dependencies
+pip install recall-memory[all]
+
+# Specific extras
+pip install recall-memory[async]  # Async support
+pip install recall-memory[monitoring]  # Metrics and monitoring
+pip install recall-memory[dev]  # Development tools
+```
+
+```bash tab="Poetry"
+# Add to your project
+poetry add recall-memory
+
+# With extras
+poetry add recall-memory[async,monitoring]
+```
+
+```bash tab="pipenv"
+# Add to Pipfile
+pipenv install recall-memory
+
+# With extras
+pipenv install recall-memory[all]
+```
+</CodeTabs>
+
+### Node.js / TypeScript
+
+<CodeTabs>
+```bash tab="npm"
+# Basic installation
+npm install @recall/client
+
+# With TypeScript types
+npm install @recall/client @types/node
+```
+
+```bash tab="yarn"
+# Basic installation
+yarn add @recall/client
+
+# With TypeScript
+yarn add @recall/client @types/node
+```
+
+```bash tab="pnpm"
+# Basic installation
+pnpm add @recall/client
+
+# With TypeScript
+pnpm add @recall/client @types/node
+```
+
+```bash tab="bun"
+# Basic installation
+bun add @recall/client
+```
+</CodeTabs>
+
+## Redis Setup
+
+### Local Development
+
+#### Option 1: Docker (Recommended)
+
+```bash
+# Run Redis with persistence
+docker run -d \
+  --name recall-redis \
+  -p 6379:6379 \
+  -v redis-data:/data \
+  redis:7-alpine \
+  redis-server --appendonly yes
+
+# Verify connection
+docker exec -it recall-redis redis-cli ping
+# Should return: PONG
+```
+
+#### Option 2: Direct Installation
+
+<CodeTabs>
+```bash tab="macOS"
+# Install
+brew install redis
+
+# Start service
+brew services start redis
+
+# Or run in foreground
+redis-server
+```
+
+```bash tab="Ubuntu/Debian"
+# Install
+sudo apt update
+sudo apt install redis-server
+
+# Start service
+sudo systemctl start redis-server
+sudo systemctl enable redis-server
+
+# Verify
+redis-cli ping
+```
+
+```bash tab="RHEL/CentOS"
+# Install
+sudo yum install epel-release
+sudo yum install redis
+
+# Start service
+sudo systemctl start redis
+sudo systemctl enable redis
+
+# Verify
+redis-cli ping
+```
+
+```bash tab="Windows"
+# Using WSL2 (recommended)
+wsl --install
+# Then follow Ubuntu instructions
+
+# Or use Redis Windows port
+# Download from: https://github.com/microsoftarchive/redis/releases
+```
+</CodeTabs>
+
+### Cloud Redis Services
+
+#### Redis Cloud (Recommended for Production)
+
+1. Sign up at [Redis Cloud](https://redis.com/try-free/)
+2. Create a new database
+3. Copy the connection string
+
+```env
+REDIS_URL=redis://default:password@your-endpoint.redis.io:port
+```
+
+#### AWS ElastiCache
+
+```python
+# Connection with SSL
+client = RecallClient(
+    redis_url="rediss://your-cluster.cache.amazonaws.com:6379",
+    redis_options={
+        "ssl_cert_reqs": "required",
+        "ssl_ca_certs": "/path/to/ca-cert.pem"
+    }
+)
+```
+
+#### Google Cloud Memorystore
+
+```python
+# VPC connection
+client = RecallClient(
+    redis_url="redis://10.x.x.x:6379",
+    redis_options={
+        "decode_responses": True,
+        "socket_keepalive": True
+    }
+)
+```
+
+## Mem0 Setup
+
+### Getting an API Key
+
+1. Visit [mem0.ai](https://mem0.ai)
+2. Sign up for a free account
+3. Navigate to API Keys in your dashboard
+4. Create a new API key
+5. Copy and secure your key
+
+### API Key Configuration
+
+<CodeTabs>
+```bash tab="Environment Variable"
+# .env file
+MEM0_API_KEY=m0-xxxxxxxxxxxxxxxxxxxx
+
+# Or export directly
+export MEM0_API_KEY="m0-xxxxxxxxxxxxxxxxxxxx"
+```
+
+```python tab="Python"
+# Direct configuration
+client = RecallClient(
+    mem0_api_key="m0-xxxxxxxxxxxxxxxxxxxx"
+)
+
+# From environment
+import os
+client = RecallClient(
+    mem0_api_key=os.getenv("MEM0_API_KEY")
+)
+```
+
+```typescript tab="TypeScript"
+// Direct configuration
+const client = new RecallClient({
+  mem0ApiKey: "m0-xxxxxxxxxxxxxxxxxxxx"
+});
+
+// From environment
+const client = new RecallClient({
+  mem0ApiKey: process.env.MEM0_API_KEY
+});
+```
+</CodeTabs>
+
+## Configuration
+
+### Basic Configuration
+
+<CodeTabs>
+```python tab="Python"
+from recall import RecallClient
+
+client = RecallClient(
+    # Required
+    redis_url="redis://localhost:6379",
+    mem0_api_key="your-api-key",
+
+    # Optional
+    environment="production",
+    app_name="my-app",
+    cache_ttl=3600,  # 1 hour
+    max_retries=3,
+    timeout=30
+)
+```
+
+```typescript tab="TypeScript"
+import { RecallClient } from '@recall/client';
+
+const client = new RecallClient({
+  // Required
+  redisUrl: "redis://localhost:6379",
+  mem0ApiKey: "your-api-key",
+
+  // Optional
+  environment: "production",
+  appName: "my-app",
+  cacheTtl: 3600,  // 1 hour
+  maxRetries: 3,
+  timeout: 30
+});
+```
+
+```yaml tab="YAML Config"
+# recall.config.yaml
+redis:
+  url: redis://localhost:6379
+  max_connections: 50
+
+mem0:
+  api_key: ${MEM0_API_KEY}
+  base_url: https://api.mem0.ai
+
+cache:
+  ttl: 3600
+  max_size: 1000
+  eviction_policy: lru
+
+monitoring:
+  enabled: true
+  metrics_port: 9090
+```
+</CodeTabs>
+
+### Advanced Configuration
+
+<CodeTabs>
+```python tab="Python"
+from recall import RecallClient, CacheConfig, SyncConfig
+
+client = RecallClient(
+    redis_url="redis://localhost:6379",
+    mem0_api_key="your-api-key",
+
+    # Cache configuration
+    cache_config=CacheConfig(
+        ttl={
+            "critical": None,  # Never expire
+            "high": 86400,     # 24 hours
+            "medium": 3600,    # 1 hour
+            "low": 300         # 5 minutes
+        },
+        max_memory="1gb",
+        eviction_policy="allkeys-lru",
+        compression=True
+    ),
+
+    # Sync configuration
+    sync_config=SyncConfig(
+        mode="lazy",  # lazy, eager, or manual
+        batch_size=100,
+        interval=60,  # seconds
+        retry_policy="exponential"
+    ),
+
+    # Connection pools
+    redis_pool_size=20,
+    mem0_pool_size=10,
+
+    # Performance
+    enable_pipelining=True,
+    enable_clustering=False
+)
+```
+
+```typescript tab="TypeScript"
+import {
+  RecallClient,
+  CacheConfig,
+  SyncConfig
+} from '@recall/client';
+
+const client = new RecallClient({
+  redisUrl: "redis://localhost:6379",
+  mem0ApiKey: "your-api-key",
+
+  // Cache configuration
+  cacheConfig: {
+    ttl: {
+      critical: null,  // Never expire
+      high: 86400,     // 24 hours
+      medium: 3600,    // 1 hour
+      low: 300         // 5 minutes
+    },
+    maxMemory: "1gb",
+    evictionPolicy: "allkeys-lru",
+    compression: true
+  },
+
+  // Sync configuration
+  syncConfig: {
+    mode: "lazy",  // lazy, eager, or manual
+    batchSize: 100,
+    interval: 60,  // seconds
+    retryPolicy: "exponential"
+  },
+
+  // Connection pools
+  redisPoolSize: 20,
+  mem0PoolSize: 10,
+
+  // Performance
+  enablePipelining: true,
+  enableClustering: false
+});
+```
+</CodeTabs>
+
+## Docker Deployment
+
+### Using Docker Compose
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  app:
+    build: .
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - MEM0_API_KEY=${MEM0_API_KEY}
+      - RECALL_ENV=production
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+volumes:
+  redis-data:
+```
+
+### Dockerfile Example
+
+```dockerfile
+# Python application
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application
+COPY . .
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD python -c "from recall import RecallClient; RecallClient().health_check()"
+
+CMD ["python", "app.py"]
+```
+
+## Kubernetes Deployment
+
+### Helm Chart
+
+```bash
+# Add Recall Helm repository
+helm repo add recall https://charts.recall.ai
+helm repo update
+
+# Install with custom values
+helm install my-recall recall/recall \
+  --set redis.enabled=true \
+  --set mem0.apiKey=$MEM0_API_KEY \
+  --set ingress.enabled=true \
+  --set ingress.host=recall.example.com
+```
+
+### Manual Kubernetes Configuration
+
+```yaml
+# recall-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recall-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: recall
+  template:
+    metadata:
+      labels:
+        app: recall
+    spec:
+      containers:
+      - name: recall
+        image: recall/app:latest
+        env:
+        - name: REDIS_URL
+          value: "redis://redis-service:6379"
+        - name: MEM0_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: recall-secrets
+              key: mem0-api-key
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+```
+
+## Verification
+
+### Health Check
+
+<CodeTabs>
+```python tab="Python"
+# Verify installation
+from recall import RecallClient
+
+client = RecallClient()
+health = client.health_check()
+
+print(f"Status: {health['status']}")
+print(f"Redis: {health['redis']['status']}")
+print(f"Mem0: {health['mem0']['status']}")
+print(f"Cache Size: {health['cache']['size']}")
+print(f"Version: {health['version']}")
+```
+
+```typescript tab="TypeScript"
+// Verify installation
+import { RecallClient } from '@recall/client';
+
+const client = new RecallClient();
+const health = await client.healthCheck();
+
+console.log(`Status: ${health.status}`);
+console.log(`Redis: ${health.redis.status}`);
+console.log(`Mem0: ${health.mem0.status}`);
+console.log(`Cache Size: ${health.cache.size}`);
+console.log(`Version: ${health.version}`);
+```
+
+```bash tab="CLI"
+# Using the CLI tool
+recall health
+
+# Output:
+# ✓ Redis: Connected (localhost:6379)
+# ✓ Mem0: Connected (api.mem0.ai)
+# ✓ Cache: 1,234 items (45.6 MB)
+# ✓ Version: 1.0.0
+```
+</CodeTabs>
+
+### Troubleshooting
+
+Common issues and solutions:
+
+| Issue | Solution |
+|-------|----------|
+| Redis connection refused | Ensure Redis is running and accessible |
+| Invalid Mem0 API key | Verify key in Mem0 dashboard |
+| High latency | Check Redis memory usage and network |
+| Cache misses | Review priority levels and TTL settings |
+
+## Next Steps
+
+- Configure [monitoring and metrics](/docs/operations/monitoring)
+- Set up [logging and debugging](/docs/operations/logging)
+- Review [security best practices](/docs/guides/security)
+- Explore [advanced features](/docs/features/advanced)

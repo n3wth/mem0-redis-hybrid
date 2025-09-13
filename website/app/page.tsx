@@ -2,15 +2,17 @@
 
 import { Check, Zap, Shield, ArrowRight, Code, Database, Lock, Globe } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { Navigation } from '@/components/Navigation'
 import { Footer } from '@/components/Footer'
 import { Container } from '@/components/Grid'
-import { TerminalDemo } from '@/components/TerminalDemo'
-import { RainbowButton } from '@/components/magicui/rainbow-button'
-import { ShimmerButton } from '@/components/magicui/shimmer-button'
-import { Meteors } from '@/components/magicui/meteors'
-import { Particles } from '@/components/magicui/particles'
+// Lazy load heavy components
+const TerminalDemo = lazy(() => import('@/components/TerminalDemo').then(module => ({ default: module.TerminalDemo })))
+const RainbowButton = lazy(() => import('@/components/magicui/rainbow-button').then(module => ({ default: module.RainbowButton })))
+const ShimmerButton = lazy(() => import('@/components/magicui/shimmer-button').then(module => ({ default: module.ShimmerButton })))
+const Meteors = lazy(() => import('@/components/magicui/meteors').then(module => ({ default: module.Meteors })))
+const Particles = lazy(() => import('@/components/magicui/particles').then(module => ({ default: module.Particles })))
+const Background3D = lazy(() => import('@/components/Background3D').then(module => ({ default: module.Background3D })))
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('node')
@@ -74,12 +76,14 @@ print(response.id)`,
         </div>
 
         {/* Floating particles */}
-        <Particles
-          className="absolute inset-0"
-          quantity={40}
-          color="#8b5cf6"
-          size={0.6}
-        />
+        <Suspense fallback={<div className="absolute inset-0" />}>
+          <Particles
+            className="absolute inset-0"
+            quantity={40}
+            color="#8b5cf6"
+            size={0.6}
+          />
+        </Suspense>
 
         {/* Subtle grid pattern */}
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] opacity-5" />
@@ -153,7 +157,9 @@ print(response.id)`,
                 Watch how easy it is to get started
               </p>
             </div>
-            <TerminalDemo />
+            <Suspense fallback={<div className="bg-gray-900 rounded-lg p-6 animate-pulse h-64" />}>
+              <TerminalDemo />
+            </Suspense>
           </div>
         </Container>
       </section>

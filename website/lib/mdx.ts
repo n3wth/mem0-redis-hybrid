@@ -9,27 +9,55 @@ export interface DocMeta {
   title: string
   description?: string
   order?: number
+  category?: string
+  badge?: string
+}
+
+function getAllMdxFiles(dir: string, baseDir: string = ''): string[] {
+  const files: string[] = []
+  const items = fs.readdirSync(dir)
+
+  for (const item of items) {
+    const fullPath = path.join(dir, item)
+    const stat = fs.statSync(fullPath)
+
+    if (stat.isDirectory()) {
+      // Recursively get files from subdirectories
+      const subFiles = getAllMdxFiles(fullPath, path.join(baseDir, item))
+      files.push(...subFiles)
+    } else if (item.endsWith('.mdx')) {
+      // Add the relative path from content/docs
+      files.push(path.join(baseDir, item))
+    }
+  }
+
+  return files
 }
 
 export async function getAllDocs(): Promise<DocMeta[]> {
-  const fileNames = fs.readdirSync(docsDirectory)
+  const files = getAllMdxFiles(docsDirectory)
 
-  const docs = fileNames
-    .filter(fileName => fileName.endsWith('.mdx'))
-    .map(fileName => {
-      const slug = fileName.replace(/\.mdx$/, '')
-      const fullPath = path.join(docsDirectory, fileName)
-      const fileContents = fs.readFileSync(fullPath, 'utf8')
-      const { data } = matter(fileContents)
+  const docs = files.map(file => {
+    const slug = file.replace(/\.mdx$/, '')
+    const fullPath = path.join(docsDirectory, file)
+    const fileContents = fs.readFileSync(fullPath, 'utf8')
+    const { data } = matter(fileContents)
 
-      return {
-        slug,
-        title: data.title || slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' '),
-        description: data.description,
-        order: data.order || 999
-      }
-    })
-    .sort((a, b) => a.order - b.order)
+    return {
+      slug,
+      title: data.title || slug.split('/').pop()?.replace(/-/g, ' ') || '',
+      description: data.description,
+      order: data.order || 999,
+      category: data.category,
+      badge: data.badge
+    }
+  }).sort((a, b) => {
+    // Sort by category first, then by order
+    if (a.category !== b.category) {
+      return (a.category || '').localeCompare(b.category || '')
+    }
+    return a.order - b.order
+  })
 
   return docs
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { cn } from "@/lib/utils";
 
 interface MeteorsProps {
@@ -8,12 +8,28 @@ interface MeteorsProps {
   className?: string;
 }
 
+// Deterministic pseudo-random number generator
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
 export const Meteors = ({ number = 20, className }: MeteorsProps) => {
-  const meteors = new Array(number).fill(true);
+  const meteors = useMemo(() => {
+    return new Array(number).fill(true).map((_, idx) => {
+      const seed = idx + 1;
+      return {
+        top: Math.floor(seededRandom(seed * 2) * 100),
+        left: Math.floor(seededRandom(seed * 3) * 100),
+        delay: seededRandom(seed * 5) * 3,
+        duration: Math.floor(seededRandom(seed * 7) * 5) + 5,
+      };
+    });
+  }, [number]);
 
   return (
     <>
-      {meteors.map((_, idx) => (
+      {meteors.map((meteor, idx) => (
         <span
           key={idx}
           className={cn(
@@ -22,10 +38,10 @@ export const Meteors = ({ number = 20, className }: MeteorsProps) => {
             className
           )}
           style={{
-            top: `${Math.floor(Math.random() * 100)}%`,
-            left: `${Math.floor(Math.random() * 100)}%`,
-            animationDelay: `${Math.random() * 3}s`,
-            animationDuration: `${Math.floor(Math.random() * 5) + 5}s`,
+            top: `${meteor.top}%`,
+            left: `${meteor.left}%`,
+            animationDelay: `${meteor.delay}s`,
+            animationDuration: `${meteor.duration}s`,
           }}
         />
       ))}

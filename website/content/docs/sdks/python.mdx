@@ -1,0 +1,722 @@
+---
+title: Python SDK
+description: Complete guide for the Recall Python SDK
+order: 1
+category: SDKs
+---
+
+# Python SDK
+
+The official Python SDK for Recall provides a powerful, type-safe interface to the hybrid memory system.
+
+## Installation
+
+```bash
+pip install recall-memory
+```
+
+### Requirements
+
+- Python 3.8 or higher
+- Redis 6.0+ (local or cloud)
+- Mem0 API key
+
+## Quick Start
+
+```python
+from recall import RecallClient
+
+# Initialize the client
+client = RecallClient(
+    redis_url="redis://localhost:6379",
+    mem0_api_key="your-api-key"
+)
+
+# Store a memory
+memory = client.add(
+    content="User prefers Python for data science",
+    user_id="user_123",
+    priority="high"
+)
+
+# Search memories
+results = client.search(
+    query="programming preferences",
+    user_id="user_123"
+)
+```
+
+## Client Configuration
+
+### Environment Variables
+
+The SDK automatically reads from environment variables:
+
+```python
+import os
+from recall import RecallClient
+
+# Set environment variables
+os.environ["RECALL_REDIS_URL"] = "redis://localhost:6379"
+os.environ["RECALL_MEM0_API_KEY"] = "your-api-key"
+os.environ["RECALL_ENVIRONMENT"] = "production"
+
+# Client auto-configures from environment
+client = RecallClient()
+```
+
+### Configuration File
+
+Load configuration from YAML or JSON:
+
+```python
+from recall import RecallClient
+
+# From YAML file
+client = RecallClient.from_config("recall.yaml")
+
+# From JSON file
+client = RecallClient.from_config("recall.json")
+
+# From dictionary
+config = {
+    "redis": {"url": "redis://localhost:6379"},
+    "mem0": {"api_key": "your-api-key"},
+    "cache": {"ttl": 3600}
+}
+client = RecallClient.from_dict(config)
+```
+
+### Advanced Configuration
+
+```python
+from recall import RecallClient, CacheConfig, SyncConfig
+from recall.serializers import MessagePackSerializer
+
+client = RecallClient(
+    redis_url="redis://localhost:6379",
+    mem0_api_key="your-api-key",
+
+    # Cache configuration
+    cache_config=CacheConfig(
+        ttl=3600,
+        max_memory="1gb",
+        eviction_policy="allkeys-lru",
+        compression=True,
+        serializer=MessagePackSerializer()
+    ),
+
+    # Sync configuration
+    sync_config=SyncConfig(
+        mode="lazy",
+        batch_size=100,
+        interval=60
+    ),
+
+    # Connection configuration
+    redis_connection_pool_kwargs={
+        "max_connections": 50,
+        "socket_keepalive": True,
+        "socket_keepalive_options": {
+            1: 1,  # TCP_KEEPIDLE
+            2: 1,  # TCP_KEEPINTVL
+            3: 5,  # TCP_KEEPCNT
+        }
+    },
+
+    # Performance options
+    enable_pipelining=True,
+    enable_lua_scripts=True,
+
+    # Monitoring
+    enable_metrics=True,
+    metrics_port=9090
+)
+```
+
+## Type Safety
+
+The SDK includes comprehensive type hints:
+
+```python
+from recall import RecallClient, Memory, Priority
+from typing import List, Optional
+
+def store_user_preference(
+    client: RecallClient,
+    user_id: str,
+    preference: str,
+    priority: Priority = Priority.MEDIUM
+) -> Memory:
+    """Store a user preference with type safety."""
+    return client.add(
+        content=preference,
+        user_id=user_id,
+        priority=priority
+    )
+
+def get_preferences(
+    client: RecallClient,
+    user_id: str,
+    category: Optional[str] = None
+) -> List[Memory]:
+    """Retrieve user preferences with filtering."""
+    filters = {"category": category} if category else None
+    return client.search(
+        query="preferences",
+        user_id=user_id,
+        filters=filters
+    )
+```
+
+## Async Support
+
+### AsyncRecallClient
+
+```python
+import asyncio
+from recall import AsyncRecallClient
+
+async def main():
+    # Initialize async client
+    client = AsyncRecallClient(
+        redis_url="redis://localhost:6379",
+        mem0_api_key="your-api-key"
+    )
+
+    # Async operations
+    memory = await client.add(
+        content="Async memory operation",
+        user_id="user_123"
+    )
+
+    # Concurrent operations
+    tasks = []
+    for i in range(10):
+        task = client.add(
+            content=f"Memory {i}",
+            user_id="user_123"
+        )
+        tasks.append(task)
+
+    memories = await asyncio.gather(*tasks)
+    print(f"Created {len(memories)} memories concurrently")
+
+    # Async context manager
+    async with AsyncRecallClient() as client:
+        await client.add(content="Auto-cleanup", user_id="user_123")
+
+asyncio.run(main())
+```
+
+### Async Streaming
+
+```python
+import asyncio
+from recall import AsyncRecallClient
+
+async def stream_memories():
+    client = AsyncRecallClient()
+
+    # Stream search results
+    async for memory in client.stream_search(
+        query="user interactions",
+        user_id="user_123",
+        batch_size=10
+    ):
+        print(f"Processing: {memory.content}")
+        # Process each memory as it arrives
+
+    # Stream all memories
+    async for batch in client.stream_all(
+        user_id="user_123",
+        batch_size=50
+    ):
+        print(f"Batch of {len(batch)} memories")
+        # Process batch
+
+asyncio.run(stream_memories())
+```
+
+## Context Managers
+
+### Automatic Resource Management
+
+```python
+from recall import RecallClient
+
+# Automatic cleanup with context manager
+with RecallClient() as client:
+    client.add(content="Memory", user_id="user_123")
+    # Connection automatically closed
+
+# Transaction support
+with client.transaction() as tx:
+    tx.add(content="Memory 1", user_id="user_123")
+    tx.add(content="Memory 2", user_id="user_123")
+    # Atomic commit or rollback
+```
+
+## Decorators
+
+### Caching Decorator
+
+```python
+from recall.decorators import recall_cache
+from recall import RecallClient
+
+client = RecallClient()
+
+@recall_cache(client, ttl=3600)
+def expensive_computation(user_id: str, query: str):
+    """This function's results will be cached."""
+    # Expensive operation
+    return complex_calculation(user_id, query)
+
+# First call: computes and caches
+result = expensive_computation("user_123", "data")
+
+# Second call: returns from cache
+result = expensive_computation("user_123", "data")
+```
+
+### Memory Decorator
+
+```python
+from recall.decorators import remember
+from recall import RecallClient
+
+client = RecallClient()
+
+@remember(client, priority="high")
+def user_action(user_id: str, action: str):
+    """Automatically stores function calls as memories."""
+    # Perform action
+    return f"Completed {action}"
+
+# Function call is automatically remembered
+result = user_action("user_123", "changed settings")
+# Memory stored: "user_123 performed: changed settings"
+```
+
+## Data Models
+
+### Memory Model
+
+```python
+from recall.models import Memory, Priority
+from datetime import datetime
+
+# Create a memory object
+memory = Memory(
+    id="mem_123",
+    content="User preference",
+    user_id="user_123",
+    priority=Priority.HIGH,
+    created_at=datetime.now(),
+    metadata={
+        "category": "preferences",
+        "source": "settings"
+    }
+)
+
+# Access properties
+print(memory.content)
+print(memory.priority.value)  # "high"
+print(memory.age_seconds)
+print(memory.to_dict())
+```
+
+### Batch Operations
+
+```python
+from recall.models import MemoryBatch
+
+# Create batch
+batch = MemoryBatch()
+batch.add(content="Memory 1", user_id="user_123")
+batch.add(content="Memory 2", user_id="user_123")
+batch.add(content="Memory 3", user_id="user_123")
+
+# Execute batch
+results = client.add_batch(batch)
+
+# Batch with validation
+batch = MemoryBatch(validate=True, max_size=100)
+try:
+    batch.add(content="", user_id="")  # Raises ValidationError
+except ValidationError as e:
+    print(f"Invalid memory: {e}")
+```
+
+## Serialization
+
+### Custom Serializers
+
+```python
+from recall import RecallClient
+from recall.serializers import (
+    JSONSerializer,
+    MessagePackSerializer,
+    PickleSerializer,
+    ProtobufSerializer
+)
+
+# JSON (default)
+client = RecallClient(serializer=JSONSerializer())
+
+# MessagePack (faster, smaller)
+client = RecallClient(serializer=MessagePackSerializer())
+
+# Pickle (Python objects)
+client = RecallClient(serializer=PickleSerializer())
+
+# Protocol Buffers
+client = RecallClient(serializer=ProtobufSerializer())
+
+# Custom serializer
+class CustomSerializer:
+    def serialize(self, obj):
+        # Custom serialization logic
+        return custom_encode(obj)
+
+    def deserialize(self, data):
+        # Custom deserialization logic
+        return custom_decode(data)
+
+client = RecallClient(serializer=CustomSerializer())
+```
+
+## Middleware
+
+### Request Middleware
+
+```python
+from recall import RecallClient
+from recall.middleware import Middleware
+
+class LoggingMiddleware(Middleware):
+    def before_request(self, method, *args, **kwargs):
+        print(f"Calling {method} with args={args}, kwargs={kwargs}")
+
+    def after_request(self, method, result):
+        print(f"{method} returned {result}")
+        return result
+
+    def on_error(self, method, error):
+        print(f"{method} failed with {error}")
+        raise error
+
+# Add middleware
+client = RecallClient()
+client.add_middleware(LoggingMiddleware())
+
+# All requests now logged
+client.add(content="Test", user_id="user_123")
+```
+
+### Built-in Middleware
+
+```python
+from recall.middleware import (
+    RetryMiddleware,
+    RateLimitMiddleware,
+    MetricsMiddleware,
+    CacheMiddleware
+)
+
+client = RecallClient()
+
+# Add retry logic
+client.add_middleware(RetryMiddleware(max_retries=3))
+
+# Add rate limiting
+client.add_middleware(RateLimitMiddleware(
+    max_requests=100,
+    window_seconds=60
+))
+
+# Add metrics collection
+client.add_middleware(MetricsMiddleware(
+    prometheus_port=9090
+))
+```
+
+## Testing
+
+### Mock Client
+
+```python
+from recall.testing import MockRecallClient
+import pytest
+
+@pytest.fixture
+def recall_client():
+    """Fixture providing mock client for tests."""
+    return MockRecallClient()
+
+def test_memory_storage(recall_client):
+    # Add memory
+    memory = recall_client.add(
+        content="Test memory",
+        user_id="test_user"
+    )
+    assert memory.id.startswith("mem_")
+
+    # Verify storage
+    assert recall_client.call_count("add") == 1
+    assert recall_client.last_call("add").content == "Test memory"
+
+    # Search
+    results = recall_client.search(
+        query="test",
+        user_id="test_user"
+    )
+    assert len(results) == 1
+```
+
+### Test Utilities
+
+```python
+from recall.testing import (
+    create_test_memory,
+    populate_test_data,
+    assert_memory_equal
+)
+
+# Create test data
+memory = create_test_memory(
+    content="Test content",
+    priority="high"
+)
+
+# Populate with sample data
+client = RecallClient()
+populate_test_data(client, user_id="test_user", count=100)
+
+# Assert memories are equal
+assert_memory_equal(memory1, memory2)
+```
+
+## Monitoring
+
+### Metrics Collection
+
+```python
+from recall import RecallClient
+from recall.monitoring import MetricsCollector
+
+# Enable metrics
+client = RecallClient(enable_metrics=True)
+
+# Access metrics
+metrics = client.get_metrics()
+print(f"Total operations: {metrics.total_operations}")
+print(f"Cache hit rate: {metrics.cache_hit_rate:.2%}")
+print(f"Average latency: {metrics.avg_latency_ms:.2f}ms")
+
+# Export to Prometheus
+client.export_metrics_prometheus(port=9090)
+
+# Export to StatsD
+client.export_metrics_statsd(
+    host="localhost",
+    port=8125,
+    prefix="recall"
+)
+```
+
+### Logging
+
+```python
+import logging
+from recall import RecallClient
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+
+# Client with debug logging
+client = RecallClient(debug=True)
+
+# Custom logger
+logger = logging.getLogger("my_app")
+client = RecallClient(logger=logger)
+
+# Log levels
+client.set_log_level(logging.WARNING)
+```
+
+## Error Handling
+
+### Exception Hierarchy
+
+```python
+from recall.exceptions import (
+    RecallError,
+    ConnectionError,
+    AuthenticationError,
+    ValidationError,
+    CacheError,
+    SyncError,
+    RateLimitError,
+    TimeoutError
+)
+
+try:
+    client.add(content="", user_id="")
+except ValidationError as e:
+    # Handle validation errors
+    print(f"Invalid input: {e.field} - {e.message}")
+except ConnectionError as e:
+    # Handle connection issues
+    print(f"Connection failed: {e.service} - {e.message}")
+except RecallError as e:
+    # Catch all Recall errors
+    print(f"Error: {e}")
+```
+
+### Retry Logic
+
+```python
+from recall import RecallClient
+from recall.retry import exponential_backoff
+
+client = RecallClient(
+    retry_config={
+        "max_attempts": 3,
+        "backoff": exponential_backoff(base=2, max_delay=30),
+        "retry_on": [ConnectionError, TimeoutError]
+    }
+)
+
+# Operations automatically retry on failure
+memory = client.add(content="Important", user_id="user_123")
+```
+
+## CLI Usage
+
+The SDK includes a CLI tool:
+
+```bash
+# Check status
+recall status
+
+# Add memory
+recall add "User preference" --user-id user_123 --priority high
+
+# Search memories
+recall search "preferences" --user-id user_123 --limit 10
+
+# Get statistics
+recall stats
+
+# Clear cache
+recall cache clear --user-id user_123
+
+# Export data
+recall export --format json --output memories.json
+
+# Import data
+recall import memories.json
+```
+
+## Best Practices
+
+### Connection Pooling
+
+```python
+from recall import RecallClient
+from redis.connection import ConnectionPool
+
+# Share connection pool across clients
+pool = ConnectionPool(
+    host='localhost',
+    port=6379,
+    max_connections=50
+)
+
+client1 = RecallClient(redis_connection_pool=pool)
+client2 = RecallClient(redis_connection_pool=pool)
+```
+
+### Memory Management
+
+```python
+# Use appropriate priority levels
+client.add(
+    content="Critical user data",
+    user_id="user_123",
+    priority="critical"  # Never evicted
+)
+
+client.add(
+    content="Temporary preference",
+    user_id="user_123",
+    priority="low",  # First to evict
+    metadata={"expires_at": "2024-12-31"}
+)
+```
+
+### Performance Optimization
+
+```python
+# Batch operations for better performance
+memories = [
+    {"content": f"Memory {i}", "user_id": "user_123"}
+    for i in range(1000)
+]
+
+# Slow: Individual calls
+for memory in memories:
+    client.add(**memory)
+
+# Fast: Batch call
+client.add_batch(memories)
+
+# Pipeline for multiple operations
+with client.pipeline() as pipe:
+    pipe.add(content="Memory 1", user_id="user_123")
+    pipe.add(content="Memory 2", user_id="user_123")
+    pipe.search(query="test", user_id="user_123")
+    results = pipe.execute()
+```
+
+## Migration Guide
+
+### From Mem0
+
+```python
+# Before (Mem0)
+from mem0 import Memory
+m = Memory()
+m.add("Memory content", user_id="user_123")
+
+# After (Recall)
+from recall import RecallClient
+client = RecallClient()
+client.add(content="Memory content", user_id="user_123")
+```
+
+### From Redis
+
+```python
+# Before (Redis)
+import redis
+r = redis.Redis()
+r.set("user:123:pref", "dark_mode")
+
+# After (Recall)
+from recall import RecallClient
+client = RecallClient()
+client.add(
+    content="Prefers dark mode",
+    user_id="user_123",
+    metadata={"key": "user:123:pref"}
+)
+```
+
+## Next Steps
+
+- Review [TypeScript SDK](/docs/sdks/typescript) for Node.js applications
+- Explore [API Reference](/docs/api/client) for detailed method documentation
+- Check [Examples](/docs/examples/python-examples) for real-world use cases

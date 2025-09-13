@@ -58,15 +58,16 @@ const components = {
   ),
 }
 
-export default async function DocPage({ params }: { params: { slug: string } }) {
-  const doc = await getDocBySlug(params.slug)
+export default async function DocPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params
+  const doc = await getDocBySlug(resolvedParams.slug)
   const allDocs = await getAllDocs()
 
   if (!doc) {
     notFound()
   }
 
-  const currentIndex = allDocs.findIndex(d => d.slug === params.slug)
+  const currentIndex = allDocs.findIndex(d => d.slug === resolvedParams.slug)
   const prevDoc = currentIndex > 0 ? allDocs[currentIndex - 1] : null
   const nextDoc = currentIndex < allDocs.length - 1 ? allDocs[currentIndex + 1] : null
 
@@ -86,7 +87,7 @@ export default async function DocPage({ params }: { params: { slug: string } }) 
                     href={`/docs/${doc.slug}`}
                     className={`
                       block px-3 py-2 text-sm font-medium rounded-lg transition-all
-                      ${params.slug === doc.slug
+                      ${resolvedParams.slug === doc.slug
                         ? 'bg-white/5 text-white'
                         : 'text-gray-400 hover:text-white hover:bg-white/[0.02]'
                       }

@@ -1,0 +1,720 @@
+---
+title: Chatbot with Memory
+description: Build an intelligent chatbot that remembers user context
+order: 1
+category: Examples
+---
+
+# Building a Chatbot with Long-Term Memory
+
+Learn how to create an intelligent chatbot that remembers user preferences, conversation history, and learns from interactions.
+
+## Overview
+
+This example demonstrates how to build a chatbot that:
+- Remembers user preferences and context
+- Learns from conversation patterns
+- Provides personalized responses
+- Maintains conversation continuity across sessions
+
+## Complete Implementation
+
+### Python Implementation
+
+```python
+import os
+from datetime import datetime
+from typing import List, Dict, Optional
+from recall import RecallClient
+from openai import OpenAI
+
+class MemoryBot:
+    """An intelligent chatbot with long-term memory."""
+
+    def __init__(self, recall_client: RecallClient, openai_client: OpenAI):
+        self.recall = recall_client
+        self.openai = openai_client
+        self.conversation_buffer = []
+
+    async def process_message(
+        self,
+        user_id: str,
+        message: str,
+        session_id: Optional[str] = None
+    ) -> str:
+        """Process a user message and generate a response."""
+
+        # 1. Retrieve relevant memories
+        memories = await self._get_relevant_memories(user_id, message)
+
+        # 2. Build context from memories
+        context = self._build_context(memories)
+
+        # 3. Generate response
+        response = await self._generate_response(
+            message=message,
+            context=context,
+            user_id=user_id
+        )
+
+        # 4. Store interaction as memory
+        await self._store_interaction(
+            user_id=user_id,
+            user_message=message,
+            bot_response=response,
+            session_id=session_id
+        )
+
+        # 5. Extract and store learnings
+        await self._extract_learnings(
+            user_id=user_id,
+            message=message,
+            response=response
+        )
+
+        return response
+
+    async def _get_relevant_memories(
+        self,
+        user_id: str,
+        message: str
+    ) -> List[Dict]:
+        """Retrieve memories relevant to the current message."""
+
+        # Search for directly relevant memories
+        direct_memories = await self.recall.search(
+            query=message,
+            user_id=user_id,
+            limit=5,
+            threshold=0.7
+        )
+
+        # Get recent conversation context
+        recent_context = await self.recall.search(
+            query="recent conversation",
+            user_id=user_id,
+            filters={"type": "conversation"},
+            limit=3
+        )
+
+        # Get user preferences
+        preferences = await self.recall.search(
+            query="user preferences settings",
+            user_id=user_id,
+            filters={"type": "preference"},
+            limit=3
+        )
+
+        return {
+            "relevant": direct_memories,
+            "recent": recent_context,
+            "preferences": preferences
+        }
+
+    def _build_context(self, memories: Dict) -> str:
+        """Build context string from memories."""
+        context_parts = []
+
+        # Add user preferences
+        if memories["preferences"]:
+            prefs = [m["content"] for m in memories["preferences"]]
+            context_parts.append(f"User Preferences:\n- " + "\n- ".join(prefs))
+
+        # Add recent conversation context
+        if memories["recent"]:
+            recent = [m["content"] for m in memories["recent"]]
+            context_parts.append(f"Recent Context:\n- " + "\n- ".join(recent))
+
+        # Add relevant memories
+        if memories["relevant"]:
+            relevant = [m["content"] for m in memories["relevant"]]
+            context_parts.append(f"Relevant Information:\n- " + "\n- ".join(relevant))
+
+        return "\n\n".join(context_parts)
+
+    async def _generate_response(
+        self,
+        message: str,
+        context: str,
+        user_id: str
+    ) -> str:
+        """Generate response using LLM with context."""
+
+        system_prompt = f"""You are a helpful assistant with memory.
+        Use the following context about the user to provide personalized responses:
+
+        {context}
+
+        Remember to:
+        - Be consistent with user preferences
+        - Reference previous conversations when relevant
+        - Maintain continuity in the conversation
+        """
+
+        response = self.openai.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": message}
+            ],
+            temperature=0.7
+        )
+
+        return response.choices[0].message.content
+
+    async def _store_interaction(
+        self,
+        user_id: str,
+        user_message: str,
+        bot_response: str,
+        session_id: Optional[str]
+    ):
+        """Store the interaction as a memory."""
+
+        # Store user message
+        await self.recall.add(
+            content=f"User said: {user_message}",
+            user_id=user_id,
+            priority="medium",
+            metadata={
+                "type": "conversation",
+                "role": "user",
+                "session_id": session_id,
+                "timestamp": datetime.now().isoformat()
+            }
+        )
+
+        # Store bot response
+        await self.recall.add(
+            content=f"Assistant responded: {bot_response}",
+            user_id=user_id,
+            priority="medium",
+            metadata={
+                "type": "conversation",
+                "role": "assistant",
+                "session_id": session_id,
+                "timestamp": datetime.now().isoformat()
+            }
+        )
+
+    async def _extract_learnings(
+        self,
+        user_id: str,
+        message: str,
+        response: str
+    ):
+        """Extract and store learnings from the conversation."""
+
+        # Use LLM to extract key information
+        extraction_prompt = f"""
+        From this conversation, extract any important information about the user:
+
+        User: {message}
+        Assistant: {response}
+
+        Extract:
+        1. User preferences (if any)
+        2. Personal information (if any)
+        3. Behavioral patterns (if any)
+
+        Format as JSON array of findings. Return empty array if nothing notable.
+        """
+
+        extraction = self.openai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "system", "content": extraction_prompt}],
+            response_format={"type": "json_object"}
+        )
+
+        learnings = json.loads(extraction.choices[0].message.content)
+
+        # Store each learning as a high-priority memory
+        for learning in learnings.get("findings", []):
+            await self.recall.add(
+                content=learning["content"],
+                user_id=user_id,
+                priority="high",
+                metadata={
+                    "type": learning["type"],
+                    "confidence": learning.get("confidence", 0.8),
+                    "learned_at": datetime.now().isoformat()
+                }
+            )
+
+
+# Usage Example
+async def main():
+    # Initialize clients
+    recall_client = RecallClient(
+        redis_url="redis://localhost:6379",
+        mem0_api_key=os.getenv("MEM0_API_KEY")
+    )
+
+    openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+    # Create bot
+    bot = MemoryBot(recall_client, openai_client)
+
+    # Simulate conversation
+    user_id = "user_123"
+    session_id = "session_456"
+
+    # First interaction
+    response1 = await bot.process_message(
+        user_id=user_id,
+        message="Hi! I prefer concise responses and I'm interested in Python.",
+        session_id=session_id
+    )
+    print(f"Bot: {response1}")
+
+    # Second interaction (bot remembers preferences)
+    response2 = await bot.process_message(
+        user_id=user_id,
+        message="What's a good way to handle errors?",
+        session_id=session_id
+    )
+    print(f"Bot: {response2}")
+    # Bot provides concise Python-specific error handling advice
+
+    # Later session (different session_id)
+    response3 = await bot.process_message(
+        user_id=user_id,
+        message="Can you help me with coding?",
+        session_id="session_789"
+    )
+    print(f"Bot: {response3}")
+    # Bot remembers user prefers Python and concise responses
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
+```
+
+### TypeScript Implementation
+
+```typescript
+import { RecallClient, Memory, Priority } from '@recall/client';
+import OpenAI from 'openai';
+
+interface MemoryContext {
+  relevant: Memory[];
+  recent: Memory[];
+  preferences: Memory[];
+}
+
+class MemoryBot {
+  constructor(
+    private recall: RecallClient,
+    private openai: OpenAI
+  ) {}
+
+  async processMessage(
+    userId: string,
+    message: string,
+    sessionId?: string
+  ): Promise<string> {
+    // 1. Retrieve relevant memories
+    const memories = await this.getRelevantMemories(userId, message);
+
+    // 2. Build context
+    const context = this.buildContext(memories);
+
+    // 3. Generate response
+    const response = await this.generateResponse(message, context);
+
+    // 4. Store interaction
+    await this.storeInteraction(userId, message, response, sessionId);
+
+    // 5. Extract learnings
+    await this.extractLearnings(userId, message, response);
+
+    return response;
+  }
+
+  private async getRelevantMemories(
+    userId: string,
+    message: string
+  ): Promise<MemoryContext> {
+    // Parallel memory retrieval
+    const [relevant, recent, preferences] = await Promise.all([
+      // Direct relevance search
+      this.recall.search({
+        query: message,
+        userId,
+        limit: 5,
+        threshold: 0.7
+      }),
+
+      // Recent conversation
+      this.recall.search({
+        query: 'recent conversation',
+        userId,
+        filters: { type: 'conversation' },
+        limit: 3
+      }),
+
+      // User preferences
+      this.recall.search({
+        query: 'preferences settings',
+        userId,
+        filters: { type: 'preference' },
+        limit: 3
+      })
+    ]);
+
+    return { relevant, recent, preferences };
+  }
+
+  private buildContext(memories: MemoryContext): string {
+    const parts: string[] = [];
+
+    if (memories.preferences.length > 0) {
+      const prefs = memories.preferences.map(m => m.content);
+      parts.push(`User Preferences:\n- ${prefs.join('\n- ')}`);
+    }
+
+    if (memories.recent.length > 0) {
+      const recent = memories.recent.map(m => m.content);
+      parts.push(`Recent Context:\n- ${recent.join('\n- ')}`);
+    }
+
+    if (memories.relevant.length > 0) {
+      const relevant = memories.relevant.map(m => m.content);
+      parts.push(`Relevant Information:\n- ${relevant.join('\n- ')}`);
+    }
+
+    return parts.join('\n\n');
+  }
+
+  private async generateResponse(
+    message: string,
+    context: string
+  ): Promise<string> {
+    const completion = await this.openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        {
+          role: 'system',
+          content: `You are a helpful assistant with memory.
+          Use this context about the user: ${context}
+          Be consistent with preferences and reference past conversations.`
+        },
+        { role: 'user', content: message }
+      ],
+      temperature: 0.7
+    });
+
+    return completion.choices[0].message.content || '';
+  }
+
+  private async storeInteraction(
+    userId: string,
+    userMessage: string,
+    botResponse: string,
+    sessionId?: string
+  ): Promise<void> {
+    const timestamp = new Date().toISOString();
+
+    // Store both messages in parallel
+    await Promise.all([
+      this.recall.add({
+        content: `User said: ${userMessage}`,
+        userId,
+        priority: 'medium',
+        metadata: {
+          type: 'conversation',
+          role: 'user',
+          sessionId,
+          timestamp
+        }
+      }),
+
+      this.recall.add({
+        content: `Assistant responded: ${botResponse}`,
+        userId,
+        priority: 'medium',
+        metadata: {
+          type: 'conversation',
+          role: 'assistant',
+          sessionId,
+          timestamp
+        }
+      })
+    ]);
+  }
+
+  private async extractLearnings(
+    userId: string,
+    message: string,
+    response: string
+  ): Promise<void> {
+    const extraction = await this.openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [{
+        role: 'system',
+        content: `Extract learnings from:
+        User: ${message}
+        Assistant: ${response}
+        Return JSON array of findings or empty array.`
+      }],
+      response_format: { type: 'json_object' }
+    });
+
+    const learnings = JSON.parse(extraction.choices[0].message.content || '{}');
+
+    // Store learnings
+    for (const learning of learnings.findings || []) {
+      await this.recall.add({
+        content: learning.content,
+        userId,
+        priority: 'high',
+        metadata: {
+          type: learning.type,
+          confidence: learning.confidence || 0.8,
+          learnedAt: new Date().toISOString()
+        }
+      });
+    }
+  }
+}
+
+// Usage
+async function main() {
+  const recall = new RecallClient({
+    redisUrl: 'redis://localhost:6379',
+    mem0ApiKey: process.env.MEM0_API_KEY
+  });
+
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+  });
+
+  const bot = new MemoryBot(recall, openai);
+
+  // Process messages
+  const response = await bot.processMessage(
+    'user_123',
+    'I prefer TypeScript and brief responses',
+    'session_456'
+  );
+
+  console.log('Bot:', response);
+}
+
+main().catch(console.error);
+```
+
+## Advanced Features
+
+### Conversation Summarization
+
+Periodically summarize long conversations to maintain context without overwhelming the memory system:
+
+```python
+async def summarize_conversation(self, user_id: str, session_id: str):
+    """Summarize a conversation session for long-term storage."""
+
+    # Get all messages from session
+    messages = await self.recall.search(
+        query=f"session {session_id}",
+        user_id=user_id,
+        filters={"session_id": session_id},
+        limit=100
+    )
+
+    if len(messages) < 5:
+        return  # Too short to summarize
+
+    # Create conversation transcript
+    transcript = "\n".join([m["content"] for m in messages])
+
+    # Generate summary
+    summary = self.openai.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{
+            "role": "system",
+            "content": f"Summarize this conversation, highlighting key points and user preferences:\n{transcript}"
+        }]
+    )
+
+    # Store summary as high-priority memory
+    await self.recall.add(
+        content=f"Conversation Summary: {summary.choices[0].message.content}",
+        user_id=user_id,
+        priority="high",
+        metadata={
+            "type": "summary",
+            "session_id": session_id,
+            "message_count": len(messages),
+            "summarized_at": datetime.now().isoformat()
+        }
+    )
+
+    # Optionally reduce priority of individual messages
+    for message in messages:
+        await self.recall.update(
+            memory_id=message["id"],
+            priority="low"
+        )
+```
+
+### Sentiment Tracking
+
+Track user sentiment over time to provide more empathetic responses:
+
+```python
+async def track_sentiment(self, user_id: str, message: str):
+    """Track and store user sentiment."""
+
+    # Analyze sentiment
+    sentiment_analysis = self.openai.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{
+            "role": "system",
+            "content": f"Analyze sentiment (positive/negative/neutral) and emotion: {message}"
+        }]
+    )
+
+    sentiment_data = json.loads(sentiment_analysis.choices[0].message.content)
+
+    # Store sentiment as memory
+    await self.recall.add(
+        content=f"User sentiment: {sentiment_data['sentiment']}, emotion: {sentiment_data['emotion']}",
+        user_id=user_id,
+        priority="medium",
+        metadata={
+            "type": "sentiment",
+            "sentiment": sentiment_data["sentiment"],
+            "emotion": sentiment_data["emotion"],
+            "confidence": sentiment_data["confidence"],
+            "timestamp": datetime.now().isoformat()
+        }
+    )
+
+    # Check for sentiment patterns
+    recent_sentiments = await self.recall.search(
+        query="user sentiment",
+        user_id=user_id,
+        filters={"type": "sentiment"},
+        limit=10
+    )
+
+    # Detect concerning patterns
+    negative_count = sum(1 for s in recent_sentiments if s["metadata"]["sentiment"] == "negative")
+    if negative_count > 7:
+        # Adjust response tone
+        self.response_tone = "empathetic"
+```
+
+## Performance Optimization
+
+### Memory Prioritization
+
+Implement intelligent memory prioritization based on usage:
+
+```python
+class SmartMemoryManager:
+    def __init__(self, recall_client: RecallClient):
+        self.recall = recall_client
+
+    async def auto_prioritize(self, user_id: str):
+        """Automatically adjust memory priorities based on access patterns."""
+
+        memories = await self.recall.get_all(user_id=user_id)
+
+        for memory in memories:
+            access_count = memory.get("access_count", 0)
+            age_days = (datetime.now() - memory["created_at"]).days
+
+            # Calculate new priority
+            if access_count > 10 and age_days < 7:
+                new_priority = "high"
+            elif access_count > 5 or age_days < 30:
+                new_priority = "medium"
+            else:
+                new_priority = "low"
+
+            # Update if changed
+            if new_priority != memory["priority"]:
+                await self.recall.update(
+                    memory_id=memory["id"],
+                    priority=new_priority
+                )
+```
+
+### Response Caching
+
+Cache common responses for faster interaction:
+
+```python
+from functools import lru_cache
+import hashlib
+
+class CachedBot(MemoryBot):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.response_cache = {}
+
+    def _get_cache_key(self, message: str, context: str) -> str:
+        """Generate cache key from message and context."""
+        content = f"{message}:{context}"
+        return hashlib.md5(content.encode()).hexdigest()
+
+    async def process_message(self, user_id: str, message: str, session_id: Optional[str] = None) -> str:
+        # Check cache first
+        memories = await self._get_relevant_memories(user_id, message)
+        context = self._build_context(memories)
+        cache_key = self._get_cache_key(message, context)
+
+        if cache_key in self.response_cache:
+            # Cache hit - still store interaction
+            response = self.response_cache[cache_key]
+            await self._store_interaction(user_id, message, response, session_id)
+            return response
+
+        # Cache miss - generate response
+        response = await super().process_message(user_id, message, session_id)
+        self.response_cache[cache_key] = response
+        return response
+```
+
+## Deployment Considerations
+
+### Scaling for Multiple Users
+
+```python
+# Use connection pooling
+from redis import ConnectionPool
+import asyncio
+
+pool = ConnectionPool(
+    host='localhost',
+    port=6379,
+    max_connections=100
+)
+
+# Create bot pool for handling multiple users
+class BotPool:
+    def __init__(self, pool_size: int = 10):
+        self.bots = []
+        for _ in range(pool_size):
+            recall_client = RecallClient(redis_connection_pool=pool)
+            openai_client = OpenAI()
+            self.bots.append(MemoryBot(recall_client, openai_client))
+
+    async def get_bot(self) -> MemoryBot:
+        """Get available bot from pool."""
+        # Simple round-robin
+        return self.bots[hash(asyncio.current_task()) % len(self.bots)]
+
+# Usage
+bot_pool = BotPool(pool_size=20)
+bot = await bot_pool.get_bot()
+response = await bot.process_message(user_id, message)
+```
+
+## Next Steps
+
+- Explore [API Integration](/docs/examples/api-integration) for REST API implementation
+- Learn about [Real-time Features](/docs/examples/realtime-sync) for WebSocket support
+- Check [Production Guide](/docs/guides/production) for deployment best practices

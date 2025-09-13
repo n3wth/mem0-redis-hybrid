@@ -9,7 +9,7 @@ export function Navigation() {
     <nav
       className="border-b border-white/10 bg-black/50 backdrop-blur-xl sticky top-0 z-50"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <Link href="/" className="text-xl font-semibold text-white">

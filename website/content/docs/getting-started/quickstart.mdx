@@ -1,0 +1,362 @@
+---
+title: Quick Start
+description: Get up and running with Recall in 5 minutes
+order: 2
+category: Getting Started
+---
+
+# Quick Start
+
+Get Recall running in your application in under 5 minutes.
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+- Python 3.8+ or Node.js 16+
+- Redis installed locally or a Redis Cloud instance
+- A Mem0 API key ([get one free](https://mem0.ai))
+
+## Installation
+
+<CodeTabs>
+```bash tab="Python"
+pip install recall-memory
+```
+
+```bash tab="Node.js"
+npm install @recall/client
+```
+
+```bash tab="Yarn"
+yarn add @recall/client
+```
+
+```bash tab="pnpm"
+pnpm add @recall/client
+```
+</CodeTabs>
+
+## Basic Setup
+
+### 1. Start Redis
+
+If you don't have Redis running locally:
+
+<CodeTabs>
+```bash tab="Docker"
+docker run -d -p 6379:6379 redis:alpine
+```
+
+```bash tab="macOS"
+brew services start redis
+```
+
+```bash tab="Linux"
+sudo systemctl start redis
+```
+</CodeTabs>
+
+### 2. Set Environment Variables
+
+Create a `.env` file in your project root:
+
+```env
+REDIS_URL=redis://localhost:6379
+MEM0_API_KEY=your_mem0_api_key_here
+RECALL_ENV=development
+```
+
+### 3. Initialize the Client
+
+<CodeTabs>
+```python tab="Python"
+from recall import RecallClient
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
+
+# Initialize client
+client = RecallClient(
+    redis_url=os.getenv("REDIS_URL"),
+    mem0_api_key=os.getenv("MEM0_API_KEY"),
+    environment=os.getenv("RECALL_ENV", "development")
+)
+
+# Test the connection
+health = client.health_check()
+print(f"Recall status: {health['status']}")
+```
+
+```typescript tab="TypeScript"
+import { RecallClient } from '@recall/client';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
+// Initialize client
+const client = new RecallClient({
+  redisUrl: process.env.REDIS_URL,
+  mem0ApiKey: process.env.MEM0_API_KEY,
+  environment: process.env.RECALL_ENV || 'development'
+});
+
+// Test the connection
+const health = await client.healthCheck();
+console.log(`Recall status: ${health.status}`);
+```
+
+```javascript tab="JavaScript"
+const { RecallClient } = require('@recall/client');
+require('dotenv').config();
+
+// Initialize client
+const client = new RecallClient({
+  redisUrl: process.env.REDIS_URL,
+  mem0ApiKey: process.env.MEM0_API_KEY,
+  environment: process.env.RECALL_ENV || 'development'
+});
+
+// Test the connection
+client.healthCheck().then(health => {
+  console.log(`Recall status: ${health.status}`);
+});
+```
+</CodeTabs>
+
+## Your First Memory
+
+Let's create, retrieve, and search memories:
+
+<CodeTabs>
+```python tab="Python"
+# Store a memory
+memory = client.add(
+    content="User prefers concise responses and technical details",
+    user_id="user_123",
+    priority="high",
+    metadata={
+        "category": "preferences",
+        "learned_from": "conversation"
+    }
+)
+print(f"Memory stored with ID: {memory['id']}")
+
+# Search memories
+results = client.search(
+    query="user communication preferences",
+    user_id="user_123",
+    limit=5
+)
+
+for memory in results:
+    print(f"- {memory['content']} (relevance: {memory['score']})")
+
+# Get all memories for a user
+all_memories = client.get_all(user_id="user_123")
+print(f"Total memories: {len(all_memories)}")
+```
+
+```typescript tab="TypeScript"
+// Store a memory
+const memory = await client.add({
+  content: "User prefers concise responses and technical details",
+  userId: "user_123",
+  priority: "high",
+  metadata: {
+    category: "preferences",
+    learnedFrom: "conversation"
+  }
+});
+console.log(`Memory stored with ID: ${memory.id}`);
+
+// Search memories
+const results = await client.search({
+  query: "user communication preferences",
+  userId: "user_123",
+  limit: 5
+});
+
+results.forEach(memory => {
+  console.log(`- ${memory.content} (relevance: ${memory.score})`);
+});
+
+// Get all memories for a user
+const allMemories = await client.getAll({ userId: "user_123" });
+console.log(`Total memories: ${allMemories.length}`);
+```
+</CodeTabs>
+
+## Common Patterns
+
+### Conversation Memory
+
+Store and retrieve conversation context:
+
+<CodeTabs>
+```python tab="Python"
+# Store conversation turn
+client.add(
+    content=f"User asked about {topic}. Provided detailed explanation.",
+    user_id=user_id,
+    priority="medium",
+    metadata={
+        "type": "conversation",
+        "session_id": session_id,
+        "timestamp": datetime.now().isoformat()
+    }
+)
+
+# Retrieve recent conversation context
+context = client.search(
+    query="recent conversations",
+    user_id=user_id,
+    filters={"type": "conversation"},
+    limit=10
+)
+```
+
+```typescript tab="TypeScript"
+// Store conversation turn
+await client.add({
+  content: `User asked about ${topic}. Provided detailed explanation.`,
+  userId: userId,
+  priority: "medium",
+  metadata: {
+    type: "conversation",
+    sessionId: sessionId,
+    timestamp: new Date().toISOString()
+  }
+});
+
+// Retrieve recent conversation context
+const context = await client.search({
+  query: "recent conversations",
+  userId: userId,
+  filters: { type: "conversation" },
+  limit: 10
+});
+```
+</CodeTabs>
+
+### User Preferences
+
+Track and apply user preferences:
+
+<CodeTabs>
+```python tab="Python"
+# Store preference
+client.add(
+    content="Prefers email notifications over SMS",
+    user_id=user_id,
+    priority="high",
+    metadata={"type": "preference", "category": "notifications"}
+)
+
+# Check preferences before action
+prefs = client.search(
+    query="notification preferences",
+    user_id=user_id,
+    filters={"type": "preference"}
+)
+```
+
+```typescript tab="TypeScript"
+// Store preference
+await client.add({
+  content: "Prefers email notifications over SMS",
+  userId: userId,
+  priority: "high",
+  metadata: { type: "preference", category: "notifications" }
+});
+
+// Check preferences before action
+const prefs = await client.search({
+  query: "notification preferences",
+  userId: userId,
+  filters: { type: "preference" }
+});
+```
+</CodeTabs>
+
+## Performance Tips
+
+### 1. Use Priority Levels
+
+Set appropriate priority levels to optimize cache usage:
+
+- `critical`: Always in cache, never evicted
+- `high`: Preferentially cached, rarely evicted
+- `medium`: Cached when accessed, normal eviction
+- `low`: Minimal caching, first to evict
+
+### 2. Batch Operations
+
+Use batch methods for better performance:
+
+<CodeTabs>
+```python tab="Python"
+# Add multiple memories at once
+memories = [
+    {"content": "Fact 1", "user_id": "user_123"},
+    {"content": "Fact 2", "user_id": "user_123"},
+    {"content": "Fact 3", "user_id": "user_123"}
+]
+client.add_batch(memories)
+```
+
+```typescript tab="TypeScript"
+// Add multiple memories at once
+const memories = [
+  { content: "Fact 1", userId: "user_123" },
+  { content: "Fact 2", userId: "user_123" },
+  { content: "Fact 3", userId: "user_123" }
+];
+await client.addBatch(memories);
+```
+</CodeTabs>
+
+### 3. Use Async Operations
+
+For non-critical memories, use async mode:
+
+<CodeTabs>
+```python tab="Python"
+# Fire-and-forget for non-critical memories
+client.add(
+    content="Background information",
+    user_id="user_123",
+    priority="low",
+    async_mode=True  # Don't wait for cloud sync
+)
+```
+
+```typescript tab="TypeScript"
+// Fire-and-forget for non-critical memories
+await client.add({
+  content: "Background information",
+  userId: "user_123",
+  priority: "low",
+  asyncMode: true  // Don't wait for cloud sync
+});
+```
+</CodeTabs>
+
+## Next Steps
+
+Now that you have Recall running:
+
+- Explore the [API Reference](/docs/api/client) for all available methods
+- Check out [Examples](/docs/examples/basic-usage) for real-world use cases
+- Learn about [Advanced Features](/docs/features/caching) like custom caching strategies
+- Read the [Best Practices](/docs/guides/best-practices) guide for production deployments
+
+## Need Help?
+
+- Join our [Discord Community](https://discord.gg/recall)
+- Check the [Troubleshooting Guide](/docs/guides/troubleshooting)
+- View the [GitHub Repository](https://github.com/recall/recall)
+- Contact [support@recall.ai](mailto:support@recall.ai)
