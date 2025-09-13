@@ -1,18 +1,51 @@
 {
-  "name": "mem0-redis-hybrid",
+  "name": "@n3wth/mem0-redis-hybrid",
   "version": "1.0.0",
-  "description": "",
+  "description": "High-performance MCP server combining Mem0 cloud storage with Redis caching for AI memory management",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mem0",
+    "redis",
+    "cache",
+    "ai",
+    "memory",
+    "claude",
+    "gemini",
+    "llm",
+    "hybrid-storage"
+  ],
+  "author": "n3wth",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/n3wth/mem0-redis-hybrid.git"
+  },
+  "bugs": {
+    "url": "https://github.com/n3wth/mem0-redis-hybrid/issues"
+  },
+  "homepage": "https://github.com/n3wth/mem0-redis-hybrid#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.0",
     "node-fetch": "^3.3.2",
     "redis": "^5.8.2"
+  },
+  "files": [
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -1,0 +1,41 @@
+# Test files
+test.js
+test-*.js
+*.test.js
+*.spec.js
+
+# Development files
+TODO.md
+validation-prompt.md
+CONTRIBUTING.md
+.gitignore
+
+# Config files
+.env
+.env.*
+
+# Git
+.git/
+.github/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Cache
+.npm
+.cache/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Redis dumps
+dump.rdb
+*.rdb

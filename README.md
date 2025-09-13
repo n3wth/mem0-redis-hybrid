@@ -1,7 +1,21 @@
-# Mem0-Redis Hybrid MCP Server v2.0
+# Mem0-Redis Hybrid MCP Server
+
+<div align="center">
+
+[![GitHub Release](https://img.shields.io/github/v/release/n3wth/mem0-redis-hybrid)](https://github.com/n3wth/mem0-redis-hybrid/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org)
+[![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-blue)](https://modelcontextprotocol.io)
+
+**An intelligent hybrid memory system that combines [Mem0](https://mem0.ai) cloud storage with [Redis](https://redis.io) caching for optimal performance**
+
+[Features](#key-features) • [Quick Start](#quick-install) • [Integration](#installation--integration) • [Documentation](#architecture) • [Contributing](#contributing)
+
+</div>
 
 ## Overview
-An intelligent hybrid memory system that combines mem0 cloud storage with Redis caching for optimal performance, featuring async processing, smart cache invalidation, and keyword-based search.
+
+The Mem0-Redis Hybrid MCP Server provides a high-performance memory layer for AI applications, combining the reliability of Mem0's cloud storage with the speed of Redis caching. It implements the [Model Context Protocol (MCP)](https://modelcontextprotocol.io) for seamless integration with Claude, Gemini, and other AI tools.
 
 ## Key Features
 
@@ -665,5 +679,76 @@ optimize_cache({
 ### API Stability
 The current API is stable. Future versions will maintain backward compatibility.
 
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+### Development Setup
+
+```bash
+# Clone the repo
+git clone https://github.com/n3wth/mem0-redis-hybrid.git
+cd mem0-redis-hybrid
+
+# Install dependencies
+npm install
+
+# Run tests
+npm test
+
+# Start development server
+npm run dev
+```
+
+### Submitting Changes
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Resources
+
+### Official Documentation
+- [Mem0 Documentation](https://docs.mem0.ai)
+- [Redis Documentation](https://redis.io/docs)
+- [Model Context Protocol](https://modelcontextprotocol.io)
+- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
+
+### Related Projects
+- [MCP Servers](https://github.com/modelcontextprotocol/servers) - Official MCP server implementations
+- [Mem0 Python SDK](https://github.com/mem0ai/mem0) - Official Mem0 Python client
+- [Redis Node Client](https://github.com/redis/node-redis) - Official Redis Node.js client
+
+### Tutorials & Guides
+- [Getting Started with MCP](https://modelcontextprotocol.io/docs/getting-started)
+- [Building AI Memory Systems](https://mem0.ai/blog/building-ai-memory-systems)
+- [Redis Caching Best Practices](https://redis.io/docs/manual/patterns/)
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/n3wth/mem0-redis-hybrid/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/n3wth/mem0-redis-hybrid/discussions)
+- **Security**: Please report security vulnerabilities to [security@example.com](mailto:security@example.com)
+
+## Acknowledgments
+
+- [Anthropic](https://anthropic.com) for Claude and the MCP protocol
+- [Mem0](https://mem0.ai) for the memory API
+- [Redis Labs](https://redis.com) for Redis
+- The open-source community for continuous support
+
 ## License
-MIT
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+Made with ❤️ by the AI community
+
+⭐ Star us on GitHub — it helps!
+
+[Report Bug](https://github.com/n3wth/mem0-redis-hybrid/issues) • [Request Feature](https://github.com/n3wth/mem0-redis-hybrid/issues)
+</div>
