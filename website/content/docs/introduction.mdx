@@ -1,0 +1,56 @@
+---
+order: 1
+title: Introduction
+---
+
+# Introduction
+
+Recall is a high-performance memory layer that combines local Redis caching with cloud persistence, delivering sub-5ms response times for AI applications.
+
+## Overview
+
+Recall provides intelligent memory management for LLMs and AI agents, automatically handling caching, synchronization, and failover between local and cloud storage.
+
+### Key Features
+
+- **Lightning Fast**: Sub-5ms cache hits with intelligent prefetching
+- **Enterprise Security**: Bank-level encryption with SOC 2 compliance
+- **Infinite Scale**: Automatically scales from prototype to production
+- **AI Optimized**: Purpose-built for LLMs with semantic search and vector support
+
+## Quick Start
+
+```bash
+npx @n3wth/recall --demo
+```
+
+No API key required for demo mode. For production use:
+
+```bash
+npm install -g @n3wth/recall
+export MEM0_API_KEY="your-api-key"
+recall-cli
+```
+
+## Architecture
+
+Recall uses a two-tier caching system:
+
+- **L1 Cache**: Hot data with 24-hour TTL for frequently accessed memories
+- **L2 Cache**: Warm data with 7-day TTL for less frequent access
+- **Cloud Persistence**: Mem0 cloud storage for permanent retention
+
+The system automatically promotes and demotes memories between tiers based on access patterns.
+
+## Use Cases
+
+- **Conversational AI**: Maintain context across chat sessions
+- **Personalization**: Store user preferences and behavior patterns
+- **Knowledge Management**: Build persistent knowledge bases for AI agents
+- **Session Management**: Handle stateful interactions at scale
+
+## Next Steps
+
+- [Installation Guide](/docs/installation) - Set up Recall in your environment
+- [API Reference](/docs/api) - Explore all available methods
+- [Integration Examples](/docs/integrations) - Connect with popular frameworks

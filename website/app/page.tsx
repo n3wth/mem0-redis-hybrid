@@ -6,6 +6,10 @@ import { useState } from 'react'
 import { Navigation } from '@/components/Navigation'
 import { Footer } from '@/components/Footer'
 import { Container } from '@/components/Grid'
+import { TerminalDemo } from '@/components/TerminalDemo'
+import { RainbowButton } from '@/components/magicui/rainbow-button'
+import { ShimmerButton } from '@/components/magicui/shimmer-button'
+import { Meteors } from '@/components/magicui/meteors'
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('node')
@@ -80,18 +84,18 @@ print(response.id)`,
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/docs"
-                className="group px-6 py-3 bg-white text-black font-medium rounded-lg transition-all hover:bg-gray-100"
-              >
-                Get started
-                <ArrowRight className="inline-block ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <Link href="/docs">
+                <RainbowButton>
+                  Get started
+                  <ArrowRight className="inline-block ml-2 h-4 w-4" />
+                </RainbowButton>
               </Link>
-              <Link
-                href="/docs"
-                className="px-6 py-3 text-white font-medium rounded-lg border border-white/20 transition-all hover:bg-white/5"
-              >
-                Documentation
+              <Link href="/docs">
+                <ShimmerButton className="shadow-2xl">
+                  <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white lg:text-base">
+                    Documentation
+                  </span>
+                </ShimmerButton>
               </Link>
             </div>
 
@@ -113,16 +117,34 @@ print(response.id)`,
         </div>
       </div>
 
+      {/* Interactive Terminal Demo */}
+      <section className="py-24 border-t border-white/5 relative overflow-hidden">
+        <Meteors number={20} />
+        <Container size="lg">
+          <div className="max-w-4xl mx-auto relative z-10">
+            <div className="mb-12 text-center">
+              <h2 className="text-3xl font-normal text-white mb-3">
+                Simple integration
+              </h2>
+              <p className="text-gray-400">
+                Watch how easy it is to get started
+              </p>
+            </div>
+            <TerminalDemo />
+          </div>
+        </Container>
+      </section>
+
       {/* Code Example - Clean tabs */}
       <section className="py-24 border-t border-white/5">
         <Container size="lg">
           <div className="max-w-4xl mx-auto">
             <div className="mb-12">
               <h2 className="text-3xl font-normal text-white mb-3">
-                Simple integration
+                Use any language
               </h2>
               <p className="text-gray-400">
-                Get started with just a few lines of code
+                SDKs available for all major platforms
               </p>
             </div>
 

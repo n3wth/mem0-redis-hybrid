@@ -1,0 +1,140 @@
+---
+order: 2
+title: Installation
+---
+
+# Installation
+
+## Prerequisites
+
+- Node.js 18.0.0 or higher
+- Redis server (local or remote)
+- Mem0 API key from [mem0.ai](https://mem0.ai)
+
+## Package Installation
+
+### npm
+```bash
+npm install @n3wth/recall
+```
+
+### Yarn
+```bash
+yarn add @n3wth/recall
+```
+
+### pnpm
+```bash
+pnpm add @n3wth/recall
+```
+
+## Configuration
+
+### Environment Variables
+
+```bash
+MEM0_API_KEY="your-mem0-api-key"
+MEM0_USER_ID="your-user-id"
+REDIS_URL="redis://localhost:6379"
+```
+
+### Claude Desktop Integration
+
+Add to `~/.claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "recall": {
+      "command": "npx",
+      "args": ["@n3wth/recall"],
+      "env": {
+        "MEM0_API_KEY": "your-api-key",
+        "REDIS_URL": "redis://localhost:6379"
+      }
+    }
+  }
+}
+```
+
+## Running as a Service
+
+### macOS (launchd)
+
+Create `~/Library/LaunchAgents/com.recall.plist`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.recall</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/node</string>
+        <string>/usr/local/bin/recall</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>MEM0_API_KEY</key>
+        <string>your-key</string>
+        <key>REDIS_URL</key>
+        <string>redis://localhost:6379</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+</dict>
+</plist>
+```
+
+Load the service:
+```bash
+launchctl load ~/Library/LaunchAgents/com.recall.plist
+```
+
+### Linux (systemd)
+
+Create `/etc/systemd/system/recall.service`:
+
+```ini
+[Unit]
+Description=Recall Memory Service
+After=network.target redis.service
+
+[Service]
+Type=simple
+User=youruser
+ExecStart=/usr/bin/node /usr/local/bin/recall
+Restart=always
+Environment="MEM0_API_KEY=your-key"
+Environment="REDIS_URL=redis://localhost:6379"
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start:
+```bash
+sudo systemctl enable recall
+sudo systemctl start recall
+```
+
+## Verification
+
+Test your installation:
+
+```bash
+# Using the CLI
+recall-cli
+
+# Or test programmatically
+node -e "
+const { Recall } = require('@n3wth/recall');
+const memory = new Recall();
+memory.health().then(console.log);
+"
+```

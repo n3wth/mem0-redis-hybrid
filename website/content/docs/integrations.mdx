@@ -1,0 +1,315 @@
+---
+order: 4
+title: Integration Guides
+---
+
+# Integration Guides
+
+## Framework Integrations
+
+### Next.js
+
+```typescript
+// app/api/memory/route.ts
+import { Recall } from '@n3wth/recall'
+import { NextResponse } from 'next/server'
+
+const memory = new Recall({
+  redis: process.env.REDIS_URL,
+  apiKey: process.env.MEM0_API_KEY
+})
+
+export async function POST(request: Request) {
+  const { content, userId } = await request.json()
+
+  const result = await memory.add({
+    content,
+    user_id: userId,
+    priority: 'high'
+  })
+
+  return NextResponse.json(result)
+}
+```
+
+### Express
+
+```typescript
+import express from 'express'
+import { Recall } from '@n3wth/recall'
+
+const app = express()
+const memory = new Recall({
+  redis: process.env.REDIS_URL,
+  apiKey: process.env.MEM0_API_KEY
+})
+
+app.post('/api/memory', async (req, res) => {
+  const { content, userId } = req.body
+
+  const result = await memory.add({
+    content,
+    user_id: userId
+  })
+
+  res.json(result)
+})
+```
+
+## AI Framework Integrations
+
+### LangChain
+
+```python
+from langchain.memory import ConversationBufferMemory
+import requests
+
+class RecallMemory(ConversationBufferMemory):
+    def __init__(self, server_url="http://localhost:3000"):
+        super().__init__()
+        self.server_url = server_url
+
+    def save_context(self, inputs, outputs):
+        requests.post(f"{self.server_url}/mcp", json={
+            "method": "add_memory",
+            "params": {
+                "content": f"Q: {inputs['input']} A: {outputs['output']}",
+                "priority": "medium",
+                "async": True
+            }
+        })
+        super().save_context(inputs, outputs)
+
+# Usage
+memory = RecallMemory()
+chain = ConversationChain(memory=memory, llm=llm)
+```
+
+### OpenAI Assistants
+
+```typescript
+import OpenAI from 'openai'
+import { Recall } from '@n3wth/recall'
+
+class RecallAssistant {
+  private openai: OpenAI
+  private memory: Recall
+
+  constructor(apiKey: string) {
+    this.openai = new OpenAI({ apiKey })
+    this.memory = new Recall({
+      redis: process.env.REDIS_URL,
+      apiKey: process.env.MEM0_API_KEY
+    })
+  }
+
+  async chat(message: string, userId: string) {
+    // Get relevant context
+    const memories = await this.memory.search({
+      query: message,
+      user_id: userId,
+      prefer_cache: true
+    })
+
+    // Build context-aware prompt
+    const context = memories.memories
+      .map(m => m.memory)
+      .join('\n')
+
+    const response = await this.openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        { role: 'system', content: `Context:\n${context}` },
+        { role: 'user', content: message }
+      ]
+    })
+
+    // Save interaction
+    await this.memory.add({
+      content: `Q: ${message}\nA: ${response.choices[0].message.content}`,
+      user_id: userId,
+      priority: 'medium'
+    })
+
+    return response.choices[0].message.content
+  }
+}
+```
+
+## Database Integrations
+
+### PostgreSQL with Triggers
+
+```sql
+-- Create trigger to sync with Recall
+CREATE OR REPLACE FUNCTION sync_to_recall()
+RETURNS TRIGGER AS $$
+DECLARE
+  payload json;
+BEGIN
+  payload := json_build_object(
+    'method', 'add_memory',
+    'params', json_build_object(
+      'content', NEW.content,
+      'user_id', NEW.user_id,
+      'metadata', json_build_object(
+        'source', 'postgres',
+        'table', TG_TABLE_NAME,
+        'id', NEW.id
+      )
+    )
+  );
+
+  PERFORM pg_notify('recall_sync', payload::text);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER user_activity_recall_sync
+AFTER INSERT OR UPDATE ON user_activities
+FOR EACH ROW EXECUTE FUNCTION sync_to_recall();
+```
+
+### MongoDB Change Streams
+
+```typescript
+import { MongoClient } from 'mongodb'
+import { Recall } from '@n3wth/recall'
+
+const client = new MongoClient(process.env.MONGODB_URI)
+const memory = new Recall({
+  redis: process.env.REDIS_URL,
+  apiKey: process.env.MEM0_API_KEY
+})
+
+async function watchChanges() {
+  await client.connect()
+  const db = client.db('myapp')
+  const collection = db.collection('conversations')
+
+  const changeStream = collection.watch()
+
+  changeStream.on('change', async (change) => {
+    if (change.operationType === 'insert') {
+      await memory.add({
+        content: change.fullDocument.message,
+        user_id: change.fullDocument.userId,
+        metadata: {
+          source: 'mongodb',
+          collection: 'conversations',
+          _id: change.fullDocument._id
+        }
+      })
+    }
+  })
+}
+```
+
+## CLI Integration
+
+### Shell Aliases
+
+Add to your `~/.bashrc` or `~/.zshrc`:
+
+```bash
+# Quick memory commands
+alias recall-add='function _recall_add() {
+  curl -X POST http://localhost:3000/mcp \
+    -H "Content-Type: application/json" \
+    -d "{\"method\":\"add_memory\",\"params\":{\"content\":\"$1\",\"priority\":\"high\"}}"
+}; _recall_add'
+
+alias recall-search='function _recall_search() {
+  curl -X POST http://localhost:3000/mcp \
+    -H "Content-Type: application/json" \
+    -d "{\"method\":\"search_memory\",\"params\":{\"query\":\"$1\"}}" | jq .
+}; _recall_search'
+
+alias recall-stats='curl -X POST http://localhost:3000/mcp \
+  -H "Content-Type: application/json" \
+  -d "{\"method\":\"cache_stats\"}" | jq .'
+
+# Usage
+recall-add "Important meeting at 3pm"
+recall-search "meeting"
+recall-stats
+```
+
+## Deployment Configurations
+
+### Docker Compose
+
+```yaml
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  recall:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: npx @n3wth/recall
+    environment:
+      - MEM0_API_KEY=${MEM0_API_KEY}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    ports:
+      - "3000:3000"
+
+volumes:
+  redis-data:
+```
+
+### Kubernetes
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recall
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: recall
+  template:
+    metadata:
+      labels:
+        app: recall
+    spec:
+      containers:
+      - name: recall
+        image: node:18-alpine
+        command: ["npx", "@n3wth/recall"]
+        env:
+        - name: MEM0_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: recall-secrets
+              key: mem0-api-key
+        - name: REDIS_URL
+          value: "redis://redis-service:6379"
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recall-service
+spec:
+  selector:
+    app: recall
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: LoadBalancer
+```
