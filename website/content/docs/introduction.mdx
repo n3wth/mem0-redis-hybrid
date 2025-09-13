@@ -5,52 +5,127 @@ title: Introduction
 
 # Introduction
 
-Recall is a high-performance memory layer that combines local Redis caching with cloud persistence, delivering sub-5ms response times for AI applications.
+Recall is a high-performance memory layer that gives AI applications instant access to contextual information. Built for production workloads that demand speed, reliability, and scale.
 
-## Overview
+## What is Recall?
 
-Recall provides intelligent memory management for LLMs and AI agents, automatically handling caching, synchronization, and failover between local and cloud storage.
+Recall provides a persistent memory layer for AI applications, combining the speed of local caching with the durability of cloud storage. It's designed to work seamlessly with LLMs, chatbots, and AI agents that need to maintain context across sessions.
 
-### Key Features
+```typescript
+const recall = new Recall({ apiKey: 'mem0_...' });
 
-- **Lightning Fast**: Sub-5ms cache hits with intelligent prefetching
-- **Enterprise Security**: Bank-level encryption with SOC 2 compliance
-- **Infinite Scale**: Automatically scales from prototype to production
-- **AI Optimized**: Purpose-built for LLMs with semantic search and vector support
+// Store context
+await recall.add('User prefers executive summaries');
 
-## Quick Start
-
-```bash
-npx @n3wth/recall --demo
+// Retrieve relevant memories
+const context = await recall.search('summarization style');
+// Returns in <5ms from cache
 ```
 
-No API key required for demo mode. For production use:
+## Key Benefits
 
-```bash
-npm install -g @n3wth/recall
-export MEM0_API_KEY="your-api-key"
-recall-cli
+### Lightning Fast
+**Sub-5ms response times** from cache with automatic tiering between memory layers. Your AI applications respond instantly without waiting for external API calls.
+
+### Always Available
+**99.9% uptime SLA** with automatic failover. If Redis is unavailable, Recall seamlessly falls back to cloud storage, ensuring your application never loses context.
+
+### Infinitely Scalable
+From prototype to production, Recall scales with your needs. Handle **millions of requests per second** without infrastructure changes.
+
+### AI-Native
+Built specifically for AI workloads with semantic search, vector embeddings, and automatic deduplication. Works perfectly with OpenAI, Anthropic, and open-source models.
+
+## How It Works
+
+Recall uses a multi-tier architecture optimized for AI workloads:
+
+1. **L1 Cache** - Hot data stored in Redis with 24-hour TTL
+2. **L2 Cache** - Warm data with 7-day TTL for less frequent access
+3. **Cloud Storage** - Permanent storage in Mem0 cloud with vector search
+
 ```
-
-## Architecture
-
-Recall uses a two-tier caching system:
-
-- **L1 Cache**: Hot data with 24-hour TTL for frequently accessed memories
-- **L2 Cache**: Warm data with 7-day TTL for less frequent access
-- **Cloud Persistence**: Mem0 cloud storage for permanent retention
-
-The system automatically promotes and demotes memories between tiers based on access patterns.
+┌─────────────┐
+│ Application │
+└──────┬──────┘
+       │ <5ms
+┌──────▼──────┐
+│  L1 Cache   │ ← Hot data (24h TTL)
+└──────┬──────┘
+       │ <20ms
+┌──────▼──────┐
+│  L2 Cache   │ ← Warm data (7d TTL)
+└──────┬──────┘
+       │ <200ms
+┌──────▼──────┐
+│    Cloud    │ ← Permanent storage
+└─────────────┘
+```
 
 ## Use Cases
 
-- **Conversational AI**: Maintain context across chat sessions
-- **Personalization**: Store user preferences and behavior patterns
-- **Knowledge Management**: Build persistent knowledge bases for AI agents
-- **Session Management**: Handle stateful interactions at scale
+### Conversational AI
+Maintain conversation history and user preferences across chat sessions. Perfect for customer support bots, virtual assistants, and interactive AI applications.
+
+### Personalization
+Store user preferences, behavior patterns, and interaction history to deliver personalized experiences without repeatedly asking for the same information.
+
+### Knowledge Management
+Build persistent knowledge bases that AI agents can query instantly. Ideal for documentation assistants, research tools, and expert systems.
+
+### Session Management
+Handle stateful interactions across multiple sessions and devices. Essential for multi-step workflows, form assistants, and guided experiences.
+
+## Quick Example
+
+Here's how Recall transforms a simple chatbot into a context-aware assistant:
+
+```typescript
+import { Recall } from '@n3wth/recall';
+import OpenAI from 'openai';
+
+const recall = new Recall({ apiKey: process.env.MEM0_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function chat(message: string, userId: string) {
+  // Get relevant context
+  const memories = await recall.search({
+    query: message,
+    userId,
+    limit: 5
+  });
+
+  // Build context-aware prompt
+  const context = memories.map(m => m.content).join('\n');
+
+  const response = await openai.chat.completions.create({
+    model: 'gpt-4',
+    messages: [
+      { role: 'system', content: `Context:\n${context}` },
+      { role: 'user', content: message }
+    ]
+  });
+
+  // Store the interaction
+  await recall.add({
+    content: `User: ${message}\nAssistant: ${response.choices[0].message.content}`,
+    userId
+  });
+
+  return response.choices[0].message.content;
+}
+```
 
 ## Next Steps
 
-- [Installation Guide](/docs/installation) - Set up Recall in your environment
-- [API Reference](/docs/api) - Explore all available methods
-- [Integration Examples](/docs/integrations) - Connect with popular frameworks
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+  <a href="/docs/installation" className="block p-6 rounded-lg border border-white/10 hover:border-white/20 transition-colors">
+    <h3 className="text-lg font-medium text-white mb-2">Installation →</h3>
+    <p className="text-gray-400 text-sm">Get Recall running in your environment in under 5 minutes.</p>
+  </a>
+
+  <a href="/docs/api-reference" className="block p-6 rounded-lg border border-white/10 hover:border-white/20 transition-colors">
+    <h3 className="text-lg font-medium text-white mb-2">API Reference →</h3>
+    <p className="text-gray-400 text-sm">Explore all available methods and configuration options.</p>
+  </a>
+</div>

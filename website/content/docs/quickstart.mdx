@@ -1,0 +1,294 @@
+---
+order: 2
+title: Quick Start
+---
+
+# Quick Start
+
+Get Recall running in under 5 minutes. This guide covers installation, basic configuration, and your first API calls.
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+- **Node.js 18+** installed ([download](https://nodejs.org))
+- **Redis** running locally or remotely ([installation guide](https://redis.io/docs/install))
+- **Mem0 API key** from [mem0.ai](https://mem0.ai) (free tier available)
+
+## Installation
+
+Install Recall using your preferred package manager:
+
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+  <div className="border border-white/10 rounded-lg p-4">
+    <p className="text-sm text-gray-400 mb-2">npm</p>
+    <code className="text-white">npm install @n3wth/recall</code>
+  </div>
+  <div className="border border-white/10 rounded-lg p-4">
+    <p className="text-sm text-gray-400 mb-2">yarn</p>
+    <code className="text-white">yarn add @n3wth/recall</code>
+  </div>
+  <div className="border border-white/10 rounded-lg p-4">
+    <p className="text-sm text-gray-400 mb-2">pnpm</p>
+    <code className="text-white">pnpm add @n3wth/recall</code>
+  </div>
+</div>
+
+## Basic Setup
+
+### 1. Set Environment Variables
+
+Create a `.env` file in your project root:
+
+```bash
+MEM0_API_KEY=mem0_abc123...
+REDIS_URL=redis://localhost:6379
+```
+
+### 2. Initialize Recall
+
+Create your first Recall instance:
+
+```typescript
+import { Recall } from '@n3wth/recall';
+
+const recall = new Recall({
+  apiKey: process.env.MEM0_API_KEY,
+  redis: process.env.REDIS_URL
+});
+```
+
+### 3. Store Your First Memory
+
+```typescript
+await recall.add({
+  content: 'User prefers dark mode UI',
+  userId: 'user_123',
+  metadata: {
+    category: 'preferences',
+    timestamp: new Date().toISOString()
+  }
+});
+```
+
+### 4. Search Memories
+
+```typescript
+const memories = await recall.search({
+  query: 'UI preferences',
+  userId: 'user_123',
+  limit: 5
+});
+
+console.log(memories);
+// [
+//   {
+//     id: 'mem_abc123',
+//     content: 'User prefers dark mode UI',
+//     score: 0.95,
+//     metadata: { category: 'preferences' }
+//   }
+// ]
+```
+
+## Complete Example
+
+Here's a complete example that demonstrates core functionality:
+
+```typescript
+import { Recall } from '@n3wth/recall';
+
+async function main() {
+  // Initialize
+  const recall = new Recall({
+    apiKey: process.env.MEM0_API_KEY,
+    redis: process.env.REDIS_URL,
+    cacheStrategy: 'aggressive' // Optimize for speed
+  });
+
+  // Store memories
+  await recall.add({
+    content: 'User works at Acme Corp as a software engineer',
+    userId: 'user_123',
+    priority: 'high'
+  });
+
+  await recall.add({
+    content: 'User prefers Python and TypeScript',
+    userId: 'user_123',
+    priority: 'medium'
+  });
+
+  // Search for relevant memories
+  const workMemories = await recall.search({
+    query: 'What does the user do for work?',
+    userId: 'user_123'
+  });
+
+  console.log('Work context:', workMemories);
+
+  // Get specific memory
+  const memory = await recall.get(workMemories[0].id);
+  console.log('Retrieved:', memory);
+
+  // Update memory
+  await recall.update(memory.id, {
+    content: 'User works at Acme Corp as a senior software engineer'
+  });
+
+  // Check cache performance
+  const stats = await recall.cache.stats();
+  console.log('Cache stats:', stats);
+}
+
+main().catch(console.error);
+```
+
+## Testing Your Setup
+
+Run this diagnostic script to verify everything is working:
+
+```typescript
+import { Recall } from '@n3wth/recall';
+
+async function testSetup() {
+  try {
+    const recall = new Recall({
+      apiKey: process.env.MEM0_API_KEY,
+      redis: process.env.REDIS_URL
+    });
+
+    // Test health
+    const health = await recall.health();
+    console.log('✓ Health check:', health);
+
+    // Test write
+    const result = await recall.add({
+      content: 'Test memory',
+      userId: 'test_user'
+    });
+    console.log('✓ Write test:', result);
+
+    // Test read
+    const memories = await recall.search({
+      query: 'test',
+      userId: 'test_user'
+    });
+    console.log('✓ Read test:', memories.length, 'memories found');
+
+    // Test cache
+    const stats = await recall.cache.stats();
+    console.log('✓ Cache test:', stats.hit_rate, 'hit rate');
+
+    // Cleanup
+    if (memories[0]) {
+      await recall.delete(memories[0].id);
+      console.log('✓ Cleanup complete');
+    }
+
+    console.log('\n🎉 All tests passed! Recall is ready to use.');
+  } catch (error) {
+    console.error('❌ Setup test failed:', error);
+  }
+}
+
+testSetup();
+```
+
+## Common Patterns
+
+### User Session Management
+
+```typescript
+class SessionManager {
+  private recall: Recall;
+
+  constructor() {
+    this.recall = new Recall({
+      apiKey: process.env.MEM0_API_KEY,
+      cacheStrategy: 'aggressive'
+    });
+  }
+
+  async startSession(userId: string, context: any) {
+    await this.recall.add({
+      content: `Session started: ${JSON.stringify(context)}`,
+      userId,
+      metadata: { type: 'session_start' }
+    });
+  }
+
+  async getSessionContext(userId: string) {
+    return await this.recall.search({
+      query: 'session context preferences',
+      userId,
+      limit: 10
+    });
+  }
+}
+```
+
+### Conversation Memory
+
+```typescript
+async function rememberConversation(
+  userId: string,
+  message: string,
+  response: string
+) {
+  await recall.add({
+    content: `Q: ${message}\nA: ${response}`,
+    userId,
+    metadata: {
+      type: 'conversation',
+      timestamp: Date.now()
+    }
+  });
+}
+```
+
+## Troubleshooting
+
+### Redis Connection Failed
+
+```bash
+# Check if Redis is running
+redis-cli ping
+# Should return: PONG
+
+# Start Redis if needed
+redis-server
+```
+
+### API Key Issues
+
+```bash
+# Verify your API key
+curl -H "Authorization: Bearer $MEM0_API_KEY" \
+  https://api.mem0.ai/v1/memories
+```
+
+### Slow Response Times
+
+```typescript
+// Enable aggressive caching
+const recall = new Recall({
+  apiKey: process.env.MEM0_API_KEY,
+  cacheStrategy: 'aggressive',
+  cache: {
+    ttl: { l1: 86400, l2: 604800 }
+  }
+});
+
+// Check cache performance
+const stats = await recall.cache.stats();
+console.log('Cache hit rate:', stats.hit_rate);
+```
+
+## Next Steps
+
+Now that you have Recall running, explore:
+
+- [API Reference](/docs/api-reference) - Full method documentation
+- [Integration Guides](/docs/integrations) - Connect with your stack
+- [Best Practices](/docs/best-practices) - Production optimization tips
