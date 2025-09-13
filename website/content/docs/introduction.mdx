@@ -12,7 +12,12 @@ Recall is a high-performance memory layer that gives AI applications instant acc
 Recall provides a persistent memory layer for AI applications, combining the speed of local caching with the durability of cloud storage. It's designed to work seamlessly with LLMs, chatbots, and AI agents that need to maintain context across sessions.
 
 ```typescript
-const recall = new Recall({ apiKey: 'mem0_...' });
+import { createClient } from '@n3wth/recall';
+
+const recall = await createClient({
+  apiKey: 'mem0_...',
+  redis: 'redis://localhost:6379'
+});
 
 // Store context
 await recall.add('User prefers executive summaries');
