@@ -10,6 +10,7 @@ import { TerminalDemo } from '@/components/TerminalDemo'
 import { RainbowButton } from '@/components/magicui/rainbow-button'
 import { ShimmerButton } from '@/components/magicui/shimmer-button'
 import { Meteors } from '@/components/magicui/meteors'
+import { Particles } from '@/components/magicui/particles'
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('node')
@@ -57,7 +58,29 @@ print(response.id)`,
       <Navigation />
 
       {/* Hero - Clean and minimal */}
-      <div className="relative min-h-[85vh] flex items-center justify-center">
+      <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,100,255,0.13),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(100,150,255,0.13),transparent_50%)]" />
+        </div>
+
+        {/* Animated orbs */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+        </div>
+
+        {/* Floating particles */}
+        <Particles
+          className="absolute inset-0"
+          quantity={40}
+          color="#8b5cf6"
+          size={0.6}
+        />
+
         {/* Subtle grid pattern */}
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] opacity-5" />
 
