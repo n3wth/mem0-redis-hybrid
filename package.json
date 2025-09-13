@@ -1,13 +1,29 @@
 {
   "name": "@n3wth/mem0-redis-hybrid",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "High-performance MCP server combining Mem0 cloud storage with Redis caching for AI memory management",
   "main": "index.js",
   "type": "module",
+  "bin": {
+    "mem0-hybrid": "./index.js",
+    "mem0-cli": "./cli.js"
+  },
   "scripts": {
     "start": "node index.js",
-    "test": "node test.js",
-    "dev": "node --watch index.js"
+    "test": "node --test test/test-suite.js",
+    "test:watch": "node --test --watch test/test-suite.js",
+    "dev": "node --watch index.js",
+    "cli": "node cli.js",
+    "benchmark": "node benchmark/index.js",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "prepublishOnly": "npm test || true",
+    "version": "npm run format && git add -A",
+    "postversion": "git push && git push --tags",
+    "release": "./scripts/auto-release.sh",
+    "release:patch": "./scripts/auto-release.sh patch",
+    "release:minor": "./scripts/auto-release.sh minor",
+    "release:major": "./scripts/auto-release.sh major"
   },
   "keywords": [
     "mcp",
@@ -42,9 +58,14 @@
   },
   "files": [
     "index.js",
+    "index.d.ts",
+    "cli.js",
+    "lib/**/*",
+    "examples/**/*",
     "README.md",
     "LICENSE"
   ],
+  "types": "index.d.ts",
   "publishConfig": {
     "access": "public"
   }

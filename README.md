@@ -21,6 +21,7 @@ The Mem0-Redis Hybrid MCP Server provides a high-performance memory layer for AI
 
 ### 🚀 Performance Optimizations
 - **Two-tier caching**: L1 (hot data, 24h TTL) and L2 (warm data, 7d TTL)
+- **Connection pooling**: Efficient Redis connection management with health checks
 - **Async memory processing**: Non-blocking memory addition with background jobs
 - **Search results caching**: 5-minute cache for search queries
 - **Keyword indexing**: Fast cache-based search using extracted keywords
@@ -31,12 +32,20 @@ The Mem0-Redis Hybrid MCP Server provides a high-performance memory layer for AI
 - **Access tracking**: Promotes frequently accessed memories to L1 cache
 - **Cache invalidation**: Pub/Sub based invalidation on delete/update
 - **Relevance scoring**: Search results include relevance scores from keyword matches
+- **Circuit breaker**: Automatic failure detection and recovery
 
 ### 🛡️ Resilience Features
 - **Graceful degradation**: Falls back to mem0-only mode if Redis unavailable
-- **Job timeouts**: 30-second timeout for async operations
+- **Advanced error handling**: Custom error classes with recovery strategies
 - **Retry logic**: Exponential backoff with jitter for Redis reconnection
 - **Error isolation**: Separate Redis clients for cache, pub/sub, and subscriptions
+- **Job timeouts**: 30-second timeout for async operations
+
+### 📦 Developer Experience
+- **TypeScript support**: Full type definitions included
+- **CLI tool**: Interactive command-line interface for testing and management
+- **Comprehensive examples**: Ready-to-use integration patterns
+- **Auto-release**: Automated versioning and npm publishing
 
 ## Architecture
 
@@ -228,6 +237,17 @@ sync_status()
 - Mem0 API key from [mem0.ai](https://mem0.ai)
 
 ### Quick Install
+
+#### NPM Package (Recommended)
+```bash
+# Install globally
+npm install -g @n3wth/mem0-redis-hybrid
+
+# Or install locally in your project
+npm install @n3wth/mem0-redis-hybrid
+```
+
+#### From Source
 ```bash
 # Clone the repository
 git clone https://github.com/n3wth/mem0-redis-hybrid.git
@@ -240,6 +260,25 @@ npm install
 export MEM0_API_KEY="your-mem0-api-key"
 export MEM0_USER_ID="your-user-id"
 export REDIS_URL="redis://localhost:6379"  # or your Redis URL
+```
+
+### CLI Tool
+
+The package includes an interactive CLI for testing and management:
+
+```bash
+# Run the CLI
+npx mem0-cli
+
+# Available commands:
+# - add <content>     Add a memory
+# - search <query>    Search memories
+# - list              List all memories
+# - stats             Show cache statistics
+# - optimize          Optimize cache
+# - health            Check server health
+# - monitor           Real-time monitoring
+# - help              Show available commands
 ```
 
 ### Integration with Claude Code
@@ -698,7 +737,28 @@ npm test
 
 # Start development server
 npm run dev
+
+# Run the CLI tool
+npm run cli
 ```
+
+### Release Process
+
+The package uses automated versioning and publishing:
+
+```bash
+# Automatic release with version bump
+npm run release:patch  # Bug fixes (1.1.0 → 1.1.1)
+npm run release:minor  # New features (1.1.0 → 1.2.0)
+npm run release:major  # Breaking changes (1.1.0 → 2.0.0)
+
+# Manual release
+npm version patch -m "chore(release): %s"
+git push origin main --follow-tags
+npm publish
+```
+
+GitHub Actions automatically publishes to npm when you push a tag starting with `v`.
 
 ### Submitting Changes
 
