@@ -15,16 +15,23 @@
 
 ## 🚀 Quick Start
 
+**One-liner to try it out:**
+```bash
+MEM0_API_KEY="your-api-key" npx mem0-cli
+```
+*Get your API key from [mem0.ai](https://mem0.ai) (free tier available)*
+
+**Full installation:**
 ```bash
 # Install the package
 npm install -g @n3wth/mem0-redis-hybrid
 
 # Set up environment variables
 export MEM0_API_KEY="your-mem0-api-key"  # Get from https://mem0.ai
-export REDIS_URL="redis://localhost:6379"
+export REDIS_URL="redis://localhost:6379"  # Optional
 
 # Run the CLI to test
-npx mem0-cli
+mem0-cli
 
 # Or add to Claude Code (see Integration section below)
 ```
