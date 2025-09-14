@@ -1,7 +1,7 @@
 # r3call
 
 <div align="center">
-  <img src="https://r3call.newth.ai/opengraph-image" alt="r3call - Intelligent Memory for AI" width="100%" />
+  <img src="https://r3call.newth.ai/og-image.png" alt="r3call - Intelligent Memory for AI" width="100%" />
 
   <h3>Intelligent Memory Layer for AI Applications</h3>
   <p>Sub-5ms response times · Automatic failover · Built for scale</p>
