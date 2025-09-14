@@ -1,13 +1,15 @@
-import Cocoa
+import SwiftUI
+import AppKit
 
+// --- Data Model & Store ---
 struct Memory: Codable, Identifiable {
     let id: UUID
     var content: String
     let createdAt: Date
 }
 
-class MemoryStore {
-    private var memories: [Memory] = []
+class MemoryStore: ObservableObject {
+    @Published var memories: [Memory] = []
     private let fileURL: URL
 
     init() {
@@ -20,15 +22,13 @@ class MemoryStore {
         let newMemory = Memory(id: UUID(), content: content, createdAt: Date())
         memories.insert(newMemory, at: 0)
         saveMemories()
-    }
-
-    func getMemories() -> [Memory] {
-        return memories
+        NotificationCenter.default.post(name: .memoriesChanged, object: nil)
     }
     
     func deleteMemory(withId id: UUID) {
         memories.removeAll { $0.id == id }
         saveMemories()
+        NotificationCenter.default.post(name: .memoriesChanged, object: nil)
     }
 
     private func loadMemories() {
@@ -48,73 +48,41 @@ class MemoryStore {
     }
 }
 
-
-// --- New View Controller ---
-protocol AddMemoryDelegate: AnyObject {
-    func didSave(content: String)
+extension Notification.Name {
+    static let memoriesChanged = Notification.Name("memoriesChanged")
 }
 
-class AddMemoryViewController: NSViewController {
-    weak var delegate: AddMemoryDelegate?
-    private let textField = NSTextField()
+// --- Add Memory Window (SwiftUI View) ---
+struct AddMemoryView: View {
+    @State private var memoryContent: String = ""
+    var memoryStore: MemoryStore
+    var window: NSWindow?
 
-    override func loadView() {
-        view = NSView(frame: NSRect(x: 0, y: 0, width: 300, height: 120))
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        textField.frame = NSRect(x: 20, y: 60, width: 260, height: 24)
-        textField.placeholderString = "Enter your memory here"
-        view.addSubview(textField)
-
-        let saveButton = NSButton(title: "Save", target: self, action: #selector(saveMemory))
-        saveButton.frame = NSRect(x: 200, y: 20, width: 80, height: 24)
-        view.addSubview(saveButton)
-
-        let cancelButton = NSButton(title: "Cancel", target: self, action: #selector(cancel))
-        cancelButton.frame = NSRect(x: 110, y: 20, width: 80, height: 24)
-        view.addSubview(cancelButton)
-    }
-
-    override func viewDidAppear() {
-        super.viewDidAppear()
-        view.window?.makeFirstResponder(textField)
-    }
-
-    @objc private func saveMemory() {
-        let content = textField.stringValue
-        if !content.isEmpty {
-            delegate?.didSave(content: content)
-            textField.stringValue = ""
-            view.window?.close()
-        }
-    }
-
-    @objc private func cancel() {
-        textField.stringValue = ""
-        view.window?.close()
+    var body: some View {
+        VStack {
+            Text("Add a new memory").font(.headline).padding()
+            TextEditor(text: $memoryContent)
+                .padding()
+                .frame(minHeight: 100)
+                .border(Color.gray, width: 1)
+            HStack {
+                Button("Cancel") { window?.close() }
+                Button("Save") {
+                    if !memoryContent.isEmpty {
+                        memoryStore.addMemory(content: memoryContent)
+                        window?.close()
+                    }
+                }
+            }.padding()
+        }.padding().frame(width: 300, height: 250)
     }
 }
 
-// --- New Window Controller ---
-class AddMemoryWindowController: NSWindowController {
-    convenience init(delegate: AddMemoryDelegate) {
-        let viewController = AddMemoryViewController()
-        viewController.delegate = delegate
-        let window = NSWindow(contentViewController: viewController)
-        window.title = "Add New Memory"
-        window.styleMask.remove(.resizable)
-        self.init(window: window)
-    }
-}
-
-
-class AppDelegate: NSObject, NSApplicationDelegate, AddMemoryDelegate {
+// --- Main Application Logic (AppKit AppDelegate) ---
+class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem!
-    var memoryStore = MemoryStore()
-    private var addMemoryWindowController: AddMemoryWindowController?
+    let memoryStore = MemoryStore()
+    var addMemoryWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -122,14 +90,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, AddMemoryDelegate {
             button.image = NSImage(systemSymbolName: "star.fill", accessibilityDescription: "R3call")
         }
         setupMenu()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(setupMenu), name: .memoriesChanged, object: nil)
     }
 
-    func setupMenu() {
+    @objc func setupMenu() {
         let menu = NSMenu()
+        
         menu.addItem(withTitle: "Add Memory...", action: #selector(addMemoryAction), keyEquivalent: "n")
         menu.addItem(NSMenuItem.separator())
 
-        let recentMemories = memoryStore.getMemories().prefix(10)
+        let recentMemories = memoryStore.memories.prefix(10)
         if recentMemories.isEmpty {
             menu.addItem(withTitle: "No memories yet.", action: nil, keyEquivalent: "")
         } else {
@@ -142,30 +113,39 @@ class AppDelegate: NSObject, NSApplicationDelegate, AddMemoryDelegate {
         
         menu.addItem(NSMenuItem.separator())
         menu.addItem(withTitle: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        
         statusItem.menu = menu
     }
 
     @objc func addMemoryAction() {
+        if addMemoryWindow == nil {
+            let contentView = AddMemoryView(memoryStore: memoryStore)
+            let hostingView = NSHostingView(rootView: contentView)
+            let window = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 300, height: 250),
+                styleMask: [.titled, .closable],
+                backing: .buffered, defer: false
+            )
+            window.center()
+            window.setFrameAutosaveName("Add Memory")
+            window.contentView = hostingView
+            addMemoryWindow = window
+            // Pass the window reference to the view
+            (hostingView.rootView as! AddMemoryView).window = window
+        }
+
         NSApp.activate(ignoringOtherApps: true)
-        addMemoryWindowController = AddMemoryWindowController(delegate: self)
-        addMemoryWindowController?.window?.center()
-        addMemoryWindowController?.showWindow(self)
+        addMemoryWindow?.makeKeyAndOrderFront(nil)
     }
 
     @objc func memoryAction(sender: NSMenuItem) {
         if NSEvent.modifierFlags.contains(.option), let memoryId = sender.representedObject as? UUID {
             memoryStore.deleteMemory(withId: memoryId)
-            setupMenu()
         }
-    }
-    
-    // MARK: - AddMemoryDelegate
-    func didSave(content: String) {
-        memoryStore.addMemory(content: content)
-        setupMenu()
     }
 }
 
+// --- Application Entry Point ---
 let app = NSApplication.shared
 let delegate = AppDelegate()
 app.delegate = delegate

@@ -141,7 +141,7 @@ client.memories.add(
       {/* Main content wrapper */}
       <main className="flex-1">
         {/* Hero - Clean and minimal with enhanced effects */}
-        <div className="relative min-h-[75vh] flex items-center justify-center overflow-visible py-16">
+        <div className="relative min-h-[75vh] flex items-center justify-center overflow-visible py-16 md:py-20">
           {/* Floating dots */}
           <FloatingDots count={30} />
 
@@ -172,7 +172,7 @@ client.memories.add(
                 </span>
               </div>
 
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-8 leading-[1.15]">
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-8 leading-[1.15]">
                 <span className="text-white block">Persistent memory for</span>
                 <GradientText
                   gradient="from-gray-400 to-gray-600"
@@ -182,7 +182,7 @@ client.memories.add(
                 </GradientText>
               </h1>
 
-              <p className="mx-auto max-w-2xl text-lg text-gray-400 mb-10 font-light">
+              <p className="mx-auto max-w-2xl text-base sm:text-lg text-gray-400 mb-10 font-light">
                 Stop re-explaining your context. r3call gives LLMs intelligent
                 memory with
                 <span className="text-white"> real vector embeddings</span>,
@@ -476,7 +476,7 @@ client.memories.add(
                 description="Real vector embeddings, entity extraction, and knowledge graphs - all running locally"
                 icon={<Sparkles className="h-6 w-6 text-emerald-400" />}
                 gradient="from-emerald-500/20 to-blue-500/20"
-                span="col-span-3"
+                span="lg:col-span-3"
                 className="border-emerald-500/30"
               />
 
@@ -545,7 +545,7 @@ client.memories.add(
                 description="Embedded Redis server, no external dependencies"
                 icon={<Lock className="h-5 w-5 text-red-400" />}
                 gradient="from-red-900/20 to-orange-900/20"
-                span="col-span-3"
+                span="lg:col-span-3"
               />
             </BentoGrid>
           </Container>

@@ -1,11 +1,13 @@
 import SwiftUI
 
+// Data Model
 struct Memory: Codable, Identifiable {
     let id: UUID
     var content: String
     let createdAt: Date
 }
 
+// Data Store
 class MemoryStore: ObservableObject {
     @Published var memories: [Memory] = []
     private let fileURL: URL
@@ -31,9 +33,7 @@ class MemoryStore: ObservableObject {
         do {
             let data = try Data(contentsOf: fileURL)
             memories = try JSONDecoder().decode([Memory].self, from: data)
-        } catch {
-            // File might not exist yet, which is fine
-        }
+        } catch {}
     }
 
     private func saveMemories() {
@@ -46,6 +46,7 @@ class MemoryStore: ObservableObject {
     }
 }
 
+// Add Memory Window View
 struct AddMemoryView: View {
     @State private var memoryContent: String = ""
     @Environment(\.presentationMode) var presentationMode
@@ -81,8 +82,10 @@ struct AddMemoryView: View {
     }
 }
 
+
 @main
-struct MenuBarTemplateApp: App {
+struct MenuBarApp: App {
+    
     @StateObject private var memoryStore = MemoryStore()
 
     var body: some Scene {
@@ -115,9 +118,9 @@ struct MenuBarTemplateApp: App {
         )
         window.center()
         window.setFrameAutosaveName("Add Memory")
-        window.contentView = NSHostingView(rootView: AddMemoryView(memoryStore: memoryStore))
+        let contentView = AddMemoryView(memoryStore: memoryStore)
+        window.contentView = NSHostingView(rootView: contentView)
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
 }
-
