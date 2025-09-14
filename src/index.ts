@@ -1164,7 +1164,7 @@ server.setRequestHandler(
                 content: [
                   {
                     type: "text",
-                    text: `⚠ Duplicate ${Math.round(duplicateCheck.similarity! * 100)}% #${duplicateCheck.existingId?.substring(0, 8)} → skip_duplicate_check:true to force`,
+                    text: "Already saved",
                   },
                 ],
               };
@@ -1264,7 +1264,7 @@ server.setRequestHandler(
               content: [
                 {
                   type: "text",
-                  text: `✓ Queued #${jobId.substring(0, 8)} (processing...)`,
+                  text: "Saved",
                 },
               ],
             };
@@ -1287,7 +1287,7 @@ server.setRequestHandler(
               content: [
                 {
                   type: "text",
-                  text: `✓ ${result.length} ${result.length === 1 ? "memory" : "memories"} saved${args.priority === "high" ? " (priority cache)" : ""}`,
+                  text: "Saved",
                 },
               ],
             };
@@ -1318,28 +1318,50 @@ server.setRequestHandler(
                   ? `💾 local`
                   : `☁ cloud`;
 
-          // Ultra-compact inline results
-          const compactResults = results
-            .map((r, idx) => {
-              const preview = r.memory
-                ? r.memory.substring(0, 50).replace(/\n/g, " ") +
-                  (r.memory.length > 50 ? "…" : "")
-                : "";
-              const sym =
-                r.source === "redis_cache"
-                  ? "⚡"
-                  : r.source === "local"
-                    ? "💾"
-                    : "☁";
-              return `${sym}${idx + 1}.[${r.id?.substring(0, 6) || "?"}] ${preview}`;
-            })
-            .join(" • ");
+          // Clean, professional output with full content
+          if (results.length === 0) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: "No memories found",
+                },
+              ],
+            };
+          }
 
+          // Return full memory content formatted cleanly
+          const memories = results
+            .map((r) => {
+              // Clean up the memory text - remove excessive whitespace but keep content intact
+              const cleanMemory = r.memory
+                ? r.memory
+                    .replace(/\n\n+/g, "\n") // Collapse multiple newlines to single
+                    .replace(/[ \t]+/g, " ") // Collapse multiple spaces/tabs to single space
+                    .trim()
+                : "";
+              return cleanMemory;
+            })
+            .filter(m => m); // Remove empty memories
+
+          // Single memory - return it directly
+          if (memories.length === 1) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: memories[0],
+                },
+              ],
+            };
+          }
+
+          // Multiple memories - separate with clear delimiter
           return {
             content: [
               {
                 type: "text",
-                text: `${results.length}× (${sourceInfo}) → ${compactResults}`,
+                text: memories.join("\n---\n"),
               },
             ],
           };
@@ -1477,7 +1499,7 @@ server.setRequestHandler(
             content: [
               {
                 type: "text",
-                text: `${sourceSymbol}${memories.length}×${sourceLabel}${stats}`,
+                text: memories.length === 0 ? "No memories found" : `${memories.length} ${memories.length === 1 ? "memory" : "memories"} retrieved`,
               },
             ],
           };
@@ -1512,7 +1534,7 @@ server.setRequestHandler(
             content: [
               {
                 type: "text",
-                text: `✗ #${memoryId.substring(0, 8)}`,
+                text: "Deleted",
               },
             ],
           };
@@ -1632,7 +1654,7 @@ server.setRequestHandler(
         case "optimize_cache": {
           if (!redisClient) {
             return {
-              content: [{ type: "text", text: "Redis cache not available" }],
+              content: [{ type: "text", text: "Cache not available" }],
             };
           }
 
@@ -1689,7 +1711,7 @@ server.setRequestHandler(
             content: [
               {
                 type: "text",
-                text: `✓ Cache: ${l1Count}h/${l2Count}w/${cached}t`,
+                text: `Cache optimized: ${cached} memories ready`,
               },
             ],
           };
@@ -1698,7 +1720,7 @@ server.setRequestHandler(
         case "cache_stats": {
           if (!redisClient) {
             return {
-              content: [{ type: "text", text: "Redis cache not available" }],
+              content: [{ type: "text", text: "Cache not available" }],
             };
           }
 
@@ -1744,7 +1766,7 @@ server.setRequestHandler(
               content: [
                 {
                   type: "text",
-                  text: `Cache: ${cacheKeys.length}m/${keywordKeys.length}k • ${hitRate}% • ${memUsage} • Top:${topItems || "-"}${pendingMemories.size > 0 ? ` • ${pendingMemories.size}p` : ""}`,
+                  text: `${cacheKeys.length} memories cached`,
                 },
               ],
             };
@@ -1753,7 +1775,7 @@ server.setRequestHandler(
               content: [
                 {
                   type: "text",
-                  text: `Cache stats error: ${error.message}`,
+                  text: "Could not retrieve cache statistics",
                 },
               ],
             };
@@ -1761,20 +1783,16 @@ server.setRequestHandler(
         }
 
         case "sync_status": {
-          const status = [
-            redisClient ? "R✓" : "R✗",
-            pubSubClient ? "P✓" : "P✗",
-            jobQueue.size > 0 ? `J${jobQueue.size}` : null,
-            pendingMemories.size > 0 ? `Q${pendingMemories.size}` : null,
-          ]
-            .filter(Boolean)
-            .join(" ");
+          const pendingCount = pendingMemories.size + jobQueue.size;
+          const statusText = pendingCount > 0
+            ? `${pendingCount} operations pending`
+            : "All operations complete";
 
           return {
             content: [
               {
                 type: "text",
-                text: status,
+                text: statusText,
               },
             ],
           };
