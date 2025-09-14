@@ -543,21 +543,24 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
 
                 // Format content with proper truncation and fixed width
                 let content = memory.content || "";
-                const maxContentLength = 46;
+                const maxContentLength = 35; // Further reduced to ensure no wrapping
                 if (content.length > maxContentLength) {
                   content = content.substring(0, maxContentLength - 3) + "...";
                 } else {
                   content = content.padEnd(maxContentLength, " ");
                 }
 
-                // Format timestamp with fixed width
-                const timestamp = age ? `• ${age}` : "";
-                const timestampPadded = timestamp.padStart(10, " ");
+                // Format timestamp with fixed width (right-aligned)
+                const timestamp = age || "";
+                const timestampWidth = 6; // Reduced timestamp width
+                const timestampPadded = timestamp.length > timestampWidth
+                  ? timestamp.substring(0, timestampWidth)
+                  : timestamp.padStart(timestampWidth, " ");
 
                 // Build the formatted line with fixed positions
                 const arrow = isSelected ? "▶" : " ";
                 const num = String(actualIdx + 1).padStart(3, " ");
-                const line = `${arrow}   ${num} │ ${content} ${timestampPadded}`;
+                const line = `${arrow}   ${num} │ ${content}  • ${timestampPadded}`;
 
                 return (
                   <Text

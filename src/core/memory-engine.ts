@@ -140,9 +140,9 @@ export class MemoryEngine {
     try {
       this.redis = createClient({ url: this.redisUrl });
       await this.redis.connect();
-      console.log("✓ Redis cache connected");
+      // Silently connect - no console output
     } catch (error) {
-      console.warn("⚠ Redis unavailable, using local cache only");
+      // Redis unavailable, using local cache only
       this.redis = null;
     }
   }
@@ -184,9 +184,7 @@ export class MemoryEngine {
 
             this.stats.size = memories.length;
             this.recordOperation("cache_load", performance.now() - startTime);
-            console.log(
-              `✓ Loaded ${memories.length} memories into cache (${Math.round(performance.now() - startTime)}ms)`,
-            );
+            // Loaded memories into cache
           }
           resolve(undefined);
         },

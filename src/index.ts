@@ -305,9 +305,12 @@ async function initializeRedis(): Promise<boolean> {
       console.error("Redis Subscriber Error", err),
     );
 
-    await redisClient.connect();
-    await pubSubClient.connect();
-    await subscriberClient.connect();
+    // Connect all clients in parallel for faster startup
+    await Promise.all([
+      redisClient.connect(),
+      pubSubClient.connect(),
+      subscriberClient.connect()
+    ]);
 
     // Set up pub/sub for cache invalidation and async processing
     await setupPubSub();
@@ -1158,8 +1161,8 @@ log(`Redis: ${REDIS_URL}`);
 
 const server = new Server(
   {
-    name: "mem0-redis-hybrid",
-    version: "2.0.0",
+    name: "r3call",
+    version: "1.2.9",
   },
   {
     capabilities: {
@@ -2383,17 +2386,24 @@ export async function startServer() {
   }, 30000);
 
   try {
-    debugLog("Initializing Redis...");
-    const redisSuccess = await initializeRedis();
-    debugLog("Redis initialization result:", { success: redisSuccess });
-
     debugLog("Creating transport...");
     const transport = new StdioServerTransport();
 
-    debugLog("Connecting server...");
+    debugLog("Connecting server immediately...");
     await server.connect(transport);
 
     clearTimeout(startupTimeout);
+
+    // Initialize Redis in background after server is ready
+    debugLog("Initializing Redis in background...");
+    initializeRedis().then((redisSuccess) => {
+      debugLog("Redis initialization result:", { success: redisSuccess });
+      if (redisSuccess) {
+        log("  ✓ Redis cache ready");
+      }
+    }).catch((error) => {
+      debugLog("Redis initialization failed:", error);
+    });
     log("✓ r3call MCP Server v2.0 running successfully");
     log(`  Mode: ${MODE.toUpperCase()}`);
     log(`  Redis: ${redisClient ? "Connected" : "Fallback"}`);
