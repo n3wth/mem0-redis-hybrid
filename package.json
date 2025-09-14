@@ -9,7 +9,7 @@
     "r3": "dist/cli-main.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp src/lib/spacy_bridge.py dist/lib/ 2>/dev/null || true",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts --debug",
     "test": "node test/run-tests.js",
