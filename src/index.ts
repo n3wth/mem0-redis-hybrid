@@ -12,6 +12,9 @@ import {
 import fetch from "node-fetch";
 import * as crypto from "crypto";
 import { createClient, RedisClientType } from "redis";
+import { LocalMemory } from "./lib/local-memory.js";
+import { EntityExtractor } from "./lib/entity-extractor.js";
+import { EnhancedVectraMemory } from "./lib/enhanced-vectra-memory.js";
 
 // Type definitions
 interface Memory {
@@ -79,6 +82,9 @@ const QUIET_MODE =
 let redisClient: RedisClientType | null = null;
 let pubSubClient: RedisClientType | null = null;
 let subscriberClient: RedisClientType | null = null;
+let localMemory: LocalMemory | null = null;
+let entityExtractor: EntityExtractor | null = null;
+let enhancedVectra: EnhancedVectraMemory | null = null;
 
 // Intelligence mode configuration - Enhanced by default!
 let INTELLIGENCE_MODE =
@@ -208,11 +214,40 @@ async function initializeRedis(): Promise<boolean> {
 
       debugLog("Found existing Redis on localhost:6379, using it");
       process.env.REDIS_URL = "redis://localhost:6379";
+
+      // Still need to initialize LocalMemory for local mode API
+      if (MODE === "local") {
+        debugLog("Initializing LocalMemory for local API...");
+        localMemory = new LocalMemory(QUIET_MODE);
+        await localMemory.start();
+      }
     } catch {
-      // No existing Redis, fallback to demo mode
-      console.error("No existing Redis found, falling back to demo mode (in-memory only)");
-      MODE = "demo";
-      return false;
+      // No existing Redis, start embedded LocalMemory
+      try {
+        debugLog("Starting embedded Redis server...");
+        localMemory = new LocalMemory(QUIET_MODE);
+        await localMemory.start();
+
+        // Get the Redis clients from LocalMemory
+        redisClient = localMemory.getClient();
+        pubSubClient = localMemory.getPubClient();
+        subscriberClient = localMemory.getSubClient();
+
+        debugLog("Embedded Redis started successfully");
+
+        // Set up pub/sub for cache invalidation and async processing
+        await setupPubSub();
+
+        // Start background sync worker
+        startBackgroundSync();
+
+        return true;
+      } catch (err) {
+        console.error("Failed to start embedded Redis:", err);
+        console.error("Falling back to demo mode (in-memory only)");
+        MODE = "demo";
+        return false;
+      }
     }
   }
 
@@ -2340,6 +2375,22 @@ export async function startServer() {
     await server.connect(transport);
 
     clearTimeout(startupTimeout);
+
+    // Initialize enhanced features if enabled
+    if (INTELLIGENCE_MODE === "enhanced") {
+      try {
+        debugLog("Initializing enhanced AI features...");
+        entityExtractor = new EntityExtractor(QUIET_MODE);
+        enhancedVectra = new EnhancedVectraMemory();
+        await enhancedVectra.initialize();
+        debugLog("Enhanced AI features initialized");
+      } catch (error: any) {
+        debugLog("Enhanced features initialization failed:", error.message);
+        // Continue without enhanced features
+        entityExtractor = null;
+        enhancedVectra = null;
+      }
+    }
 
     // Initialize Redis in background after server is ready
     debugLog("Initializing Redis in background...");

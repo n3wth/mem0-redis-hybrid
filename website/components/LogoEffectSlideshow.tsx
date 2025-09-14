@@ -18,7 +18,7 @@ export function LogoEffectSlideshow() {
     {
       name: 'gradient-glow',
       overlay: (
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 blur-xl opacity-30 animate-pulse pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 blur-xl opacity-30 animate-pulse pointer-events-none" style={{ animationDuration: '2s' }}></div>
       )
     },
     // Quantum Dots
@@ -51,13 +51,6 @@ export function LogoEffectSlideshow() {
         <div className="absolute -inset-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg opacity-50 blur-md animate-subtle-morph pointer-events-none"></div>
       )
     },
-    // Shimmer Effect
-    {
-      name: 'shimmer',
-      overlay: (
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 -skew-x-12 animate-shimmer pointer-events-none overflow-hidden"></div>
-      )
-    },
     // Breathing Glow
     {
       name: 'breathing',
@@ -65,13 +58,6 @@ export function LogoEffectSlideshow() {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-pink-400/20 blur-lg rounded-lg animate-breathe pointer-events-none"></div>
       )
     },
-    // Data Stream
-    {
-      name: 'data-stream',
-      overlay: (
-        <div className="absolute -bottom-1 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-blue-400/60 to-transparent animate-data-flow pointer-events-none"></div>
-      )
-    }
   ];
 
   // Cycle through effects every 4 seconds
@@ -86,12 +72,12 @@ export function LogoEffectSlideshow() {
   return (
     <Link
       href="/"
-      className="relative inline-block text-3xl font-semibold text-white"
+      className="relative inline-flex items-center text-3xl font-semibold text-white"
       style={{ fontFamily: "var(--font-brand)" }}
     >
       {/* The actual logo text (always visible) */}
       <span className="relative z-10">
-        r<span className="relative top-[0.15em] text-2xl">3</span>
+        r<span className="relative -top-[0.15em] text-2xl">3</span>
       </span>
 
       {/* Animated overlay effects with fade transitions */}

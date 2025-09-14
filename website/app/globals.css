@@ -97,8 +97,73 @@
   }
 }
 
+@keyframes aurora {
+  0%, 100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-100%);
+    opacity: 0.3;
+  }
+  80% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
 .animate-spin-slow {
   animation: spin-slow 3s linear infinite;
+}
+
+.animate-aurora {
+  animation: aurora 20s ease-in-out infinite;
+}
+
+.animate-gradient {
+  animation: gradient 8s ease infinite;
+  background-size: 300% 300%;
+}
+
+.bg-300\% {
+  background-size: 300% 300%;
+}
+
+/* Parallax layers for depth */
+.parallax-back {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.parallax-mid {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.parallax-front {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Apply parallax on scroll */
+.parallax-back {
+  transform: translate(-50%, -50%) translateY(calc(var(--scroll-y, 0) * -5px)) scale(calc(1 - var(--scroll-y, 0) * 0.02));
+}
+
+.parallax-mid {
+  transform: translate(-50%, -50%) translateY(calc(var(--scroll-y, 0) * -10px)) scale(calc(1 - var(--scroll-y, 0) * 0.03));
+}
+
+.parallax-front {
+  transform: translate(-50%, -50%) translateY(calc(var(--scroll-y, 0) * -15px)) scale(calc(1 - var(--scroll-y, 0) * 0.04));
 }
 
 .glass-effect {

@@ -1,0 +1,60 @@
+import js from '@eslint/js';
+
+export default [
+  js.configs.recommended,
+  {
+    files: ['**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        exports: 'writable',
+        module: 'writable',
+        require: 'readonly',
+        global: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        Promise: 'readonly',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+      }],
+      'no-console': 'off',
+      'semi': 'off',
+      'quotes': 'off',
+      'indent': 'off',
+      'comma-dangle': 'off',
+      'no-trailing-spaces': 'off',
+      'eol-last': 'off',
+      'no-multiple-empty-lines': 'off',
+      'no-undef': 'off',
+    },
+  },
+  {
+    ignores: [
+      'node_modules/**',
+      'dist/**',
+      '.vercel/**',
+      'coverage/**',
+      '*.min.js',
+      'website/**',
+      'mac-menubar-app/**',
+      'r3call-swift-app/**',
+      'r3call-cli/**',
+      '**/*.ts',
+      '**/*.tsx',
+      '**/*.d.ts',
+    ],
+  },
+];

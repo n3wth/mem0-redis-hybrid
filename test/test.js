@@ -39,7 +39,7 @@ class TestRunner {
       if (testKeys.length > 0) {
         await this.redisClient.del(...testKeys);
       }
-    } catch (error) {
+    } catch (_error) {
       console.log(
         `${colors.yellow}⚠ Redis not available - some tests will be skipped${colors.reset}`,
       );
@@ -125,7 +125,7 @@ class TestRunner {
               }
             }
           }
-        } catch (e) {
+        } catch (_e) {
           // Continue collecting data
         }
       });

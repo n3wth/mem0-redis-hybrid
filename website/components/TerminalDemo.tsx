@@ -272,21 +272,37 @@ const demos = [
 export function TerminalDemo() {
   const [currentDemo, setCurrentDemo] = useState(0);
   const [key, setKey] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     const interval = setInterval(() => {
       setCurrentDemo((prev) => (prev + 1) % demos.length);
       setKey((prev) => prev + 1); // Force re-render for animations
-    }, 12000); // Switch every 12 seconds
+    }, 18000); // Switch every 18 seconds - slower rotation
 
     return () => clearInterval(interval);
-  }, []);
+  }, [mounted]);
 
   const demo = demos[currentDemo];
 
+  // Don't render anything until mounted to avoid hydration issues
+  if (!mounted) {
+    return (
+      <div className="w-full h-auto min-h-[400px] sm:h-[500px] flex items-center justify-center">
+        <div className="text-gray-500">Loading terminal...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full h-[600px] flex flex-col items-center justify-start p-2 sm:p-4">
-      <div className="text-center mb-4 h-[60px] flex flex-col justify-center">
+    <div className="w-full h-auto min-h-[400px] sm:h-[500px] flex flex-col items-center justify-center p-2 sm:p-4">
+      <div className="text-center mb-4">
         <h3 className="text-lg font-semibold text-white mb-1">{demo.title}</h3>
         <div className="flex gap-2 justify-center">
           {demos.map((_, index) => (
@@ -307,8 +323,8 @@ export function TerminalDemo() {
         </div>
       </div>
 
-      <div className="w-full flex-1 flex items-center justify-center overflow-hidden">
-        <Terminal key={key} className="h-[480px] w-full max-w-4xl">
+      <div className="w-full max-w-4xl">
+        <Terminal key={key} className="w-full max-w-4xl">
           {demo.commands.map((cmd, index) => {
             if (cmd.type === "typing") {
               return (

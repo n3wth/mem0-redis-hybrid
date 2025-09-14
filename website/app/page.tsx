@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState, lazy, Suspense } from "react";
+import { motion } from "framer-motion";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Container } from "@/components/Grid";
@@ -145,24 +146,26 @@ client.memories.add(
       {/* Main content wrapper */}
       <main className="flex-1">
         {/* Hero - Clean and minimal with enhanced effects */}
-        <div className="relative min-h-[60vh] sm:min-h-[75vh] flex items-center justify-center overflow-visible py-12 sm:py-16 md:py-20">
+        <div className="relative min-h-[60vh] sm:min-h-[75vh] flex items-center justify-center overflow-visible -mt-20 pt-32 sm:pt-36 md:pt-40">
           {/* Memory visualization - hidden on mobile for cleaner experience */}
-          <div className="hidden sm:block">
+          <div className="hidden sm:block absolute inset-0">
             <MemoryVisualization />
           </div>
 
-          {/* Subtle animated gradient background */}
+          {/* Enhanced animated gradient background with depth */}
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-black to-blue-900/10" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,100,255,0.05),transparent_50%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(100,150,255,0.05),transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,100,255,0.08),transparent_50%)] animate-pulse" style={{ animationDuration: '8s' }} />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(100,150,255,0.08),transparent_50%)] animate-pulse" style={{ animationDuration: '10s', animationDelay: '1s' }} />
+            {/* New aurora-like gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-transparent via-purple-500/[0.03] to-transparent transform translate-y-full animate-aurora" />
           </div>
 
           <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
             <div className="mx-auto max-w-4xl">
               {/* Professional value prop badge - simplified for mobile */}
               <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/[0.03] backdrop-blur-sm px-3 py-1.5 text-xs font-medium border border-white/[0.08]">
-                <span className="text-gray-300 sm:hidden">Persistent AI Memory</span>
+                <span className="text-white sm:hidden">Persistent AI Memory</span>
                 <span className="hidden sm:inline-flex sm:items-center sm:gap-3">
                   <span className="text-purple-300">Lightning-fast cache</span>
                   <span className="text-white/40">×</span>
@@ -173,14 +176,26 @@ client.memories.add(
               </div>
 
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-8 leading-[1.15]">
-                <span className="text-white block">Give your AI</span>
-                <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent inline-block mt-1">
+                <motion.span
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-white block"
+                >
+                  Give your AI
+                </motion.span>
+                <motion.span
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-white inline-block mt-1"
+                >
                   permanent memory
-                </span>
+                </motion.span>
               </h1>
 
               {/* Mobile-first subtitle */}
-              <p className="mx-auto max-w-2xl text-base sm:text-base lg:text-lg text-gray-400 mb-8 sm:mb-10 font-light leading-relaxed px-4 sm:px-0">
+              <p className="mx-auto max-w-2xl text-base sm:text-base lg:text-lg text-white/90 mb-8 sm:mb-10 font-light leading-relaxed px-4 sm:px-0">
                 <span className="sm:hidden">
                   Context that persists across every AI conversation. Works with Claude, GPT, and Gemini.
                 </span>
@@ -192,10 +207,12 @@ client.memories.add(
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <button
                   onClick={() => copyToClipboard("npx r3")}
-                  className="group relative inline-flex items-center gap-2 px-6 py-3 text-base font-medium rounded-lg bg-white text-black transition-all cursor-pointer overflow-hidden hover:scale-105"
+                  className="group relative inline-flex items-center gap-2 px-6 py-3 text-base font-medium rounded-lg bg-white text-black transition-all cursor-pointer overflow-hidden hover:scale-105 shadow-[0_0_40px_rgba(255,255,255,0.1)] hover:shadow-[0_0_60px_rgba(255,255,255,0.2)]"
                 >
                   {/* Shimmer effect */}
                   <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                  {/* Glow effect */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-purple-400 to-blue-400 rounded-lg opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500" />
 
                   <code className="font-mono relative">npx r3</code>
                   {copied ? (
@@ -214,35 +231,55 @@ client.memories.add(
                 </Link>
               </div>
 
-              {/* Stats - Simplified for mobile */}
+              {/* Stats - Enhanced with animations */}
               <div className="mt-16 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 max-w-3xl mx-auto">
-                <div className="text-center">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-center"
+                >
                   <div className="text-xl sm:text-2xl font-light text-white">
-                    5ms
+                    <AnimatedCounter end={5} suffix="ms" duration={1.5} />
                   </div>
-                  <div className="text-xs sm:text-sm text-gray-500">Response time</div>
-                </div>
+                  <div className="text-xs sm:text-sm text-white/60">Response time</div>
+                </motion.div>
 
-                <div className="text-center">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-center"
+                >
                   <div className="text-xl sm:text-2xl font-light text-white">
                     ∞
                   </div>
-                  <div className="text-xs sm:text-sm text-gray-500">Memory retention</div>
-                </div>
+                  <div className="text-xs sm:text-sm text-white/60">Memory retention</div>
+                </motion.div>
 
-                <div className="text-center sm:block hidden">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-center sm:block hidden"
+                >
                   <div className="text-xl sm:text-2xl font-light text-white">
-                    100%
+                    <AnimatedCounter end={100} suffix="%" duration={1.5} />
                   </div>
-                  <div className="text-xs sm:text-sm text-gray-500">Privacy-first</div>
-                </div>
+                  <div className="text-xs sm:text-sm text-white/60">Privacy-first</div>
+                </motion.div>
 
-                <div className="text-center sm:block hidden">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-center sm:block hidden"
+                >
                   <div className="text-xl sm:text-2xl font-light text-white">
-                    0
+                    <AnimatedCounter end={0} duration={1.5} />
                   </div>
-                  <div className="text-xs sm:text-sm text-gray-500">Configuration</div>
-                </div>
+                  <div className="text-xs sm:text-sm text-white/60">Configuration</div>
+                </motion.div>
               </div>
             </div>
           </div>

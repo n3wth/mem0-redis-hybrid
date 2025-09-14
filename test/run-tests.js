@@ -18,7 +18,7 @@ const testProcess = spawn("node", ["--test", "test/test-suite.js"], {
 });
 
 // Also run intelligence tests
-const intelligenceTest = spawn("node", ["test/test-intelligence.js"], {
+const _intelligenceTest = spawn("node", ["test/test-intelligence.js"], {
   stdio: "inherit",
   env: {
     ...process.env,
@@ -36,7 +36,7 @@ const timeout = setTimeout(() => {
   }, 1000);
 }, 15000);
 
-testProcess.on("exit", (code) => {
+testProcess.on("exit", (_code) => {
   clearTimeout(timeout);
   // Always exit successfully for prepublish
   process.exit(0);

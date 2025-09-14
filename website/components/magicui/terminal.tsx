@@ -16,7 +16,6 @@ export const Terminal = ({ children, className }: TerminalProps) => {
         "mx-auto rounded-lg border border-zinc-800 bg-zinc-950 shadow-2xl",
         className,
       )}
-      suppressHydrationWarning
     >
       <div className="flex items-center gap-2 border-b border-zinc-800 bg-zinc-900 px-3 sm:px-4 py-2 sm:py-3 rounded-t-lg">
         <div className="flex gap-1.5 sm:gap-2">
@@ -30,8 +29,8 @@ export const Terminal = ({ children, className }: TerminalProps) => {
           </span>
         </div>
       </div>
-      <div className="p-3 sm:p-4 font-mono text-xs sm:text-sm overflow-x-auto flex-1 min-h-[400px]">
-        <div className="space-y-1 sm:space-y-2">{children}</div>
+      <div className="p-3 sm:p-4 font-mono text-xs sm:text-sm overflow-x-auto flex-1 min-h-[300px] sm:min-h-[400px]">
+        <div className="space-y-1 sm:space-y-2" suppressHydrationWarning>{children}</div>
       </div>
     </div>
   );
@@ -59,9 +58,14 @@ export const AnimatedSpan = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={isVisible ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0, y: 5, scale: 0.98 }}
+      animate={isVisible ? { opacity: 1, y: 0, scale: 1 } : {}}
+      transition={{
+        type: "spring",
+        stiffness: 350,
+        damping: 30,
+        mass: 0.8
+      }}
       className={cn("", className)}
     >
       {React.Children.map(children, (child, index) => (
@@ -84,7 +88,7 @@ export const TypingAnimation = ({
   children,
   className,
   delay = 0,
-  duration = 50,
+  duration = 60,
 }: TypingAnimationProps) => {
   const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -120,13 +124,14 @@ export const TypingAnimation = ({
       {displayedText}
       {isTyping && displayedText.length < children.length && (
         <motion.span
-          animate={{ opacity: [1, 0] }}
+          animate={{ opacity: [1, 0.2] }}
           transition={{
-            duration: 0.5,
+            duration: 0.8,
             repeat: Infinity,
             repeatType: "reverse",
+            ease: [0.25, 0.1, 0.25, 1] // Apple's standard ease
           }}
-          className="inline-block w-2 h-4 bg-current ml-1"
+          className="inline-block w-2 h-4 bg-current ml-1 rounded-sm"
         />
       )}
     </div>

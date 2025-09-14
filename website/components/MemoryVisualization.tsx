@@ -1,99 +1,28 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
 
 interface MemoryNode {
   id: string;
   x: number;
   y: number;
-  type: "work" | "personal" | "knowledge" | "project" | "context";
+  z: number;
+  type: string;
   label: string;
-  size: number;
-  connections: string[];
   color: string;
-  glow: string;
+  size: number;
   pulseDelay: number;
-  velocity: { x: number; y: number };
-  importance: number;
+  floatOffset: number;
+  floatDuration: number;
 }
 
 interface Connection {
-  from: string;
-  to: string;
+  id: string;
+  source: string;
+  target: string;
   strength: number;
-  active: boolean;
-}
-
-const memoryTypes = {
-  work: {
-    color: "rgb(59, 130, 246)", // blue
-    gradient: "from-blue-400 to-blue-600",
-    glow: "rgba(59, 130, 246, 0.6)",
-    shadowColor: "rgba(59, 130, 246, 0.3)",
-    labels: ["Dashboard setup", "API endpoints", "TypeScript patterns", "Team context", "Sprint planning", "Code reviews"]
-  },
-  personal: {
-    color: "rgb(168, 85, 247)", // purple
-    gradient: "from-purple-400 to-purple-600",
-    glow: "rgba(168, 85, 247, 0.6)",
-    shadowColor: "rgba(168, 85, 247, 0.3)",
-    labels: ["Family events", "Emma's robotics", "Josh's dinosaurs", "Weekend plans", "Health reminders", "Personal goals"]
-  },
-  knowledge: {
-    color: "rgb(16, 185, 129)", // emerald
-    gradient: "from-emerald-400 to-emerald-600",
-    glow: "rgba(16, 185, 129, 0.6)",
-    shadowColor: "rgba(16, 185, 129, 0.3)",
-    labels: ["React hooks", "Best practices", "Documentation", "Library APIs", "Design patterns", "Performance tips"]
-  },
-  project: {
-    color: "rgb(251, 146, 60)", // orange
-    gradient: "from-orange-400 to-orange-600",
-    glow: "rgba(251, 146, 60, 0.6)",
-    shadowColor: "rgba(251, 146, 60, 0.3)",
-    labels: ["Feature specs", "Deadlines", "Dependencies", "Architecture", "Requirements", "Milestones"]
-  },
-  context: {
-    color: "rgb(236, 72, 153)", // pink
-    gradient: "from-pink-400 to-pink-600",
-    glow: "rgba(236, 72, 153, 0.6)",
-    shadowColor: "rgba(236, 72, 153, 0.3)",
-    labels: ["Session history", "Preferences", "Past decisions", "User patterns", "Conversations", "Learning progress"]
-  }
-};
-
-function DataStream({ from, to, color }: { from: { x: number; y: number }, to: { x: number; y: number }, color: string }) {
-  return (
-    <motion.circle
-      r="3"
-      fill={color}
-      filter="url(#glow)"
-      initial={{
-        cx: from.x,
-        cy: from.y,
-        opacity: 0
-      }}
-      animate={{
-        cx: to.x,
-        cy: to.y,
-        opacity: [0, 1, 1, 0]
-      }}
-      transition={{
-        duration: 1.5,
-        ease: "linear",
-        repeat: Infinity,
-        repeatDelay: Math.random() * 2
-      }}
-    >
-      <animate
-        attributeName="r"
-        values="2;4;2"
-        dur="1.5s"
-        repeatCount="indefinite"
-      />
-    </motion.circle>
-  );
+  particles?: boolean;
 }
 
 interface Particle {
@@ -108,12 +37,20 @@ interface Particle {
   delay: number;
 }
 
+const memoryTypes = {
+  user: { color: "#8b5cf6", label: "User Context" },
+  project: { color: "#3b82f6", label: "Project Memory" },
+  code: { color: "#06b6d4", label: "Code Patterns" },
+  api: { color: "#10b981", label: "API Keys" },
+  knowledge: { color: "#f59e0b", label: "Knowledge Base" },
+  workflow: { color: "#ec4899", label: "Workflows" },
+};
+
 export function MemoryVisualization() {
   const [nodes, setNodes] = useState<MemoryNode[]>([]);
   const [connections, setConnections] = useState<Connection[]>([]);
-  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+  const [highlightedNode, setHighlightedNode] = useState<string | null>(null);
   const [activeConnections, setActiveConnections] = useState<Set<string>>(new Set());
-  const [showcaseNode, setShowcaseNode] = useState<string | null>(null);
   const [particles, setParticles] = useState<Particle[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number | undefined>(undefined);
@@ -144,439 +81,363 @@ export function MemoryVisualization() {
     const centerX = 50;
     const centerY = 50;
 
-    // Create nodes for each type with better distribution
-    types.forEach((type, typeIndex) => {
-      // Create 5-7 nodes per type for richer visualization
-      const nodeCount = Math.floor(Math.random() * 3) + 5;
+    // Generate main nodes
+    types.forEach((type, index) => {
+      const angle = (index / types.length) * Math.PI * 2;
+      const radius = 30 + Math.random() * 10;
+      const node: MemoryNode = {
+        id: `main-${type}`,
+        x: centerX + Math.cos(angle) * radius,
+        y: centerY + Math.sin(angle) * radius,
+        z: Math.random() * 0.5 + 0.5,
+        type,
+        label: memoryTypes[type].label,
+        color: memoryTypes[type].color,
+        size: 8 + Math.random() * 4,
+        pulseDelay: Math.random() * 2,
+        floatOffset: Math.random() * Math.PI * 2,
+        floatDuration: 20 + Math.random() * 10,
+      };
+      newNodes.push(node);
 
-      for (let i = 0; i < nodeCount; i++) {
-        const importance = Math.random() * 0.5 + 0.5;
-
-        // Mix of distribution strategies for better coverage
-        let x, y;
-
-        if (i === 0) {
-          // Place first node of each type in corners for guaranteed corner coverage
-          const corners = [
-            { x: 15, y: 15 }, // top-left
-            { x: 85, y: 15 }, // top-right
-            { x: 15, y: 85 }, // bottom-left
-            { x: 85, y: 85 }, // bottom-right
-            { x: 50, y: 10 }, // top-center
-          ];
-          const corner = corners[typeIndex % corners.length];
-          x = corner.x + (Math.random() - 0.5) * 10;
-          y = corner.y + (Math.random() - 0.5) * 10;
-        } else if (i === 1 || i === 2) {
-          // Place some nodes along the edges
-          const edge = Math.random();
-          if (edge < 0.25) {
-            // Top edge
-            x = Math.random() * 70 + 15;
-            y = Math.random() * 15 + 5;
-          } else if (edge < 0.5) {
-            // Bottom edge
-            x = Math.random() * 70 + 15;
-            y = Math.random() * 15 + 80;
-          } else if (edge < 0.75) {
-            // Left edge
-            x = Math.random() * 15 + 5;
-            y = Math.random() * 50 + 25;
-          } else {
-            // Right edge
-            x = Math.random() * 15 + 80;
-            y = Math.random() * 50 + 25;
-          }
-        } else {
-          // Distribute remaining nodes in a ring pattern but wider
-          const angle = (typeIndex * 2 * Math.PI) / types.length + (i * Math.PI / 4);
-          const radius = 30 + Math.random() * 20; // Wider radius range
-          x = centerX + Math.cos(angle) * radius;
-          y = centerY + Math.sin(angle) * radius;
-
-          // Push nodes away from center text area
-          if (Math.abs(x - 50) < 25 && Math.abs(y - 50) < 20) {
-            // If too close to center, push outward
-            x = x < 50 ? x - 15 : x + 15;
-            y = y < 50 ? y - 10 : y + 10;
-          }
-        }
-
-        // Ensure nodes stay within bounds
-        x = Math.max(5, Math.min(95, x));
-        y = Math.max(5, Math.min(95, y));
-
-        const node: MemoryNode = {
-          id: `${type}-${i}`,
-          x,
-          y,
+      // Add satellite nodes
+      const satelliteCount = 2 + Math.floor(Math.random() * 2);
+      for (let j = 0; j < satelliteCount; j++) {
+        const satelliteAngle = (j / satelliteCount) * Math.PI * 2;
+        const satelliteRadius = 8 + Math.random() * 4;
+        const satellite: MemoryNode = {
+          id: `${type}-satellite-${j}`,
+          x: node.x + Math.cos(satelliteAngle) * satelliteRadius,
+          y: node.y + Math.sin(satelliteAngle) * satelliteRadius,
+          z: Math.random() * 0.3,
           type,
-          label: memoryTypes[type].labels[i % memoryTypes[type].labels.length],
-          size: 3 + importance * 5,
-          connections: [],
+          label: "",
           color: memoryTypes[type].color,
-          glow: memoryTypes[type].glow,
-          pulseDelay: Math.random() * 3,
-          velocity: {
-            x: (Math.random() - 0.5) * 0.1,
-            y: (Math.random() - 0.5) * 0.1
-          },
-          importance
+          size: 3 + Math.random() * 2,
+          pulseDelay: Math.random() * 2,
+          floatOffset: Math.random() * Math.PI * 2,
+          floatDuration: 15 + Math.random() * 10,
         };
-        newNodes.push(node);
+        newNodes.push(satellite);
+
+        // Connect satellite to main node
+        newConnections.push({
+          id: `${node.id}-${satellite.id}`,
+          source: node.id,
+          target: satellite.id,
+          strength: 0.3 + Math.random() * 0.2,
+        });
       }
     });
 
-    // Create intelligent connections based on node proximity and type relationships
-    const typeRelationships = {
-      work: ['project', 'knowledge', 'context'],
-      personal: ['context', 'work'],
-      knowledge: ['work', 'project', 'context'],
-      project: ['work', 'knowledge', 'context'],
-      context: ['work', 'personal', 'knowledge', 'project']
-    };
+    // Create more cross-connections between main nodes
+    for (let i = 0; i < types.length; i++) {
+      for (let j = i + 1; j < types.length; j++) {
+        // Always create connections between adjacent nodes
+        newConnections.push({
+          id: `main-${types[i]}-main-${types[j]}`,
+          source: `main-${types[i]}`,
+          target: `main-${types[j]}`,
+          strength: 0.1 + Math.random() * 0.2,
+          particles: Math.random() > 0.3, // 70% chance of particles
+        });
+      }
+    }
 
-    newNodes.forEach((node) => {
-      const relatedTypes = typeRelationships[node.type];
-      const potentialConnections = newNodes.filter(n =>
-        n.id !== node.id &&
-        (relatedTypes.includes(n.type) || n.type === node.type) &&
-        !node.connections.includes(n.id)
-      );
-
-      // Create 2-4 connections per node
-      const connectionCount = Math.min(
-        Math.floor(Math.random() * 3) + 2,
-        potentialConnections.length
-      );
-
-      // Sort by distance and prefer closer nodes
-      potentialConnections.sort((a, b) => {
-        const distA = Math.hypot(a.x - node.x, a.y - node.y);
-        const distB = Math.hypot(b.x - node.x, b.y - node.y);
-        return distA - distB;
-      });
-
-      for (let i = 0; i < connectionCount; i++) {
-        const target = potentialConnections[i];
-        if (target && !node.connections.includes(target.id)) {
-          node.connections.push(target.id);
-
-          // Check if connection already exists in reverse
-          const existingConnection = newConnections.find(
-            c => (c.from === target.id && c.to === node.id)
+    // Add some satellite-to-satellite connections
+    for (let i = 0; i < newNodes.length; i++) {
+      for (let j = i + 1; j < newNodes.length; j++) {
+        const node1 = newNodes[i];
+        const node2 = newNodes[j];
+        if (node1.id.includes('satellite') && node2.id.includes('satellite')) {
+          const distance = Math.sqrt(
+            Math.pow(node1.x - node2.x, 2) + Math.pow(node1.y - node2.y, 2)
           );
-
-          if (!existingConnection) {
+          if (distance < 15 && Math.random() > 0.6) {
             newConnections.push({
-              from: node.id,
-              to: target.id,
-              strength: 0.3 + Math.random() * 0.5 + node.importance * 0.2,
-              active: Math.random() > 0.7
+              id: `${node1.id}-${node2.id}`,
+              source: node1.id,
+              target: node2.id,
+              strength: 0.05 + Math.random() * 0.1,
+              particles: Math.random() > 0.5,
             });
           }
         }
       }
-    });
+    }
 
     setNodes(newNodes);
     setConnections(newConnections);
-
-    // Animate active connections - much less frequent
-    const connectionInterval = setInterval(() => {
-      setActiveConnections(prev => {
-        const next = new Set<string>();
-        newConnections.forEach(conn => {
-          if (Math.random() > 0.95) { // Much less frequent
-            next.add(`${conn.from}-${conn.to}`);
-          }
-        });
-        return next;
-      });
-    }, 3000); // Slower interval
-
-    // Showcase nodes in safe areas only - continuous rotation
-    let showcaseIndex = 0;
-    const showcaseInterval = setInterval(() => {
-      // Only showcase nodes in the corners/edges where there's no text
-      const safeNodes = newNodes.filter(node => {
-        // Top-left and top-right corners (above the hero text)
-        const inTopCorners = node.y < 25 && (node.x < 20 || node.x > 80);
-
-        // Bottom-left and bottom-right corners (below the stats)
-        const inBottomCorners = node.y > 75 && (node.x < 20 || node.x > 80);
-
-        // Far left and far right edges (beside the content)
-        const onSideEdges = (node.x < 15 || node.x > 85) && node.y > 30 && node.y < 70;
-
-        return inTopCorners || inBottomCorners || onSideEdges;
-      });
-
-      if (safeNodes.length > 0) {
-        // Show next label (overlapping with fade)
-        const nodeToShowcase = safeNodes[showcaseIndex % safeNodes.length];
-        setShowcaseNode(nodeToShowcase.id);
-
-        showcaseIndex = (showcaseIndex + 1) % safeNodes.length;
-      }
-    }, 2500); // Continuous rotation every 2.5 seconds
-
-    return () => {
-      clearInterval(connectionInterval);
-      clearInterval(showcaseInterval);
-    };
   }, []);
 
-  // Calculate node positions for smooth floating animation
-  const animatedNodes = useMemo(() => {
-    return nodes.map(node => ({
-      ...node,
-      animatedX: node.x + Math.sin(Date.now() / 3000 + node.pulseDelay) * 2,
-      animatedY: node.y + Math.cos(Date.now() / 3000 + node.pulseDelay) * 2
-    }));
-  }, [nodes]);
+  // Only activate connections on hover, no random activations
+
+  // Clean up animation frame
+  useEffect(() => {
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div
       ref={containerRef}
       className="absolute inset-0 overflow-hidden"
     >
-      {/* SVG for connections and effects */}
-      <svg className="absolute inset-0 w-full h-full">
+      {/* Background gradient */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-transparent to-blue-900/10" />
+        <div className="absolute inset-0 bg-gradient-to-tl from-cyan-900/5 via-transparent to-pink-900/5" />
+        {/* Outer edge brightness */}
+        <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-white/[0.02]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_50%,rgba(139,92,246,0.05)_90%,rgba(139,92,246,0.08)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,transparent_0%,transparent_40%,rgba(59,130,246,0.06)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,transparent_0%,transparent_40%,rgba(6,182,212,0.06)_100%)]" />
+      </div>
+
+      {/* Connections */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none">
         <defs>
-          {/* Glow filter */}
+          <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="rgba(139, 92, 246, 0.4)" />
+            <stop offset="50%" stopColor="rgba(59, 130, 246, 0.4)" />
+            <stop offset="100%" stopColor="rgba(6, 182, 212, 0.4)" />
+          </linearGradient>
           <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
             <feMerge>
               <feMergeNode in="coloredBlur"/>
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
-
-          {/* Gradient definitions */}
-          {Object.entries(memoryTypes).map(([type, config]) => (
-            <linearGradient key={`gradient-${type}`} id={`gradient-${type}`}>
-              <stop offset="0%" stopColor={config.color} stopOpacity={0.8} />
-              <stop offset="100%" stopColor={config.color} stopOpacity={0.2} />
-            </linearGradient>
-          ))}
-
-          {/* Connection gradients */}
-          {connections.map((conn) => {
-            const fromNode = nodes.find(n => n.id === conn.from);
-            const toNode = nodes.find(n => n.id === conn.to);
-            if (!fromNode || !toNode) return null;
-
-            return (
-              <linearGradient
-                key={`conn-gradient-${conn.from}-${conn.to}`}
-                id={`conn-gradient-${conn.from}-${conn.to}`}
-                x1={`${fromNode.x}%`}
-                y1={`${fromNode.y}%`}
-                x2={`${toNode.x}%`}
-                y2={`${toNode.y}%`}
-              >
-                <stop offset="0%" stopColor={fromNode.color} stopOpacity={0.8} />
-                <stop offset="50%" stopColor={fromNode.color} stopOpacity={0.5} />
-                <stop offset="100%" stopColor={toNode.color} stopOpacity={0.8} />
-              </linearGradient>
-            );
-          })}
         </defs>
+        {connections.map((connection) => {
+          const sourceNode = nodes.find((n) => n.id === connection.source);
+          const targetNode = nodes.find((n) => n.id === connection.target);
+          if (!sourceNode || !targetNode) return null;
 
-        {/* Render connections */}
-        {connections.map((conn) => {
-          const fromNode = nodes.find(n => n.id === conn.from);
-          const toNode = nodes.find(n => n.id === conn.to);
-          if (!fromNode || !toNode) return null;
-
-          const isHighlighted = hoveredNode === conn.from || hoveredNode === conn.to;
-          const isActive = activeConnections.has(`${conn.from}-${conn.to}`);
+          const isActive = activeConnections.has(connection.id);
 
           return (
-            <g key={`${conn.from}-${conn.to}`}>
-              {/* Connection line */}
-              <motion.line
-                x1={`${fromNode.x}%`}
-                y1={`${fromNode.y}%`}
-                x2={`${toNode.x}%`}
-                y2={`${toNode.y}%`}
-                stroke={`url(#conn-gradient-${conn.from}-${conn.to})`}
-                strokeWidth={isHighlighted ? 2 : 1}
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{
-                  pathLength: 1,
-                  opacity: isHighlighted ? 0.9 : (isActive ? 0.8 : conn.strength * 0.5),
-                  strokeWidth: isActive ? 2.5 : 1.5
-                }}
-                transition={{
-                  pathLength: { duration: 2, ease: "easeInOut" },
-                  opacity: { duration: 0.5 },
-                  strokeWidth: { duration: 0.3 }
-                }}
+            <g key={connection.id}>
+              {/* Base connection line - always visible */}
+              <line
+                x1={`${sourceNode.x}%`}
+                y1={`${sourceNode.y}%`}
+                x2={`${targetNode.x}%`}
+                y2={`${targetNode.y}%`}
+                stroke="rgba(255, 255, 255, 0.08)"
+                strokeWidth="0.5"
               />
-
-              {/* Data flow animation */}
+              {/* Active glow line */}
               {isActive && (
-                <DataStream
-                  from={{ x: fromNode.x * containerRef.current?.clientWidth! / 100 || 0,
-                         y: fromNode.y * containerRef.current?.clientHeight! / 100 || 0 }}
-                  to={{ x: toNode.x * containerRef.current?.clientWidth! / 100 || 0,
-                       y: toNode.y * containerRef.current?.clientHeight! / 100 || 0 }}
-                  color={fromNode.color}
+                <motion.line
+                  x1={`${sourceNode.x}%`}
+                  y1={`${sourceNode.y}%`}
+                  x2={`${targetNode.x}%`}
+                  y2={`${targetNode.y}%`}
+                  stroke="url(#connectionGradient)"
+                  strokeWidth="1.5"
+                  filter="url(#glow)"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.8 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
                 />
+              )}
+              {/* Shooting star particles - always visible if connection has particles */}
+              {connection.particles && (
+                <>
+                  <motion.circle
+                    r={isActive ? "3" : "2"}
+                    fill={isActive ? "rgba(139, 92, 246, 1)" : "rgba(139, 92, 246, 0.6)"}
+                    filter={isActive ? "url(#glow)" : undefined}
+                  >
+                    <animateMotion
+                      dur="3s"
+                      repeatCount="indefinite"
+                      path={`M ${sourceNode.x},${sourceNode.y} L ${targetNode.x},${targetNode.y}`}
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values={isActive ? "0;1;1;0" : "0;0.4;0.4;0"}
+                      dur="3s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="r"
+                      values={isActive ? "2;3;3;1" : "1;2;2;0.5"}
+                      dur="3s"
+                      repeatCount="indefinite"
+                    />
+                  </motion.circle>
+                  {/* Second particle with delay */}
+                  <motion.circle
+                    r={isActive ? "2" : "1.5"}
+                    fill={isActive ? "rgba(59, 130, 246, 1)" : "rgba(59, 130, 246, 0.5)"}
+                    filter={isActive ? "url(#glow)" : undefined}
+                  >
+                    <animateMotion
+                      dur="3s"
+                      begin="1s"
+                      repeatCount="indefinite"
+                      path={`M ${sourceNode.x},${sourceNode.y} L ${targetNode.x},${targetNode.y}`}
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values={isActive ? "0;0.8;0.8;0" : "0;0.3;0.3;0"}
+                      begin="1s"
+                      dur="3s"
+                      repeatCount="indefinite"
+                    />
+                  </motion.circle>
+                  {/* Third particle with more delay */}
+                  <motion.circle
+                    r={isActive ? "1.5" : "1"}
+                    fill={isActive ? "rgba(6, 182, 212, 1)" : "rgba(6, 182, 212, 0.4)"}
+                    filter={isActive ? "url(#glow)" : undefined}
+                  >
+                    <animateMotion
+                      dur="3s"
+                      begin="2s"
+                      repeatCount="indefinite"
+                      path={`M ${sourceNode.x},${sourceNode.y} L ${targetNode.x},${targetNode.y}`}
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values={isActive ? "0;0.6;0.6;0" : "0;0.2;0.2;0"}
+                      begin="2s"
+                      dur="3s"
+                      repeatCount="indefinite"
+                    />
+                  </motion.circle>
+                </>
               )}
             </g>
           );
         })}
       </svg>
 
-      {/* Memory nodes */}
-      <AnimatePresence>
-        {nodes.map((node) => {
-          const isHighlighted = hoveredNode === node.id;
-          const connectedNodes = new Set(node.connections);
-          const isConnected = hoveredNode && connectedNodes.has(hoveredNode);
+      {/* Nodes */}
+      {nodes.map((node) => {
+        const isHighlighted = highlightedNode === node.id;
+        const isConnected = connections.some(
+          (c) =>
+            activeConnections.has(c.id) &&
+            (c.source === node.id || c.target === node.id)
+        );
 
-          return (
-            <motion.div
-              key={node.id}
-              className="absolute cursor-pointer"
-              style={{
-                left: `${node.x}%`,
-                top: `${node.y}%`,
-                transform: 'translate(-50%, -50%)',
-                zIndex: isHighlighted ? 20 : 10
-              }}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{
-                scale: isHighlighted ? 1.3 : (showcaseNode === node.id ? 1.15 : (isConnected ? 1.1 : 1)),
-                opacity: 1,
-                y: [0, -5, 0], // Gentle floating
-              }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{
-                scale: {
-                  duration: 0.4,
-                  ease: "easeOut"
-                },
-                opacity: {
-                  duration: 0.8,
-                  ease: "easeIn",
-                  delay: node.pulseDelay * 0.1
-                },
-                y: {
-                  duration: 4 + node.pulseDelay,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }
-              }}
-              onMouseEnter={() => setHoveredNode(node.id)}
-              onMouseLeave={() => setHoveredNode(null)}
-            >
-              {/* Pulse ring - subtle and smooth */}
-              <motion.div
-                className="absolute rounded-full border"
+        return (
+          <motion.div
+            key={node.id}
+            className="absolute rounded-full"
+            style={{
+              left: `${node.x}%`,
+              top: `${node.y}%`,
+              transform: "translate(-50%, -50%)",
+              zIndex: isHighlighted ? 20 : 10
+            }}
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{
+              scale: isHighlighted ? 1.08 : (isConnected ? 1.02 : 1),
+              opacity: 1,
+              y: [0, -3, 0, 3, 0], // Gentler breathing motion
+              x: [0, -1, 0, 1, 0], // Subtle sway
+            }}
+            transition={{
+              scale: {
+                type: "spring",
+                stiffness: 300,
+                damping: 20,
+              },
+              opacity: { duration: 0.5 },
+              y: {
+                duration: 4 + node.pulseDelay,
+                repeat: Infinity,
+                ease: [0.4, 0, 0.6, 1], // Apple-style ease
+                repeatType: "loop"
+              },
+              x: {
+                duration: 6 + node.pulseDelay * 1.5,
+                repeat: Infinity,
+                ease: [0.4, 0, 0.6, 1],
+                repeatType: "loop"
+              }
+            }}
+            onHoverStart={() => {
+              if (node.id.startsWith("main-")) {
+                setHighlightedNode(node.id);
+                // Activate connections for this node
+                const nodeConnections = connections.filter(
+                  c => c.source === node.id || c.target === node.id
+                );
+                setActiveConnections(new Set(nodeConnections.map(c => c.id)));
+              }
+            }}
+            onHoverEnd={() => {
+              setHighlightedNode(null);
+              setActiveConnections(new Set());
+            }}
+          >
+              <div
+                className="relative"
                 style={{
-                  borderColor: node.color + '20',
-                  width: node.size * 3,
-                  height: node.size * 3,
-                  left: '50%',
-                  top: '50%',
-                  transform: 'translate(-50%, -50%)',
+                  width: node.size * (isHighlighted ? 1.5 : 1),
+                  height: node.size * (isHighlighted ? 1.5 : 1),
                 }}
-                animate={{
-                  scale: [1, 1.5, 1.8],
-                  opacity: [0.3, 0.1, 0],
-                }}
-                transition={{
-                  duration: 4,
-                  delay: node.pulseDelay,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  repeatDelay: 2
-                }}
-              />
+              >
+                {/* Core */}
+                <div
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background: `radial-gradient(circle, ${node.color}ee, ${node.color}66)`,
+                    boxShadow: `0 0 ${isHighlighted ? 30 : 10}px ${node.color}44`,
+                  }}
+                />
 
-              {/* Core node - simple clean circle */}
-              <motion.div
-                className="relative rounded-full"
-                style={{
-                  backgroundColor: node.color + '60',
-                  width: node.size * 2,
-                  height: node.size * 2,
-                  boxShadow: `0 0 ${node.size * 3}px ${node.glow}`,
-                }}
-                whileHover={{
-                  scale: 1.2,
-                  backgroundColor: node.color + '80',
-                  boxShadow: `0 0 ${node.size * 5}px ${node.glow}`,
-                }}
-              />
-
-              {/* Label with enhanced styling - on hover or showcase */}
-              <AnimatePresence>
-                {(isHighlighted || showcaseNode === node.id) && (
-                  <motion.div
-                    className="absolute whitespace-nowrap text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-md pointer-events-none z-50"
-                    style={{
-                      // Position based on node location to avoid overlaps
-                      ...(node.y < 30 ? {
-                        // Top nodes - label below
-                        top: '120%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                      } : node.y > 70 ? {
-                        // Bottom nodes - label above
-                        bottom: '120%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                      } : node.x < 30 ? {
-                        // Left nodes - label to the right
-                        top: '50%',
-                        left: '120%',
-                        transform: 'translateY(-50%)',
-                      } : node.x > 70 ? {
-                        // Right nodes - label to the left
-                        top: '50%',
-                        right: '120%',
-                        transform: 'translateY(-50%)',
-                      } : {
-                        // Center nodes - label above
-                        bottom: '120%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                      }),
-                      backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                      border: `1px solid ${node.color}40`,
-                      color: node.color,
-                      boxShadow: `0 2px 8px rgba(0, 0, 0, 0.5), 0 0 12px ${node.glow}40`
-                    }}
-                    initial={{ opacity: 0, y: -5, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 5, scale: 0.9 }}
-                    transition={{
-                      duration: 0.8,
-                      ease: "easeInOut"
-                    }}
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <div
-                        className="w-1.5 h-1.5 rounded-full"
-                        style={{
-                          backgroundColor: node.color,
-                          opacity: isHighlighted ? 1 : 0.7
-                        }}
-                      />
-                      <span className="text-[11px]">{node.label}</span>
-                    </div>
-                  </motion.div>
+                {/* Pulse rings */}
+                {(isHighlighted || isConnected) && (
+                  <>
+                    <motion.div
+                      className="absolute inset-0 rounded-full"
+                      style={{
+                        border: `1px solid ${node.color}44`,
+                      }}
+                      initial={{ scale: 1, opacity: 0.8 }}
+                      animate={{
+                        scale: 2,
+                        opacity: 0,
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        delay: node.pulseDelay,
+                      }}
+                    />
+                    <motion.div
+                      className="absolute inset-0 rounded-full"
+                      style={{
+                        border: `1px solid ${node.color}33`,
+                      }}
+                      initial={{ scale: 1, opacity: 0.6 }}
+                      animate={{
+                        scale: 2.5,
+                        opacity: 0,
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        delay: node.pulseDelay + 0.5,
+                      }}
+                    />
+                  </>
                 )}
-              </AnimatePresence>
-            </motion.div>
-          );
-        })}
-      </AnimatePresence>
+              </div>
+          </motion.div>
+        );
+      })}
 
       {/* Ambient particles */}
       {particles.map((particle) => (
@@ -592,15 +453,15 @@ export function MemoryVisualization() {
             filter: 'blur(0.5px)'
           }}
           animate={{
-            y: [0, -200, 0],
-            x: [0, particle.xMove, 0],
-            opacity: [0, 0.6, 0],
+            y: -200,
+            opacity: [0, 0.1, 0.1, 0],
           }}
           transition={{
-            duration: particle.duration,
+            duration: particle.duration * 3,
             delay: particle.delay,
             repeat: Infinity,
             ease: "linear",
+            times: [0, 0.1, 0.9, 1]
           }}
         />
       ))}

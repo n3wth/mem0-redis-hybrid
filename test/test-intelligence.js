@@ -14,7 +14,7 @@ const TEST_DIR = "./data/test-intelligence";
 async function cleanup() {
   try {
     await fs.rm(TEST_DIR, { recursive: true, force: true });
-  } catch (e) {
+  } catch (_e) {
     // Ignore cleanup errors
   }
 }
@@ -24,7 +24,7 @@ async function testDefaultMode() {
 
   return new Promise((resolve, reject) => {
     const server = spawn("node", ["dist/index.js"], {
-      env: { ...process.env, QUIET_MODE: "false" },
+      env: { ...process.env, QUIET_MODE: "false", INTELLIGENCE_MODE: "enhanced" },
     });
 
     let output = "";
