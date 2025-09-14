@@ -15,19 +15,8 @@ The main client class for interacting with Recall's hybrid memory system.
 
 ### Constructor
 
-<CodeTabs>
-```python tab="Python"
-RecallClient(
-    redis_url: str | None = None,
-    mem0_api_key: str | None = None,
-    environment: str = "development",
-    cache_config: CacheConfig | None = None,
-    sync_config: SyncConfig | None = None,
-    **kwargs
-)
-```
-
-```typescript tab="TypeScript"
+```typescript
+// TypeScript
 new RecallClient(options?: RecallClientOptions)
 
 interface RecallClientOptions {
@@ -39,7 +28,18 @@ interface RecallClientOptions {
   [key: string]: any;
 }
 ```
-</CodeTabs>
+
+```python
+# Python
+RecallClient(
+    redis_url: str | None = None,
+    mem0_api_key: str | None = None,
+    environment: str = "development",
+    cache_config: CacheConfig | None = None,
+    sync_config: SyncConfig | None = None,
+    **kwargs
+)
+```
 
 #### Parameters
 
@@ -53,7 +53,7 @@ interface RecallClientOptions {
 
 #### Example
 
-<CodeTabs>
+
 ```python tab="Python"
 from recall import RecallClient
 
@@ -91,7 +91,7 @@ const client = new RecallClient({
   syncConfig: { mode: "eager" }
 });
 ```
-</CodeTabs>
+
 
 ## Core Methods
 
@@ -99,7 +99,7 @@ const client = new RecallClient({
 
 Add a new memory to the system.
 
-<CodeTabs>
+
 ```python tab="Python"
 add(
     content: str,
@@ -121,7 +121,7 @@ interface AddMemoryOptions {
   asyncMode?: boolean;
 }
 ```
-</CodeTabs>
+
 
 #### Parameters
 
@@ -145,7 +145,7 @@ A dictionary/object containing:
 
 #### Example
 
-<CodeTabs>
+
 ```python tab="Python"
 memory = client.add(
     content="User prefers dark theme",
@@ -175,13 +175,13 @@ const memory = await client.add({
 console.log(`Memory ID: ${memory.id}`);
 // Output: Memory ID: mem_abc123xyz
 ```
-</CodeTabs>
+
 
 ### search()
 
 Search for relevant memories using semantic search.
 
-<CodeTabs>
+
 ```python tab="Python"
 search(
     query: str,
@@ -203,7 +203,7 @@ interface SearchOptions {
   threshold?: number;
 }
 ```
-</CodeTabs>
+
 
 #### Parameters
 
@@ -224,7 +224,7 @@ Array of memory objects, each containing:
 
 #### Example
 
-<CodeTabs>
+
 ```python tab="Python"
 results = client.search(
     query="user preferences for UI",
@@ -251,13 +251,13 @@ results.forEach(memory => {
   console.log(`${memory.content} (score: ${memory.score.toFixed(2)})`);
 });
 ```
-</CodeTabs>
+
 
 ### get()
 
 Retrieve a specific memory by ID.
 
-<CodeTabs>
+
 ```python tab="Python"
 get(memory_id: str) -> dict | None
 ```
@@ -265,11 +265,11 @@ get(memory_id: str) -> dict | None
 ```typescript tab="TypeScript"
 get(memoryId: string): Promise<Memory | null>
 ```
-</CodeTabs>
+
 
 #### Example
 
-<CodeTabs>
+
 ```python tab="Python"
 memory = client.get("mem_abc123xyz")
 if memory:
@@ -286,13 +286,13 @@ if (memory) {
   console.log("Memory not found");
 }
 ```
-</CodeTabs>
+
 
 ### update()
 
 Update an existing memory.
 
-<CodeTabs>
+
 ```python tab="Python"
 update(
     memory_id: str,
@@ -312,11 +312,11 @@ interface UpdateOptions {
   metadata?: Record<string, any>;
 }
 ```
-</CodeTabs>
+
 
 #### Example
 
-<CodeTabs>
+
 ```python tab="Python"
 updated = client.update(
     memory_id="mem_abc123xyz",
@@ -332,13 +332,13 @@ const updated = await client.update({
   metadata: { lastAccessed: new Date().toISOString() }
 });
 ```
-</CodeTabs>
+
 
 ### delete()
 
 Delete a memory from both cache and cloud storage.
 
-<CodeTabs>
+
 ```python tab="Python"
 delete(memory_id: str) -> bool
 ```
@@ -346,11 +346,11 @@ delete(memory_id: str) -> bool
 ```typescript tab="TypeScript"
 delete(memoryId: string): Promise<boolean>
 ```
-</CodeTabs>
+
 
 #### Example
 
-<CodeTabs>
+
 ```python tab="Python"
 success = client.delete("mem_abc123xyz")
 print(f"Deleted: {success}")
@@ -360,13 +360,13 @@ print(f"Deleted: {success}")
 const success = await client.delete("mem_abc123xyz");
 console.log(`Deleted: ${success}`);
 ```
-</CodeTabs>
+
 
 ### get_all()
 
 Retrieve all memories for a user.
 
-<CodeTabs>
+
 ```python tab="Python"
 get_all(
     user_id: str,
@@ -384,11 +384,11 @@ interface GetAllOptions {
   offset?: number;
 }
 ```
-</CodeTabs>
+
 
 #### Example
 
-<CodeTabs>
+
 ```python tab="Python"
 memories = client.get_all(
     user_id="user_123",
@@ -406,7 +406,7 @@ const memories = await client.getAll({
 });
 console.log(`Total memories: ${memories.length}`);
 ```
-</CodeTabs>
+
 
 ## Batch Operations
 
@@ -414,7 +414,7 @@ console.log(`Total memories: ${memories.length}`);
 
 Add multiple memories in a single operation.
 
-<CodeTabs>
+
 ```python tab="Python"
 add_batch(memories: list[dict]) -> list[dict]
 ```
@@ -422,11 +422,11 @@ add_batch(memories: list[dict]) -> list[dict]
 ```typescript tab="TypeScript"
 addBatch(memories: AddMemoryOptions[]): Promise<Memory[]>
 ```
-</CodeTabs>
+
 
 #### Example
 
-<CodeTabs>
+
 ```python tab="Python"
 memories = [
     {
@@ -462,13 +462,13 @@ const memories = [
 const results = await client.addBatch(memories);
 console.log(`Added ${results.length} memories`);
 ```
-</CodeTabs>
+
 
 ### delete_batch()
 
 Delete multiple memories by ID.
 
-<CodeTabs>
+
 ```python tab="Python"
 delete_batch(memory_ids: list[str]) -> dict
 ```
@@ -476,7 +476,7 @@ delete_batch(memory_ids: list[str]) -> dict
 ```typescript tab="TypeScript"
 deleteBatch(memoryIds: string[]): Promise<BatchDeleteResult>
 ```
-</CodeTabs>
+
 
 ## Cache Management
 
@@ -484,7 +484,7 @@ deleteBatch(memoryIds: string[]): Promise<BatchDeleteResult>
 
 Get detailed cache statistics.
 
-<CodeTabs>
+
 ```python tab="Python"
 cache_stats() -> dict
 ```
@@ -492,11 +492,11 @@ cache_stats() -> dict
 ```typescript tab="TypeScript"
 cacheStats(): Promise<CacheStats>
 ```
-</CodeTabs>
+
 
 #### Returns
 
-<CodeTabs>
+
 ```python tab="Python"
 {
     "size": 1234,           # Number of cached items
@@ -530,13 +530,13 @@ interface CacheStats {
   };
 }
 ```
-</CodeTabs>
+
 
 ### optimize_cache()
 
 Optimize cache by removing stale entries and reorganizing based on access patterns.
 
-<CodeTabs>
+
 ```python tab="Python"
 optimize_cache(
     aggressive: bool = False
@@ -546,13 +546,13 @@ optimize_cache(
 ```typescript tab="TypeScript"
 optimizeCache(options?: OptimizeOptions): Promise<OptimizeResult>
 ```
-</CodeTabs>
+
 
 ### clear_cache()
 
 Clear cache for specific user or entirely.
 
-<CodeTabs>
+
 ```python tab="Python"
 clear_cache(user_id: str | None = None) -> bool
 ```
@@ -560,7 +560,7 @@ clear_cache(user_id: str | None = None) -> bool
 ```typescript tab="TypeScript"
 clearCache(userId?: string): Promise<boolean>
 ```
-</CodeTabs>
+
 
 ## Synchronization
 
@@ -568,7 +568,7 @@ clearCache(userId?: string): Promise<boolean>
 
 Manually trigger synchronization between cache and cloud.
 
-<CodeTabs>
+
 ```python tab="Python"
 sync(
     direction: str = "bidirectional",
@@ -584,7 +584,7 @@ interface SyncOptions {
   force?: boolean;
 }
 ```
-</CodeTabs>
+
 
 ## Health & Monitoring
 
@@ -592,7 +592,7 @@ interface SyncOptions {
 
 Check the health status of all components.
 
-<CodeTabs>
+
 ```python tab="Python"
 health_check() -> dict
 ```
@@ -600,11 +600,11 @@ health_check() -> dict
 ```typescript tab="TypeScript"
 healthCheck(): Promise<HealthStatus>
 ```
-</CodeTabs>
+
 
 #### Returns
 
-<CodeTabs>
+
 ```python tab="Python"
 {
     "status": "healthy",
@@ -642,13 +642,13 @@ interface HealthStatus {
   version: string;
 }
 ```
-</CodeTabs>
+
 
 ## Configuration Classes
 
 ### CacheConfig
 
-<CodeTabs>
+
 ```python tab="Python"
 class CacheConfig:
     ttl: int | dict[str, int | None] = 3600
@@ -667,11 +667,11 @@ interface CacheConfig {
   warmCache?: boolean;
 }
 ```
-</CodeTabs>
+
 
 ### SyncConfig
 
-<CodeTabs>
+
 ```python tab="Python"
 class SyncConfig:
     mode: str = "lazy"  # lazy, eager, manual
@@ -690,13 +690,13 @@ interface SyncConfig {
   maxRetries?: number;
 }
 ```
-</CodeTabs>
+
 
 ## Error Handling
 
 ### Exception Types
 
-<CodeTabs>
+
 ```python tab="Python"
 from recall.exceptions import (
     RecallError,           # Base exception
@@ -737,13 +737,13 @@ try {
   }
 }
 ```
-</CodeTabs>
+
 
 ## Async Support
 
 ### Async Client (Python)
 
-<CodeTabs>
+
 ```python tab="Python"
 from recall import AsyncRecallClient
 import asyncio
@@ -774,7 +774,7 @@ async def main():
 
 asyncio.run(main())
 ```
-</CodeTabs>
+
 
 ## Next Steps
 

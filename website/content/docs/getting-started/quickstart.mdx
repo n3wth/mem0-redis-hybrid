@@ -19,7 +19,7 @@ Before you begin, make sure you have:
 
 ## Installation
 
-<CodeTabs>
+
 ```bash tab="Python"
 pip install recall-memory
 ```
@@ -35,7 +35,7 @@ yarn add @recall/client
 ```bash tab="pnpm"
 pnpm add @recall/client
 ```
-</CodeTabs>
+
 
 ## Basic Setup
 
@@ -43,7 +43,7 @@ pnpm add @recall/client
 
 If you don't have Redis running locally:
 
-<CodeTabs>
+
 ```bash tab="Docker"
 docker run -d -p 6379:6379 redis:alpine
 ```
@@ -55,7 +55,7 @@ brew services start redis
 ```bash tab="Linux"
 sudo systemctl start redis
 ```
-</CodeTabs>
+
 
 ### 2. Set Environment Variables
 
@@ -69,7 +69,7 @@ RECALL_ENV=development
 
 ### 3. Initialize the Client
 
-<CodeTabs>
+
 ```python tab="Python"
 from recall import RecallClient
 from dotenv import load_dotenv
@@ -125,13 +125,13 @@ client.healthCheck().then(health => {
   console.log(`Recall status: ${health.status}`);
 });
 ```
-</CodeTabs>
+
 
 ## Your First Memory
 
 Let's create, retrieve, and search memories:
 
-<CodeTabs>
+
 ```python tab="Python"
 # Store a memory
 memory = client.add(
@@ -188,7 +188,7 @@ results.forEach(memory => {
 const allMemories = await client.getAll({ userId: "user_123" });
 console.log(`Total memories: ${allMemories.length}`);
 ```
-</CodeTabs>
+
 
 ## Common Patterns
 
@@ -196,7 +196,7 @@ console.log(`Total memories: ${allMemories.length}`);
 
 Store and retrieve conversation context:
 
-<CodeTabs>
+
 ```python tab="Python"
 # Store conversation turn
 client.add(
@@ -240,13 +240,13 @@ const context = await client.search({
   limit: 10
 });
 ```
-</CodeTabs>
+
 
 ### User Preferences
 
 Track and apply user preferences:
 
-<CodeTabs>
+
 ```python tab="Python"
 # Store preference
 client.add(
@@ -280,7 +280,7 @@ const prefs = await client.search({
   filters: { type: "preference" }
 });
 ```
-</CodeTabs>
+
 
 ## Performance Tips
 
@@ -297,7 +297,7 @@ Set appropriate priority levels to optimize cache usage:
 
 Use batch methods for better performance:
 
-<CodeTabs>
+
 ```python tab="Python"
 # Add multiple memories at once
 memories = [
@@ -317,13 +317,13 @@ const memories = [
 ];
 await client.addBatch(memories);
 ```
-</CodeTabs>
+
 
 ### 3. Use Async Operations
 
 For non-critical memories, use async mode:
 
-<CodeTabs>
+
 ```python tab="Python"
 # Fire-and-forget for non-critical memories
 client.add(
@@ -343,7 +343,7 @@ await client.add({
   asyncMode: true  // Don't wait for cloud sync
 });
 ```
-</CodeTabs>
+
 
 ## Next Steps
 

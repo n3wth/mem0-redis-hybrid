@@ -29,7 +29,7 @@ Complete setup guide for Recall in different environments and configurations.
 
 ### Python
 
-<CodeTabs>
+
 ```bash tab="pip"
 # Basic installation
 pip install recall-memory
@@ -58,11 +58,11 @@ pipenv install recall-memory
 # With extras
 pipenv install recall-memory[all]
 ```
-</CodeTabs>
+
 
 ### Node.js / TypeScript
 
-<CodeTabs>
+
 ```bash tab="npm"
 # Basic installation
 npm install @recall/client
@@ -91,7 +91,7 @@ pnpm add @recall/client @types/node
 # Basic installation
 bun add @recall/client
 ```
-</CodeTabs>
+
 
 ## Redis Setup
 
@@ -115,7 +115,7 @@ docker exec -it recall-redis redis-cli ping
 
 #### Option 2: Direct Installation
 
-<CodeTabs>
+
 ```bash tab="macOS"
 # Install
 brew install redis
@@ -161,7 +161,7 @@ wsl --install
 # Or use Redis Windows port
 # Download from: https://github.com/microsoftarchive/redis/releases
 ```
-</CodeTabs>
+
 
 ### Cloud Redis Services
 
@@ -213,7 +213,7 @@ client = RecallClient(
 
 ### API Key Configuration
 
-<CodeTabs>
+
 ```bash tab="Environment Variable"
 # .env file
 MEM0_API_KEY=m0-xxxxxxxxxxxxxxxxxxxx
@@ -246,13 +246,13 @@ const client = new RecallClient({
   mem0ApiKey: process.env.MEM0_API_KEY
 });
 ```
-</CodeTabs>
+
 
 ## Configuration
 
 ### Basic Configuration
 
-<CodeTabs>
+
 ```python tab="Python"
 from recall import RecallClient
 
@@ -306,11 +306,11 @@ monitoring:
   enabled: true
   metrics_port: 9090
 ```
-</CodeTabs>
+
 
 ### Advanced Configuration
 
-<CodeTabs>
+
 ```python tab="Python"
 from recall import RecallClient, CacheConfig, SyncConfig
 
@@ -390,7 +390,7 @@ const client = new RecallClient({
   enableClustering: false
 });
 ```
-</CodeTabs>
+
 
 ## Docker Deployment
 
@@ -517,7 +517,7 @@ spec:
 
 ### Health Check
 
-<CodeTabs>
+
 ```python tab="Python"
 # Verify installation
 from recall import RecallClient
@@ -556,7 +556,7 @@ recall health
 # ✓ Cache: 1,234 items (45.6 MB)
 # ✓ Version: 1.0.0
 ```
-</CodeTabs>
+
 
 ### Troubleshooting
 

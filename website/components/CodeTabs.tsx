@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Copy, Check } from 'lucide-react'
 
 interface CodeTab {
@@ -10,15 +10,34 @@ interface CodeTab {
 }
 
 interface CodeTabsProps {
-  tabs: CodeTab[]
+  tabs?: CodeTab[]
+  children?: React.ReactNode
 }
 
-export function CodeTabs({ tabs }: CodeTabsProps) {
+export function CodeTabs({ tabs, children }: CodeTabsProps) {
   const [activeTab, setActiveTab] = useState(0)
   const [copied, setCopied] = useState(false)
 
+  // Parse children if no tabs provided (for MDX usage)
+  if (!tabs && children) {
+    tabs = []
+    const childArray = React.Children.toArray(children)
+    childArray.forEach((child: any) => {
+      if (child?.props?.children?.props?.className?.includes('language-')) {
+        const lang = child.props.children.props.className.replace('language-', '')
+        const label = child.props['tab'] || lang.charAt(0).toUpperCase() + lang.slice(1)
+        const code = child.props.children.props.children || ''
+        tabs!.push({ label, language: lang, code })
+      }
+    })
+  }
+
+  if (!tabs || tabs.length === 0) {
+    return <div className="text-gray-500">No code tabs available</div>
+  }
+
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(tabs[activeTab].code)
+    navigator.clipboard.writeText(tabs![activeTab].code)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
