@@ -53,7 +53,6 @@ export function BentoCard({
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      whileHover={{ y: -5 }}
       transition={{ duration: 0.3 }}
     >
       {/* Animated border gradient */}
