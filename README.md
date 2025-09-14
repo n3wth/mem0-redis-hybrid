@@ -18,11 +18,11 @@
 
 Modern AI applications need memory that's both **fast** and **persistent**. Recall delivers enterprise-grade memory infrastructure that scales with your application—from prototypes to production.
 
-- **⚡ Lightning Fast**: Sub-5ms p99 latency with intelligent caching
-- **🛡️ Bulletproof Reliability**: Automatic failover with 99.9% uptime SLA
-- **🚀 Infinite Scale**: Handle millions of requests per second
-- **🤖 AI-Native**: Purpose-built for LLMs with semantic search
-- **🔌 Drop-in Integration**: Works with Claude, GPT, and any LLM
+- **Lightning Fast**: Sub-5ms p99 latency with intelligent caching
+- **Bulletproof Reliability**: Automatic failover with 99.9% uptime SLA
+- **Infinite Scale**: Handle millions of requests per second
+- **AI-Native**: Purpose-built for LLMs with semantic search
+- **Drop-in Integration**: Works with Claude, GPT, and any LLM
 
 ## Quick Start
 
@@ -99,7 +99,7 @@ Recall implements a sophisticated multi-tier caching strategy optimized for AI w
 
 ## Core Features
 
-### 🎯 Intelligent Caching
+### Intelligent Caching
 
 Automatically optimizes data placement across cache tiers based on access patterns:
 
@@ -114,7 +114,7 @@ const recall = new Recall({
 });
 ```
 
-### 🔍 Semantic Search
+### Semantic Search
 
 Find memories by meaning, not just keywords:
 
@@ -126,7 +126,7 @@ const results = await recall.search({
 });
 ```
 
-### 🏗️ Production Ready
+### Production Ready
 
 Built for enterprise deployments with comprehensive monitoring:
 
@@ -439,10 +439,10 @@ gh pr create
 
 ## Support
 
-- 📚 **Documentation**: [recall.newth.ai/docs](https://recall.newth.ai/docs)
-- 💬 **Discord Community**: [discord.gg/recall](https://discord.gg/recall)
-- 🐛 **Issue Tracker**: [GitHub Issues](https://github.com/n3wth/recall/issues)
-- 📧 **Enterprise Support**: [enterprise@newth.ai](mailto:enterprise@newth.ai)
+- **Documentation**: [recall.newth.ai/docs](https://recall.newth.ai/docs)
+- **Discord Community**: [discord.gg/recall](https://discord.gg/recall)
+- **Issue Tracker**: [GitHub Issues](https://github.com/n3wth/recall/issues)
+- **Enterprise Support**: [enterprise@newth.ai](mailto:enterprise@newth.ai)
 
 ## License
 
@@ -451,7 +451,7 @@ MIT © 2025 Recall Contributors
 ---
 
 <div align="center">
-  <p>Built with ❤️ by the team at <a href="https://newth.ai">Newth.ai</a></p>
+  <p>Built by the team at <a href="https://newth.ai">Newth.ai</a></p>
   <p>
     <a href="https://recall.newth.ai">Website</a> •
     <a href="https://recall.newth.ai/docs">Documentation</a> •
