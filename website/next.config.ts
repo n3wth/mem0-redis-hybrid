@@ -26,16 +26,8 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // Turbopack configuration
-  turbopack: {
-    root: process.cwd(),
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
-  },
+  // Output file tracing for Vercel
+  outputFileTracingRoot: process.cwd(),
 
   // Headers for caching
   async headers() {
