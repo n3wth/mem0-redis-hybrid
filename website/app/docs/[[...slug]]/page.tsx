@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
+import remarkGfm from 'remark-gfm'
 import { getDocBySlug, getAllDocs } from '@/lib/mdx'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
@@ -106,7 +107,15 @@ export default async function DocPage({ params }: { params: Promise<{ slug?: str
   return (
     <>
       <article className="prose prose-invert max-w-none">
-        <MDXRemote source={doc.content} components={components} />
+        <MDXRemote
+          source={doc.content}
+          components={components}
+          options={{
+            mdxOptions: {
+              remarkPlugins: [remarkGfm],
+            },
+          }}
+        />
       </article>
 
       {/* Navigation */}
