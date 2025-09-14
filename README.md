@@ -39,18 +39,18 @@ npm install r3call
 
 ## Quick Start
 
-### Local-First Mode (No Dependencies)
+### Zero Configuration (Local Mode by Default)
 
 ```bash
-# Run with embedded Redis - no external dependencies needed!
-R3CALL_LOCAL=true npx r3call
+# Just run it! No configuration needed - uses embedded Redis automatically
+npx r3call
 
 # Or install globally
 npm install -g r3call
-r3call --local
+r3call
 ```
 
-### Hybrid Mode (Local + Cloud)
+### Hybrid Mode (Local + Cloud Sync)
 
 ```typescript
 import { Recall } from 'r3call';

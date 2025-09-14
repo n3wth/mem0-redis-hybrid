@@ -12,6 +12,7 @@ import {
 import fetch from 'node-fetch';
 import { createClient, RedisClientType } from 'redis';
 import * as crypto from 'crypto';
+import { LocalMemory } from './lib/local-memory.js';
 
 // Type definitions
 interface Memory {
@@ -61,36 +62,33 @@ interface MemoryProcessMessage {
 
 // Configuration
 const MEM0_API_KEY = process.env.MEM0_API_KEY;
-// Enable demo mode for Smithery scanning or when explicitly requested
-const DEMO_MODE = process.env.DEMO_MODE === 'true' ||
-                  (!MEM0_API_KEY && process.argv.includes('--demo')) ||
-                  (!MEM0_API_KEY && process.env.SMITHERY_SCAN === 'true');
 
-if (!MEM0_API_KEY && !DEMO_MODE) {
-  console.error('❌ MEM0_API_KEY environment variable is required');
-  console.error('');
-  console.error('Quick start options:');
-  console.error('1. Try demo mode (no API key needed):');
-  console.error('   npx @n3wth/recall --demo');
-  console.error('');
-  console.error('2. Use with your API key:');
-  console.error('   MEM0_API_KEY="your-key" npx @n3wth/recall');
-  console.error('');
-  console.error('Get a free API key at https://mem0.ai');
+// Determine operation mode - default to local when no API key
+let MODE: 'local' | 'hybrid' | 'demo' = 'local';
 
-  // For MCP tool scanning, we need to stay alive
-  if (process.env.MCP_SCAN || process.argv.includes('--scan')) {
-    console.error('');
-    console.error('📋 Running in scan mode for tool discovery...');
-    // Continue in demo mode for scanning
-  } else {
-    process.exit(1);
+if (MEM0_API_KEY) {
+  MODE = 'hybrid';  // Has API key, use hybrid mode (local + cloud)
+} else if (process.argv.includes('--demo') || process.env.DEMO_MODE === 'true') {
+  MODE = 'demo';  // Demo mode (in-memory only, no persistence)
+} else {
+  MODE = 'local';  // Default: local mode with embedded Redis (persistent)
+}
+
+// Log mode information
+if (MODE === 'local') {
+  console.error('🚀 Running in LOCAL MODE - Using embedded Redis server');
+  console.error('   Data persists locally between sessions');
+  if (!MEM0_API_KEY) {
+    console.error('   💡 Tip: Add MEM0_API_KEY for cloud sync (get free at https://mem0.ai)');
   }
+} else if (MODE === 'demo') {
+  console.error('🎮 Running in DEMO MODE - Using in-memory storage only');
+} else if (MODE === 'hybrid') {
+  console.error('☁️  Running in HYBRID MODE - Local cache + cloud storage');
 }
 
-if (DEMO_MODE) {
-  console.error('🎮 Running in DEMO MODE - Using local memory only (no cloud storage)');
-}
+// For backward compatibility
+const DEMO_MODE = MODE === 'demo';
 
 const MEM0_USER_ID = process.env.MEM0_USER_ID || 'oliver';
 const MEM0_BASE_URL = process.env.MEM0_BASE_URL || 'https://api.mem0.ai';
@@ -109,6 +107,7 @@ const SEARCH_CACHE_TTL = 300; // 5 minutes for search results cache
 let redisClient: RedisClientType | null = null;
 let pubSubClient: RedisClientType | null = null;
 let subscriberClient: RedisClientType | null = null;
+let localMemory: LocalMemory | null = null;
 
 // Background job queue
 const jobQueue = new Map<string, Job>();
@@ -121,6 +120,26 @@ const demoStorage = {
 };
 
 async function initializeRedis(): Promise<boolean> {
+  // If in local mode, use embedded Redis
+  if (MODE === 'local' && !process.env.REDIS_URL) {
+    try {
+      localMemory = new LocalMemory();
+      await localMemory.start();
+
+      // Get Redis clients from embedded server
+      redisClient = localMemory.getClient();
+      pubSubClient = localMemory.getPubClient();
+      subscriberClient = localMemory.getSubClient();
+
+      console.error('✓ Local memory system initialized with embedded Redis');
+      return true;
+    } catch (error) {
+      console.error('Failed to start embedded Redis:', error);
+      return false;
+    }
+  }
+
+  // Otherwise, connect to external Redis
   try {
     // Main Redis client for cache operations
     redisClient = createClient({
