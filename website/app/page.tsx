@@ -164,13 +164,12 @@ client.memories.add(
 
           <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
             <div className="mx-auto max-w-4xl">
-              {/* Simple badge */}
-              <div className="mb-6 inline-flex items-center gap-2 rounded-lg bg-white/5 px-3 py-1.5 text-xs font-medium text-gray-400 border border-white/10">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              {/* Updated badge with AI features */}
+              <div className="mb-6 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500/10 to-blue-500/10 px-4 py-2 text-sm font-medium text-white border border-emerald-500/30">
+                <Sparkles className="h-4 w-4 text-emerald-400" />
+                <span className="bg-gradient-to-r from-emerald-400 to-blue-400 text-transparent bg-clip-text font-semibold">
+                  NEW: AI Intelligence with Semantic Search & Knowledge Graphs
                 </span>
-                Open Source • Built on Mem0 • MIT License
               </div>
 
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-8 leading-[1.15]">
@@ -184,9 +183,11 @@ client.memories.add(
               </h1>
 
               <p className="mx-auto max-w-2xl text-lg text-gray-400 mb-10 font-light">
-                Stop re-explaining your context. r3call gives LLMs memory that
-                persists across sessions. Works with Claude Desktop, Gemini CLI,
-                and any MCP-compatible client.
+                Stop re-explaining your context. r3call gives LLMs intelligent memory with
+                <span className="text-white"> real vector embeddings</span>,
+                <span className="text-white"> entity extraction</span>, and
+                <span className="text-white"> knowledge graphs</span>.
+                Works with Claude Desktop, Gemini CLI, and any MCP-compatible client.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -470,11 +471,40 @@ client.memories.add(
 
             <BentoGrid>
               <BentoCard
+                title="AI Intelligence Engine"
+                description="Real vector embeddings, entity extraction, and knowledge graphs - all running locally"
+                icon={<Sparkles className="h-6 w-6 text-emerald-400" />}
+                gradient="from-emerald-500/20 to-blue-500/20"
+                span="col-span-3"
+                className="border-emerald-500/30"
+              />
+
+              <BentoCard
+                title="Semantic Search"
+                description="Find memories by meaning, not just keywords"
+                icon={<Cpu className="h-5 w-5 text-cyan-400" />}
+                gradient="from-cyan-900/20 to-blue-900/20"
+              />
+
+              <BentoCard
+                title="Knowledge Graph"
+                description="Build connections between people, projects, and technologies"
+                icon={<Layers className="h-5 w-5 text-purple-400" />}
+                gradient="from-purple-900/20 to-indigo-900/20"
+              />
+
+              <BentoCard
+                title="<10ms Latency"
+                description="Lightning fast local processing with optimized embeddings"
+                icon={<Gauge className="h-5 w-5 text-orange-400" />}
+                gradient="from-orange-900/20 to-red-900/20"
+              />
+
+              <BentoCard
                 title="Redis-powered caching"
                 description="In-memory data store for sub-millisecond response times"
                 icon={<Zap className="h-5 w-5 text-yellow-400" />}
                 gradient="from-yellow-900/20 to-orange-900/20"
-                span="col-span-2"
               />
 
               <BentoCard
@@ -513,12 +543,6 @@ client.memories.add(
                 gradient="from-red-900/20 to-orange-900/20"
               />
 
-              <BentoCard
-                title="Zero configuration"
-                description="npx r3call starts with embedded Redis automatically"
-                icon={<Sparkles className="h-5 w-5 text-pink-400" />}
-                gradient="from-pink-900/20 to-purple-900/20"
-              />
             </BentoGrid>
           </Container>
         </section>
