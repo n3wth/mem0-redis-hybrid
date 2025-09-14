@@ -1,0 +1,302 @@
+---
+title: AI Intelligence Features
+description: Advanced AI capabilities for semantic search, entity extraction, and knowledge graphs
+---
+
+# AI Intelligence Features
+
+r3call v1.3.0 introduces powerful AI intelligence features that automatically enhance your memory storage with semantic understanding, entity extraction, and knowledge graph construction.
+
+## Overview
+
+The AI intelligence features are **enabled by default** and provide:
+
+- **Real vector embeddings** for semantic search
+- **Automatic entity extraction** from text
+- **Relationship mapping** between entities
+- **Knowledge graph construction**
+- **Multi-factor relevance scoring**
+
+All processing happens **100% locally** with no external API calls, maintaining privacy and speed.
+
+## Entity Extraction
+
+Every memory is automatically analyzed to extract meaningful entities:
+
+### Extracted Entity Types
+
+- **People** - Names and references to individuals
+- **Organizations** - Companies, teams, groups
+- **Technologies** - Programming languages, frameworks, tools
+- **Projects** - Project names and initiatives
+- **Dates** - Temporal references and timelines
+- **Places** - Locations and geographical references
+
+### Example
+
+```typescript
+const memory = "Sarah from Marketing works on the Dashboard project with React and TypeScript";
+
+// Automatically extracts:
+// - People: ["Sarah"]
+// - Organizations: ["Marketing"]
+// - Projects: ["Dashboard"]
+// - Technologies: ["React", "TypeScript"]
+// - Relationships: [
+//     { from: "Sarah", to: "Marketing", type: "WORKS_FOR" },
+//     { from: "Dashboard", to: "React", type: "USES" }
+//   ]
+```
+
+## Semantic Search
+
+Search memories by meaning, not just keywords:
+
+### How It Works
+
+1. **Vector Embeddings** - Each memory is converted to a 384-dimensional vector
+2. **Semantic Similarity** - Find memories with similar meaning
+3. **Multi-factor Scoring** - Combines multiple relevance signals
+
+### Relevance Scoring Algorithm
+
+```typescript
+// Final score calculation
+const relevanceScore =
+  semanticSimilarity * 0.50 +  // Meaning-based matching
+  keywordOverlap * 0.20 +       // Traditional text matching
+  entityOverlap * 0.15 +        // Shared entities
+  recencyBonus * 0.10 +         // Prefer recent memories
+  accessFrequency * 0.05;       // Popular memories rank higher
+```
+
+### Example Usage
+
+```typescript
+// Semantic search finds related concepts
+const results = await recall.search({
+  query: "machine learning and AI",
+  limit: 5
+});
+
+// Will find memories about:
+// - "neural networks and deep learning"
+// - "artificial intelligence applications"
+// - "ML models and training data"
+// Even without exact keyword matches!
+```
+
+## Knowledge Graph
+
+Build a connected graph of your knowledge:
+
+### Graph Structure
+
+```typescript
+interface KnowledgeGraph {
+  nodes: Array<{
+    id: string;
+    type: "person" | "organization" | "technology" | "project";
+    name: string;
+    mentions: number;
+  }>;
+
+  edges: Array<{
+    from: string;
+    to: string;
+    type: RelationshipType;
+    confidence: number;
+  }>;
+}
+```
+
+### Relationship Types
+
+- `WORKS_FOR` - Person works at organization
+- `MANAGES` - Person manages person/project
+- `USES` - Project uses technology
+- `BUILT_WITH` - Created using technology
+- `DEPENDS_ON` - Technical dependency
+- `INTEGRATES_WITH` - System integration
+- `LOCATED_IN` - Geographical relationship
+- `PART_OF` - Hierarchical relationship
+
+### MCP Tools
+
+When using r3call as an MCP server with Claude or other LLMs:
+
+```bash
+# Extract entities from text
+extract_entities(text: string)
+
+# Query knowledge graph
+get_knowledge_graph(
+  entity_type?: string,
+  entity_name?: string,
+  relationship_type?: string,
+  limit?: number
+)
+
+# Find connections between entities
+find_connections(
+  from_entity: string,
+  to_entity?: string,
+  max_depth?: number
+)
+```
+
+## Performance
+
+All AI features are optimized for speed:
+
+| Operation | Latency | Notes |
+|-----------|---------|-------|
+| Embedding generation | <5ms | 384-dimensional vectors |
+| Entity extraction | <10ms | Using wink-nlp |
+| Semantic search | <10ms | For 1000+ memories |
+| Graph traversal | <5ms | BFS with depth limit |
+
+## Configuration
+
+### Default Mode (AI Enabled)
+
+```typescript
+// AI features are enabled by default
+const recall = new Recall();
+
+// Or explicitly
+const recall = new Recall({
+  intelligenceMode: 'enhanced'
+});
+```
+
+### Basic Mode (Opt-out)
+
+```typescript
+// Disable AI features if needed
+const recall = new Recall({
+  intelligenceMode: 'basic'
+});
+
+// Or via environment variable
+INTELLIGENCE_MODE=basic npx r3call
+
+// Or via CLI flag
+npx r3call --basic
+```
+
+## Technical Details
+
+### Embedding Model
+
+- **Model**: all-MiniLM-L6-v2
+- **Dimensions**: 384
+- **Library**: transformers.js
+- **Processing**: CPU-optimized
+- **Cache**: Embeddings are cached for reuse
+
+### NLP Engine
+
+- **Library**: wink-nlp
+- **Model**: wink-eng-lite-web-model
+- **Features**: Tokenization, POS tagging, NER
+- **Language**: English
+
+### Vector Storage
+
+- **Library**: Vectra
+- **Index**: Local file-based
+- **Search**: Cosine similarity
+- **Updates**: Incremental indexing
+
+## Privacy & Security
+
+- **100% Local Processing** - No data leaves your machine
+- **No External APIs** - All models run locally
+- **Cached Models** - Downloaded once, used offline
+- **Encrypted Storage** - Optional encryption for vectors
+
+## Examples
+
+### Building a Personal Knowledge Base
+
+```typescript
+// Store memories with automatic intelligence
+await recall.add({
+  content: "Met with Dr. Chen about the AI research project. She suggested using transformer models for better accuracy.",
+  userId: "researcher"
+});
+
+// Later, find connections
+const connections = await recall.findConnections({
+  from: "Dr. Chen",
+  to: "transformer models"
+});
+// Returns: Dr. Chen -> AI research project -> transformer models
+```
+
+### Project Context Management
+
+```typescript
+// Store project context
+await recall.add({
+  content: "Dashboard project uses React 18, TypeScript 5, and connects to PostgreSQL database on AWS RDS.",
+  userId: "project-dashboard"
+});
+
+// Query technology stack
+const techStack = await recall.getKnowledgeGraph({
+  entityType: "technology",
+  userId: "project-dashboard"
+});
+```
+
+### Team Knowledge Sharing
+
+```typescript
+// Store team information
+await recall.add({
+  content: "Sarah leads the frontend team and reports to Mike. She specializes in React and accessibility.",
+  userId: "team"
+});
+
+// Find team relationships
+const teamGraph = await recall.getKnowledgeGraph({
+  relationshipType: "REPORTS_TO",
+  userId: "team"
+});
+```
+
+## Troubleshooting
+
+### High Memory Usage
+
+The embedding model uses ~100MB RAM. To reduce memory:
+
+```typescript
+// Use basic mode for low-memory environments
+const recall = new Recall({
+  intelligenceMode: 'basic'
+});
+```
+
+### Slow First Load
+
+Models are downloaded on first use (~50MB). This is one-time only.
+
+### Entity Extraction Accuracy
+
+For better extraction:
+- Use proper capitalization for names
+- Include context around entities
+- Use full sentences when possible
+
+## What's Next
+
+Future enhancements planned:
+
+- Multi-language support
+- Custom entity types
+- Graph visualization API
+- Clustering and topic modeling
+- Incremental learning from feedback
