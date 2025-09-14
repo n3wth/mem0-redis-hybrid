@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { LogoEffectSlideshow } from "./LogoEffectSlideshow";
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,13 +22,7 @@ export function Navigation() {
       <div className="mx-auto px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           <div className="flex items-center">
-            <Link
-              href="/"
-              className="text-2xl font-semibold text-white"
-              style={{ fontFamily: "var(--font-brand)" }}
-            >
-              r3call
-            </Link>
+            <LogoEffectSlideshow />
             <div className="hidden md:ml-10 md:flex md:space-x-2">
               {navItems.map((item) =>
                 item.external ? (
@@ -53,7 +48,7 @@ export function Navigation() {
           <div className="hidden md:flex items-center space-x-4">
             <Link
               href="/docs/quickstart"
-              className="group inline-flex items-center gap-1 px-5 py-3 text-sm font-medium rounded-lg bg-white text-black hover:bg-gray-100 transition-all min-h-[44px]"
+              className="group inline-flex items-center gap-1 px-5 py-3 text-sm font-medium rounded-lg bg-white/[0.03] text-white border border-white/10 hover:bg-white/[0.05] hover:border-white/20 transition-all min-h-[44px]"
             >
               Get started
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

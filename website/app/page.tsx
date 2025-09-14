@@ -35,6 +35,7 @@ import {
 import { FloatingDots } from "@/components/FloatingDots";
 import { MemoryVisualization } from "@/components/MemoryVisualization";
 import { MemoryComparison } from "@/components/MemoryComparison";
+import { CodeBlock } from "@/components/CodeBlock";
 // Lazy load heavy components
 const TerminalDemo = lazy(() =>
   import("@/components/TerminalDemo").then((module) => ({
@@ -144,9 +145,11 @@ client.memories.add(
       {/* Main content wrapper */}
       <main className="flex-1">
         {/* Hero - Clean and minimal with enhanced effects */}
-        <div className="relative min-h-[75vh] flex items-center justify-center overflow-visible py-16 md:py-20">
-          {/* Memory visualization - the main attraction */}
-          <MemoryVisualization />
+        <div className="relative min-h-[60vh] sm:min-h-[75vh] flex items-center justify-center overflow-visible py-12 sm:py-16 md:py-20">
+          {/* Memory visualization - hidden on mobile for cleaner experience */}
+          <div className="hidden sm:block">
+            <MemoryVisualization />
+          </div>
 
           {/* Subtle animated gradient background */}
           <div className="absolute inset-0 pointer-events-none">
@@ -157,26 +160,37 @@ client.memories.add(
 
           <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
             <div className="mx-auto max-w-4xl">
-              {/* Updated badge with AI features */}
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/[0.03] backdrop-blur-sm px-3 py-1 text-xs font-mono text-gray-400 border border-white/[0.08]">
-                <span>MCP Protocol</span>
-                <span className="text-gray-600">•</span>
-                <span>Redis + Mem0</span>
+              {/* Professional value prop badge - simplified for mobile */}
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/[0.03] backdrop-blur-sm px-3 py-1.5 text-xs font-medium border border-white/[0.08]">
+                <span className="text-gray-300 sm:hidden">Persistent AI Memory</span>
+                <span className="hidden sm:inline-flex sm:items-center sm:gap-3">
+                  <span className="text-purple-300">Lightning-fast cache</span>
+                  <span className="text-white/40">×</span>
+                  <span className="text-blue-300">Persistent memory</span>
+                  <span className="text-white/40">×</span>
+                  <span className="text-cyan-300">Universal compatibility</span>
+                </span>
               </div>
 
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-8 leading-[1.15]">
-                <span className="text-white block">Your AI forgets everything</span>
-                <span className="bg-gradient-to-r from-gray-400 to-gray-600 bg-clip-text text-transparent inline-block mt-1">
-                  every morning
+                <span className="text-white block">Give your AI</span>
+                <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent inline-block mt-1">
+                  permanent memory
                 </span>
               </h1>
 
-              <p className="mx-auto max-w-2xl text-base sm:text-lg text-gray-400 mb-10 font-light">
-                r3call is a local MCP server that gives Claude, GPT, and Gemini actual memory.
-                Not chat history. Not context windows. Real semantic memory using
-                <span className="text-white"> vector embeddings</span> and
-                <span className="text-white"> knowledge graphs</span> that persist between sessions.
-                One command, zero configuration, runs on your machine.
+              {/* Mobile-first subtitle */}
+              <p className="mx-auto max-w-2xl text-base sm:text-base lg:text-lg text-gray-400 mb-8 sm:mb-10 font-light leading-relaxed px-4 sm:px-0">
+                <span className="sm:hidden">
+                  Context that persists across every AI conversation. Works with Claude, GPT, and Gemini.
+                </span>
+                <span className="hidden sm:inline">
+                  Transform stateless AI into a contextual powerhouse. r3call combines
+                  <span className="text-white font-medium"> sub-millisecond caching</span> with
+                  <span className="text-white font-medium"> semantic memory storage</span> to create
+                  continuity across every conversation. Compatible with all major AI assistants.
+                  Deploy in seconds, configure nothing.
+                </span>
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -204,34 +218,34 @@ client.memories.add(
                 </Link>
               </div>
 
-              {/* Stats - Balanced grid version */}
-              <div className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-8 max-w-3xl mx-auto">
+              {/* Stats - Simplified for mobile */}
+              <div className="mt-16 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 max-w-3xl mx-auto">
                 <div className="text-center">
-                  <div className="text-xl font-light text-white">
-                    &lt; 1 min
+                  <div className="text-xl sm:text-2xl font-light text-white">
+                    5ms
                   </div>
-                  <div className="text-sm text-gray-400">Setup time</div>
+                  <div className="text-xs sm:text-sm text-gray-500">Response time</div>
                 </div>
 
                 <div className="text-center">
-                  <div className="text-xl font-light text-white">
-                    0
+                  <div className="text-xl sm:text-2xl font-light text-white">
+                    ∞
                   </div>
-                  <div className="text-sm text-gray-400">Config files</div>
+                  <div className="text-xs sm:text-sm text-gray-500">Memory retention</div>
                 </div>
 
-                <div className="text-center">
-                  <div className="text-xl font-light text-white">
+                <div className="text-center sm:block hidden">
+                  <div className="text-xl sm:text-2xl font-light text-white">
                     100%
                   </div>
-                  <div className="text-sm text-gray-400">Local</div>
+                  <div className="text-xs sm:text-sm text-gray-500">Privacy-first</div>
                 </div>
 
-                <div className="text-center">
-                  <div className="text-xl font-light text-white">
-                    1
+                <div className="text-center sm:block hidden">
+                  <div className="text-xl sm:text-2xl font-light text-white">
+                    0
                   </div>
-                  <div className="text-sm text-gray-400">Command</div>
+                  <div className="text-xs sm:text-sm text-gray-500">Configuration</div>
                 </div>
               </div>
             </div>
@@ -278,8 +292,8 @@ client.memories.add(
                 </p>
               </div>
 
-              <div className="rounded-xl overflow-hidden border border-white/10 bg-white/[0.01]">
-                <div className="border-b border-white/10">
+              <div className="relative">
+                <div className="border-b border-white/10 bg-black/40 rounded-t-xl">
                   <nav className="flex" aria-label="Tabs">
                     {Object.keys(codeExamples).map((lang) => (
                       <button
@@ -289,7 +303,7 @@ client.memories.add(
                         flex-1 px-4 py-3 text-sm font-medium capitalize transition-all
                         ${
                           activeTab === lang
-                            ? "text-white bg-white/5 border-b border-white"
+                            ? "text-white bg-white/5 border-b-2 border-white"
                             : "text-gray-400 hover:text-gray-300"
                         }
                       `}
@@ -299,13 +313,11 @@ client.memories.add(
                     ))}
                   </nav>
                 </div>
-                <div className="p-6">
-                  <pre className="overflow-x-auto text-sm">
-                    <code className="text-gray-300 font-mono">
-                      {codeExamples[activeTab as keyof typeof codeExamples]}
-                    </code>
-                  </pre>
-                </div>
+                <CodeBlock
+                  language={activeTab === "node" ? "javascript" : activeTab === "curl" ? "bash" : activeTab}
+                >
+                  {codeExamples[activeTab as keyof typeof codeExamples]}
+                </CodeBlock>
               </div>
             </div>
           </Container>

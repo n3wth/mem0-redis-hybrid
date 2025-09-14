@@ -96,14 +96,43 @@ function DataStream({ from, to, color }: { from: { x: number; y: number }, to: {
   );
 }
 
+interface Particle {
+  id: number;
+  width: number;
+  height: number;
+  opacity: number;
+  left: number;
+  top: number;
+  xMove: number;
+  duration: number;
+  delay: number;
+}
+
 export function MemoryVisualization() {
   const [nodes, setNodes] = useState<MemoryNode[]>([]);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [activeConnections, setActiveConnections] = useState<Set<string>>(new Set());
   const [showcaseNode, setShowcaseNode] = useState<string | null>(null);
+  const [particles, setParticles] = useState<Particle[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | undefined>(undefined);
+
+  // Generate particles once on mount
+  useEffect(() => {
+    const newParticles: Particle[] = Array.from({ length: 30 }).map((_, i) => ({
+      id: i,
+      width: Math.random() * 2 + 1,
+      height: Math.random() * 2 + 1,
+      opacity: Math.random() * 0.3 + 0.1,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      xMove: Math.random() * 100 - 50,
+      duration: 15 + Math.random() * 15,
+      delay: Math.random() * 10,
+    }));
+    setParticles(newParticles);
+  }, []);
 
   // Generate nodes and connections
   useEffect(() => {
@@ -550,26 +579,26 @@ export function MemoryVisualization() {
       </AnimatePresence>
 
       {/* Ambient particles */}
-      {Array.from({ length: 30 }).map((_, i) => (
+      {particles.map((particle) => (
         <motion.div
-          key={`particle-${i}`}
+          key={`particle-${particle.id}`}
           className="absolute rounded-full"
           style={{
-            width: Math.random() * 2 + 1,
-            height: Math.random() * 2 + 1,
-            backgroundColor: `rgba(255, 255, 255, ${Math.random() * 0.3 + 0.1})`,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
+            width: particle.width,
+            height: particle.height,
+            backgroundColor: `rgba(255, 255, 255, ${particle.opacity})`,
+            left: `${particle.left}%`,
+            top: `${particle.top}%`,
             filter: 'blur(0.5px)'
           }}
           animate={{
             y: [0, -200, 0],
-            x: [0, Math.random() * 100 - 50, 0],
+            x: [0, particle.xMove, 0],
             opacity: [0, 0.6, 0],
           }}
           transition={{
-            duration: 15 + Math.random() * 15,
-            delay: Math.random() * 10,
+            duration: particle.duration,
+            delay: particle.delay,
             repeat: Infinity,
             ease: "linear",
           }}
