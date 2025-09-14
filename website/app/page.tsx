@@ -526,7 +526,7 @@ client.memories.add(
                 description="Works with Claude Desktop, Gemini CLI, and any MCP client"
                 icon={<Globe className="h-5 w-5 text-green-400" />}
                 gradient="from-green-900/20 to-teal-900/20"
-                span="col-span-2"
+                span="col-span-1"
               />
 
               <BentoCard
