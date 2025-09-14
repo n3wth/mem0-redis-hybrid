@@ -13,7 +13,7 @@ const demos = [
     commands: [
       { type: 'typing', text: '$ claude --project my-nextjs-app', delay: 0 },
       { type: 'animated', text: 'Claude Code v1.0.5 • Model: Claude 3.5 Sonnet', className: 'text-gray-400', delay: 1500 },
-      { type: 'animated', text: '✓ MCP server \'recall\' connected (Redis + Mem0)', className: 'text-green-500', delay: 2000 },
+      { type: 'animated', text: '✓ MCP server \'r3call\' connected (Redis + Mem0)', className: 'text-green-500', delay: 2000 },
       { type: 'animated', text: 'You: Remember I prefer React with TypeScript, Tailwind CSS, and Vitest for testing', className: 'text-gray-400', delay: 3000, userText: true },
       { type: 'animated', text: 'Claude: I\'ll remember your development stack preferences.', className: 'text-gray-400', delay: 4500, assistantText: true },
       { type: 'animated', text: '[Memory stored: 3ms • Priority: high • TTL: persistent]', className: 'text-gray-500 text-xs', delay: 5000 },
@@ -25,13 +25,13 @@ const demos = [
   {
     title: "Gemini CLI + Personal Knowledge",
     commands: [
-      { type: 'typing', text: '$ gemini --save "Oliver uses mem0-hybrid for knowledge management"', delay: 0 },
+      { type: 'typing', text: '$ gemini --save "Oliver uses r3call for knowledge management"', delay: 0 },
       { type: 'animated', text: 'Gemini CLI with mem0 context • Model: Gemini 1.5 Pro', className: 'text-gray-400', delay: 1500 },
-      { type: 'animated', text: '✓ Saved to mem0-hybrid and GEMINI.md', className: 'text-green-500', delay: 2500 },
+      { type: 'animated', text: '✓ Saved to r3call and GEMINI.md', className: 'text-green-500', delay: 2500 },
       { type: 'animated', text: '[Memory synced: Redis cache + Mem0 cloud]', className: 'text-gray-500 text-xs', delay: 3000 },
       { type: 'typing', text: '$ gemini -p "@./ explain my knowledge system"', delay: 4000 },
-      { type: 'animated', text: '📚 Retrieving context from mem0-hybrid...', className: 'text-blue-400', delay: 5500 },
-      { type: 'animated', text: 'Based on your setup, you use mem0-hybrid which combines:', className: 'text-gray-400', delay: 6500 },
+      { type: 'animated', text: '📚 Retrieving context from r3call...', className: 'text-blue-400', delay: 5500 },
+      { type: 'animated', text: 'Based on your setup, you use r3call which combines:', className: 'text-gray-400', delay: 6500 },
       { type: 'animated', text: '• L1 Cache: Redis (sub-5ms responses)', className: 'text-gray-300', delay: 7000 },
       { type: 'animated', text: '• L2 Storage: Mem0 cloud (persistent)', className: 'text-gray-300', delay: 7500 },
       { type: 'animated', text: '• Smart routing with cache optimization', className: 'text-gray-300', delay: 8000 },
@@ -41,9 +41,9 @@ const demos = [
   {
     title: "Claude Code + Project Context",
     commands: [
-      { type: 'typing', text: '$ claude mcp add recall', delay: 0 },
+      { type: 'typing', text: '$ claude mcp add r3call', delay: 0 },
       { type: 'animated', text: '◐ Installing MCP server...', className: 'text-blue-500', delay: 1500 },
-      { type: 'animated', text: '✓ MCP server \'recall\' added to claude_config.json', className: 'text-green-500', delay: 2500 },
+      { type: 'animated', text: '✓ MCP server \'r3call\' added to claude_config.json', className: 'text-green-500', delay: 2500 },
       { type: 'typing', text: '$ claude --project saas-dashboard', delay: 3500 },
       { type: 'animated', text: 'You: Remember our API uses GraphQL with Apollo Client', className: 'text-gray-400', delay: 5000, userText: true },
       { type: 'animated', text: 'Claude: Noted. I\'ll use GraphQL queries with Apollo Client for API calls.', className: 'text-gray-400', delay: 6500, assistantText: true },
@@ -63,7 +63,7 @@ const demos = [
       { type: 'animated', text: '✓ Testing: 87% coverage with Vitest', className: 'text-green-400', delay: 3500 },
       { type: 'animated', text: '✓ Performance: Core Web Vitals passing', className: 'text-green-400', delay: 4000 },
       { type: 'typing', text: '$ gemini compare "auth implementation" project-a project-b', delay: 5000 },
-      { type: 'animated', text: 'Analyzing with mem0-enhanced context...', className: 'text-blue-400', delay: 6500 },
+      { type: 'animated', text: 'Analyzing with r3call-enhanced context...', className: 'text-blue-400', delay: 6500 },
       { type: 'animated', text: 'Project A: OAuth 2.0 with social providers', className: 'text-gray-300', delay: 7500 },
       { type: 'animated', text: 'Project B: Magic link authentication', className: 'text-gray-300', delay: 8000 },
       { type: 'animated', text: '[Analysis enhanced with your auth preference history]', className: 'text-gray-500 text-xs', delay: 8500 },
