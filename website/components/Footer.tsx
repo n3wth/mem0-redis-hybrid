@@ -6,7 +6,7 @@ export function Footer() {
           <a href="/docs" className="text-sm text-gray-300 hover:text-white transition-colors">
             Documentation
           </a>
-          <a href="https://github.com/n3wth/recall" className="text-sm text-gray-300 hover:text-white transition-colors">
+          <a href="https://github.com/n3wth/r3call" className="text-sm text-gray-300 hover:text-white transition-colors">
             GitHub
           </a>
           <a href="https://www.npmjs.com/package/@n3wth/recall" className="text-sm text-gray-300 hover:text-white transition-colors">

@@ -43,12 +43,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/n3wth/recall.git"
+    "url": "git+https://github.com/n3wth/r3call.git"
   },
   "bugs": {
-    "url": "https://github.com/n3wth/recall/issues"
+    "url": "https://github.com/n3wth/r3call/issues"
   },
-  "homepage": "https://recall.newth.ai",
+  "homepage": "https://r3call.newth.ai",
   "engines": {
     "node": ">=18.0.0"
   },

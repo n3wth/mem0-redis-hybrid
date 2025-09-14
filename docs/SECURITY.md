@@ -78,8 +78,8 @@ We use automated tools to monitor and update dependencies:
 ## Contact
 
 For any security-related questions, contact:
-- Email: security@recall.newth.ai
-- GitHub Security Advisories: [Enable private vulnerability reporting](https://github.com/n3wth/recall/security)
+- Email: security@r3call.newth.ai
+- GitHub Security Advisories: [Enable private vulnerability reporting](https://github.com/n3wth/r3call/security)
 
 ## Acknowledgments
 

@@ -49,7 +49,7 @@ response = client.memories.add(
 )
 
 print(response.id)`,
-    curl: `curl https://api.recall.newth.ai/v1/memories \\
+    curl: `curl https://api.r3call.newth.ai/v1/memories \\
   -H "Authorization: Bearer $MEM0_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -323,7 +323,7 @@ print(response.id)`,
                 Get started →
               </Link>
               <a
-                href="https://github.com/n3wth/recall"
+                href="https://github.com/n3wth/r3call"
                 className="px-6 py-3 text-white font-medium rounded-lg border border-white/20 transition-all hover:bg-white/5"
               >
                 View on GitHub

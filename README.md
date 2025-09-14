@@ -1,7 +1,7 @@
 # r3call
 
 <div align="center">
-  <img src="https://recall.newth.ai/og-image.png" alt="r3call - Intelligent Memory for AI" width="100%" />
+  <img src="https://r3call.newth.ai/og-image.png" alt="r3call - Intelligent Memory for AI" width="100%" />
 
   <h3>Intelligent Memory Layer for AI Applications</h3>
   <p>Sub-5ms response times · Automatic failover · Built for scale</p>
@@ -9,8 +9,8 @@
   <p>
     <a href="https://www.npmjs.com/package/r3call"><img src="https://img.shields.io/npm/v/r3call?style=flat&colorA=000000&colorB=000000" alt="npm version" /></a>
     <a href="https://www.npmjs.com/package/r3call"><img src="https://img.shields.io/npm/dm/r3call?style=flat&colorA=000000&colorB=000000" alt="npm downloads" /></a>
-    <a href="https://github.com/n3wth/recall/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-black?style=flat&colorA=000000&colorB=000000" alt="license" /></a>
-    <a href="https://recall.newth.ai/docs"><img src="https://img.shields.io/badge/docs-recall.newth.ai-black?style=flat&colorA=000000&colorB=000000" alt="documentation" /></a>
+    <a href="https://github.com/n3wth/r3call/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-black?style=flat&colorA=000000&colorB=000000" alt="license" /></a>
+    <a href="https://r3call.newth.ai/docs"><img src="https://img.shields.io/badge/docs-r3call.newth.ai-black?style=flat&colorA=000000&colorB=000000" alt="documentation" /></a>
   </p>
 </div>
 
@@ -81,9 +81,9 @@ Add to `~/.claude/claude_desktop_config.json`:
 
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://recall.newth.ai/architecture-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://recall.newth.ai/architecture-light.svg">
-    <img src="https://recall.newth.ai/architecture-dark.svg" alt="r3call Architecture" width="100%" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://r3call.newth.ai/architecture-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://r3call.newth.ai/architecture-light.svg">
+    <img src="https://r3call.newth.ai/architecture-dark.svg" alt="r3call Architecture" width="100%" />
   </picture>
 </div>
 
@@ -425,7 +425,7 @@ We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guideline
 
 ```bash
 # Development setup
-git clone https://github.com/n3wth/recall.git
+git clone https://github.com/n3wth/r3call.git
 cd recall
 npm install
 npm run dev
@@ -439,9 +439,9 @@ gh pr create
 
 ## Support
 
-- **Documentation**: [recall.newth.ai/docs](https://recall.newth.ai/docs)
+- **Documentation**: [r3call.newth.ai/docs](https://r3call.newth.ai/docs)
 - **Discord Community**: [discord.gg/recall](https://discord.gg/recall)
-- **Issue Tracker**: [GitHub Issues](https://github.com/n3wth/recall/issues)
+- **Issue Tracker**: [GitHub Issues](https://github.com/n3wth/r3call/issues)
 - **Enterprise Support**: [enterprise@newth.ai](mailto:enterprise@newth.ai)
 
 ## License
@@ -453,9 +453,9 @@ MIT © 2025 r3call Contributors
 <div align="center">
   <p>Built by the team at <a href="https://newth.ai">Newth.ai</a></p>
   <p>
-    <a href="https://recall.newth.ai">Website</a> •
-    <a href="https://recall.newth.ai/docs">Documentation</a> •
-    <a href="https://github.com/n3wth/recall">GitHub</a> •
+    <a href="https://r3call.newth.ai">Website</a> •
+    <a href="https://r3call.newth.ai/docs">Documentation</a> •
+    <a href="https://github.com/n3wth/r3call">GitHub</a> •
     <a href="https://twitter.com/n3wth">Twitter</a>
   </p>
 </div>

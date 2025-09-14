@@ -60,11 +60,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/n3wth/recall.git",
+    "url": "git+https://github.com/n3wth/r3call.git",
     "directory": "microservices-design/services/vector-embedding"
   },
   "bugs": {
-    "url": "https://github.com/n3wth/recall/issues"
+    "url": "https://github.com/n3wth/r3call/issues"
   },
-  "homepage": "https://recall.newth.ai"
+  "homepage": "https://r3call.newth.ai"
 }

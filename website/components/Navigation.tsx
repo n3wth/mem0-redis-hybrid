@@ -39,7 +39,7 @@ export function Navigation() {
                 API
               </Link>
               <a
-                href="https://github.com/n3wth/recall"
+                href="https://github.com/n3wth/r3call"
                 className="px-4 py-2 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all"
               >
                 GitHub

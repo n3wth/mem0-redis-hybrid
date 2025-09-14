@@ -170,7 +170,7 @@ All services define their APIs using:
 ### Quick Start
 ```bash
 # Clone the repository
-git clone https://github.com/n3wth/recall.git
+git clone https://github.com/n3wth/r3call.git
 cd recall/microservices-design
 
 # Start Memory Storage Service

@@ -27,7 +27,7 @@ export const Terminal = ({ children, className }: TerminalProps) => {
           <span className="text-xs text-zinc-500 font-mono hidden sm:inline">terminal</span>
         </div>
       </div>
-      <div className="p-3 sm:p-4 font-mono text-xs sm:text-sm overflow-x-auto">
+      <div className="p-3 sm:p-4 font-mono text-xs sm:text-sm overflow-x-auto flex-1 min-h-[400px]">
         <div className="space-y-1 sm:space-y-2">{children}</div>
       </div>
     </div>

@@ -24,14 +24,14 @@ export const metadata: Metadata = {
   authors: [{ name: "r3call" }],
   creator: "r3call",
   publisher: "r3call",
-  metadataBase: new URL("https://recall.newth.ai"),
+  metadataBase: new URL("https://r3call.newth.ai"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "r3call - Intelligent Memory API",
     description: "Hybrid memory system combining Redis caching with cloud persistence. Sub-5ms response times with 99.9% uptime SLA.",
-    url: "https://recall.newth.ai",
+    url: "https://r3call.newth.ai",
     siteName: "r3call",
     images: [
       {

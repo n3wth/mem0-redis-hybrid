@@ -50,7 +50,7 @@ git clone https://github.com/your-username/recall.git
 cd recall
 
 # Add upstream remote
-git remote add upstream https://github.com/n3wth/recall.git
+git remote add upstream https://github.com/n3wth/r3call.git
 
 # Install dependencies
 npm install
@@ -167,8 +167,8 @@ recall/
 ## Getting Help
 
 - Check the [README](README.md) for usage documentation
-- Search [existing issues](https://github.com/n3wth/recall/issues)
-- Join discussions in [GitHub Discussions](https://github.com/n3wth/recall/discussions)
+- Search [existing issues](https://github.com/n3wth/r3call/issues)
+- Join discussions in [GitHub Discussions](https://github.com/n3wth/r3call/discussions)
 - Ask questions in issues with the `question` label
 
 ## Recognition
