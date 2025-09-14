@@ -13,8 +13,8 @@ export function Navigation() {
           <div className="flex items-center">
             <Link
               href="/"
-              className="text-2xl font-medium text-white transition-transform duration-200 hover:scale-105 tracking-tight"
-              style={{ fontFamily: '"Crimson Text", "Playfair Display", Didot, "Bodoni MT", "Noto Serif", Georgia, serif', fontWeight: 500 }}
+              className="text-2xl text-white transition-transform duration-200 hover:scale-105"
+              style={{ fontFamily: 'var(--font-serif)' }}
             >
               r3call
             </Link>
