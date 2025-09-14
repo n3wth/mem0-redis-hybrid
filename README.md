@@ -1,9 +1,9 @@
 # r3call
 
-[![npm version](https://img.shields.io/npm/v/r3call)](https://www.npmjs.com/package/r3call)
-[![npm downloads](https://img.shields.io/npm/dm/r3call)](https://www.npmjs.com/package/r3call)
+[![npm version](https://badge.fury.io/js/r3call.svg)](https://www.npmjs.com/package/r3call)
+[![GitHub stars](https://img.shields.io/github/stars/n3wth/r3call)](https://github.com/n3wth/r3call)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Documentation](https://img.shields.io/badge/docs-r3call.newth.ai-blue)](https://r3call.newth.ai/docs)
+[![Documentation](https://img.shields.io/badge/docs-r3call.newth.ai-blue)](https://r3call.newth.ai)
 
 > Intelligent Memory Layer for AI Applications - Built for Gemini, Claude, and all LLMs
 
