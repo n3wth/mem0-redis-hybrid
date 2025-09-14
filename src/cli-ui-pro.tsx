@@ -501,25 +501,23 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
         </Text>
       </Box>
 
-      {loading ? (
-        <Box>
-          <SimpleSpinner />
-          <Text> Loading memories...</Text>
-        </Box>
-      ) : memories.length === 0 ? (
-        <Box>
+      <Box flexDirection="column" height={10}>
+        {loading ? (
+          <Text>
+            <SimpleSpinner /> Loading memories...
+          </Text>
+        ) : memories.length === 0 ? (
           <Text color="yellow">
             No memories found. Press [A] to add your first memory.
           </Text>
-        </Box>
-      ) : (
-        <Box flexDirection="column" minHeight={10}>
-          {memories
-            .slice(
-              Math.max(0, selectedIndex - 4),
-              Math.min(memories.length, selectedIndex + 6),
-            )
-            .map((memory, idx) => {
+        ) : (
+          <>
+            {memories
+              .slice(
+                Math.max(0, selectedIndex - 4),
+                Math.min(memories.length, selectedIndex + 6),
+              )
+              .map((memory, idx) => {
               const actualIdx = idx + Math.max(0, selectedIndex - 4);
               const isSelected = actualIdx === selectedIndex;
               const date = memory.created_at
@@ -556,8 +554,9 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
                 </Text>
               );
             })}
-        </Box>
-      )}
+          </>
+        )}
+      </Box>
 
       <Spacer />
       <Box>

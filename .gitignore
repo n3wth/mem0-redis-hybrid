@@ -93,3 +93,5 @@ smithery.yaml
 .env.example
 tsconfig.tsbuildinfo
 *.sh
+package/
+*.tgz
