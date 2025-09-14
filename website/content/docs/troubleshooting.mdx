@@ -12,6 +12,7 @@ Common issues and solutions when working with Recall.
 ### Redis Connection Failed
 
 **Error:**
+
 ```
 Error: Redis connection failed: ECONNREFUSED 127.0.0.1:6379
 ```
@@ -19,12 +20,14 @@ Error: Redis connection failed: ECONNREFUSED 127.0.0.1:6379
 **Solutions:**
 
 - **Verify Redis is running:**
+
 ```bash
 redis-cli ping
 # Should return: PONG
 ```
 
 - **Start Redis if needed:**
+
 ```bash
 # macOS
 brew services start redis
@@ -37,6 +40,7 @@ docker run -d -p 6379:6379 redis:alpine
 ```
 
 - **Check Redis URL format:**
+
 ```typescript
 // Correct formats
 redis://localhost:6379
@@ -47,6 +51,7 @@ redis://host:6379/0  // With database number
 ### Mem0 API Connection Failed
 
 **Error:**
+
 ```
 Error: Mem0 API error: 401 Unauthorized
 ```
@@ -54,12 +59,14 @@ Error: Mem0 API error: 401 Unauthorized
 **Solutions:**
 
 - **Verify API key:**
+
 ```bash
 curl -H "Authorization: Bearer $MEM0_API_KEY" \
   https://api.mem0.ai/v1/memories
 ```
 
 - **Check environment variables:**
+
 ```typescript
 console.log(process.env.MEM0_API_KEY);
 // Should not be undefined
@@ -72,48 +79,54 @@ console.log(process.env.MEM0_API_KEY);
 ### Slow Response Times
 
 **Symptoms:**
+
 - Response times >100ms for cache hits
 - Degraded performance over time
 
 **Solutions:**
 
 - **Check cache hit rate:**
+
 ```typescript
 const stats = await recall.cache.stats();
-console.log('Hit rate:', stats.hit_rate);
+console.log("Hit rate:", stats.hit_rate);
 // Should be >90% for warm cache
 ```
 
 - **Optimize cache strategy:**
+
 ```typescript
 const recall = new Recall({
-  cacheStrategy: 'aggressive',  // For read-heavy
+  cacheStrategy: "aggressive", // For read-heavy
   cache: {
     ttl: {
-      l1: 86400,    // Increase L1 TTL
-      l2: 604800    // Increase L2 TTL
-    }
-  }
+      l1: 86400, // Increase L1 TTL
+      l2: 604800, // Increase L2 TTL
+    },
+  },
 });
 ```
 
 - **Warm cache for active users:**
+
 ```typescript
 await recall.cache.optimize({
   force_refresh: true,
-  max_memories: 1000
+  max_memories: 1000,
 });
 ```
 
 ### High Memory Usage
 
 **Symptoms:**
+
 - Redis memory usage growing unbounded
 - OOM errors
 
 **Solutions:**
 
 - **Set max memory policy:**
+
 ```bash
 # In redis.conf
 maxmemory 2gb
@@ -121,15 +134,17 @@ maxmemory-policy allkeys-lru
 ```
 
 - **Reduce cache size:**
+
 ```typescript
 const recall = new Recall({
   cache: {
-    maxSize: 5000  // Reduce from default 10000
-  }
+    maxSize: 5000, // Reduce from default 10000
+  },
 });
 ```
 
 - **Clear old data:**
+
 ```typescript
 await recall.cache.clear();
 ```
@@ -139,6 +154,7 @@ await recall.cache.clear();
 ### Duplicate Memories
 
 **Symptoms:**
+
 - Same content appearing multiple times
 - Search returning duplicates
 
@@ -151,7 +167,7 @@ async function addUnique(content: string, userId: string) {
   const existing = await recall.search({
     query: content,
     userId,
-    limit: 1
+    limit: 1,
   });
 
   if (existing.length === 0 || existing[0].score < 0.95) {
@@ -165,32 +181,36 @@ async function addUnique(content: string, userId: string) {
 ### Missing Search Results
 
 **Symptoms:**
+
 - Known memories not appearing in search
 - Empty results despite data existing
 
 **Solutions:**
 
 - **Force cloud search:**
+
 ```typescript
 const results = await recall.search({
-  query: 'your query',
-  prefer_cache: false  // Bypass cache
+  query: "your query",
+  prefer_cache: false, // Bypass cache
 });
 ```
 
 - **Check user ID:**
+
 ```typescript
 // Ensure consistent user IDs
 const results = await recall.search({
-  query: 'test',
-  userId: 'user_123'  // Must match exactly
+  query: "test",
+  userId: "user_123", // Must match exactly
 });
 ```
 
 - **Refresh cache:**
+
 ```typescript
 await recall.cache.optimize({
-  force_refresh: true
+  force_refresh: true,
 });
 ```
 
@@ -199,26 +219,30 @@ await recall.cache.optimize({
 ### Jobs Not Processing
 
 **Symptoms:**
+
 - Memories stuck in 'queued' status
 - Background sync not working
 
 **Solutions:**
 
 - **Check job queue:**
+
 ```typescript
 const status = await recall.sync.status();
-console.log('Pending jobs:', status.pending);
+console.log("Pending jobs:", status.pending);
 ```
 
 - **Force synchronous mode:**
+
 ```typescript
 await recall.add({
-  content: 'Important data',
-  async: false  // Process immediately
+  content: "Important data",
+  async: false, // Process immediately
 });
 ```
 
 - **Restart background worker:**
+
 ```bash
 # Restart the MCP server
 pkill -f recall
@@ -230,6 +254,7 @@ npx @n3wth/recall
 ### Claude Desktop Not Connecting
 
 **Error:**
+
 ```
 MCP server connection failed
 ```
@@ -237,6 +262,7 @@ MCP server connection failed
 **Solutions:**
 
 - **Verify configuration path:**
+
 ```bash
 # macOS/Linux
 cat ~/.claude/claude_desktop_config.json
@@ -246,6 +272,7 @@ type %APPDATA%\Claude\claude_desktop_config.json
 ```
 
 - **Check JSON syntax:**
+
 ```json
 {
   "mcpServers": {
@@ -262,6 +289,7 @@ type %APPDATA%\Claude\claude_desktop_config.json
 ```
 
 - **Test manually:**
+
 ```bash
 MEM0_API_KEY=your_key REDIS_URL=redis://localhost:6379 \
   npx @n3wth/recall
@@ -270,17 +298,19 @@ MEM0_API_KEY=your_key REDIS_URL=redis://localhost:6379 \
 ### TypeScript Type Errors
 
 **Error:**
+
 ```
 Type 'unknown' is not assignable to type 'Memory'
 ```
 
 **Solution:**
+
 ```typescript
-import { Recall, Memory, SearchResult } from '@n3wth/recall';
+import { Recall, Memory, SearchResult } from "@n3wth/recall";
 
 // Type your responses
 const results: SearchResult = await recall.search({
-  query: 'test'
+  query: "test",
 });
 
 results.memories.forEach((memory: Memory) => {
@@ -295,7 +325,7 @@ results.memories.forEach((memory: Memory) => {
 ```typescript
 const recall = new Recall({
   apiKey: process.env.MEM0_API_KEY,
-  debug: true  // Enable verbose logging
+  debug: true, // Enable verbose logging
 });
 ```
 
@@ -316,11 +346,11 @@ npx @n3wth/recall
 async function checkHealth() {
   try {
     const health = await recall.health();
-    console.log('Redis:', health.redis);
-    console.log('Mem0:', health.mem0);
-    console.log('Cache:', health.cache);
+    console.log("Redis:", health.redis);
+    console.log("Mem0:", health.mem0);
+    console.log("Cache:", health.cache);
   } catch (error) {
-    console.error('Health check failed:', error);
+    console.error("Health check failed:", error);
   }
 }
 ```
@@ -333,7 +363,7 @@ If you're still experiencing issues:
 - **Search existing issues** on [GitHub](https://github.com/n3wth/recall/issues)
 - **Join our Discord** for community support
 - **Open an issue** with:
-   - Error message
-   - Code snippet
-   - Environment details
-   - Steps to reproduce
+  - Error message
+  - Code snippet
+  - Environment details
+  - Steps to reproduce

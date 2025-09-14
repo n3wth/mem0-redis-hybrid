@@ -14,9 +14,10 @@ export const Terminal = ({ children, className }: TerminalProps) => {
     <div
       className={cn(
         "mx-auto rounded-lg border border-zinc-800 bg-zinc-950 shadow-2xl",
-        className
+        className,
       )}
-      suppressHydrationWarning>
+      suppressHydrationWarning
+    >
       <div className="flex items-center gap-2 border-b border-zinc-800 bg-zinc-900 px-3 sm:px-4 py-2 sm:py-3 rounded-t-lg">
         <div className="flex gap-1.5 sm:gap-2">
           <div className="h-2 w-2 sm:h-3 sm:w-3 rounded-full bg-red-500" />
@@ -24,7 +25,9 @@ export const Terminal = ({ children, className }: TerminalProps) => {
           <div className="h-2 w-2 sm:h-3 sm:w-3 rounded-full bg-green-500" />
         </div>
         <div className="flex-1 text-center">
-          <span className="text-xs text-zinc-500 font-mono hidden sm:inline">terminal</span>
+          <span className="text-xs text-zinc-500 font-mono hidden sm:inline">
+            terminal
+          </span>
         </div>
       </div>
       <div className="p-3 sm:p-4 font-mono text-xs sm:text-sm overflow-x-auto flex-1 min-h-[400px]">
@@ -118,7 +121,11 @@ export const TypingAnimation = ({
       {isTyping && displayedText.length < children.length && (
         <motion.span
           animate={{ opacity: [1, 0] }}
-          transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+          transition={{
+            duration: 0.5,
+            repeat: Infinity,
+            repeatType: "reverse",
+          }}
           className="inline-block w-2 h-4 bg-current ml-1"
         />
       )}

@@ -30,7 +30,7 @@ export const OrbitingCircles = ({
       {childrenArray.map((child, index) => {
         const angle = angleStep * index;
         const animationDuration = 20 / speed;
-        const animationDelay = delay + (index * 0.2);
+        const animationDelay = delay + index * 0.2;
 
         return (
           <div
@@ -39,11 +39,11 @@ export const OrbitingCircles = ({
             style={{
               width: `${iconSize}px`,
               height: `${iconSize}px`,
-              animation: `${reverse ? 'orbit-reverse' : 'orbit'} ${animationDuration}s linear infinite`,
+              animation: `${reverse ? "orbit-reverse" : "orbit"} ${animationDuration}s linear infinite`,
               animationDelay: `${animationDelay}s`,
               transformOrigin: `${radius}px center`,
-              left: '50%',
-              top: '50%',
+              left: "50%",
+              top: "50%",
               marginLeft: `-${iconSize / 2}px`,
               marginTop: `-${iconSize / 2}px`,
             }}
@@ -51,7 +51,7 @@ export const OrbitingCircles = ({
             <div
               className="flex items-center justify-center w-full h-full rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-lg"
               style={{
-                animation: `${reverse ? 'orbit-reverse' : 'orbit'} ${animationDuration}s linear infinite reverse`,
+                animation: `${reverse ? "orbit-reverse" : "orbit"} ${animationDuration}s linear infinite reverse`,
                 animationDelay: `${animationDelay}s`,
               }}
             >

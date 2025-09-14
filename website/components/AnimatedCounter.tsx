@@ -1,38 +1,44 @@
-'use client'
+"use client";
 
-import { useEffect, useRef, useState } from 'react'
-import { motion, useInView, useMotionValue, useTransform, animate } from 'framer-motion'
+import { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  useInView,
+  useMotionValue,
+  useTransform,
+  animate,
+} from "framer-motion";
 
 interface AnimatedCounterProps {
-  from?: number
-  to: number
-  duration?: number
-  suffix?: string
-  prefix?: string
-  decimals?: number
-  className?: string
+  from?: number;
+  to: number;
+  duration?: number;
+  suffix?: string;
+  prefix?: string;
+  decimals?: number;
+  className?: string;
 }
 
 export function AnimatedCounter({
   from = 0,
   to,
   duration = 2,
-  suffix = '',
-  prefix = '',
+  suffix = "",
+  prefix = "",
   decimals = 0,
-  className = ''
+  className = "",
 }: AnimatedCounterProps) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-100px' })
-  const motionValue = useMotionValue(from)
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const motionValue = useMotionValue(from);
   const rounded = useTransform(motionValue, (latest) => {
     return decimals > 0
       ? latest.toFixed(decimals)
-      : Math.round(latest).toLocaleString()
-  })
+      : Math.round(latest).toLocaleString();
+  });
   const [displayValue, setDisplayValue] = useState(
-    decimals > 0 ? from.toFixed(decimals) : Math.round(from).toLocaleString()
-  )
+    decimals > 0 ? from.toFixed(decimals) : Math.round(from).toLocaleString(),
+  );
 
   useEffect(() => {
     if (inView) {
@@ -40,16 +46,17 @@ export function AnimatedCounter({
         duration,
         ease: [0.25, 0.46, 0.45, 0.94],
         onUpdate: (latest) => {
-          const value = decimals > 0
-            ? latest.toFixed(decimals)
-            : Math.round(latest).toLocaleString()
-          setDisplayValue(value)
-        }
-      })
+          const value =
+            decimals > 0
+              ? latest.toFixed(decimals)
+              : Math.round(latest).toLocaleString();
+          setDisplayValue(value);
+        },
+      });
 
-      return controls.stop
+      return controls.stop;
     }
-  }, [inView, motionValue, to, duration, decimals])
+  }, [inView, motionValue, to, duration, decimals]);
 
   return (
     <motion.span
@@ -64,5 +71,5 @@ export function AnimatedCounter({
       {displayValue}
       {suffix}
     </motion.span>
-  )
+  );
 }

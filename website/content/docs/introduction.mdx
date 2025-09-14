@@ -57,25 +57,30 @@ Claude: Based on your preferences, I'd recommend TypeScript.
 
 ## Architecture
 
-import { ArchitectureDiagram } from '@/components/ArchitectureDiagram'
+import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 
 <ArchitectureDiagram />
 
 ## Core concepts
 
 ### Memories
+
 Each memory contains:
+
 - **Content**: The information to remember
 - **User ID**: Who it belongs to
 - **Priority**: How important it is (affects caching)
 - **Metadata**: Additional context
 
 ### Caching layers
+
 1. **L1 (Redis)**: Hot data, 24-hour TTL
 2. **L2 (Cloud)**: Permanent storage with vector search
 
 ### MCP tools
+
 Recall provides these tools to Claude:
+
 - `add_memory`: Store new information
 - `search_memory`: Find relevant context
 - `get_all_memories`: List all memories
@@ -85,12 +90,14 @@ Recall provides these tools to Claude:
 ## When to use Recall
 
 **Good for:**
+
 - User preferences and settings
 - Conversation history
 - Facts about users or projects
 - Context that should persist
 
 **Not for:**
+
 - Sensitive data (use encryption)
 - Large files (use object storage)
 - Real-time data (use streaming)
@@ -98,6 +105,7 @@ Recall provides these tools to Claude:
 ## Pricing
 
 Recall itself is free and open source. You'll need:
+
 - **Redis**: Free locally, ~$15/mo for Redis Cloud
 - **Mem0**: Free tier includes 10,000 memories
 

@@ -19,7 +19,6 @@ Before you begin, make sure you have:
 
 ## Installation
 
-
 ```bash tab="Python"
 pip install recall-memory
 ```
@@ -36,13 +35,11 @@ yarn add @recall/client
 pnpm add @recall/client
 ```
 
-
 ## Basic Setup
 
 ### 1. Start Redis
 
 If you don't have Redis running locally:
-
 
 ```bash tab="Docker"
 docker run -d -p 6379:6379 redis:alpine
@@ -56,7 +53,6 @@ brew services start redis
 sudo systemctl start redis
 ```
 
-
 ### 2. Set Environment Variables
 
 Create a `.env` file in your project root:
@@ -68,7 +64,6 @@ RECALL_ENV=development
 ```
 
 ### 3. Initialize the Client
-
 
 ```python tab="Python"
 from recall import RecallClient
@@ -91,8 +86,8 @@ print(f"Recall status: {health['status']}")
 ```
 
 ```typescript tab="TypeScript"
-import { RecallClient } from '@recall/client';
-import dotenv from 'dotenv';
+import { RecallClient } from "@recall/client";
+import dotenv from "dotenv";
 
 // Load environment variables
 dotenv.config();
@@ -101,7 +96,7 @@ dotenv.config();
 const client = new RecallClient({
   redisUrl: process.env.REDIS_URL,
   mem0ApiKey: process.env.MEM0_API_KEY,
-  environment: process.env.RECALL_ENV || 'development'
+  environment: process.env.RECALL_ENV || "development",
 });
 
 // Test the connection
@@ -110,27 +105,25 @@ console.log(`Recall status: ${health.status}`);
 ```
 
 ```javascript tab="JavaScript"
-const { RecallClient } = require('@recall/client');
-require('dotenv').config();
+const { RecallClient } = require("@recall/client");
+require("dotenv").config();
 
 // Initialize client
 const client = new RecallClient({
   redisUrl: process.env.REDIS_URL,
   mem0ApiKey: process.env.MEM0_API_KEY,
-  environment: process.env.RECALL_ENV || 'development'
+  environment: process.env.RECALL_ENV || "development",
 });
 
 // Test the connection
-client.healthCheck().then(health => {
+client.healthCheck().then((health) => {
   console.log(`Recall status: ${health.status}`);
 });
 ```
 
-
 ## Your First Memory
 
 Let's create, retrieve, and search memories:
-
 
 ```python tab="Python"
 # Store a memory
@@ -168,8 +161,8 @@ const memory = await client.add({
   priority: "high",
   metadata: {
     category: "preferences",
-    learnedFrom: "conversation"
-  }
+    learnedFrom: "conversation",
+  },
 });
 console.log(`Memory stored with ID: ${memory.id}`);
 
@@ -177,10 +170,10 @@ console.log(`Memory stored with ID: ${memory.id}`);
 const results = await client.search({
   query: "user communication preferences",
   userId: "user_123",
-  limit: 5
+  limit: 5,
 });
 
-results.forEach(memory => {
+results.forEach((memory) => {
   console.log(`- ${memory.content} (relevance: ${memory.score})`);
 });
 
@@ -189,13 +182,11 @@ const allMemories = await client.getAll({ userId: "user_123" });
 console.log(`Total memories: ${allMemories.length}`);
 ```
 
-
 ## Common Patterns
 
 ### Conversation Memory
 
 Store and retrieve conversation context:
-
 
 ```python tab="Python"
 # Store conversation turn
@@ -228,8 +219,8 @@ await client.add({
   metadata: {
     type: "conversation",
     sessionId: sessionId,
-    timestamp: new Date().toISOString()
-  }
+    timestamp: new Date().toISOString(),
+  },
 });
 
 // Retrieve recent conversation context
@@ -237,15 +228,13 @@ const context = await client.search({
   query: "recent conversations",
   userId: userId,
   filters: { type: "conversation" },
-  limit: 10
+  limit: 10,
 });
 ```
-
 
 ### User Preferences
 
 Track and apply user preferences:
-
 
 ```python tab="Python"
 # Store preference
@@ -270,17 +259,16 @@ await client.add({
   content: "Prefers email notifications over SMS",
   userId: userId,
   priority: "high",
-  metadata: { type: "preference", category: "notifications" }
+  metadata: { type: "preference", category: "notifications" },
 });
 
 // Check preferences before action
 const prefs = await client.search({
   query: "notification preferences",
   userId: userId,
-  filters: { type: "preference" }
+  filters: { type: "preference" },
 });
 ```
-
 
 ## Performance Tips
 
@@ -297,7 +285,6 @@ Set appropriate priority levels to optimize cache usage:
 
 Use batch methods for better performance:
 
-
 ```python tab="Python"
 # Add multiple memories at once
 memories = [
@@ -313,16 +300,14 @@ client.add_batch(memories)
 const memories = [
   { content: "Fact 1", userId: "user_123" },
   { content: "Fact 2", userId: "user_123" },
-  { content: "Fact 3", userId: "user_123" }
+  { content: "Fact 3", userId: "user_123" },
 ];
 await client.addBatch(memories);
 ```
 
-
 ### 3. Use Async Operations
 
 For non-critical memories, use async mode:
-
 
 ```python tab="Python"
 # Fire-and-forget for non-critical memories
@@ -340,10 +325,9 @@ await client.add({
   content: "Background information",
   userId: "user_123",
   priority: "low",
-  asyncMode: true  // Don't wait for cloud sync
+  asyncMode: true, // Don't wait for cloud sync
 });
 ```
-
 
 ## Next Steps
 

@@ -30,7 +30,7 @@ export const ShineBorder = ({
     <div
       className={cn(
         "absolute -inset-[1px] rounded-[inherit] opacity-75",
-        className
+        className,
       )}
       style={{
         borderRadius: `${borderRadius}px`,

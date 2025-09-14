@@ -1,13 +1,13 @@
-import { Navigation } from '@/components/Navigation'
-import { Footer } from '@/components/Footer'
-import { DocsSidebar } from '@/components/DocsSidebar'
-import { DocsHeader } from '@/components/DocsHeader'
-import { TableOfContents } from '@/components/TableOfContents'
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+import { DocsSidebar } from "@/components/DocsSidebar";
+import { DocsHeader } from "@/components/DocsHeader";
+import { TableOfContents } from "@/components/TableOfContents";
 
 export default function DocsLayout({
-  children
+  children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <div className="min-h-screen bg-black">
@@ -24,9 +24,7 @@ export default function DocsLayout({
           </aside>
 
           {/* Main Content */}
-          <main className="min-w-0 max-w-4xl flex-grow">
-            {children}
-          </main>
+          <main className="min-w-0 max-w-4xl flex-grow">{children}</main>
 
           {/* Table of Contents */}
           <aside className="hidden xl:block w-[240px] flex-shrink-0">
@@ -39,5 +37,5 @@ export default function DocsLayout({
 
       <Footer />
     </div>
-  )
+  );
 }

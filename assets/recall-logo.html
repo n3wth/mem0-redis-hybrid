@@ -1,390 +1,1038 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Recall Logo Concepts</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #f5f5f5;
-            padding: 40px;
-            margin: 0;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        h1, h2 {
-            color: #333;
-        }
-        .logo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-        }
-        .logo-card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .logo-display {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 200px;
-            background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0),
-                        linear-gradient(45deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0);
-            background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .logo-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        .logo-description {
-            color: #666;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-        .size-demos {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-        .size-demo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-        .size-label {
-            font-size: 11px;
-            color: #999;
-        }
-        .color-variants {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .variant {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-        }
-        .dark-bg {
-            background: #1a1a1a;
-        }
-        .light-bg {
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
-        }
-        .brand-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        background: #f5f5f5;
+        padding: 40px;
+        margin: 0;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      h1,
+      h2 {
+        color: #333;
+      }
+      .logo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin: 40px 0;
+      }
+      .logo-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .logo-display {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 200px;
+        background:
+          linear-gradient(
+            45deg,
+            #f0f0f0 25%,
+            transparent 25%,
+            transparent 75%,
+            #f0f0f0 75%,
+            #f0f0f0
+          ),
+          linear-gradient(
+            45deg,
+            #f0f0f0 25%,
+            transparent 25%,
+            transparent 75%,
+            #f0f0f0 75%,
+            #f0f0f0
+          );
+        background-size: 20px 20px;
+        background-position:
+          0 0,
+          10px 10px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .logo-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .logo-description {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .size-demos {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+      }
+      .size-demo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .size-label {
+        font-size: 11px;
+        color: #999;
+      }
+      .color-variants {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+      }
+      .variant {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+      }
+      .dark-bg {
+        background: #1a1a1a;
+      }
+      .light-bg {
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+      }
+      .brand-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>Recall Logo Concepts</h1>
+      <h1>Recall Logo Concepts</h1>
 
-        <div class="logo-grid">
-            <!-- Echo Ripple - Main Concept -->
-            <div class="logo-card">
-                <div class="logo-display">
-                    <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Echo Ripple Design -->
-                        <circle cx="60" cy="60" r="12" fill="#4F46E5" opacity="1"/>
-                        <circle cx="60" cy="60" r="24" fill="none" stroke="#4F46E5" stroke-width="2" opacity="0.6"/>
-                        <circle cx="60" cy="60" r="36" fill="none" stroke="#4F46E5" stroke-width="2" opacity="0.3"/>
-                        <circle cx="60" cy="60" r="48" fill="none" stroke="#4F46E5" stroke-width="1.5" opacity="0.15"/>
-                    </svg>
-                </div>
-                <div class="logo-title">Echo Ripple (Primary)</div>
-                <div class="logo-description">Concentric circles representing memory rippling through consciousness. Clean, scalable, and timeless.</div>
-                <div class="size-demos">
-                    <div class="size-demo">
-                        <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="8" cy="8" r="2" fill="#4F46E5"/>
-                            <circle cx="8" cy="8" r="4" fill="none" stroke="#4F46E5" stroke-width="1" opacity="0.5"/>
-                            <circle cx="8" cy="8" r="6" fill="none" stroke="#4F46E5" stroke-width="0.5" opacity="0.3"/>
-                        </svg>
-                        <span class="size-label">16px</span>
-                    </div>
-                    <div class="size-demo">
-                        <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="16" cy="16" r="3" fill="#4F46E5"/>
-                            <circle cx="16" cy="16" r="7" fill="none" stroke="#4F46E5" stroke-width="1" opacity="0.6"/>
-                            <circle cx="16" cy="16" r="11" fill="none" stroke="#4F46E5" stroke-width="1" opacity="0.3"/>
-                            <circle cx="16" cy="16" r="14" fill="none" stroke="#4F46E5" stroke-width="0.5" opacity="0.15"/>
-                        </svg>
-                        <span class="size-label">32px</span>
-                    </div>
-                    <div class="size-demo">
-                        <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="32" cy="32" r="6" fill="#4F46E5"/>
-                            <circle cx="32" cy="32" r="13" fill="none" stroke="#4F46E5" stroke-width="1.5" opacity="0.6"/>
-                            <circle cx="32" cy="32" r="20" fill="none" stroke="#4F46E5" stroke-width="1.5" opacity="0.3"/>
-                            <circle cx="32" cy="32" r="27" fill="none" stroke="#4F46E5" stroke-width="1" opacity="0.15"/>
-                        </svg>
-                        <span class="size-label">64px</span>
-                    </div>
-                </div>
+      <div class="logo-grid">
+        <!-- Echo Ripple - Main Concept -->
+        <div class="logo-card">
+          <div class="logo-display">
+            <svg
+              width="120"
+              height="120"
+              viewBox="0 0 120 120"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <!-- Echo Ripple Design -->
+              <circle cx="60" cy="60" r="12" fill="#4F46E5" opacity="1" />
+              <circle
+                cx="60"
+                cy="60"
+                r="24"
+                fill="none"
+                stroke="#4F46E5"
+                stroke-width="2"
+                opacity="0.6"
+              />
+              <circle
+                cx="60"
+                cy="60"
+                r="36"
+                fill="none"
+                stroke="#4F46E5"
+                stroke-width="2"
+                opacity="0.3"
+              />
+              <circle
+                cx="60"
+                cy="60"
+                r="48"
+                fill="none"
+                stroke="#4F46E5"
+                stroke-width="1.5"
+                opacity="0.15"
+              />
+            </svg>
+          </div>
+          <div class="logo-title">Echo Ripple (Primary)</div>
+          <div class="logo-description">
+            Concentric circles representing memory rippling through
+            consciousness. Clean, scalable, and timeless.
+          </div>
+          <div class="size-demos">
+            <div class="size-demo">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="8" cy="8" r="2" fill="#4F46E5" />
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="4"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="1"
+                  opacity="0.5"
+                />
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="6"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="0.5"
+                  opacity="0.3"
+                />
+              </svg>
+              <span class="size-label">16px</span>
             </div>
-
-            <!-- Echo Ripple with Gap (C-shape variant) -->
-            <div class="logo-card">
-                <div class="logo-display">
-                    <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <mask id="gap-mask">
-                                <rect width="120" height="120" fill="white"/>
-                                <path d="M 75 45 L 90 30 L 90 90 L 75 75 Z" fill="black"/>
-                            </mask>
-                        </defs>
-                        <g mask="url(#gap-mask)">
-                            <circle cx="60" cy="60" r="12" fill="#4F46E5"/>
-                            <circle cx="60" cy="60" r="24" fill="none" stroke="#4F46E5" stroke-width="2" opacity="0.6"/>
-                            <circle cx="60" cy="60" r="36" fill="none" stroke="#4F46E5" stroke-width="2" opacity="0.3"/>
-                            <circle cx="60" cy="60" r="48" fill="none" stroke="#4F46E5" stroke-width="1.5" opacity="0.15"/>
-                        </g>
-                    </svg>
-                </div>
-                <div class="logo-title">Echo Ripple (C-Gap)</div>
-                <div class="logo-description">Subtle "C" shape created by gap in circles, hinting at "C" for recall while maintaining the ripple effect.</div>
+            <div class="size-demo">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 32 32"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="16" cy="16" r="3" fill="#4F46E5" />
+                <circle
+                  cx="16"
+                  cy="16"
+                  r="7"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="1"
+                  opacity="0.6"
+                />
+                <circle
+                  cx="16"
+                  cy="16"
+                  r="11"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="1"
+                  opacity="0.3"
+                />
+                <circle
+                  cx="16"
+                  cy="16"
+                  r="14"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="0.5"
+                  opacity="0.15"
+                />
+              </svg>
+              <span class="size-label">32px</span>
             </div>
-
-            <!-- Neural Spark -->
-            <div class="logo-card">
-                <div class="logo-display">
-                    <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M 40 60 Q 60 40, 80 60" fill="none" stroke="#4F46E5" stroke-width="3" stroke-linecap="round"/>
-                        <path d="M 40 60 Q 60 80, 80 60" fill="none" stroke="#4F46E5" stroke-width="3" stroke-linecap="round"/>
-                        <path d="M 58 55 L 62 50 L 58 60 L 62 65 L 58 60" fill="#FF6B6B" stroke="#FF6B6B" stroke-width="1" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <div class="logo-title">Neural Spark</div>
-                <div class="logo-description">Brain hemispheres with lightning bolt representing the moment of recall.</div>
+            <div class="size-demo">
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 64 64"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="32" cy="32" r="6" fill="#4F46E5" />
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="13"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="1.5"
+                  opacity="0.6"
+                />
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="20"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="1.5"
+                  opacity="0.3"
+                />
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="27"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="1"
+                  opacity="0.15"
+                />
+              </svg>
+              <span class="size-label">64px</span>
             </div>
-
-            <!-- Reverse Play -->
-            <div class="logo-card">
-                <div class="logo-display">
-                    <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                        <g transform="translate(60, 60)">
-                            <path d="M -15 -20 L -15 20 L 10 0 Z" fill="#4F46E5" opacity="1"/>
-                            <path d="M 10 0 L 20 -5 L 20 5 Z" fill="#4F46E5" opacity="0.6"/>
-                            <circle cx="-22" cy="0" r="3" fill="#4F46E5" opacity="0.3"/>
-                        </g>
-                    </svg>
-                </div>
-                <div class="logo-title">Reverse Play</div>
-                <div class="logo-description">Fragmented play button pointing backwards, suggesting memory reconstruction.</div>
-            </div>
-
-            <!-- Memory Loop -->
-            <div class="logo-card">
-                <div class="logo-display">
-                    <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <linearGradient id="loop-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
-                                <stop offset="50%" style="stop-color:#4F46E5;stop-opacity:0.5" />
-                                <stop offset="100%" style="stop-color:#4F46E5;stop-opacity:0.2" />
-                            </linearGradient>
-                        </defs>
-                        <path d="M 30 60 Q 30 40, 50 40 Q 70 40, 70 60 Q 70 80, 50 80 Q 30 80, 30 60 M 70 60 Q 70 40, 90 40 Q 110 40, 110 60 Q 110 80, 90 80 Q 70 80, 70 60"
-                              fill="none"
-                              stroke="url(#loop-gradient)"
-                              stroke-width="3"
-                              stroke-linecap="round"/>
-                    </svg>
-                </div>
-                <div class="logo-title">Memory Loop</div>
-                <div class="logo-description">Infinity symbol with gradient representing the continuous cycle of storing and recalling.</div>
-            </div>
-
-            <!-- Synaptic Bridge -->
-            <div class="logo-card">
-                <div class="logo-display">
-                    <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="30" cy="60" r="5" fill="#4F46E5"/>
-                        <circle cx="90" cy="60" r="5" fill="#4F46E5"/>
-                        <path d="M 35 60 Q 60 45, 85 60" fill="none" stroke="#4F46E5" stroke-width="2.5"/>
-                        <path d="M 75 55 L 85 60" fill="none" stroke="#4F46E5" stroke-width="1.5" opacity="0.6"/>
-                        <path d="M 78 52 L 85 60" fill="none" stroke="#4F46E5" stroke-width="1.5" opacity="0.4"/>
-                        <path d="M 81 49 L 85 60" fill="none" stroke="#4F46E5" stroke-width="1.5" opacity="0.3"/>
-                    </svg>
-                </div>
-                <div class="logo-title">Synaptic Bridge</div>
-                <div class="logo-description">Neural connections firing during recall, minimalist and scientific.</div>
-            </div>
-
-            <!-- Time Fold -->
-            <div class="logo-card">
-                <div class="logo-display">
-                    <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M 30 80 Q 30 30, 60 30 Q 90 30, 90 60 Q 90 75, 75 75 Q 65 75, 65 65 Q 65 50, 80 45"
-                              fill="none"
-                              stroke="#4F46E5"
-                              stroke-width="3"
-                              stroke-linecap="round"/>
-                    </svg>
-                </div>
-                <div class="logo-title">Time Fold</div>
-                <div class="logo-description">A line folding back on itself, creating an abstract "R" while suggesting time folding.</div>
-            </div>
-
-            <!-- Pulse Memory -->
-            <div class="logo-card">
-                <div class="logo-display">
-                    <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="20" y="55" width="4" height="10" rx="2" fill="#4F46E5" opacity="0.3"/>
-                        <rect x="30" y="50" width="4" height="20" rx="2" fill="#4F46E5" opacity="0.4"/>
-                        <rect x="40" y="45" width="4" height="30" rx="2" fill="#4F46E5" opacity="0.5"/>
-                        <rect x="50" y="35" width="4" height="50" rx="2" fill="#4F46E5" opacity="0.7"/>
-                        <rect x="60" y="25" width="4" height="70" rx="2" fill="#4F46E5" opacity="1"/>
-                        <rect x="70" y="40" width="4" height="40" rx="2" fill="#4F46E5" opacity="0.6"/>
-                        <rect x="80" y="50" width="4" height="20" rx="2" fill="#4F46E5" opacity="0.4"/>
-                        <rect x="90" y="55" width="4" height="10" rx="2" fill="#4F46E5" opacity="0.3"/>
-                    </svg>
-                </div>
-                <div class="logo-title">Pulse Memory</div>
-                <div class="logo-description">Audio waveform pattern suggesting memory recall as a signal or pulse.</div>
-            </div>
+          </div>
         </div>
 
-        <h2>Color Variations</h2>
-        <div class="logo-grid">
-            <!-- Echo Ripple in different colors -->
-            <div class="logo-card">
-                <div class="color-variants">
-                    <div class="variant light-bg">
-                        <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="24" cy="24" r="5" fill="#4F46E5"/>
-                            <circle cx="24" cy="24" r="10" fill="none" stroke="#4F46E5" stroke-width="1.5" opacity="0.6"/>
-                            <circle cx="24" cy="24" r="15" fill="none" stroke="#4F46E5" stroke-width="1" opacity="0.3"/>
-                            <circle cx="24" cy="24" r="20" fill="none" stroke="#4F46E5" stroke-width="0.5" opacity="0.15"/>
-                        </svg>
-                    </div>
-                    <div class="variant dark-bg">
-                        <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="24" cy="24" r="5" fill="#fff"/>
-                            <circle cx="24" cy="24" r="10" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.8"/>
-                            <circle cx="24" cy="24" r="15" fill="none" stroke="#fff" stroke-width="1" opacity="0.5"/>
-                            <circle cx="24" cy="24" r="20" fill="none" stroke="#fff" stroke-width="0.5" opacity="0.3"/>
-                        </svg>
-                    </div>
-                    <div class="variant brand-bg">
-                        <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="24" cy="24" r="5" fill="#fff"/>
-                            <circle cx="24" cy="24" r="10" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.9"/>
-                            <circle cx="24" cy="24" r="15" fill="none" stroke="#fff" stroke-width="1" opacity="0.6"/>
-                            <circle cx="24" cy="24" r="20" fill="none" stroke="#fff" stroke-width="0.5" opacity="0.4"/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="logo-title">Echo Ripple - Color Modes</div>
-                <div class="logo-description">Light mode, dark mode, and on-brand gradient background</div>
-            </div>
-
-            <!-- Monochrome version -->
-            <div class="logo-card">
-                <div class="color-variants">
-                    <div class="variant light-bg">
-                        <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="24" cy="24" r="5" fill="#000"/>
-                            <circle cx="24" cy="24" r="10" fill="none" stroke="#000" stroke-width="1.5" opacity="0.6"/>
-                            <circle cx="24" cy="24" r="15" fill="none" stroke="#000" stroke-width="1" opacity="0.3"/>
-                            <circle cx="24" cy="24" r="20" fill="none" stroke="#000" stroke-width="0.5" opacity="0.15"/>
-                        </svg>
-                    </div>
-                    <div class="variant light-bg">
-                        <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="24" cy="24" r="5" fill="#FF6B6B"/>
-                            <circle cx="24" cy="24" r="10" fill="none" stroke="#FF6B6B" stroke-width="1.5" opacity="0.6"/>
-                            <circle cx="24" cy="24" r="15" fill="none" stroke="#FF6B6B" stroke-width="1" opacity="0.3"/>
-                            <circle cx="24" cy="24" r="20" fill="none" stroke="#FF6B6B" stroke-width="0.5" opacity="0.15"/>
-                        </svg>
-                    </div>
-                    <div class="variant light-bg">
-                        <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="24" cy="24" r="5" fill="#10B981"/>
-                            <circle cx="24" cy="24" r="10" fill="none" stroke="#10B981" stroke-width="1.5" opacity="0.6"/>
-                            <circle cx="24" cy="24" r="15" fill="none" stroke="#10B981" stroke-width="1" opacity="0.3"/>
-                            <circle cx="24" cy="24" r="20" fill="none" stroke="#10B981" stroke-width="0.5" opacity="0.15"/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="logo-title">Alternative Colors</div>
-                <div class="logo-description">Black (monochrome), Coral (energetic), Emerald (growth)</div>
-            </div>
+        <!-- Echo Ripple with Gap (C-shape variant) -->
+        <div class="logo-card">
+          <div class="logo-display">
+            <svg
+              width="120"
+              height="120"
+              viewBox="0 0 120 120"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <mask id="gap-mask">
+                  <rect width="120" height="120" fill="white" />
+                  <path d="M 75 45 L 90 30 L 90 90 L 75 75 Z" fill="black" />
+                </mask>
+              </defs>
+              <g mask="url(#gap-mask)">
+                <circle cx="60" cy="60" r="12" fill="#4F46E5" />
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="24"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="2"
+                  opacity="0.6"
+                />
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="36"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="2"
+                  opacity="0.3"
+                />
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="48"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="1.5"
+                  opacity="0.15"
+                />
+              </g>
+            </svg>
+          </div>
+          <div class="logo-title">Echo Ripple (C-Gap)</div>
+          <div class="logo-description">
+            Subtle "C" shape created by gap in circles, hinting at "C" for
+            recall while maintaining the ripple effect.
+          </div>
         </div>
 
-        <h2>Usage Examples</h2>
-        <div class="logo-grid">
-            <!-- With text -->
-            <div class="logo-card">
-                <div class="logo-display" style="background: white;">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="20" cy="20" r="4" fill="#4F46E5"/>
-                            <circle cx="20" cy="20" r="8" fill="none" stroke="#4F46E5" stroke-width="1.2" opacity="0.6"/>
-                            <circle cx="20" cy="20" r="12" fill="none" stroke="#4F46E5" stroke-width="1" opacity="0.3"/>
-                            <circle cx="20" cy="20" r="16" fill="none" stroke="#4F46E5" stroke-width="0.5" opacity="0.15"/>
-                        </svg>
-                        <span style="font-size: 32px; font-weight: 600; color: #1a1a1a;">Recall</span>
-                    </div>
-                </div>
-                <div class="logo-title">Logo with Text</div>
-                <div class="logo-description">How it looks next to the "Recall" wordmark</div>
-            </div>
-
-            <!-- Favicon preview -->
-            <div class="logo-card">
-                <div class="logo-display">
-                    <div style="display: flex; gap: 20px; align-items: center;">
-                        <div style="background: white; padding: 8px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="8" cy="8" r="2" fill="#4F46E5"/>
-                                <circle cx="8" cy="8" r="4" fill="none" stroke="#4F46E5" stroke-width="1" opacity="0.5"/>
-                                <circle cx="8" cy="8" r="6" fill="none" stroke="#4F46E5" stroke-width="0.5" opacity="0.3"/>
-                            </svg>
-                        </div>
-                        <div style="background: white; padding: 8px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="32" height="32" rx="6" fill="#4F46E5"/>
-                                <circle cx="16" cy="16" r="3" fill="#fff"/>
-                                <circle cx="16" cy="16" r="6" fill="none" stroke="#fff" stroke-width="1" opacity="0.8"/>
-                                <circle cx="16" cy="16" r="9" fill="none" stroke="#fff" stroke-width="0.8" opacity="0.5"/>
-                                <circle cx="16" cy="16" r="12" fill="none" stroke="#fff" stroke-width="0.5" opacity="0.3"/>
-                            </svg>
-                        </div>
-                        <div style="background: white; padding: 8px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="32" height="32" rx="16" fill="#4F46E5"/>
-                                <circle cx="16" cy="16" r="3" fill="#fff"/>
-                                <circle cx="16" cy="16" r="6" fill="none" stroke="#fff" stroke-width="1" opacity="0.8"/>
-                                <circle cx="16" cy="16" r="9" fill="none" stroke="#fff" stroke-width="0.8" opacity="0.5"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="logo-title">Favicon Variations</div>
-                <div class="logo-description">16px minimal, 32px with background (square), 32px with background (circle)</div>
-            </div>
+        <!-- Neural Spark -->
+        <div class="logo-card">
+          <div class="logo-display">
+            <svg
+              width="120"
+              height="120"
+              viewBox="0 0 120 120"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M 40 60 Q 60 40, 80 60"
+                fill="none"
+                stroke="#4F46E5"
+                stroke-width="3"
+                stroke-linecap="round"
+              />
+              <path
+                d="M 40 60 Q 60 80, 80 60"
+                fill="none"
+                stroke="#4F46E5"
+                stroke-width="3"
+                stroke-linecap="round"
+              />
+              <path
+                d="M 58 55 L 62 50 L 58 60 L 62 65 L 58 60"
+                fill="#FF6B6B"
+                stroke="#FF6B6B"
+                stroke-width="1"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <div class="logo-title">Neural Spark</div>
+          <div class="logo-description">
+            Brain hemispheres with lightning bolt representing the moment of
+            recall.
+          </div>
         </div>
+
+        <!-- Reverse Play -->
+        <div class="logo-card">
+          <div class="logo-display">
+            <svg
+              width="120"
+              height="120"
+              viewBox="0 0 120 120"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g transform="translate(60, 60)">
+                <path
+                  d="M -15 -20 L -15 20 L 10 0 Z"
+                  fill="#4F46E5"
+                  opacity="1"
+                />
+                <path
+                  d="M 10 0 L 20 -5 L 20 5 Z"
+                  fill="#4F46E5"
+                  opacity="0.6"
+                />
+                <circle cx="-22" cy="0" r="3" fill="#4F46E5" opacity="0.3" />
+              </g>
+            </svg>
+          </div>
+          <div class="logo-title">Reverse Play</div>
+          <div class="logo-description">
+            Fragmented play button pointing backwards, suggesting memory
+            reconstruction.
+          </div>
+        </div>
+
+        <!-- Memory Loop -->
+        <div class="logo-card">
+          <div class="logo-display">
+            <svg
+              width="120"
+              height="120"
+              viewBox="0 0 120 120"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <linearGradient
+                  id="loop-gradient"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="0%"
+                >
+                  <stop
+                    offset="0%"
+                    style="stop-color: #4f46e5; stop-opacity: 1"
+                  />
+                  <stop
+                    offset="50%"
+                    style="stop-color: #4f46e5; stop-opacity: 0.5"
+                  />
+                  <stop
+                    offset="100%"
+                    style="stop-color: #4f46e5; stop-opacity: 0.2"
+                  />
+                </linearGradient>
+              </defs>
+              <path
+                d="M 30 60 Q 30 40, 50 40 Q 70 40, 70 60 Q 70 80, 50 80 Q 30 80, 30 60 M 70 60 Q 70 40, 90 40 Q 110 40, 110 60 Q 110 80, 90 80 Q 70 80, 70 60"
+                fill="none"
+                stroke="url(#loop-gradient)"
+                stroke-width="3"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+          <div class="logo-title">Memory Loop</div>
+          <div class="logo-description">
+            Infinity symbol with gradient representing the continuous cycle of
+            storing and recalling.
+          </div>
+        </div>
+
+        <!-- Synaptic Bridge -->
+        <div class="logo-card">
+          <div class="logo-display">
+            <svg
+              width="120"
+              height="120"
+              viewBox="0 0 120 120"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="30" cy="60" r="5" fill="#4F46E5" />
+              <circle cx="90" cy="60" r="5" fill="#4F46E5" />
+              <path
+                d="M 35 60 Q 60 45, 85 60"
+                fill="none"
+                stroke="#4F46E5"
+                stroke-width="2.5"
+              />
+              <path
+                d="M 75 55 L 85 60"
+                fill="none"
+                stroke="#4F46E5"
+                stroke-width="1.5"
+                opacity="0.6"
+              />
+              <path
+                d="M 78 52 L 85 60"
+                fill="none"
+                stroke="#4F46E5"
+                stroke-width="1.5"
+                opacity="0.4"
+              />
+              <path
+                d="M 81 49 L 85 60"
+                fill="none"
+                stroke="#4F46E5"
+                stroke-width="1.5"
+                opacity="0.3"
+              />
+            </svg>
+          </div>
+          <div class="logo-title">Synaptic Bridge</div>
+          <div class="logo-description">
+            Neural connections firing during recall, minimalist and scientific.
+          </div>
+        </div>
+
+        <!-- Time Fold -->
+        <div class="logo-card">
+          <div class="logo-display">
+            <svg
+              width="120"
+              height="120"
+              viewBox="0 0 120 120"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M 30 80 Q 30 30, 60 30 Q 90 30, 90 60 Q 90 75, 75 75 Q 65 75, 65 65 Q 65 50, 80 45"
+                fill="none"
+                stroke="#4F46E5"
+                stroke-width="3"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+          <div class="logo-title">Time Fold</div>
+          <div class="logo-description">
+            A line folding back on itself, creating an abstract "R" while
+            suggesting time folding.
+          </div>
+        </div>
+
+        <!-- Pulse Memory -->
+        <div class="logo-card">
+          <div class="logo-display">
+            <svg
+              width="120"
+              height="120"
+              viewBox="0 0 120 120"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x="20"
+                y="55"
+                width="4"
+                height="10"
+                rx="2"
+                fill="#4F46E5"
+                opacity="0.3"
+              />
+              <rect
+                x="30"
+                y="50"
+                width="4"
+                height="20"
+                rx="2"
+                fill="#4F46E5"
+                opacity="0.4"
+              />
+              <rect
+                x="40"
+                y="45"
+                width="4"
+                height="30"
+                rx="2"
+                fill="#4F46E5"
+                opacity="0.5"
+              />
+              <rect
+                x="50"
+                y="35"
+                width="4"
+                height="50"
+                rx="2"
+                fill="#4F46E5"
+                opacity="0.7"
+              />
+              <rect
+                x="60"
+                y="25"
+                width="4"
+                height="70"
+                rx="2"
+                fill="#4F46E5"
+                opacity="1"
+              />
+              <rect
+                x="70"
+                y="40"
+                width="4"
+                height="40"
+                rx="2"
+                fill="#4F46E5"
+                opacity="0.6"
+              />
+              <rect
+                x="80"
+                y="50"
+                width="4"
+                height="20"
+                rx="2"
+                fill="#4F46E5"
+                opacity="0.4"
+              />
+              <rect
+                x="90"
+                y="55"
+                width="4"
+                height="10"
+                rx="2"
+                fill="#4F46E5"
+                opacity="0.3"
+              />
+            </svg>
+          </div>
+          <div class="logo-title">Pulse Memory</div>
+          <div class="logo-description">
+            Audio waveform pattern suggesting memory recall as a signal or
+            pulse.
+          </div>
+        </div>
+      </div>
+
+      <h2>Color Variations</h2>
+      <div class="logo-grid">
+        <!-- Echo Ripple in different colors -->
+        <div class="logo-card">
+          <div class="color-variants">
+            <div class="variant light-bg">
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 48 48"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="24" cy="24" r="5" fill="#4F46E5" />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="10"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="1.5"
+                  opacity="0.6"
+                />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="15"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="1"
+                  opacity="0.3"
+                />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="20"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="0.5"
+                  opacity="0.15"
+                />
+              </svg>
+            </div>
+            <div class="variant dark-bg">
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 48 48"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="24" cy="24" r="5" fill="#fff" />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="10"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="1.5"
+                  opacity="0.8"
+                />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="15"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="1"
+                  opacity="0.5"
+                />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="20"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="0.5"
+                  opacity="0.3"
+                />
+              </svg>
+            </div>
+            <div class="variant brand-bg">
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 48 48"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="24" cy="24" r="5" fill="#fff" />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="10"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="1.5"
+                  opacity="0.9"
+                />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="15"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="1"
+                  opacity="0.6"
+                />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="20"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="0.5"
+                  opacity="0.4"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="logo-title">Echo Ripple - Color Modes</div>
+          <div class="logo-description">
+            Light mode, dark mode, and on-brand gradient background
+          </div>
+        </div>
+
+        <!-- Monochrome version -->
+        <div class="logo-card">
+          <div class="color-variants">
+            <div class="variant light-bg">
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 48 48"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="24" cy="24" r="5" fill="#000" />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="10"
+                  fill="none"
+                  stroke="#000"
+                  stroke-width="1.5"
+                  opacity="0.6"
+                />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="15"
+                  fill="none"
+                  stroke="#000"
+                  stroke-width="1"
+                  opacity="0.3"
+                />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="20"
+                  fill="none"
+                  stroke="#000"
+                  stroke-width="0.5"
+                  opacity="0.15"
+                />
+              </svg>
+            </div>
+            <div class="variant light-bg">
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 48 48"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="24" cy="24" r="5" fill="#FF6B6B" />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="10"
+                  fill="none"
+                  stroke="#FF6B6B"
+                  stroke-width="1.5"
+                  opacity="0.6"
+                />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="15"
+                  fill="none"
+                  stroke="#FF6B6B"
+                  stroke-width="1"
+                  opacity="0.3"
+                />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="20"
+                  fill="none"
+                  stroke="#FF6B6B"
+                  stroke-width="0.5"
+                  opacity="0.15"
+                />
+              </svg>
+            </div>
+            <div class="variant light-bg">
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 48 48"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="24" cy="24" r="5" fill="#10B981" />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="10"
+                  fill="none"
+                  stroke="#10B981"
+                  stroke-width="1.5"
+                  opacity="0.6"
+                />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="15"
+                  fill="none"
+                  stroke="#10B981"
+                  stroke-width="1"
+                  opacity="0.3"
+                />
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="20"
+                  fill="none"
+                  stroke="#10B981"
+                  stroke-width="0.5"
+                  opacity="0.15"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="logo-title">Alternative Colors</div>
+          <div class="logo-description">
+            Black (monochrome), Coral (energetic), Emerald (growth)
+          </div>
+        </div>
+      </div>
+
+      <h2>Usage Examples</h2>
+      <div class="logo-grid">
+        <!-- With text -->
+        <div class="logo-card">
+          <div class="logo-display" style="background: white">
+            <div style="display: flex; align-items: center; gap: 6px">
+              <svg
+                width="40"
+                height="40"
+                viewBox="0 0 40 40"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="20" cy="20" r="4" fill="#4F46E5" />
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="8"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="1.2"
+                  opacity="0.6"
+                />
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="12"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="1"
+                  opacity="0.3"
+                />
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="16"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="0.5"
+                  opacity="0.15"
+                />
+              </svg>
+              <span style="font-size: 32px; font-weight: 600; color: #1a1a1a"
+                >Recall</span
+              >
+            </div>
+          </div>
+          <div class="logo-title">Logo with Text</div>
+          <div class="logo-description">
+            How it looks next to the "Recall" wordmark
+          </div>
+        </div>
+
+        <!-- Favicon preview -->
+        <div class="logo-card">
+          <div class="logo-display">
+            <div style="display: flex; gap: 20px; align-items: center">
+              <div
+                style="
+                  background: white;
+                  padding: 8px;
+                  border-radius: 4px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="8" cy="8" r="2" fill="#4F46E5" />
+                  <circle
+                    cx="8"
+                    cy="8"
+                    r="4"
+                    fill="none"
+                    stroke="#4F46E5"
+                    stroke-width="1"
+                    opacity="0.5"
+                  />
+                  <circle
+                    cx="8"
+                    cy="8"
+                    r="6"
+                    fill="none"
+                    stroke="#4F46E5"
+                    stroke-width="0.5"
+                    opacity="0.3"
+                  />
+                </svg>
+              </div>
+              <div
+                style="
+                  background: white;
+                  padding: 8px;
+                  border-radius: 4px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              >
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 32 32"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect width="32" height="32" rx="6" fill="#4F46E5" />
+                  <circle cx="16" cy="16" r="3" fill="#fff" />
+                  <circle
+                    cx="16"
+                    cy="16"
+                    r="6"
+                    fill="none"
+                    stroke="#fff"
+                    stroke-width="1"
+                    opacity="0.8"
+                  />
+                  <circle
+                    cx="16"
+                    cy="16"
+                    r="9"
+                    fill="none"
+                    stroke="#fff"
+                    stroke-width="0.8"
+                    opacity="0.5"
+                  />
+                  <circle
+                    cx="16"
+                    cy="16"
+                    r="12"
+                    fill="none"
+                    stroke="#fff"
+                    stroke-width="0.5"
+                    opacity="0.3"
+                  />
+                </svg>
+              </div>
+              <div
+                style="
+                  background: white;
+                  padding: 8px;
+                  border-radius: 4px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              >
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 32 32"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect width="32" height="32" rx="16" fill="#4F46E5" />
+                  <circle cx="16" cy="16" r="3" fill="#fff" />
+                  <circle
+                    cx="16"
+                    cy="16"
+                    r="6"
+                    fill="none"
+                    stroke="#fff"
+                    stroke-width="1"
+                    opacity="0.8"
+                  />
+                  <circle
+                    cx="16"
+                    cy="16"
+                    r="9"
+                    fill="none"
+                    stroke="#fff"
+                    stroke-width="0.8"
+                    opacity="0.5"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="logo-title">Favicon Variations</div>
+          <div class="logo-description">
+            16px minimal, 32px with background (square), 32px with background
+            (circle)
+          </div>
+        </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>

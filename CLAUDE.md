@@ -36,6 +36,7 @@ recall/
 ## Release Process
 
 Use GitHub Actions workflow only:
+
 ```bash
 # Trigger via GitHub CLI
 gh workflow run release.yml -f version=patch|minor|major
@@ -57,6 +58,7 @@ npm run release:major
 ## Documentation Updates
 
 When updating documentation:
+
 1. Check STYLE_GUIDE.md first
 2. Remove any emojis if found
 3. Use clear, technical language

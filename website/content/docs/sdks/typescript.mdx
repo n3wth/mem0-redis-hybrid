@@ -25,25 +25,25 @@ npm install @recall/client
 ## Quick Start
 
 ```typescript
-import { RecallClient } from '@recall/client';
+import { RecallClient } from "@recall/client";
 
 // Initialize the client
 const client = new RecallClient({
-  redisUrl: 'redis://localhost:6379',
-  mem0ApiKey: 'your-api-key'
+  redisUrl: "redis://localhost:6379",
+  mem0ApiKey: "your-api-key",
 });
 
 // Store a memory
 const memory = await client.add({
-  content: 'User prefers TypeScript for web development',
-  userId: 'user_123',
-  priority: 'high'
+  content: "User prefers TypeScript for web development",
+  userId: "user_123",
+  priority: "high",
 });
 
 // Search memories
 const results = await client.search({
-  query: 'programming preferences',
-  userId: 'user_123'
+  query: "programming preferences",
+  userId: "user_123",
 });
 ```
 
@@ -63,47 +63,47 @@ RECALL_LOG_LEVEL=info
 Load with dotenv:
 
 ```typescript
-import { RecallClient } from '@recall/client';
-import dotenv from 'dotenv';
+import { RecallClient } from "@recall/client";
+import dotenv from "dotenv";
 
 dotenv.config();
 
 const client = new RecallClient({
   redisUrl: process.env.RECALL_REDIS_URL,
   mem0ApiKey: process.env.RECALL_MEM0_API_KEY,
-  environment: process.env.RECALL_ENVIRONMENT
+  environment: process.env.RECALL_ENVIRONMENT,
 });
 ```
 
 ### Configuration Object
 
 ```typescript
-import { RecallClient, RecallConfig } from '@recall/client';
+import { RecallClient, RecallConfig } from "@recall/client";
 
 const config: RecallConfig = {
   redis: {
-    url: 'redis://localhost:6379',
+    url: "redis://localhost:6379",
     options: {
       maxRetries: 3,
       retryDelay: 1000,
-      connectionTimeout: 5000
-    }
+      connectionTimeout: 5000,
+    },
   },
   mem0: {
-    apiKey: 'your-api-key',
-    baseUrl: 'https://api.mem0.ai',
-    timeout: 30000
+    apiKey: "your-api-key",
+    baseUrl: "https://api.mem0.ai",
+    timeout: 30000,
   },
   cache: {
     ttl: 3600,
     maxSize: 1000,
-    compression: true
+    compression: true,
   },
   sync: {
-    mode: 'lazy',
+    mode: "lazy",
     batchSize: 100,
-    interval: 60000
-  }
+    interval: 60000,
+  },
 };
 
 const client = new RecallClient(config);
@@ -119,8 +119,8 @@ import {
   Priority,
   User,
   SearchResult,
-  CacheStats
-} from '@recall/client';
+  CacheStats,
+} from "@recall/client";
 
 // Memory interface
 interface Memory {
@@ -136,16 +136,16 @@ interface Memory {
 
 // Priority enum
 enum Priority {
-  CRITICAL = 'critical',
-  HIGH = 'high',
-  MEDIUM = 'medium',
-  LOW = 'low'
+  CRITICAL = "critical",
+  HIGH = "high",
+  MEDIUM = "medium",
+  LOW = "low",
 }
 
 // Search result with relevance
 interface SearchResult extends Memory {
   score: number;
-  source: 'cache' | 'cloud';
+  source: "cache" | "cloud";
   highlights?: string[];
 }
 ```
@@ -180,15 +180,15 @@ class RecallClient {
 ### Async Iteration
 
 ```typescript
-import { RecallClient } from '@recall/client';
+import { RecallClient } from "@recall/client";
 
 const client = new RecallClient();
 
 // Iterate through search results
 for await (const memory of client.searchIterator({
-  query: 'user preferences',
-  userId: 'user_123',
-  batchSize: 10
+  query: "user preferences",
+  userId: "user_123",
+  batchSize: 10,
 })) {
   console.log(`Processing: ${memory.content}`);
   // Process each memory
@@ -196,8 +196,8 @@ for await (const memory of client.searchIterator({
 
 // Stream all memories
 const stream = client.streamAll({
-  userId: 'user_123',
-  batchSize: 50
+  userId: "user_123",
+  batchSize: 50,
 });
 
 for await (const batch of stream) {
@@ -209,28 +209,28 @@ for await (const batch of stream) {
 ### Event Emitters
 
 ```typescript
-import { RecallClient } from '@recall/client';
+import { RecallClient } from "@recall/client";
 
 const client = new RecallClient();
 
 // Listen to events
-client.on('memory:added', (memory: Memory) => {
+client.on("memory:added", (memory: Memory) => {
   console.log(`New memory: ${memory.id}`);
 });
 
-client.on('cache:hit', (key: string) => {
+client.on("cache:hit", (key: string) => {
   console.log(`Cache hit for: ${key}`);
 });
 
-client.on('cache:miss', (key: string) => {
+client.on("cache:miss", (key: string) => {
   console.log(`Cache miss for: ${key}`);
 });
 
-client.on('sync:complete', (stats: SyncStats) => {
+client.on("sync:complete", (stats: SyncStats) => {
   console.log(`Synced ${stats.count} memories`);
 });
 
-client.on('error', (error: Error) => {
+client.on("error", (error: Error) => {
   console.error(`Error: ${error.message}`);
 });
 ```
@@ -238,14 +238,14 @@ client.on('error', (error: Error) => {
 ### Middleware
 
 ```typescript
-import { RecallClient, Middleware } from '@recall/client';
+import { RecallClient, Middleware } from "@recall/client";
 
 // Custom middleware
 class LoggingMiddleware implements Middleware {
   async process(
     operation: string,
     params: any,
-    next: () => Promise<any>
+    next: () => Promise<any>,
   ): Promise<any> {
     console.log(`[${operation}] Starting...`);
     const startTime = Date.now();
@@ -271,8 +271,8 @@ import {
   RetryMiddleware,
   RateLimitMiddleware,
   CacheMiddleware,
-  CompressionMiddleware
-} from '@recall/client/middleware';
+  CompressionMiddleware,
+} from "@recall/client/middleware";
 
 client.use(new RetryMiddleware({ maxAttempts: 3 }));
 client.use(new RateLimitMiddleware({ rps: 100 }));
@@ -282,7 +282,7 @@ client.use(new CompressionMiddleware());
 ### Transactions
 
 ```typescript
-import { RecallClient } from '@recall/client';
+import { RecallClient } from "@recall/client";
 
 const client = new RecallClient();
 
@@ -290,18 +290,18 @@ const client = new RecallClient();
 const result = await client.transaction(async (tx) => {
   // All operations are atomic
   const mem1 = await tx.add({
-    content: 'First memory',
-    userId: 'user_123'
+    content: "First memory",
+    userId: "user_123",
   });
 
   const mem2 = await tx.add({
-    content: 'Second memory',
-    userId: 'user_123'
+    content: "Second memory",
+    userId: "user_123",
   });
 
   await tx.update({
     memoryId: mem1.id,
-    priority: 'critical'
+    priority: "critical",
   });
 
   return [mem1, mem2];
@@ -310,12 +310,12 @@ const result = await client.transaction(async (tx) => {
 // Transaction with rollback
 try {
   await client.transaction(async (tx) => {
-    await tx.add({ content: 'Memory 1', userId: 'user_123' });
-    throw new Error('Rollback!');
+    await tx.add({ content: "Memory 1", userId: "user_123" });
+    throw new Error("Rollback!");
     // All changes rolled back
   });
 } catch (error) {
-  console.log('Transaction rolled back');
+  console.log("Transaction rolled back");
 }
 ```
 
@@ -399,31 +399,33 @@ function Component() {
 ## Express Middleware
 
 ```typescript
-import express from 'express';
-import { recallMiddleware } from '@recall/express';
+import express from "express";
+import { recallMiddleware } from "@recall/express";
 
 const app = express();
 
 // Add Recall to all requests
-app.use(recallMiddleware({
-  redisUrl: 'redis://localhost:6379',
-  mem0ApiKey: 'your-api-key'
-}));
+app.use(
+  recallMiddleware({
+    redisUrl: "redis://localhost:6379",
+    mem0ApiKey: "your-api-key",
+  }),
+);
 
 // Access in routes
-app.get('/memories/:userId', async (req, res) => {
+app.get("/memories/:userId", async (req, res) => {
   const { recall } = req;
   const memories = await recall.getAll({
-    userId: req.params.userId
+    userId: req.params.userId,
   });
   res.json(memories);
 });
 
-app.post('/memories', async (req, res) => {
+app.post("/memories", async (req, res) => {
   const { recall } = req;
   const memory = await recall.add({
     content: req.body.content,
-    userId: req.body.userId
+    userId: req.body.userId,
   });
   res.json(memory);
 });
@@ -434,39 +436,39 @@ app.post('/memories', async (req, res) => {
 ### Mock Client
 
 ```typescript
-import { MockRecallClient } from '@recall/client/testing';
-import { describe, it, expect, beforeEach } from '@jest/globals';
+import { MockRecallClient } from "@recall/client/testing";
+import { describe, it, expect, beforeEach } from "@jest/globals";
 
-describe('Memory Service', () => {
+describe("Memory Service", () => {
   let client: MockRecallClient;
 
   beforeEach(() => {
     client = new MockRecallClient();
   });
 
-  it('should store memories', async () => {
+  it("should store memories", async () => {
     const memory = await client.add({
-      content: 'Test memory',
-      userId: 'test_user'
+      content: "Test memory",
+      userId: "test_user",
     });
 
     expect(memory.id).toMatch(/^mem_/);
-    expect(client.getCallCount('add')).toBe(1);
-    expect(client.getLastCall('add')).toMatchObject({
-      content: 'Test memory'
+    expect(client.getCallCount("add")).toBe(1);
+    expect(client.getLastCall("add")).toMatchObject({
+      content: "Test memory",
     });
   });
 
-  it('should search memories', async () => {
+  it("should search memories", async () => {
     // Pre-populate test data
     client.setSearchResults([
-      { content: 'Result 1', score: 0.9 },
-      { content: 'Result 2', score: 0.8 }
+      { content: "Result 1", score: 0.9 },
+      { content: "Result 2", score: 0.8 },
     ]);
 
     const results = await client.search({
-      query: 'test',
-      userId: 'test_user'
+      query: "test",
+      userId: "test_user",
     });
 
     expect(results).toHaveLength(2);
@@ -482,28 +484,28 @@ import {
   createTestMemory,
   createTestUser,
   populateTestData,
-  cleanupTestData
-} from '@recall/client/testing';
+  cleanupTestData,
+} from "@recall/client/testing";
 
 // Create test fixtures
 const memory = createTestMemory({
-  content: 'Test content',
-  priority: 'high'
+  content: "Test content",
+  priority: "high",
 });
 
 const user = createTestUser({
-  id: 'test_user',
-  memories: 10
+  id: "test_user",
+  memories: 10,
 });
 
 // Populate database with test data
 await populateTestData(client, {
   users: 5,
-  memoriesPerUser: 20
+  memoriesPerUser: 20,
 });
 
 // Cleanup after tests
-await cleanupTestData(client, 'test_*');
+await cleanupTestData(client, "test_*");
 ```
 
 ## Error Handling
@@ -517,13 +519,13 @@ import {
   AuthenticationError,
   ValidationError,
   RateLimitError,
-  TimeoutError
-} from '@recall/client/errors';
+  TimeoutError,
+} from "@recall/client/errors";
 
 try {
   await client.add({
-    content: '',
-    userId: ''
+    content: "",
+    userId: "",
   });
 } catch (error) {
   if (error instanceof ValidationError) {
@@ -541,30 +543,30 @@ try {
 ### Error Recovery
 
 ```typescript
-import { withRetry, withFallback } from '@recall/client/resilience';
+import { withRetry, withFallback } from "@recall/client/resilience";
 
 // Automatic retry
 const resilientClient = withRetry(client, {
   maxAttempts: 3,
-  backoff: 'exponential',
-  retryOn: [ConnectionError, TimeoutError]
+  backoff: "exponential",
+  retryOn: [ConnectionError, TimeoutError],
 });
 
 // Fallback to cache on error
 const fallbackClient = withFallback(client, {
-  fallbackTo: 'cache',
-  on: [ConnectionError]
+  fallbackTo: "cache",
+  on: [ConnectionError],
 });
 
 // Circuit breaker pattern
-import { CircuitBreaker } from '@recall/client/resilience';
+import { CircuitBreaker } from "@recall/client/resilience";
 
 const breaker = new CircuitBreaker(client, {
   threshold: 5,
   timeout: 60000,
   fallback: async () => {
-    return { source: 'fallback', memories: [] };
-  }
+    return { source: "fallback", memories: [] };
+  },
 });
 ```
 
@@ -573,15 +575,15 @@ const breaker = new CircuitBreaker(client, {
 ### Connection Pooling
 
 ```typescript
-import { RecallClient } from '@recall/client';
-import Redis from 'ioredis';
+import { RecallClient } from "@recall/client";
+import Redis from "ioredis";
 
 // Share Redis connection
 const redis = new Redis({
-  host: 'localhost',
+  host: "localhost",
   port: 6379,
   maxRetriesPerRequest: 3,
-  lazyConnect: true
+  lazyConnect: true,
 });
 
 const client1 = new RecallClient({ redis });
@@ -591,7 +593,7 @@ const client2 = new RecallClient({ redis });
 ### Caching Strategies
 
 ```typescript
-import { RecallClient, CacheStrategy } from '@recall/client';
+import { RecallClient, CacheStrategy } from "@recall/client";
 
 const client = new RecallClient({
   cacheStrategy: CacheStrategy.WRITE_THROUGH,
@@ -599,22 +601,22 @@ const client = new RecallClient({
 
   cacheConfig: {
     ttl: {
-      critical: null,     // Never expire
-      high: 86400,       // 24 hours
-      medium: 3600,      // 1 hour
-      low: 300          // 5 minutes
+      critical: null, // Never expire
+      high: 86400, // 24 hours
+      medium: 3600, // 1 hour
+      low: 300, // 5 minutes
     },
-    warmup: true,        // Pre-load frequently accessed
-    compression: true    // Compress large values
-  }
+    warmup: true, // Pre-load frequently accessed
+    compression: true, // Compress large values
+  },
 });
 ```
 
 ### Batch Processing
 
 ```typescript
-import { RecallClient } from '@recall/client';
-import { chunk } from 'lodash';
+import { RecallClient } from "@recall/client";
+import { chunk } from "lodash";
 
 const client = new RecallClient();
 
@@ -629,7 +631,7 @@ for (const batch of batches) {
 
 // Parallel processing
 const results = await Promise.all(
-  batches.map(batch => client.addBatch(batch))
+  batches.map((batch) => client.addBatch(batch)),
 );
 ```
 
@@ -682,22 +684,22 @@ CMD ["node", "dist/index.js"]
 ### Environment-Specific Config
 
 ```typescript
-import { RecallClient } from '@recall/client';
+import { RecallClient } from "@recall/client";
 
 const config = {
   development: {
-    redisUrl: 'redis://localhost:6379',
-    logLevel: 'debug',
-    cache: { ttl: 300 }
+    redisUrl: "redis://localhost:6379",
+    logLevel: "debug",
+    cache: { ttl: 300 },
   },
   production: {
     redisUrl: process.env.REDIS_URL,
-    logLevel: 'error',
-    cache: { ttl: 3600 }
-  }
+    logLevel: "error",
+    cache: { ttl: 3600 },
+  },
 };
 
-const environment = process.env.NODE_ENV || 'development';
+const environment = process.env.NODE_ENV || "development";
 const client = new RecallClient(config[environment]);
 ```
 
@@ -708,15 +710,15 @@ const client = new RecallClient(config[environment]);
 ```typescript
 // Before (JavaScript)
 const client = new RecallClient({
-  redisUrl: 'redis://localhost:6379'
+  redisUrl: "redis://localhost:6379",
 });
 
 // After (TypeScript)
-import { RecallClient, RecallConfig } from '@recall/client';
+import { RecallClient, RecallConfig } from "@recall/client";
 
 const config: RecallConfig = {
-  redis: { url: 'redis://localhost:6379' },
-  mem0: { apiKey: 'your-api-key' }
+  redis: { url: "redis://localhost:6379" },
+  mem0: { apiKey: "your-api-key" },
 };
 
 const client = new RecallClient(config);

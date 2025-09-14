@@ -1,16 +1,16 @@
-import { notFound } from 'next/navigation'
-import { MDXRemote } from 'next-mdx-remote/rsc'
-import remarkGfm from 'remark-gfm'
-import { getDocBySlug, getAllDocs } from '@/lib/mdx'
-import Link from 'next/link'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
-import { MDXComponents } from '@/components/MDXComponents'
+import { notFound } from "next/navigation";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
+import { getDocBySlug, getAllDocs } from "@/lib/mdx";
+import Link from "next/link";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { MDXComponents } from "@/components/MDXComponents";
 
 export async function generateStaticParams() {
-  const docs = await getAllDocs()
+  const docs = await getAllDocs();
   return docs.map((doc) => ({
-    slug: doc.slug.split('/'),
-  }))
+    slug: doc.slug.split("/"),
+  }));
 }
 
 const components = {
@@ -28,35 +28,41 @@ const components = {
     <p className="text-gray-400 mb-4 leading-relaxed">{children}</p>
   ),
   ul: ({ children }: any) => (
-    <ul className="text-gray-400 mb-4 space-y-2 list-disc list-inside">{children}</ul>
+    <ul className="text-gray-400 mb-4 space-y-2 list-disc list-inside">
+      {children}
+    </ul>
   ),
-  li: ({ children }: any) => (
-    <li className="text-gray-400">{children}</li>
-  ),
+  li: ({ children }: any) => <li className="text-gray-400">{children}</li>,
   a: ({ href, children }: any) => {
     // Handle external links
-    if (href?.startsWith('http')) {
+    if (href?.startsWith("http")) {
       return (
-        <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 transition-colors">
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 hover:text-blue-300 transition-colors"
+        >
           {children}
         </a>
-      )
+      );
     }
     // Handle internal links
     return (
-      <Link href={href || '#'} className="text-blue-400 hover:text-blue-300 transition-colors">
+      <Link
+        href={href || "#"}
+        className="text-blue-400 hover:text-blue-300 transition-colors"
+      >
         {children}
       </Link>
-    )
+    );
   },
   strong: ({ children }: any) => (
     <strong className="text-white font-medium">{children}</strong>
   ),
   table: ({ children }: any) => (
     <div className="overflow-x-auto mb-6">
-      <table className="min-w-full divide-y divide-white/10">
-        {children}
-      </table>
+      <table className="min-w-full divide-y divide-white/10">{children}</table>
     </div>
   ),
   thead: ({ children }: any) => (
@@ -65,30 +71,37 @@ const components = {
   tbody: ({ children }: any) => (
     <tbody className="divide-y divide-white/10">{children}</tbody>
   ),
-  tr: ({ children }: any) => (
-    <tr>{children}</tr>
-  ),
+  tr: ({ children }: any) => <tr>{children}</tr>,
   th: ({ children }: any) => (
-    <th className="px-4 py-3 text-left text-sm font-medium text-white">{children}</th>
+    <th className="px-4 py-3 text-left text-sm font-medium text-white">
+      {children}
+    </th>
   ),
   td: ({ children }: any) => (
     <td className="px-4 py-3 text-sm text-gray-400">{children}</td>
   ),
-}
+};
 
-export default async function DocPage({ params }: { params: Promise<{ slug?: string[] }> }) {
-  const resolvedParams = await params
-  const slugPath = resolvedParams.slug ? resolvedParams.slug.join('/') : 'introduction'
-  const doc = await getDocBySlug(slugPath)
-  const allDocs = await getAllDocs()
+export default async function DocPage({
+  params,
+}: {
+  params: Promise<{ slug?: string[] }>;
+}) {
+  const resolvedParams = await params;
+  const slugPath = resolvedParams.slug
+    ? resolvedParams.slug.join("/")
+    : "introduction";
+  const doc = await getDocBySlug(slugPath);
+  const allDocs = await getAllDocs();
 
   if (!doc) {
-    notFound()
+    notFound();
   }
 
-  const currentIndex = allDocs.findIndex(d => d.slug === slugPath)
-  const prevDoc = currentIndex > 0 ? allDocs[currentIndex - 1] : null
-  const nextDoc = currentIndex < allDocs.length - 1 ? allDocs[currentIndex + 1] : null
+  const currentIndex = allDocs.findIndex((d) => d.slug === slugPath);
+  const prevDoc = currentIndex > 0 ? allDocs[currentIndex - 1] : null;
+  const nextDoc =
+    currentIndex < allDocs.length - 1 ? allDocs[currentIndex + 1] : null;
 
   return (
     <>
@@ -129,5 +142,5 @@ export default async function DocPage({ params }: { params: Promise<{ slug?: str
         )}
       </div>
     </>
-  )
+  );
 }

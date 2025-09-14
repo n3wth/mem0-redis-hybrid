@@ -1,25 +1,29 @@
-import { describe, it, before, after, beforeEach } from 'node:test';
-import assert from 'node:assert/strict';
-import { spawn } from 'child_process';
-import fetch from 'node-fetch';
+import { describe, it, before, after, beforeEach } from "node:test";
+import assert from "node:assert/strict";
+import { spawn } from "child_process";
+import fetch from "node-fetch";
 
 // Test configuration
-const TEST_MEM0_API_KEY = process.env.MEM0_API_KEY || process.env.TEST_MEM0_API_KEY || 'test-key';
-const TEST_USER_ID = 'test-user-' + Date.now();
-const TEST_REDIS_URL = process.env.REDIS_URL || process.env.TEST_REDIS_URL || 'redis://localhost:6379';
-const SKIP_TESTS = process.env.SKIP_TESTS === 'true';
+const TEST_MEM0_API_KEY =
+  process.env.MEM0_API_KEY || process.env.TEST_MEM0_API_KEY || "test-key";
+const TEST_USER_ID = "test-user-" + Date.now();
+const TEST_REDIS_URL =
+  process.env.REDIS_URL ||
+  process.env.TEST_REDIS_URL ||
+  "redis://localhost:6379";
+const SKIP_TESTS = process.env.SKIP_TESTS === "true";
 
 // Helper to start MCP server
 function startServer(env = {}) {
-  return spawn('node', ['index.js'], {
+  return spawn("node", ["index.js"], {
     env: {
       ...process.env,
       MEM0_API_KEY: TEST_MEM0_API_KEY,
       MEM0_USER_ID: TEST_USER_ID,
       REDIS_URL: TEST_REDIS_URL,
-      ...env
+      ...env,
     },
-    stdio: ['pipe', 'pipe', 'pipe']
+    stdio: ["pipe", "pipe", "pipe"],
   });
 }
 
@@ -28,20 +32,20 @@ async function sendRequest(server, method, params = {}) {
   return new Promise((resolve, reject) => {
     const id = Math.random().toString(36).substr(2, 9);
     const request = {
-      jsonrpc: '2.0',
+      jsonrpc: "2.0",
       id,
       method,
-      params
+      params,
     };
 
     const responseHandler = (data) => {
-      const lines = data.toString().split('\n');
+      const lines = data.toString().split("\n");
       for (const line of lines) {
         if (!line.trim()) continue;
         try {
           const response = JSON.parse(line);
           if (response.id === id) {
-            server.stdout.off('data', responseHandler);
+            server.stdout.off("data", responseHandler);
             resolve(response);
           }
         } catch (e) {
@@ -50,35 +54,37 @@ async function sendRequest(server, method, params = {}) {
       }
     };
 
-    server.stdout.on('data', responseHandler);
-    server.stdin.write(JSON.stringify(request) + '\n');
+    server.stdout.on("data", responseHandler);
+    server.stdin.write(JSON.stringify(request) + "\n");
 
     setTimeout(() => {
-      server.stdout.off('data', responseHandler);
-      reject(new Error('Request timeout'));
+      server.stdout.off("data", responseHandler);
+      reject(new Error("Request timeout"));
     }, 5000);
   });
 }
 
-describe('Mem0-Redis Hybrid MCP Server', () => {
+describe("Mem0-Redis Hybrid MCP Server", () => {
   let server;
 
   before(async () => {
-    console.log('Starting test server...');
+    console.log("Starting test server...");
     server = startServer();
 
     // Wait for server to be ready
     await new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        reject(new Error('Server startup timeout'));
+        reject(new Error("Server startup timeout"));
       }, 10000);
 
-      server.stderr.on('data', (data) => {
+      server.stderr.on("data", (data) => {
         const output = data.toString();
         // Look for the actual server ready message
-        if (output.includes('Mem0-Redis Hybrid MCP Server v2.0 running') ||
-            output.includes('Redis connected successfully') ||
-            output.includes('Running in DEMO MODE')) {
+        if (
+          output.includes("Mem0-Redis Hybrid MCP Server v2.0 running") ||
+          output.includes("Redis connected successfully") ||
+          output.includes("Running in DEMO MODE")
+        ) {
           clearTimeout(timeout);
           resolve();
         }
@@ -89,59 +95,59 @@ describe('Mem0-Redis Hybrid MCP Server', () => {
   after(async () => {
     if (server) {
       server.kill();
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   });
 
-  describe('Basic Operations', () => {
-    it('should list available tools', async () => {
-      const response = await sendRequest(server, 'tools/list');
+  describe("Basic Operations", () => {
+    it("should list available tools", async () => {
+      const response = await sendRequest(server, "tools/list");
 
       assert.ok(response.result);
       assert.ok(Array.isArray(response.result.tools));
 
-      const toolNames = response.result.tools.map(t => t.name);
-      assert.ok(toolNames.includes('add_memory'));
-      assert.ok(toolNames.includes('search_memory'));
-      assert.ok(toolNames.includes('get_all_memories'));
-      assert.ok(toolNames.includes('cache_stats'));
+      const toolNames = response.result.tools.map((t) => t.name);
+      assert.ok(toolNames.includes("add_memory"));
+      assert.ok(toolNames.includes("search_memory"));
+      assert.ok(toolNames.includes("get_all_memories"));
+      assert.ok(toolNames.includes("cache_stats"));
     });
 
-    it('should add a memory successfully', async () => {
-      const response = await sendRequest(server, 'tools/call', {
-        name: 'add_memory',
+    it("should add a memory successfully", async () => {
+      const response = await sendRequest(server, "tools/call", {
+        name: "add_memory",
         arguments: {
-          content: 'Test memory content',
-          metadata: { category: 'test' },
-          priority: 'normal'
-        }
+          content: "Test memory content",
+          metadata: { category: "test" },
+          priority: "normal",
+        },
       });
 
       assert.ok(response.result);
-      assert.ok(response.result.content.includes('added'));
-      assert.ok(response.result.content.includes('memory_id'));
+      assert.ok(response.result.content.includes("added"));
+      assert.ok(response.result.content.includes("memory_id"));
     });
 
-    it('should search memories', async () => {
+    it("should search memories", async () => {
       // First add a memory
-      await sendRequest(server, 'tools/call', {
-        name: 'add_memory',
+      await sendRequest(server, "tools/call", {
+        name: "add_memory",
         arguments: {
-          content: 'The capital of France is Paris',
-          metadata: { category: 'geography' }
-        }
+          content: "The capital of France is Paris",
+          metadata: { category: "geography" },
+        },
       });
 
       // Wait for indexing
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Search for it
-      const response = await sendRequest(server, 'tools/call', {
-        name: 'search_memory',
+      const response = await sendRequest(server, "tools/call", {
+        name: "search_memory",
         arguments: {
-          query: 'capital of France',
-          prefer_cache: false
-        }
+          query: "capital of France",
+          prefer_cache: false,
+        },
       });
 
       assert.ok(response.result);
@@ -150,53 +156,53 @@ describe('Mem0-Redis Hybrid MCP Server', () => {
       assert.ok(Array.isArray(content.results));
     });
 
-    it('should handle cache operations', async () => {
-      const response = await sendRequest(server, 'tools/call', {
-        name: 'cache_stats',
-        arguments: {}
+    it("should handle cache operations", async () => {
+      const response = await sendRequest(server, "tools/call", {
+        name: "cache_stats",
+        arguments: {},
       });
 
       assert.ok(response.result);
       const stats = JSON.parse(response.result.content);
-      assert.ok(stats.hasOwnProperty('hits'));
-      assert.ok(stats.hasOwnProperty('misses'));
-      assert.ok(stats.hasOwnProperty('hit_rate'));
+      assert.ok(stats.hasOwnProperty("hits"));
+      assert.ok(stats.hasOwnProperty("misses"));
+      assert.ok(stats.hasOwnProperty("hit_rate"));
     });
   });
 
-  describe('Error Handling', () => {
-    it('should handle invalid tool names', async () => {
-      const response = await sendRequest(server, 'tools/call', {
-        name: 'invalid_tool',
-        arguments: {}
+  describe("Error Handling", () => {
+    it("should handle invalid tool names", async () => {
+      const response = await sendRequest(server, "tools/call", {
+        name: "invalid_tool",
+        arguments: {},
       });
 
       assert.ok(response.error);
-      assert.ok(response.error.message.includes('Unknown tool'));
+      assert.ok(response.error.message.includes("Unknown tool"));
     });
 
-    it('should validate required parameters', async () => {
-      const response = await sendRequest(server, 'tools/call', {
-        name: 'add_memory',
-        arguments: {} // Missing required 'content'
+    it("should validate required parameters", async () => {
+      const response = await sendRequest(server, "tools/call", {
+        name: "add_memory",
+        arguments: {}, // Missing required 'content'
       });
 
-      assert.ok(response.error || response.result.content.includes('error'));
+      assert.ok(response.error || response.result.content.includes("error"));
     });
 
-    it('should handle Redis connection failures gracefully', async () => {
+    it("should handle Redis connection failures gracefully", async () => {
       // Start server with invalid Redis URL
       const failServer = startServer({
-        REDIS_URL: 'redis://invalid:6379'
+        REDIS_URL: "redis://invalid:6379",
       });
 
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      const response = await sendRequest(failServer, 'tools/call', {
-        name: 'add_memory',
+      const response = await sendRequest(failServer, "tools/call", {
+        name: "add_memory",
         arguments: {
-          content: 'Test without Redis'
-        }
+          content: "Test without Redis",
+        },
       });
 
       // Should fall back to mem0-only mode
@@ -206,68 +212,68 @@ describe('Mem0-Redis Hybrid MCP Server', () => {
     });
   });
 
-  describe('Performance', () => {
-    it('should handle concurrent requests', async () => {
+  describe("Performance", () => {
+    it("should handle concurrent requests", async () => {
       const promises = [];
 
       for (let i = 0; i < 10; i++) {
         promises.push(
-          sendRequest(server, 'tools/call', {
-            name: 'add_memory',
+          sendRequest(server, "tools/call", {
+            name: "add_memory",
             arguments: {
               content: `Concurrent memory ${i}`,
-              async: true
-            }
-          })
+              async: true,
+            },
+          }),
         );
       }
 
       const results = await Promise.allSettled(promises);
-      const successful = results.filter(r => r.status === 'fulfilled');
+      const successful = results.filter((r) => r.status === "fulfilled");
 
       assert.ok(successful.length >= 8); // Allow some failures
     });
 
-    it('should respect cache TTL', async () => {
+    it("should respect cache TTL", async () => {
       // Add memory
-      const addResponse = await sendRequest(server, 'tools/call', {
-        name: 'add_memory',
+      const addResponse = await sendRequest(server, "tools/call", {
+        name: "add_memory",
         arguments: {
-          content: 'TTL test memory'
-        }
+          content: "TTL test memory",
+        },
       });
 
       const memoryId = JSON.parse(addResponse.result.content).memory_id;
 
       // First search should cache
-      await sendRequest(server, 'tools/call', {
-        name: 'search_memory',
+      await sendRequest(server, "tools/call", {
+        name: "search_memory",
         arguments: {
-          query: 'TTL test',
-          prefer_cache: true
-        }
+          query: "TTL test",
+          prefer_cache: true,
+        },
       });
 
       // Get cache stats
-      const stats1 = await sendRequest(server, 'tools/call', {
-        name: 'cache_stats',
-        arguments: {}
+      const stats1 = await sendRequest(server, "tools/call", {
+        name: "cache_stats",
+        arguments: {},
       });
 
       const hits1 = JSON.parse(stats1.result.content).hits;
 
       // Second search should hit cache
-      await sendRequest(server, 'tools/call', {
-        name: 'search_memory',
+      await sendRequest(server, "tools/call", {
+        name: "search_memory",
         arguments: {
-          query: 'TTL test',
-          prefer_cache: true
-        }
+          query: "TTL test",
+          prefer_cache: true,
+        },
       });
 
-      const stats2 = await sendRequest(server, 'tools/call', {
-        name: 'cache_stats',
-        arguments: {}
+      const stats2 = await sendRequest(server, "tools/call", {
+        name: "cache_stats",
+        arguments: {},
       });
 
       const hits2 = JSON.parse(stats2.result.content).hits;
@@ -276,42 +282,38 @@ describe('Mem0-Redis Hybrid MCP Server', () => {
     });
   });
 
-  describe('Batch Operations', () => {
-    it('should handle batch memory additions', async () => {
-      const memories = [
-        'Batch memory 1',
-        'Batch memory 2',
-        'Batch memory 3'
-      ];
+  describe("Batch Operations", () => {
+    it("should handle batch memory additions", async () => {
+      const memories = ["Batch memory 1", "Batch memory 2", "Batch memory 3"];
 
-      const response = await sendRequest(server, 'tools/call', {
-        name: 'add_memory',
+      const response = await sendRequest(server, "tools/call", {
+        name: "add_memory",
         arguments: {
-          messages: memories.map(m => ({ role: 'user', content: m }))
-        }
+          messages: memories.map((m) => ({ role: "user", content: m })),
+        },
       });
 
       assert.ok(response.result);
-      assert.ok(response.result.content.includes('added'));
+      assert.ok(response.result.content.includes("added"));
     });
 
-    it('should optimize cache for frequently accessed items', async () => {
-      const response = await sendRequest(server, 'tools/call', {
-        name: 'optimize_cache',
-        arguments: {}
+    it("should optimize cache for frequently accessed items", async () => {
+      const response = await sendRequest(server, "tools/call", {
+        name: "optimize_cache",
+        arguments: {},
       });
 
       assert.ok(response.result);
-      assert.ok(response.result.content.includes('optimized'));
+      assert.ok(response.result.content.includes("optimized"));
     });
   });
 });
 
 // Run tests
-console.log('Running Mem0-Redis Hybrid MCP Server Tests...\n');
+console.log("Running Mem0-Redis Hybrid MCP Server Tests...\n");
 
 // Set a global timeout to prevent hanging
 setTimeout(() => {
-  console.error('Test timeout - exiting');
+  console.error("Test timeout - exiting");
   process.exit(0);
 }, 30000);

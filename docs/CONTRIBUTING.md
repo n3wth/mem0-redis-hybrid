@@ -5,6 +5,7 @@ First off, thank you for considering contributing to the Mem0-Redis Hybrid MCP S
 ## Code of Conduct
 
 By participating in this project, you are expected to uphold our Code of Conduct:
+
 - Be respectful and inclusive
 - Welcome newcomers and help them get started
 - Focus on constructive criticism
@@ -82,6 +83,7 @@ node test-cache-invalidation.js
 - Prefer async/await over callbacks
 
 Example:
+
 ```javascript
 /**
  * Searches memories with caching strategy
@@ -91,7 +93,7 @@ Example:
  * @returns {Promise<Array>} Array of matching memories
  */
 async function searchMemory({ query, prefer_cache = true }) {
-    // Implementation
+  // Implementation
 }
 ```
 
@@ -116,6 +118,7 @@ footer
 ```
 
 Types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -126,6 +129,7 @@ Types:
 - `chore`: Build process or auxiliary tool changes
 
 Example:
+
 ```
 feat(cache): Add two-tier caching system
 
@@ -174,6 +178,7 @@ recall/
 ## Recognition
 
 Contributors will be recognized in:
+
 - The project README
 - Release notes for their contributions
 - GitHub's contributor graph

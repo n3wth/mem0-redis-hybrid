@@ -11,49 +11,49 @@ title: Integration Guides
 
 ```typescript
 // app/api/memory/route.ts
-import { Recall } from '@n3wth/recall'
-import { NextResponse } from 'next/server'
+import { Recall } from "@n3wth/recall";
+import { NextResponse } from "next/server";
 
 const memory = new Recall({
   redis: process.env.REDIS_URL,
-  apiKey: process.env.MEM0_API_KEY
-})
+  apiKey: process.env.MEM0_API_KEY,
+});
 
 export async function POST(request: Request) {
-  const { content, userId } = await request.json()
+  const { content, userId } = await request.json();
 
   const result = await memory.add({
     content,
     user_id: userId,
-    priority: 'high'
-  })
+    priority: "high",
+  });
 
-  return NextResponse.json(result)
+  return NextResponse.json(result);
 }
 ```
 
 ### Express
 
 ```typescript
-import express from 'express'
-import { Recall } from '@n3wth/recall'
+import express from "express";
+import { Recall } from "@n3wth/recall";
 
-const app = express()
+const app = express();
 const memory = new Recall({
   redis: process.env.REDIS_URL,
-  apiKey: process.env.MEM0_API_KEY
-})
+  apiKey: process.env.MEM0_API_KEY,
+});
 
-app.post('/api/memory', async (req, res) => {
-  const { content, userId } = req.body
+app.post("/api/memory", async (req, res) => {
+  const { content, userId } = req.body;
 
   const result = await memory.add({
     content,
-    user_id: userId
-  })
+    user_id: userId,
+  });
 
-  res.json(result)
-})
+  res.json(result);
+});
 ```
 
 ## AI Framework Integrations
@@ -88,19 +88,19 @@ chain = ConversationChain(memory=memory, llm=llm)
 ### OpenAI Assistants
 
 ```typescript
-import OpenAI from 'openai'
-import { Recall } from '@n3wth/recall'
+import OpenAI from "openai";
+import { Recall } from "@n3wth/recall";
 
 class RecallAssistant {
-  private openai: OpenAI
-  private memory: Recall
+  private openai: OpenAI;
+  private memory: Recall;
 
   constructor(apiKey: string) {
-    this.openai = new OpenAI({ apiKey })
+    this.openai = new OpenAI({ apiKey });
     this.memory = new Recall({
       redis: process.env.REDIS_URL,
-      apiKey: process.env.MEM0_API_KEY
-    })
+      apiKey: process.env.MEM0_API_KEY,
+    });
   }
 
   async chat(message: string, userId: string) {
@@ -108,30 +108,28 @@ class RecallAssistant {
     const memories = await this.memory.search({
       query: message,
       user_id: userId,
-      prefer_cache: true
-    })
+      prefer_cache: true,
+    });
 
     // Build context-aware prompt
-    const context = memories.memories
-      .map(m => m.memory)
-      .join('\n')
+    const context = memories.memories.map((m) => m.memory).join("\n");
 
     const response = await this.openai.chat.completions.create({
-      model: 'gpt-4',
+      model: "gpt-4",
       messages: [
-        { role: 'system', content: `Context:\n${context}` },
-        { role: 'user', content: message }
-      ]
-    })
+        { role: "system", content: `Context:\n${context}` },
+        { role: "user", content: message },
+      ],
+    });
 
     // Save interaction
     await this.memory.add({
       content: `Q: ${message}\nA: ${response.choices[0].message.content}`,
       user_id: userId,
-      priority: 'medium'
-    })
+      priority: "medium",
+    });
 
-    return response.choices[0].message.content
+    return response.choices[0].message.content;
   }
 }
 ```
@@ -173,35 +171,35 @@ FOR EACH ROW EXECUTE FUNCTION sync_to_recall();
 ### MongoDB Change Streams
 
 ```typescript
-import { MongoClient } from 'mongodb'
-import { Recall } from '@n3wth/recall'
+import { MongoClient } from "mongodb";
+import { Recall } from "@n3wth/recall";
 
-const client = new MongoClient(process.env.MONGODB_URI)
+const client = new MongoClient(process.env.MONGODB_URI);
 const memory = new Recall({
   redis: process.env.REDIS_URL,
-  apiKey: process.env.MEM0_API_KEY
-})
+  apiKey: process.env.MEM0_API_KEY,
+});
 
 async function watchChanges() {
-  await client.connect()
-  const db = client.db('myapp')
-  const collection = db.collection('conversations')
+  await client.connect();
+  const db = client.db("myapp");
+  const collection = db.collection("conversations");
 
-  const changeStream = collection.watch()
+  const changeStream = collection.watch();
 
-  changeStream.on('change', async (change) => {
-    if (change.operationType === 'insert') {
+  changeStream.on("change", async (change) => {
+    if (change.operationType === "insert") {
       await memory.add({
         content: change.fullDocument.message,
         user_id: change.fullDocument.userId,
         metadata: {
-          source: 'mongodb',
-          collection: 'conversations',
-          _id: change.fullDocument._id
-        }
-      })
+          source: "mongodb",
+          collection: "conversations",
+          _id: change.fullDocument._id,
+        },
+      });
     }
-  })
+  });
 }
 ```
 
@@ -240,7 +238,7 @@ recall-stats
 ### Docker Compose
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   redis:
@@ -286,19 +284,19 @@ spec:
         app: recall
     spec:
       containers:
-      - name: recall
-        image: node:18-alpine
-        command: ["npx", "@n3wth/recall"]
-        env:
-        - name: MEM0_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: recall-secrets
-              key: mem0-api-key
-        - name: REDIS_URL
-          value: "redis://redis-service:6379"
-        ports:
-        - containerPort: 3000
+        - name: recall
+          image: node:18-alpine
+          command: ["npx", "@n3wth/recall"]
+          env:
+            - name: MEM0_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: recall-secrets
+                  key: mem0-api-key
+            - name: REDIS_URL
+              value: "redis://redis-service:6379"
+          ports:
+            - containerPort: 3000
 ---
 apiVersion: v1
 kind: Service

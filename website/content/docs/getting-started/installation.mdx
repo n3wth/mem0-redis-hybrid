@@ -29,7 +29,6 @@ Complete setup guide for Recall in different environments and configurations.
 
 ### Python
 
-
 ```bash tab="pip"
 # Basic installation
 pip install recall-memory
@@ -59,9 +58,7 @@ pipenv install recall-memory
 pipenv install recall-memory[all]
 ```
 
-
 ### Node.js / TypeScript
-
 
 ```bash tab="npm"
 # Basic installation
@@ -92,7 +89,6 @@ pnpm add @recall/client @types/node
 bun add @recall/client
 ```
 
-
 ## Redis Setup
 
 ### Local Development
@@ -114,7 +110,6 @@ docker exec -it recall-redis redis-cli ping
 ```
 
 #### Option 2: Direct Installation
-
 
 ```bash tab="macOS"
 # Install
@@ -161,7 +156,6 @@ wsl --install
 # Or use Redis Windows port
 # Download from: https://github.com/microsoftarchive/redis/releases
 ```
-
 
 ### Cloud Redis Services
 
@@ -213,7 +207,6 @@ client = RecallClient(
 
 ### API Key Configuration
 
-
 ```bash tab="Environment Variable"
 # .env file
 MEM0_API_KEY=m0-xxxxxxxxxxxxxxxxxxxx
@@ -238,20 +231,18 @@ client = RecallClient(
 ```typescript tab="TypeScript"
 // Direct configuration
 const client = new RecallClient({
-  mem0ApiKey: "m0-xxxxxxxxxxxxxxxxxxxx"
+  mem0ApiKey: "m0-xxxxxxxxxxxxxxxxxxxx",
 });
 
 // From environment
 const client = new RecallClient({
-  mem0ApiKey: process.env.MEM0_API_KEY
+  mem0ApiKey: process.env.MEM0_API_KEY,
 });
 ```
-
 
 ## Configuration
 
 ### Basic Configuration
-
 
 ```python tab="Python"
 from recall import RecallClient
@@ -271,7 +262,7 @@ client = RecallClient(
 ```
 
 ```typescript tab="TypeScript"
-import { RecallClient } from '@recall/client';
+import { RecallClient } from "@recall/client";
 
 const client = new RecallClient({
   // Required
@@ -281,9 +272,9 @@ const client = new RecallClient({
   // Optional
   environment: "production",
   appName: "my-app",
-  cacheTtl: 3600,  // 1 hour
+  cacheTtl: 3600, // 1 hour
   maxRetries: 3,
-  timeout: 30
+  timeout: 30,
 });
 ```
 
@@ -307,9 +298,7 @@ monitoring:
   metrics_port: 9090
 ```
 
-
 ### Advanced Configuration
-
 
 ```python tab="Python"
 from recall import RecallClient, CacheConfig, SyncConfig
@@ -350,11 +339,7 @@ client = RecallClient(
 ```
 
 ```typescript tab="TypeScript"
-import {
-  RecallClient,
-  CacheConfig,
-  SyncConfig
-} from '@recall/client';
+import { RecallClient, CacheConfig, SyncConfig } from "@recall/client";
 
 const client = new RecallClient({
   redisUrl: "redis://localhost:6379",
@@ -363,22 +348,22 @@ const client = new RecallClient({
   // Cache configuration
   cacheConfig: {
     ttl: {
-      critical: null,  // Never expire
-      high: 86400,     // 24 hours
-      medium: 3600,    // 1 hour
-      low: 300         // 5 minutes
+      critical: null, // Never expire
+      high: 86400, // 24 hours
+      medium: 3600, // 1 hour
+      low: 300, // 5 minutes
     },
     maxMemory: "1gb",
     evictionPolicy: "allkeys-lru",
-    compression: true
+    compression: true,
   },
 
   // Sync configuration
   syncConfig: {
-    mode: "lazy",  // lazy, eager, or manual
+    mode: "lazy", // lazy, eager, or manual
     batchSize: 100,
-    interval: 60,  // seconds
-    retryPolicy: "exponential"
+    interval: 60, // seconds
+    retryPolicy: "exponential",
   },
 
   // Connection pools
@@ -387,10 +372,9 @@ const client = new RecallClient({
 
   // Performance
   enablePipelining: true,
-  enableClustering: false
+  enableClustering: false,
 });
 ```
-
 
 ## Docker Deployment
 
@@ -398,7 +382,7 @@ const client = new RecallClient({
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 
 services:
   redis:
@@ -488,35 +472,34 @@ spec:
         app: recall
     spec:
       containers:
-      - name: recall
-        image: recall/app:latest
-        env:
-        - name: REDIS_URL
-          value: "redis://redis-service:6379"
-        - name: MEM0_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: recall-secrets
-              key: mem0-api-key
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "100m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 10
+        - name: recall
+          image: recall/app:latest
+          env:
+            - name: REDIS_URL
+              value: "redis://redis-service:6379"
+            - name: MEM0_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: recall-secrets
+                  key: mem0-api-key
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
 ```
 
 ## Verification
 
 ### Health Check
-
 
 ```python tab="Python"
 # Verify installation
@@ -534,7 +517,7 @@ print(f"Version: {health['version']}")
 
 ```typescript tab="TypeScript"
 // Verify installation
-import { RecallClient } from '@recall/client';
+import { RecallClient } from "@recall/client";
 
 const client = new RecallClient();
 const health = await client.healthCheck();
@@ -557,17 +540,16 @@ recall health
 # ✓ Version: 1.0.0
 ```
 
-
 ### Troubleshooting
 
 Common issues and solutions:
 
-| Issue | Solution |
-|-------|----------|
-| Redis connection refused | Ensure Redis is running and accessible |
-| Invalid Mem0 API key | Verify key in Mem0 dashboard |
-| High latency | Check Redis memory usage and network |
-| Cache misses | Review priority levels and TTL settings |
+| Issue                    | Solution                                |
+| ------------------------ | --------------------------------------- |
+| Redis connection refused | Ensure Redis is running and accessible  |
+| Invalid Mem0 API key     | Verify key in Mem0 dashboard            |
+| High latency             | Check Redis memory usage and network    |
+| Cache misses             | Review priority levels and TTL settings |
 
 ## Next Steps
 

@@ -21,15 +21,19 @@ Recall is a hybrid memory system designed specifically for AI applications, part
 ## Key Features
 
 ### Hybrid Architecture
+
 Seamlessly combines local Redis caching with cloud persistence, giving you the best of both worlds - speed and reliability.
 
 ### Intelligent Caching
+
 Automatically manages cache based on usage patterns, priority levels, and access frequency to optimize performance.
 
 ### Simple Integration
+
 Drop-in replacement for existing memory systems with a clean, intuitive API that works with any AI framework.
 
 ### Production Ready
+
 Built for scale with automatic failover, health monitoring, and comprehensive error handling.
 
 ## Why Recall?
@@ -37,6 +41,7 @@ Built for scale with automatic failover, health monitoring, and comprehensive er
 ### The Problem
 
 Traditional AI memory systems force you to choose between:
+
 - **Speed**: Local storage is fast but volatile and doesn't scale
 - **Persistence**: Cloud storage is reliable but adds latency
 - **Complexity**: Managing both systems manually is error-prone
@@ -44,6 +49,7 @@ Traditional AI memory systems force you to choose between:
 ### The Solution
 
 Recall automatically manages a hybrid memory system that:
+
 - Serves frequently accessed memories from cache in under 1ms
 - Persists all memories to the cloud for reliability
 - Synchronizes changes automatically
@@ -52,7 +58,9 @@ Recall automatically manages a hybrid memory system that:
 ## Core Concepts
 
 ### Memory
+
 A memory is a piece of information stored with metadata including:
+
 - Content (text, structured data, embeddings)
 - User association
 - Priority level (low, medium, high, critical)
@@ -60,13 +68,17 @@ A memory is a piece of information stored with metadata including:
 - Custom metadata
 
 ### Cache Layers
+
 Recall uses a multi-tier caching strategy:
+
 - **Hot Cache**: Most frequently accessed memories (Redis)
 - **Warm Storage**: Recent or important memories (Mem0)
 - **Cold Storage**: All historical memories (Cloud)
 
 ### Synchronization
+
 Automatic bi-directional sync ensures:
+
 - New memories are cached and persisted
 - Cache misses are filled from cloud
 - Updates propagate to all layers
@@ -75,15 +87,19 @@ Automatic bi-directional sync ensures:
 ## Use Cases
 
 ### AI Assistants
+
 Give your AI assistants long-term memory about user preferences, conversation history, and learned behaviors.
 
 ### Customer Support Bots
+
 Remember customer issues, preferences, and resolution history across all interactions.
 
 ### Personalization Engines
+
 Build recommendation systems that remember and learn from every user interaction.
 
 ### Knowledge Management
+
 Create intelligent knowledge bases that remember facts, relationships, and context.
 
 ## Architecture Overview

@@ -45,24 +45,28 @@ We take the security of Mem0-Redis Hybrid seriously. If you have discovered a se
 When using Mem0-Redis Hybrid:
 
 ### Environment Variables
+
 - Never commit `.env` files containing API keys
 - Use environment-specific configurations
 - Rotate API keys regularly
 - Use secrets management systems in production
 
 ### Redis Security
+
 - Always use Redis AUTH when exposed to network
 - Enable TLS for Redis connections in production
 - Restrict Redis access to trusted networks only
 - Keep Redis version updated
 
 ### API Key Management
+
 - Store Mem0 API keys securely
 - Use different API keys for different environments
 - Monitor API key usage for anomalies
 - Implement rate limiting on your MCP server
 
 ### Data Protection
+
 - Be aware that cached data in Redis may contain sensitive information
 - Implement proper access controls
 - Consider encrypting sensitive data before caching
@@ -71,6 +75,7 @@ When using Mem0-Redis Hybrid:
 ## Dependencies
 
 We use automated tools to monitor and update dependencies:
+
 - Dependabot for automated security updates
 - npm audit in CI pipeline
 - Regular manual review of critical dependencies
@@ -78,9 +83,11 @@ We use automated tools to monitor and update dependencies:
 ## Contact
 
 Report security vulnerabilities via:
+
 - GitHub Security Advisories: [Enable private vulnerability reporting](https://github.com/n3wth/r3call/security)
 
 ## Acknowledgments
 
 We would like to thank the following individuals for responsibly disclosing vulnerabilities:
+
 - [Your name could be here!]

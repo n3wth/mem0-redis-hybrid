@@ -1,6 +1,13 @@
-'use client'
+"use client";
 
-import { ArrowDown, ArrowRight, Cloud, Database, Monitor, Server } from 'lucide-react'
+import {
+  ArrowDown,
+  ArrowRight,
+  Cloud,
+  Database,
+  Monitor,
+  Server,
+} from "lucide-react";
 
 export function ArchitectureDiagram() {
   return (
@@ -71,5 +78,5 @@ export function ArchitectureDiagram() {
         </div>
       </div>
     </div>
-  )
+  );
 }

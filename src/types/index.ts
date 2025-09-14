@@ -1,7 +1,7 @@
 export interface MemoryMetadata {
   created_at?: string;
   updated_at?: string;
-  priority?: 'low' | 'normal' | 'high' | 'critical';
+  priority?: "low" | "normal" | "high" | "critical";
   source?: string;
   tags?: string[];
   [key: string]: any;
@@ -22,7 +22,7 @@ export interface AddMemoryParams {
   data?: any;
   user_id?: string;
   userId?: string;
-  priority?: 'low' | 'normal' | 'high' | 'critical';
+  priority?: "low" | "normal" | "high" | "critical";
   metadata?: MemoryMetadata;
   ttl?: number;
   tags?: string[];
@@ -69,8 +69,8 @@ export interface CacheStats {
   cacheSize: number;
   avgLatency: number;
   lastSync?: string;
-  redisStatus: 'connected' | 'disconnected' | 'error';
-  mode: 'local' | 'hybrid' | 'demo';
+  redisStatus: "connected" | "disconnected" | "error";
+  mode: "local" | "hybrid" | "demo";
 }
 
 export interface RecallConfig {
@@ -91,7 +91,7 @@ export interface RecallConfig {
     compression?: boolean;
     compressionThreshold?: number;
   };
-  mode?: 'local' | 'hybrid' | 'demo';
+  mode?: "local" | "hybrid" | "demo";
   sync?: {
     enabled?: boolean;
     interval?: number;

@@ -26,16 +26,19 @@ r3call automatically starts an embedded Redis server - no setup needed!
 ## Package Installation
 
 ### npm
+
 ```bash
 npm install r3call
 ```
 
 ### Yarn
+
 ```bash
 yarn add r3call
 ```
 
 ### pnpm
+
 ```bash
 pnpm add r3call
 ```
@@ -106,6 +109,7 @@ Create `~/Library/LaunchAgents/com.recall.plist`:
 ```
 
 Load the service:
+
 ```bash
 launchctl load ~/Library/LaunchAgents/com.recall.plist
 ```
@@ -132,6 +136,7 @@ WantedBy=multi-user.target
 ```
 
 Enable and start:
+
 ```bash
 sudo systemctl enable recall
 sudo systemctl start recall

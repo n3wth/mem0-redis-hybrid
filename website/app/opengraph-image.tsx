@@ -1,12 +1,12 @@
-import { ImageResponse } from 'next/og'
+import { ImageResponse } from "next/og";
 
-export const runtime = 'edge'
-export const alt = 'r3call - Intelligent Memory for AI'
+export const runtime = "edge";
+export const alt = "r3call - Intelligent Memory for AI";
 export const size = {
   width: 1200,
   height: 630,
-}
-export const contentType = 'image/png'
+};
+export const contentType = "image/png";
 
 export default async function Image() {
   return new ImageResponse(
@@ -14,23 +14,23 @@ export default async function Image() {
       <div
         style={{
           fontSize: 128,
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "white",
         }}
       >
         <div
           style={{
             fontSize: 72,
             fontWeight: 900,
-            letterSpacing: '-0.05em',
+            letterSpacing: "-0.05em",
             marginBottom: 30,
-            textAlign: 'center',
+            textAlign: "center",
           }}
         >
           r3call
@@ -40,7 +40,7 @@ export default async function Image() {
             fontSize: 36,
             fontWeight: 300,
             opacity: 0.9,
-            textAlign: 'center',
+            textAlign: "center",
             maxWidth: 800,
             lineHeight: 1.4,
           }}
@@ -53,7 +53,7 @@ export default async function Image() {
             fontWeight: 400,
             marginTop: 40,
             opacity: 0.8,
-            display: 'flex',
+            display: "flex",
             gap: 30,
           }}
         >
@@ -67,6 +67,6 @@ export default async function Image() {
     ),
     {
       ...size,
-    }
-  )
+    },
+  );
 }

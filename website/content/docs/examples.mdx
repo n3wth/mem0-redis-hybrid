@@ -19,27 +19,28 @@ Real-world examples and patterns for using Recall in production applications.
 import OpenAI from 'openai';
 
 class ConversationManager {
-  private recall: Recall;
-  private openai: OpenAI;
+private recall: Recall;
+private openai: OpenAI;
 
-  constructor() {
-    this.recall = new Recall({
-      apiKey: process.env.MEM0_API_KEY,
-      cacheStrategy: 'aggressive'
-    });
+constructor() {
+this.recall = new Recall({
+apiKey: process.env.MEM0_API_KEY,
+cacheStrategy: 'aggressive'
+});
 
     this.openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY
     });
-  }
 
-  async chat(userId: string, message: string) {
-    // Retrieve conversation context
-    const memories = await this.recall.search({
-      query: message,
-      userId,
-      limit: 10
-    });
+}
+
+async chat(userId: string, message: string) {
+// Retrieve conversation context
+const memories = await this.recall.search({
+query: message,
+userId,
+limit: 10
+});
 
     // Build contextual prompt
     const context = memories
@@ -73,22 +74,22 @@ class ConversationManager {
     });
 
     return reply;
-  }
-}`
-  },
+
+}
+}`  },
   {
     label: 'Python',
     language: 'python',
-    code: `from recall import Recall
+    code:`from recall import Recall
 import openai
 
 class ConversationManager:
-    def __init__(self):
-        self.recall = Recall(
-            api_key=os.getenv('MEM0_API_KEY'),
-            cache_strategy='aggressive'
-        )
-        openai.api_key = os.getenv('OPENAI_API_KEY')
+def **init**(self):
+self.recall = Recall(
+api_key=os.getenv('MEM0_API_KEY'),
+cache_strategy='aggressive'
+)
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
     async def chat(self, user_id: str, message: str):
         # Retrieve conversation context
@@ -128,7 +129,8 @@ class ConversationManager:
         })
 
         return reply`
-  }
+
+}
 ]} />
 
 ## Personalization Engine
@@ -147,7 +149,7 @@ class PersonalizationEngine {
     const existing = await this.recall.search({
       query: preference.category,
       userId,
-      metadata_filter: { type: 'preference' }
+      metadata_filter: { type: "preference" },
     });
 
     if (existing.length > 0) {
@@ -157,20 +159,20 @@ class PersonalizationEngine {
         metadata: {
           ...existing[0].metadata,
           weight: (existing[0].metadata.weight || 1) + 1,
-          last_updated: Date.now()
-        }
+          last_updated: Date.now(),
+        },
       });
     } else {
       // Add new preference
       await this.recall.add({
         content: preference.description,
         userId,
-        priority: 'high',
+        priority: "high",
         metadata: {
-          type: 'preference',
+          type: "preference",
           category: preference.category,
-          weight: 1
-        }
+          weight: 1,
+        },
       });
     }
   }
@@ -179,7 +181,7 @@ class PersonalizationEngine {
     const preferences = await this.recall.search({
       query: context,
       userId,
-      metadata_filter: { type: 'preference' }
+      metadata_filter: { type: "preference" },
     });
 
     // Sort by weight and recency
@@ -211,13 +213,13 @@ class DocumentQA {
     for (let i = 0; i < chunks.length; i++) {
       await this.recall.add({
         content: chunks[i],
-        userId: 'system',
+        userId: "system",
         metadata: {
           doc_id: docId,
           chunk_index: i,
           total_chunks: chunks.length,
-          type: 'document'
-        }
+          type: "document",
+        },
       });
     }
 
@@ -228,26 +230,24 @@ class DocumentQA {
     // Search for relevant chunks
     const relevantChunks = await this.recall.search({
       query: question,
-      userId: 'system',
-      metadata_filter: { type: 'document' },
-      limit: 5
+      userId: "system",
+      metadata_filter: { type: "document" },
+      limit: 5,
     });
 
     // Build context from chunks
-    const context = relevantChunks
-      .map(chunk => chunk.content)
-      .join('\n\n');
+    const context = relevantChunks.map((chunk) => chunk.content).join("\n\n");
 
     // Generate answer using context
     return this.generateAnswer(question, context);
   }
 
   private chunkDocument(content: string, chunkSize: number): string[] {
-    const words = content.split(' ');
+    const words = content.split(" ");
     const chunks: string[] = [];
 
     for (let i = 0; i < words.length; i += chunkSize) {
-      chunks.push(words.slice(i, i + chunkSize).join(' '));
+      chunks.push(words.slice(i, i + chunkSize).join(" "));
     }
 
     return chunks;
@@ -267,32 +267,28 @@ class AgentMemoryPool {
   constructor() {
     this.recall = new Recall({
       apiKey: process.env.MEM0_API_KEY,
-      cacheStrategy: 'balanced'
+      cacheStrategy: "balanced",
     });
   }
 
-  async shareMemory(
-    fromAgent: string,
-    toAgent: string,
-    memory: any
-  ) {
+  async shareMemory(fromAgent: string, toAgent: string, memory: any) {
     await this.recall.add({
       content: memory.content,
       userId: toAgent,
       metadata: {
         source_agent: fromAgent,
         shared_at: Date.now(),
-        visibility: 'shared',
-        ...memory.metadata
-      }
+        visibility: "shared",
+        ...memory.metadata,
+      },
     });
   }
 
   async getSharedMemories(agentId: string) {
     return await this.recall.search({
-      query: '',
+      query: "",
       userId: agentId,
-      metadata_filter: { visibility: 'shared' }
+      metadata_filter: { visibility: "shared" },
     });
   }
 
@@ -300,17 +296,17 @@ class AgentMemoryPool {
     const agents = Array.from(this.agents.keys());
 
     await Promise.all(
-      agents.map(agentId =>
+      agents.map((agentId) =>
         this.recall.add({
           content: memory.content,
           userId: agentId,
-          priority: 'high',
+          priority: "high",
           metadata: {
-            type: 'broadcast',
-            timestamp: Date.now()
-          }
-        })
-      )
+            type: "broadcast",
+            timestamp: Date.now(),
+          },
+        }),
+      ),
     );
   }
 }
@@ -329,11 +325,11 @@ class BehaviorAnalytics {
       content: JSON.stringify(event),
       userId,
       metadata: {
-        type: 'event',
+        type: "event",
         category: event.category,
         action: event.action,
-        timestamp: Date.now()
-      }
+        timestamp: Date.now(),
+      },
     });
   }
 
@@ -342,31 +338,31 @@ class BehaviorAnalytics {
     const startTime = endTime - timeRange;
 
     const events = await this.recall.search({
-      query: '',
+      query: "",
       userId,
       metadata_filter: {
-        type: 'event',
-        timestamp: { $gte: startTime, $lte: endTime }
+        type: "event",
+        timestamp: { $gte: startTime, $lte: endTime },
       },
-      limit: 100
+      limit: 100,
     });
 
     return events
       .sort((a, b) => a.metadata.timestamp - b.metadata.timestamp)
-      .map(e => JSON.parse(e.content));
+      .map((e) => JSON.parse(e.content));
   }
 
   async getInsights(userId: string) {
     const journey = await this.getUserJourney(
       userId,
-      7 * 24 * 60 * 60 * 1000 // Last 7 days
+      7 * 24 * 60 * 60 * 1000, // Last 7 days
     );
 
     return {
       total_events: journey.length,
-      most_common_action: this.getMostCommon(journey, 'action'),
+      most_common_action: this.getMostCommon(journey, "action"),
       peak_activity_hour: this.getPeakHour(journey),
-      engagement_score: this.calculateEngagement(journey)
+      engagement_score: this.calculateEngagement(journey),
     };
   }
 }

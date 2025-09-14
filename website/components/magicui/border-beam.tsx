@@ -25,7 +25,7 @@ export const BorderBeam = ({
       <div
         className={cn(
           "pointer-events-none absolute inset-0 rounded-[inherit] [mask-clip:padding-box,border-box] [mask-composite:intersect] [mask-image:linear-gradient(transparent,transparent),linear-gradient(white,white)]",
-          className
+          className,
         )}
         style={{
           mask: `linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0) border-box`,

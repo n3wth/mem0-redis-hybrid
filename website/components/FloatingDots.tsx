@@ -1,19 +1,19 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 interface Dot {
-  id: number
-  x: number
-  y: number
-  size: number
-  duration: number
-  delay: number
+  id: number;
+  x: number;
+  y: number;
+  size: number;
+  duration: number;
+  delay: number;
 }
 
 export function FloatingDots({ count = 50 }: { count?: number }) {
-  const [dots, setDots] = useState<Dot[]>([])
+  const [dots, setDots] = useState<Dot[]>([]);
 
   useEffect(() => {
     const newDots = Array.from({ length: count }, (_, i) => ({
@@ -23,9 +23,9 @@ export function FloatingDots({ count = 50 }: { count?: number }) {
       size: Math.random() * 4 + 1,
       duration: Math.random() * 20 + 20,
       delay: Math.random() * 5,
-    }))
-    setDots(newDots)
-  }, [count])
+    }));
+    setDots(newDots);
+  }, [count]);
 
   return (
     <div className="absolute inset-0 overflow-hidden">
@@ -47,12 +47,12 @@ export function FloatingDots({ count = 50 }: { count?: number }) {
             duration: dot.duration,
             delay: dot.delay,
             repeat: Infinity,
-            ease: 'easeInOut',
+            ease: "easeInOut",
           }}
         />
       ))}
     </div>
-  )
+  );
 }
 
 export function GridPattern() {
@@ -92,7 +92,7 @@ export function GridPattern() {
         transition={{
           duration: 8,
           repeat: Infinity,
-          ease: 'linear',
+          ease: "linear",
         }}
       />
       <motion.div
@@ -103,9 +103,9 @@ export function GridPattern() {
         transition={{
           duration: 10,
           repeat: Infinity,
-          ease: 'linear',
+          ease: "linear",
         }}
       />
     </div>
-  )
+  );
 }

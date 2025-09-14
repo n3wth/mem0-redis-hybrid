@@ -1,6 +1,6 @@
 {
   "name": "r3call",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence",
   "main": "dist/index.js",
   "module": "src/index.ts",
@@ -100,6 +100,7 @@
   "devDependencies": {
     "@types/node": "^24.3.3",
     "@types/react": "^19.1.13",
+    "prettier": "^3.6.2",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2"
   }

@@ -11,18 +11,18 @@ Complete reference for all MCP tools available in Recall.
 
 Recall provides these tools to Claude Desktop through the MCP protocol:
 
-| Tool | Description | Response time |
-|------|-------------|---------------|
-| `add_memory` | Store new information | Under 10ms |
-| `search_memory` | Find relevant memories | Under 5ms (cache) |
-| `get_all_memories` | List all memories | Under 50ms |
-| `update_memory` | Modify existing memory | Under 10ms |
-| `delete_memory` | Remove a memory | Under 10ms |
-| `delete_all_memories` | Clear all memories | Under 100ms |
-| `get_memory_history` | View memory changes | Under 20ms |
-| `cache_stats` | Get performance metrics | Under 1ms |
-| `optimize_cache` | Reorganize cache | Under 500ms |
-| `health_check` | Check system status | Under 5ms |
+| Tool                  | Description             | Response time     |
+| --------------------- | ----------------------- | ----------------- |
+| `add_memory`          | Store new information   | Under 10ms        |
+| `search_memory`       | Find relevant memories  | Under 5ms (cache) |
+| `get_all_memories`    | List all memories       | Under 50ms        |
+| `update_memory`       | Modify existing memory  | Under 10ms        |
+| `delete_memory`       | Remove a memory         | Under 10ms        |
+| `delete_all_memories` | Clear all memories      | Under 100ms       |
+| `get_memory_history`  | View memory changes     | Under 20ms        |
+| `cache_stats`         | Get performance metrics | Under 1ms         |
+| `optimize_cache`      | Reorganize cache        | Under 500ms       |
+| `health_check`        | Check system status     | Under 5ms         |
 
 ## add_memory
 
@@ -30,16 +30,16 @@ Store new information in the memory system.
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `content` | string | No* | Text content to remember |
-| `messages` | array | No* | Conversation messages to remember |
-| `user_id` | string | No | User identifier (default: from env) |
-| `priority` | string | No | `critical`, `high`, `medium`, `low` (default: `medium`) |
-| `metadata` | object | No | Additional context |
-| `async` | boolean | No | Process in background (default: `true`) |
+| Parameter  | Type    | Required | Description                                             |
+| ---------- | ------- | -------- | ------------------------------------------------------- |
+| `content`  | string  | No\*     | Text content to remember                                |
+| `messages` | array   | No\*     | Conversation messages to remember                       |
+| `user_id`  | string  | No       | User identifier (default: from env)                     |
+| `priority` | string  | No       | `critical`, `high`, `medium`, `low` (default: `medium`) |
+| `metadata` | object  | No       | Additional context                                      |
+| `async`    | boolean | No       | Process in background (default: `true`)                 |
 
-*Either `content` or `messages` is required.
+\*Either `content` or `messages` is required.
 
 ### Example
 
@@ -73,13 +73,13 @@ Find memories using semantic search.
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `query` | string | Yes | Search query |
-| `user_id` | string | No | Filter by user |
-| `limit` | number | No | Max results (default: 10) |
-| `prefer_cache` | boolean | No | Skip cloud if in cache (default: `true`) |
-| `metadata_filter` | object | No | Filter by metadata |
+| Parameter         | Type    | Required | Description                              |
+| ----------------- | ------- | -------- | ---------------------------------------- |
+| `query`           | string  | Yes      | Search query                             |
+| `user_id`         | string  | No       | Filter by user                           |
+| `limit`           | number  | No       | Max results (default: 10)                |
+| `prefer_cache`    | boolean | No       | Skip cloud if in cache (default: `true`) |
+| `metadata_filter` | object  | No       | Filter by metadata                       |
 
 ### Example
 
@@ -123,9 +123,9 @@ Retrieve all memories for a user.
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `user_id` | string | No | User identifier (default: from env) |
+| Parameter | Type   | Required | Description                         |
+| --------- | ------ | -------- | ----------------------------------- |
+| `user_id` | string | No       | User identifier (default: from env) |
 
 ### Example
 
@@ -164,11 +164,11 @@ Modify an existing memory.
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `memory_id` | string | Yes | Memory ID to update |
-| `content` | string | Yes | New content |
-| `metadata` | object | No | New metadata |
+| Parameter   | Type   | Required | Description         |
+| ----------- | ------ | -------- | ------------------- |
+| `memory_id` | string | Yes      | Memory ID to update |
+| `content`   | string | Yes      | New content         |
+| `metadata`  | object | No       | New metadata        |
 
 ### Example
 
@@ -200,9 +200,9 @@ Remove a specific memory.
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `memory_id` | string | Yes | Memory ID to delete |
+| Parameter   | Type   | Required | Description         |
+| ----------- | ------ | -------- | ------------------- |
+| `memory_id` | string | Yes      | Memory ID to delete |
 
 ### Example
 
@@ -230,9 +230,9 @@ Clear all memories for a user.
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `user_id` | string | No | User identifier (default: from env) |
+| Parameter | Type   | Required | Description                         |
+| --------- | ------ | -------- | ----------------------------------- |
+| `user_id` | string | No       | User identifier (default: from env) |
 
 ### Example
 
@@ -260,9 +260,9 @@ View the change history of a memory.
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `memory_id` | string | Yes | Memory ID |
+| Parameter   | Type   | Required | Description |
+| ----------- | ------ | -------- | ----------- |
+| `memory_id` | string | Yes      | Memory ID   |
 
 ### Example
 
@@ -340,10 +340,10 @@ Reorganize cache based on access patterns.
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `force_refresh` | boolean | No | Force refresh all entries (default: `false`) |
-| `max_memories` | number | No | Max memories to optimize (default: 1000) |
+| Parameter       | Type    | Required | Description                                  |
+| --------------- | ------- | -------- | -------------------------------------------- |
+| `force_refresh` | boolean | No       | Force refresh all entries (default: `false`) |
+| `max_memories`  | number  | No       | Max memories to optimize (default: 1000)     |
 
 ### Example
 
@@ -422,13 +422,13 @@ All tools can return errors:
 
 Common error codes:
 
-| Code | Description |
-|------|-------------|
-| `REDIS_CONNECTION_ERROR` | Can't connect to Redis |
-| `MEM0_API_ERROR` | Mem0 API request failed |
-| `INVALID_PARAMETERS` | Missing or invalid parameters |
-| `MEMORY_NOT_FOUND` | Memory ID doesn't exist |
-| `RATE_LIMIT_EXCEEDED` | Too many requests |
+| Code                     | Description                   |
+| ------------------------ | ----------------------------- |
+| `REDIS_CONNECTION_ERROR` | Can't connect to Redis        |
+| `MEM0_API_ERROR`         | Mem0 API request failed       |
+| `INVALID_PARAMETERS`     | Missing or invalid parameters |
+| `MEMORY_NOT_FOUND`       | Memory ID doesn't exist       |
+| `RATE_LIMIT_EXCEEDED`    | Too many requests             |
 
 ## Rate limits
 

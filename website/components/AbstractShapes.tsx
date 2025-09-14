@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
 export function AbstractShapes() {
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
-  if (!mounted) return null
+  if (!mounted) return null;
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -17,9 +17,10 @@ export function AbstractShapes() {
       <div
         className="absolute -top-40 -left-40 w-96 h-96 rounded-full opacity-30"
         style={{
-          background: 'radial-gradient(circle, rgba(16,163,127,0.4) 0%, rgba(16,163,127,0.1) 40%, transparent 70%)',
-          filter: 'blur(40px)',
-          animation: 'float 20s ease-in-out infinite'
+          background:
+            "radial-gradient(circle, rgba(16,163,127,0.4) 0%, rgba(16,163,127,0.1) 40%, transparent 70%)",
+          filter: "blur(40px)",
+          animation: "float 20s ease-in-out infinite",
         }}
       />
 
@@ -27,20 +28,36 @@ export function AbstractShapes() {
       <div
         className="absolute -top-20 -right-20 w-80 h-80 rounded-full opacity-20"
         style={{
-          background: 'radial-gradient(circle, rgba(16,163,127,0.3) 0%, transparent 70%)',
-          filter: 'blur(30px)',
-          animation: 'float 15s ease-in-out infinite reverse'
+          background:
+            "radial-gradient(circle, rgba(16,163,127,0.3) 0%, transparent 70%)",
+          filter: "blur(30px)",
+          animation: "float 15s ease-in-out infinite reverse",
         }}
       />
 
       {/* Animated geometric shapes */}
-      <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+      <svg
+        className="absolute inset-0 w-full h-full"
+        preserveAspectRatio="none"
+      >
         <defs>
-          <linearGradient id="shape-gradient-1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient
+            id="shape-gradient-1"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
             <stop offset="0%" stopColor="#10a37f" stopOpacity="0.1" />
             <stop offset="100%" stopColor="#10a37f" stopOpacity="0.02" />
           </linearGradient>
-          <linearGradient id="shape-gradient-2" x1="0%" y1="0%" x2="100%" y2="0%">
+          <linearGradient
+            id="shape-gradient-2"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="0%"
+          >
             <stop offset="0%" stopColor="#10a37f" stopOpacity="0.08" />
             <stop offset="100%" stopColor="#10a37f" stopOpacity="0" />
           </linearGradient>
@@ -55,8 +72,8 @@ export function AbstractShapes() {
           fill="url(#shape-gradient-1)"
           transform="rotate(12 200 200)"
           style={{
-            animation: 'rotate 60s linear infinite',
-            transformOrigin: '200px 200px'
+            animation: "rotate 60s linear infinite",
+            transformOrigin: "200px 200px",
           }}
         />
 
@@ -66,7 +83,7 @@ export function AbstractShapes() {
           fill="url(#shape-gradient-2)"
           transform="translate(600, 100)"
           style={{
-            animation: 'float 25s ease-in-out infinite'
+            animation: "float 25s ease-in-out infinite",
           }}
         />
 
@@ -80,7 +97,7 @@ export function AbstractShapes() {
           strokeWidth="0.5"
           opacity="0.2"
           style={{
-            animation: 'pulse 4s ease-in-out infinite'
+            animation: "pulse 4s ease-in-out infinite",
           }}
         />
 
@@ -93,7 +110,7 @@ export function AbstractShapes() {
           opacity="0.15"
           transform="translate(200, 400) scale(2)"
           style={{
-            animation: 'rotate 45s linear infinite reverse'
+            animation: "rotate 45s linear infinite reverse",
           }}
         />
       </svg>
@@ -109,7 +126,7 @@ export function AbstractShapes() {
               top: `${20 + Math.floor(i / 4) * 30}%`,
               opacity: 0.1 + (i % 3) * 0.05,
               animation: `float ${10 + i * 2}s ease-in-out infinite`,
-              animationDelay: `${i * 0.5}s`
+              animationDelay: `${i * 0.5}s`,
             }}
           />
         ))}
@@ -123,15 +140,16 @@ export function AbstractShapes() {
             linear-gradient(to right, #10a37f 1px, transparent 1px),
             linear-gradient(to bottom, #10a37f 1px, transparent 1px)
           `,
-          backgroundSize: '50px 50px',
-          transform: 'rotate(-5deg) scale(1.5)',
-          animation: 'slide 30s linear infinite'
+          backgroundSize: "50px 50px",
+          transform: "rotate(-5deg) scale(1.5)",
+          animation: "slide 30s linear infinite",
         }}
       />
 
       <style jsx>{`
         @keyframes float {
-          0%, 100% {
+          0%,
+          100% {
             transform: translateY(0) translateX(0);
           }
           25% {
@@ -155,7 +173,8 @@ export function AbstractShapes() {
         }
 
         @keyframes pulse {
-          0%, 100% {
+          0%,
+          100% {
             opacity: 0.2;
             transform: scale(1);
           }
@@ -175,5 +194,5 @@ export function AbstractShapes() {
         }
       `}</style>
     </div>
-  )
+  );
 }

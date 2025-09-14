@@ -1,209 +1,232 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+  <head>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap");
 
-    body {
-      margin: 0;
-      padding: 0;
-      width: 1200px;
-      height: 630px;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #000000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Animated gradient background similar to website */
-    .gradient-bg {
-      position: absolute;
-      width: 200%;
-      height: 200%;
-      top: -50%;
-      left: -50%;
-      background: radial-gradient(circle at 30% 40%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
-                  radial-gradient(circle at 70% 60%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-                  radial-gradient(circle at 50% 50%, rgba(147, 51, 234, 0.05) 0%, transparent 70%);
-      filter: blur(80px);
-    }
-
-    /* Dot grid pattern */
-    .dot-pattern {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-image: radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 30px 30px;
-    }
-
-    .content {
-      position: relative;
-      z-index: 10;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 24px;
-    }
-
-    /* Logo with gradient circle */
-    .logo {
-      width: 120px;
-      height: 120px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 30px;
-    }
-
-    .logo-circles {
-      width: 120px;
-      height: 120px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .logo-circle {
-      position: absolute;
-      border: 2px solid rgba(255, 255, 255, 0.8);
-      border-radius: 50%;
-      background: transparent;
-    }
-
-    /* Concentric circles like the actual site logo */
-    .logo-circle:nth-child(1) {
-      width: 120px;
-      height: 120px;
-      border: 4px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .logo-circle:nth-child(2) {
-      width: 90px;
-      height: 90px;
-      border: 4px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .logo-circle:nth-child(3) {
-      width: 60px;
-      height: 60px;
-      border: 4px solid rgba(255, 255, 255, 0.5);
-    }
-
-    .logo-circle:nth-child(4) {
-      width: 30px;
-      height: 30px;
-      background: white;
-      border: none;
-    }
-
-    .title {
-      font-size: 96px;
-      font-weight: 900;
-      color: white;
-      letter-spacing: -0.04em;
-      margin: 0;
-      line-height: 1;
-    }
-
-    .subtitle {
-      font-size: 32px;
-      font-weight: 400;
-      color: rgba(156, 163, 175, 1);
-      margin: 0;
-      line-height: 1.4;
-      max-width: 800px;
-    }
-
-    .pills {
-      display: flex;
-      gap: 20px;
-      margin-top: 20px;
-    }
-
-    .pill {
-      padding: 12px 24px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 9999px;
-      color: white;
-      font-size: 18px;
-      font-weight: 500;
-      backdrop-filter: blur(10px);
-    }
-
-    .badge {
-      position: absolute;
-      top: 60px;
-      right: 80px;
-      background: rgba(34, 197, 94, 0.1);
-      border: 1px solid rgba(34, 197, 94, 0.2);
-      border-radius: 9999px;
-      padding: 8px 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      backdrop-filter: blur(10px);
-    }
-
-    .badge-dot {
-      width: 8px;
-      height: 8px;
-      background: #22c55e;
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    .badge-text {
-      color: #22c55e;
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    @keyframes pulse {
-      0%, 100% {
-        opacity: 1;
+      body {
+        margin: 0;
+        padding: 0;
+        width: 1200px;
+        height: 630px;
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        background: #000000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
       }
-      50% {
-        opacity: 0.5;
+
+      /* Animated gradient background similar to website */
+      .gradient-bg {
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        top: -50%;
+        left: -50%;
+        background:
+          radial-gradient(
+            circle at 30% 40%,
+            rgba(147, 51, 234, 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 70% 60%,
+            rgba(99, 102, 241, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 50% 50%,
+            rgba(147, 51, 234, 0.05) 0%,
+            transparent 70%
+          );
+        filter: blur(80px);
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="gradient-bg"></div>
-  <div class="dot-pattern"></div>
 
-  <div class="badge">
-    <div class="badge-dot"></div>
-    <span class="badge-text">Claude Code + Gemini CLI Ready</span>
-  </div>
+      /* Dot grid pattern */
+      .dot-pattern {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.03) 1px,
+          transparent 1px
+        );
+        background-size: 30px 30px;
+      }
 
-  <div class="content">
-    <div class="logo">
-      <div class="logo-circles">
-        <div class="logo-circle"></div>
-        <div class="logo-circle"></div>
-        <div class="logo-circle"></div>
-        <div class="logo-circle"></div>
+      .content {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+      }
+
+      /* Logo with gradient circle */
+      .logo {
+        width: 120px;
+        height: 120px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      .logo-circles {
+        width: 120px;
+        height: 120px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .logo-circle {
+        position: absolute;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        background: transparent;
+      }
+
+      /* Concentric circles like the actual site logo */
+      .logo-circle:nth-child(1) {
+        width: 120px;
+        height: 120px;
+        border: 4px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .logo-circle:nth-child(2) {
+        width: 90px;
+        height: 90px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .logo-circle:nth-child(3) {
+        width: 60px;
+        height: 60px;
+        border: 4px solid rgba(255, 255, 255, 0.5);
+      }
+
+      .logo-circle:nth-child(4) {
+        width: 30px;
+        height: 30px;
+        background: white;
+        border: none;
+      }
+
+      .title {
+        font-size: 96px;
+        font-weight: 900;
+        color: white;
+        letter-spacing: -0.04em;
+        margin: 0;
+        line-height: 1;
+      }
+
+      .subtitle {
+        font-size: 32px;
+        font-weight: 400;
+        color: rgba(156, 163, 175, 1);
+        margin: 0;
+        line-height: 1.4;
+        max-width: 800px;
+      }
+
+      .pills {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .pill {
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 9999px;
+        color: white;
+        font-size: 18px;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
+      }
+
+      .badge {
+        position: absolute;
+        top: 60px;
+        right: 80px;
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        border-radius: 9999px;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        backdrop-filter: blur(10px);
+      }
+
+      .badge-dot {
+        width: 8px;
+        height: 8px;
+        background: #22c55e;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      .badge-text {
+        color: #22c55e;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gradient-bg"></div>
+    <div class="dot-pattern"></div>
+
+    <div class="badge">
+      <div class="badge-dot"></div>
+      <span class="badge-text">Claude Code + Gemini CLI Ready</span>
+    </div>
+
+    <div class="content">
+      <div class="logo">
+        <div class="logo-circles">
+          <div class="logo-circle"></div>
+          <div class="logo-circle"></div>
+          <div class="logo-circle"></div>
+          <div class="logo-circle"></div>
+        </div>
+      </div>
+
+      <h1 class="title">r3call</h1>
+      <p class="subtitle">Intelligent Memory Layer for AI Applications</p>
+
+      <div class="pills">
+        <div class="pill">Sub-5ms response</div>
+        <div class="pill">Automatic failover</div>
+        <div class="pill">Built for scale</div>
       </div>
     </div>
-
-    <h1 class="title">r3call</h1>
-    <p class="subtitle">Intelligent Memory Layer for AI Applications</p>
-
-    <div class="pills">
-      <div class="pill">Sub-5ms response</div>
-      <div class="pill">Automatic failover</div>
-      <div class="pill">Built for scale</div>
-    </div>
-  </div>
-</body>
+  </body>
 </html>

@@ -43,16 +43,15 @@ RecallClient(
 
 #### Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `redis_url` | `string` | `"redis://localhost:6379"` | Redis connection URL |
-| `mem0_api_key` | `string` | `None` | Mem0 API key for cloud storage |
-| `environment` | `string` | `"development"` | Environment name (development, staging, production) |
-| `cache_config` | `CacheConfig` | `None` | Cache configuration options |
-| `sync_config` | `SyncConfig` | `None` | Synchronization configuration |
+| Parameter      | Type          | Default                    | Description                                         |
+| -------------- | ------------- | -------------------------- | --------------------------------------------------- |
+| `redis_url`    | `string`      | `"redis://localhost:6379"` | Redis connection URL                                |
+| `mem0_api_key` | `string`      | `None`                     | Mem0 API key for cloud storage                      |
+| `environment`  | `string`      | `"development"`            | Environment name (development, staging, production) |
+| `cache_config` | `CacheConfig` | `None`                     | Cache configuration options                         |
+| `sync_config`  | `SyncConfig`  | `None`                     | Synchronization configuration                       |
 
 #### Example
-
 
 ```python tab="Python"
 from recall import RecallClient
@@ -74,12 +73,12 @@ client = RecallClient(
 ```
 
 ```typescript tab="TypeScript"
-import { RecallClient } from '@recall/client';
+import { RecallClient } from "@recall/client";
 
 // Basic initialization
 const client = new RecallClient({
   redisUrl: "redis://localhost:6379",
-  mem0ApiKey: "m0-xxxxxxxxxxxx"
+  mem0ApiKey: "m0-xxxxxxxxxxxx",
 });
 
 // With configuration
@@ -88,17 +87,15 @@ const client = new RecallClient({
   mem0ApiKey: "m0-xxxxxxxxxxxx",
   environment: "production",
   cacheConfig: { ttl: 3600 },
-  syncConfig: { mode: "eager" }
+  syncConfig: { mode: "eager" },
 });
 ```
-
 
 ## Core Methods
 
 ### add()
 
 Add a new memory to the system.
-
 
 ```python tab="Python"
 add(
@@ -122,20 +119,20 @@ interface AddMemoryOptions {
 }
 ```
 
-
 #### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `content` | `string` | Yes | The memory content to store |
-| `user_id` | `string` | Yes | User identifier |
-| `priority` | `string` | No | Priority level: "critical", "high", "medium", "low" |
-| `metadata` | `object` | No | Additional metadata |
-| `async_mode` | `boolean` | No | If true, returns immediately without waiting for cloud sync |
+| Parameter    | Type      | Required | Description                                                 |
+| ------------ | --------- | -------- | ----------------------------------------------------------- |
+| `content`    | `string`  | Yes      | The memory content to store                                 |
+| `user_id`    | `string`  | Yes      | User identifier                                             |
+| `priority`   | `string`  | No       | Priority level: "critical", "high", "medium", "low"         |
+| `metadata`   | `object`  | No       | Additional metadata                                         |
+| `async_mode` | `boolean` | No       | If true, returns immediately without waiting for cloud sync |
 
 #### Returns
 
 A dictionary/object containing:
+
 - `id`: Unique memory identifier
 - `content`: The stored content
 - `user_id`: Associated user ID
@@ -144,7 +141,6 @@ A dictionary/object containing:
 - `metadata`: Any additional metadata
 
 #### Example
-
 
 ```python tab="Python"
 memory = client.add(
@@ -168,19 +164,17 @@ const memory = await client.add({
   priority: "high",
   metadata: {
     category: "preferences",
-    source: "settings_update"
-  }
+    source: "settings_update",
+  },
 });
 
 console.log(`Memory ID: ${memory.id}`);
 // Output: Memory ID: mem_abc123xyz
 ```
 
-
 ### search()
 
 Search for relevant memories using semantic search.
-
 
 ```python tab="Python"
 search(
@@ -204,26 +198,25 @@ interface SearchOptions {
 }
 ```
 
-
 #### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `query` | `string` | Yes | Search query |
-| `user_id` | `string` | No | Filter by user ID |
-| `limit` | `integer` | No | Maximum results to return (default: 10) |
-| `filters` | `object` | No | Metadata filters |
-| `threshold` | `float` | No | Minimum relevance score (0.0 to 1.0) |
+| Parameter   | Type      | Required | Description                             |
+| ----------- | --------- | -------- | --------------------------------------- |
+| `query`     | `string`  | Yes      | Search query                            |
+| `user_id`   | `string`  | No       | Filter by user ID                       |
+| `limit`     | `integer` | No       | Maximum results to return (default: 10) |
+| `filters`   | `object`  | No       | Metadata filters                        |
+| `threshold` | `float`   | No       | Minimum relevance score (0.0 to 1.0)    |
 
 #### Returns
 
 Array of memory objects, each containing:
+
 - All memory fields
 - `score`: Relevance score (0.0 to 1.0)
 - `source`: Whether from "cache" or "cloud"
 
 #### Example
-
 
 ```python tab="Python"
 results = client.search(
@@ -244,19 +237,17 @@ const results = await client.search({
   userId: "user_123",
   limit: 5,
   filters: { category: "preferences" },
-  threshold: 0.7
+  threshold: 0.7,
 });
 
-results.forEach(memory => {
+results.forEach((memory) => {
   console.log(`${memory.content} (score: ${memory.score.toFixed(2)})`);
 });
 ```
 
-
 ### get()
 
 Retrieve a specific memory by ID.
-
 
 ```python tab="Python"
 get(memory_id: str) -> dict | None
@@ -266,9 +257,7 @@ get(memory_id: str) -> dict | None
 get(memoryId: string): Promise<Memory | null>
 ```
 
-
 #### Example
-
 
 ```python tab="Python"
 memory = client.get("mem_abc123xyz")
@@ -287,11 +276,9 @@ if (memory) {
 }
 ```
 
-
 ### update()
 
 Update an existing memory.
-
 
 ```python tab="Python"
 update(
@@ -313,9 +300,7 @@ interface UpdateOptions {
 }
 ```
 
-
 #### Example
-
 
 ```python tab="Python"
 updated = client.update(
@@ -329,15 +314,13 @@ updated = client.update(
 const updated = await client.update({
   memoryId: "mem_abc123xyz",
   priority: "critical",
-  metadata: { lastAccessed: new Date().toISOString() }
+  metadata: { lastAccessed: new Date().toISOString() },
 });
 ```
-
 
 ### delete()
 
 Delete a memory from both cache and cloud storage.
-
 
 ```python tab="Python"
 delete(memory_id: str) -> bool
@@ -347,9 +330,7 @@ delete(memory_id: str) -> bool
 delete(memoryId: string): Promise<boolean>
 ```
 
-
 #### Example
-
 
 ```python tab="Python"
 success = client.delete("mem_abc123xyz")
@@ -361,11 +342,9 @@ const success = await client.delete("mem_abc123xyz");
 console.log(`Deleted: ${success}`);
 ```
 
-
 ### get_all()
 
 Retrieve all memories for a user.
-
 
 ```python tab="Python"
 get_all(
@@ -385,9 +364,7 @@ interface GetAllOptions {
 }
 ```
 
-
 #### Example
-
 
 ```python tab="Python"
 memories = client.get_all(
@@ -402,18 +379,16 @@ print(f"Total memories: {len(memories)}")
 const memories = await client.getAll({
   userId: "user_123",
   limit: 100,
-  offset: 0
+  offset: 0,
 });
 console.log(`Total memories: ${memories.length}`);
 ```
-
 
 ## Batch Operations
 
 ### add_batch()
 
 Add multiple memories in a single operation.
-
 
 ```python tab="Python"
 add_batch(memories: list[dict]) -> list[dict]
@@ -423,9 +398,7 @@ add_batch(memories: list[dict]) -> list[dict]
 addBatch(memories: AddMemoryOptions[]): Promise<Memory[]>
 ```
 
-
 #### Example
-
 
 ```python tab="Python"
 memories = [
@@ -450,24 +423,22 @@ const memories = [
   {
     content: "Prefers email notifications",
     userId: "user_123",
-    priority: "high"
+    priority: "high",
   },
   {
     content: "Works in tech industry",
     userId: "user_123",
-    priority: "medium"
-  }
+    priority: "medium",
+  },
 ];
 
 const results = await client.addBatch(memories);
 console.log(`Added ${results.length} memories`);
 ```
 
-
 ### delete_batch()
 
 Delete multiple memories by ID.
-
 
 ```python tab="Python"
 delete_batch(memory_ids: list[str]) -> dict
@@ -477,13 +448,11 @@ delete_batch(memory_ids: list[str]) -> dict
 deleteBatch(memoryIds: string[]): Promise<BatchDeleteResult>
 ```
 
-
 ## Cache Management
 
 ### cache_stats()
 
 Get detailed cache statistics.
-
 
 ```python tab="Python"
 cache_stats() -> dict
@@ -493,9 +462,7 @@ cache_stats() -> dict
 cacheStats(): Promise<CacheStats>
 ```
 
-
 #### Returns
-
 
 ```python tab="Python"
 {
@@ -531,11 +498,9 @@ interface CacheStats {
 }
 ```
 
-
 ### optimize_cache()
 
 Optimize cache by removing stale entries and reorganizing based on access patterns.
-
 
 ```python tab="Python"
 optimize_cache(
@@ -547,11 +512,9 @@ optimize_cache(
 optimizeCache(options?: OptimizeOptions): Promise<OptimizeResult>
 ```
 
-
 ### clear_cache()
 
 Clear cache for specific user or entirely.
-
 
 ```python tab="Python"
 clear_cache(user_id: str | None = None) -> bool
@@ -561,13 +524,11 @@ clear_cache(user_id: str | None = None) -> bool
 clearCache(userId?: string): Promise<boolean>
 ```
 
-
 ## Synchronization
 
 ### sync()
 
 Manually trigger synchronization between cache and cloud.
-
 
 ```python tab="Python"
 sync(
@@ -585,13 +546,11 @@ interface SyncOptions {
 }
 ```
 
-
 ## Health & Monitoring
 
 ### health_check()
 
 Check the health status of all components.
-
 
 ```python tab="Python"
 health_check() -> dict
@@ -601,9 +560,7 @@ health_check() -> dict
 healthCheck(): Promise<HealthStatus>
 ```
 
-
 #### Returns
-
 
 ```python tab="Python"
 {
@@ -643,11 +600,9 @@ interface HealthStatus {
 }
 ```
 
-
 ## Configuration Classes
 
 ### CacheConfig
-
 
 ```python tab="Python"
 class CacheConfig:
@@ -668,9 +623,7 @@ interface CacheConfig {
 }
 ```
 
-
 ### SyncConfig
-
 
 ```python tab="Python"
 class SyncConfig:
@@ -691,11 +644,9 @@ interface SyncConfig {
 }
 ```
 
-
 ## Error Handling
 
 ### Exception Types
-
 
 ```python tab="Python"
 from recall.exceptions import (
@@ -724,8 +675,8 @@ import {
   ValidationError,
   CacheError,
   SyncError,
-  RateLimitError
-} from '@recall/client';
+  RateLimitError,
+} from "@recall/client";
 
 try {
   await client.add({ content: "", userId: "" });
@@ -738,11 +689,9 @@ try {
 }
 ```
 
-
 ## Async Support
 
 ### Async Client (Python)
-
 
 ```python tab="Python"
 from recall import AsyncRecallClient
@@ -774,7 +723,6 @@ async def main():
 
 asyncio.run(main())
 ```
-
 
 ## Next Steps
 

@@ -85,7 +85,7 @@ Want to backup memories to the cloud? Add a Mem0 API key:
       "command": "npx",
       "args": ["r3call"],
       "env": {
-        "MEM0_API_KEY": "mem0_..."  // Get free at mem0.ai
+        "MEM0_API_KEY": "mem0_..." // Get free at mem0.ai
       }
     }
   }
@@ -143,6 +143,7 @@ To see what's happening:
 ### "Redis connection failed"
 
 Redis isn't running. Start it with:
+
 ```bash
 redis-server
 ```
@@ -150,6 +151,7 @@ redis-server
 ### "Invalid API key"
 
 Check your Mem0 API key:
+
 1. Starts with `mem0_`
 2. No extra spaces
 3. Copied correctly
@@ -157,6 +159,7 @@ Check your Mem0 API key:
 ### "MCP server not found"
 
 Claude Desktop needs a restart:
+
 1. Quit Claude Desktop (Cmd+Q / Alt+F4)
 2. Start it again
 3. Check the config file is valid JSON

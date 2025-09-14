@@ -12,6 +12,7 @@ Learn how to create an intelligent chatbot that remembers user preferences, conv
 ## Overview
 
 This example demonstrates how to build a chatbot that:
+
 - Remembers user preferences and context
 - Learns from conversation patterns
 - Provides personalized responses
@@ -293,8 +294,8 @@ if __name__ == "__main__":
 ### TypeScript Implementation
 
 ```typescript
-import { RecallClient, Memory, Priority } from '@recall/client';
-import OpenAI from 'openai';
+import { RecallClient, Memory, Priority } from "@recall/client";
+import OpenAI from "openai";
 
 interface MemoryContext {
   relevant: Memory[];
@@ -305,13 +306,13 @@ interface MemoryContext {
 class MemoryBot {
   constructor(
     private recall: RecallClient,
-    private openai: OpenAI
+    private openai: OpenAI,
   ) {}
 
   async processMessage(
     userId: string,
     message: string,
-    sessionId?: string
+    sessionId?: string,
   ): Promise<string> {
     // 1. Retrieve relevant memories
     const memories = await this.getRelevantMemories(userId, message);
@@ -333,7 +334,7 @@ class MemoryBot {
 
   private async getRelevantMemories(
     userId: string,
-    message: string
+    message: string,
   ): Promise<MemoryContext> {
     // Parallel memory retrieval
     const [relevant, recent, preferences] = await Promise.all([
@@ -342,24 +343,24 @@ class MemoryBot {
         query: message,
         userId,
         limit: 5,
-        threshold: 0.7
+        threshold: 0.7,
       }),
 
       // Recent conversation
       this.recall.search({
-        query: 'recent conversation',
+        query: "recent conversation",
         userId,
-        filters: { type: 'conversation' },
-        limit: 3
+        filters: { type: "conversation" },
+        limit: 3,
       }),
 
       // User preferences
       this.recall.search({
-        query: 'preferences settings',
+        query: "preferences settings",
         userId,
-        filters: { type: 'preference' },
-        limit: 3
-      })
+        filters: { type: "preference" },
+        limit: 3,
+      }),
     ]);
 
     return { relevant, recent, preferences };
@@ -369,49 +370,49 @@ class MemoryBot {
     const parts: string[] = [];
 
     if (memories.preferences.length > 0) {
-      const prefs = memories.preferences.map(m => m.content);
-      parts.push(`User Preferences:\n- ${prefs.join('\n- ')}`);
+      const prefs = memories.preferences.map((m) => m.content);
+      parts.push(`User Preferences:\n- ${prefs.join("\n- ")}`);
     }
 
     if (memories.recent.length > 0) {
-      const recent = memories.recent.map(m => m.content);
-      parts.push(`Recent Context:\n- ${recent.join('\n- ')}`);
+      const recent = memories.recent.map((m) => m.content);
+      parts.push(`Recent Context:\n- ${recent.join("\n- ")}`);
     }
 
     if (memories.relevant.length > 0) {
-      const relevant = memories.relevant.map(m => m.content);
-      parts.push(`Relevant Information:\n- ${relevant.join('\n- ')}`);
+      const relevant = memories.relevant.map((m) => m.content);
+      parts.push(`Relevant Information:\n- ${relevant.join("\n- ")}`);
     }
 
-    return parts.join('\n\n');
+    return parts.join("\n\n");
   }
 
   private async generateResponse(
     message: string,
-    context: string
+    context: string,
   ): Promise<string> {
     const completion = await this.openai.chat.completions.create({
-      model: 'gpt-4',
+      model: "gpt-4",
       messages: [
         {
-          role: 'system',
+          role: "system",
           content: `You are a helpful assistant with memory.
           Use this context about the user: ${context}
-          Be consistent with preferences and reference past conversations.`
+          Be consistent with preferences and reference past conversations.`,
         },
-        { role: 'user', content: message }
+        { role: "user", content: message },
       ],
-      temperature: 0.7
+      temperature: 0.7,
     });
 
-    return completion.choices[0].message.content || '';
+    return completion.choices[0].message.content || "";
   }
 
   private async storeInteraction(
     userId: string,
     userMessage: string,
     botResponse: string,
-    sessionId?: string
+    sessionId?: string,
   ): Promise<void> {
     const timestamp = new Date().toISOString();
 
@@ -420,59 +421,61 @@ class MemoryBot {
       this.recall.add({
         content: `User said: ${userMessage}`,
         userId,
-        priority: 'medium',
+        priority: "medium",
         metadata: {
-          type: 'conversation',
-          role: 'user',
+          type: "conversation",
+          role: "user",
           sessionId,
-          timestamp
-        }
+          timestamp,
+        },
       }),
 
       this.recall.add({
         content: `Assistant responded: ${botResponse}`,
         userId,
-        priority: 'medium',
+        priority: "medium",
         metadata: {
-          type: 'conversation',
-          role: 'assistant',
+          type: "conversation",
+          role: "assistant",
           sessionId,
-          timestamp
-        }
-      })
+          timestamp,
+        },
+      }),
     ]);
   }
 
   private async extractLearnings(
     userId: string,
     message: string,
-    response: string
+    response: string,
   ): Promise<void> {
     const extraction = await this.openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [{
-        role: 'system',
-        content: `Extract learnings from:
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "system",
+          content: `Extract learnings from:
         User: ${message}
         Assistant: ${response}
-        Return JSON array of findings or empty array.`
-      }],
-      response_format: { type: 'json_object' }
+        Return JSON array of findings or empty array.`,
+        },
+      ],
+      response_format: { type: "json_object" },
     });
 
-    const learnings = JSON.parse(extraction.choices[0].message.content || '{}');
+    const learnings = JSON.parse(extraction.choices[0].message.content || "{}");
 
     // Store learnings
     for (const learning of learnings.findings || []) {
       await this.recall.add({
         content: learning.content,
         userId,
-        priority: 'high',
+        priority: "high",
         metadata: {
           type: learning.type,
           confidence: learning.confidence || 0.8,
-          learnedAt: new Date().toISOString()
-        }
+          learnedAt: new Date().toISOString(),
+        },
       });
     }
   }
@@ -481,24 +484,24 @@ class MemoryBot {
 // Usage
 async function main() {
   const recall = new RecallClient({
-    redisUrl: 'redis://localhost:6379',
-    mem0ApiKey: process.env.MEM0_API_KEY
+    redisUrl: "redis://localhost:6379",
+    mem0ApiKey: process.env.MEM0_API_KEY,
   });
 
   const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+    apiKey: process.env.OPENAI_API_KEY,
   });
 
   const bot = new MemoryBot(recall, openai);
 
   // Process messages
   const response = await bot.processMessage(
-    'user_123',
-    'I prefer TypeScript and brief responses',
-    'session_456'
+    "user_123",
+    "I prefer TypeScript and brief responses",
+    "session_456",
   );
 
-  console.log('Bot:', response);
+  console.log("Bot:", response);
 }
 
 main().catch(console.error);

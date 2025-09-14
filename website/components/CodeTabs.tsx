@@ -1,46 +1,50 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import { Copy, Check } from 'lucide-react'
+import React, { useState } from "react";
+import { Copy, Check } from "lucide-react";
 
 interface CodeTab {
-  label: string
-  language: string
-  code: string
+  label: string;
+  language: string;
+  code: string;
 }
 
 interface CodeTabsProps {
-  tabs?: CodeTab[]
-  children?: React.ReactNode
+  tabs?: CodeTab[];
+  children?: React.ReactNode;
 }
 
 export function CodeTabs({ tabs, children }: CodeTabsProps) {
-  const [activeTab, setActiveTab] = useState(0)
-  const [copied, setCopied] = useState(false)
+  const [activeTab, setActiveTab] = useState(0);
+  const [copied, setCopied] = useState(false);
 
   // Parse children if no tabs provided (for MDX usage)
   if (!tabs && children) {
-    tabs = []
-    const childArray = React.Children.toArray(children)
+    tabs = [];
+    const childArray = React.Children.toArray(children);
     childArray.forEach((child: any) => {
-      if (child?.props?.children?.props?.className?.includes('language-')) {
-        const lang = child.props.children.props.className.replace('language-', '')
-        const label = child.props['tab'] || lang.charAt(0).toUpperCase() + lang.slice(1)
-        const code = child.props.children.props.children || ''
-        tabs!.push({ label, language: lang, code })
+      if (child?.props?.children?.props?.className?.includes("language-")) {
+        const lang = child.props.children.props.className.replace(
+          "language-",
+          "",
+        );
+        const label =
+          child.props["tab"] || lang.charAt(0).toUpperCase() + lang.slice(1);
+        const code = child.props.children.props.children || "";
+        tabs!.push({ label, language: lang, code });
       }
-    })
+    });
   }
 
   if (!tabs || tabs.length === 0) {
-    return <div className="text-gray-500">No code tabs available</div>
+    return <div className="text-gray-500">No code tabs available</div>;
   }
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(tabs![activeTab].code)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    navigator.clipboard.writeText(tabs![activeTab].code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div className="rounded-lg overflow-hidden border border-white/10 bg-white/[0.01]">
@@ -53,8 +57,8 @@ export function CodeTabs({ tabs, children }: CodeTabsProps) {
               onClick={() => setActiveTab(index)}
               className={`px-4 py-2 text-sm font-medium transition-colors ${
                 activeTab === index
-                  ? 'text-white bg-white/5 border-b-2 border-blue-400'
-                  : 'text-gray-400 hover:text-white'
+                  ? "text-white bg-white/5 border-b-2 border-blue-400"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
               {tab.label}
@@ -86,5 +90,5 @@ export function CodeTabs({ tabs, children }: CodeTabsProps) {
         </code>
       </pre>
     </div>
-  )
+  );
 }

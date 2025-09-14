@@ -40,7 +40,8 @@ export const AnimatedBeam = ({
       const fromX = fromRect.left - containerRect.left + fromRect.width / 2;
       const fromY = fromRect.top - containerRect.top + fromRect.height / 2;
       const toX = toRect.left - containerRect.left + toRect.width / 2;
-      const toY = toRect.top - containerRect.top + toRect.height / 2 + endYOffset;
+      const toY =
+        toRect.top - containerRect.top + toRect.height / 2 + endYOffset;
 
       const midX = (fromX + toX) / 2;
       const midY = (fromY + toY) / 2 + curvature;

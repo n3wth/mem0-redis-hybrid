@@ -52,21 +52,21 @@ npm install r3call
 ### Basic Usage
 
 ```typescript
-import { Recall } from 'r3call';
+import { Recall } from "r3call";
 
 // Zero configuration - works immediately
 const recall = new Recall();
 
 // Store memory locally
 await recall.add({
-  content: 'User prefers TypeScript and dark mode themes',
-  userId: 'user_123'
+  content: "User prefers TypeScript and dark mode themes",
+  userId: "user_123",
 });
 
 // Retrieve memories instantly
 const memories = await recall.search({
-  query: 'What are the user preferences?',
-  userId: 'user_123'
+  query: "What are the user preferences?",
+  userId: "user_123",
 });
 ```
 
@@ -75,7 +75,7 @@ const memories = await recall.search({
 ```typescript
 // Add Mem0 API key for cloud backup (get free at mem0.ai)
 const recall = new Recall({
-  apiKey: process.env.MEM0_API_KEY
+  apiKey: process.env.MEM0_API_KEY,
 });
 ```
 
@@ -157,12 +157,12 @@ Automatically optimizes data placement across cache tiers based on access patter
 
 ```typescript
 const recall = new Recall({
-  cacheStrategy: 'aggressive', // 'balanced' | 'conservative'
+  cacheStrategy: "aggressive", // 'balanced' | 'conservative'
   cache: {
     ttl: { l1: 86400, l2: 604800 },
     maxSize: 10000,
-    compressionThreshold: 1024
-  }
+    compressionThreshold: 1024,
+  },
 });
 ```
 
@@ -172,9 +172,9 @@ Find memories by meaning, not just keywords:
 
 ```typescript
 const results = await recall.search({
-  query: 'notification preferences',
+  query: "notification preferences",
   limit: 10,
-  threshold: 0.8
+  threshold: 0.8,
 });
 ```
 
@@ -201,12 +201,12 @@ if (!health.redis.connected) {
 
 ```typescript
 // app/api/memory/route.ts
-import { Recall } from 'r3call';
-import { NextResponse } from 'next/server';
+import { Recall } from "r3call";
+import { NextResponse } from "next/server";
 
 const recall = new Recall({
   apiKey: process.env.MEM0_API_KEY!,
-  redis: process.env.REDIS_URL
+  redis: process.env.REDIS_URL,
 });
 
 export async function POST(request: Request) {
@@ -216,9 +216,9 @@ export async function POST(request: Request) {
     content,
     userId,
     metadata: {
-      source: 'web_app',
-      timestamp: new Date().toISOString()
-    }
+      source: "web_app",
+      timestamp: new Date().toISOString(),
+    },
   });
 
   return NextResponse.json(result);
@@ -248,8 +248,8 @@ class RecallMemory(BaseChatMemory):
 ### Vercel AI SDK
 
 ```typescript
-import { createAI } from 'ai';
-import { Recall } from 'r3call';
+import { createAI } from "ai";
+import { Recall } from "r3call";
 
 const recall = new Recall({ apiKey: process.env.MEM0_API_KEY! });
 
@@ -257,26 +257,27 @@ export const ai = createAI({
   async before(messages) {
     const memories = await recall.search({
       query: messages[messages.length - 1].content,
-      limit: 5
+      limit: 5,
     });
 
     return {
       ...messages,
-      context: memories.map(m => m.content).join('\n')
+      context: memories.map((m) => m.content).join("\n"),
     };
-  }
+  },
 });
 ```
 
 ## Performance Characteristics
 
 r3call is designed for speed with local Redis caching. In local development:
+
 - Redis provides fast in-memory caching
 - Automatic compression for larger entries
 - Efficient connection pooling
 - Falls back gracefully when Redis is unavailable
 
-*Note: Actual performance depends on your Redis setup and network conditions.*
+_Note: Actual performance depends on your Redis setup and network conditions._
 
 ## API Reference
 
@@ -285,46 +286,46 @@ r3call is designed for speed with local Redis caching. In local development:
 ```typescript
 interface RecallConfig {
   // Authentication
-  apiKey: string;              // Required: Get from mem0.ai
+  apiKey: string; // Required: Get from mem0.ai
 
   // Storage
-  redis?: string;              // Optional: Redis connection URL
-  userId?: string;             // Default user identifier
+  redis?: string; // Optional: Redis connection URL
+  userId?: string; // Default user identifier
 
   // Performance
-  cacheStrategy?: 'aggressive' | 'balanced' | 'conservative';
+  cacheStrategy?: "aggressive" | "balanced" | "conservative";
   connectionPool?: {
-    min: number;              // Minimum connections (default: 2)
-    max: number;              // Maximum connections (default: 10)
+    min: number; // Minimum connections (default: 2)
+    max: number; // Maximum connections (default: 10)
   };
 
   // Advanced
   cache?: {
     ttl?: {
-      l1: number;            // L1 cache TTL in seconds
-      l2: number;            // L2 cache TTL in seconds
+      l1: number; // L1 cache TTL in seconds
+      l2: number; // L2 cache TTL in seconds
     };
-    maxSize?: number;        // Maximum cache entries
-    compression?: boolean;   // Enable compression
+    maxSize?: number; // Maximum cache entries
+    compression?: boolean; // Enable compression
   };
 
   retry?: {
-    attempts: number;        // Max retry attempts
-    backoff: number;         // Backoff multiplier
+    attempts: number; // Max retry attempts
+    backoff: number; // Backoff multiplier
   };
 }
 ```
 
 ### Core Methods
 
-| Method | Description | Example |
-|--------|-------------|---------|
-| `add()` | Store new memory | `await recall.add({ content, userId, priority })` |
-| `search()` | Query memories | `await recall.search({ query, limit })` |
-| `get()` | Retrieve by ID | `await recall.get(memoryId)` |
-| `update()` | Modify memory | `await recall.update(id, { content })` |
-| `delete()` | Remove memory | `await recall.delete(memoryId)` |
-| `getAll()` | List all memories | `await recall.getAll({ userId })` |
+| Method     | Description       | Example                                           |
+| ---------- | ----------------- | ------------------------------------------------- |
+| `add()`    | Store new memory  | `await recall.add({ content, userId, priority })` |
+| `search()` | Query memories    | `await recall.search({ query, limit })`           |
+| `get()`    | Retrieve by ID    | `await recall.get(memoryId)`                      |
+| `update()` | Modify memory     | `await recall.update(id, { content })`            |
+| `delete()` | Remove memory     | `await recall.delete(memoryId)`                   |
+| `getAll()` | List all memories | `await recall.getAll({ userId })`                 |
 
 ## MCP Tools
 
@@ -363,16 +364,16 @@ spec:
   template:
     spec:
       containers:
-      - name: recall
-        image: n3wth/recall:latest
-        env:
-        - name: MEM0_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: recall-secrets
-              key: mem0-api-key
-        - name: REDIS_URL
-          value: "redis://redis-service:6379"
+        - name: recall
+          image: n3wth/recall:latest
+          env:
+            - name: MEM0_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: recall-secrets
+                  key: mem0-api-key
+            - name: REDIS_URL
+              value: "redis://redis-service:6379"
 ```
 
 ### Environment Variables
@@ -401,6 +402,7 @@ r3call includes basic monitoring capabilities through the `cacheStats()` and `he
 <summary><b>Redis connection refused</b></summary>
 
 Ensure Redis is running and accessible:
+
 ```bash
 # Check Redis status
 redis-cli ping
@@ -411,30 +413,35 @@ redis-server
 # Or use Docker
 docker run -d -p 6379:6379 redis:alpine
 ```
+
 </details>
 
 <details>
 <summary><b>High latency on first request</b></summary>
 
 This is normal cold start behavior. r3call pre-warms connections:
+
 ```typescript
 // Pre-warm on startup
 await recall.warmup();
 ```
+
 </details>
 
 <details>
 <summary><b>Memory quota exceeded</b></summary>
 
 Configure cache eviction policy:
+
 ```typescript
 const recall = new Recall({
   cache: {
     maxSize: 5000,
-    evictionPolicy: 'lru'
-  }
+    evictionPolicy: "lru",
+  },
 });
 ```
+
 </details>
 
 ## Roadmap

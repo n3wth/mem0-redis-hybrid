@@ -1,16 +1,16 @@
-import { RedisMemoryServer } from 'redis-memory-server';
-import { createClient, RedisClientType } from 'redis';
-import crypto from 'crypto';
-import { EventEmitter } from 'events';
-import { VectraMemory } from './vectra-memory.js';
+import { RedisMemoryServer } from "redis-memory-server";
+import { createClient, RedisClientType } from "redis";
+import crypto from "crypto";
+import { EventEmitter } from "events";
+import { VectraMemory } from "./vectra-memory.js";
 import type {
   StorageBackend,
   Memory,
   AddMemoryParams,
   SearchMemoryParams,
   GetAllMemoriesParams,
-  MemoryMetadata
-} from '../types/index.js';
+  MemoryMetadata,
+} from "../types/index.js";
 
 export class LocalMemory extends EventEmitter implements StorageBackend {
   private redisServer: RedisMemoryServer | null = null;
@@ -43,12 +43,12 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
   async start(): Promise<void> {
     if (this.isReady) return;
     if (this.isStarting) {
-      await new Promise<void>(resolve => this.once('ready', resolve));
+      await new Promise<void>((resolve) => this.once("ready", resolve));
       return;
     }
 
     this.isStarting = true;
-    this.log('Starting embedded Redis server...');
+    this.log("Starting embedded Redis server...");
 
     try {
       // Start the embedded Redis server
@@ -70,27 +70,27 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
       await Promise.all([
         this.client.connect(),
         this.pubClient.connect(),
-        this.subClient.connect()
+        this.subClient.connect(),
       ]);
 
       // Set up pub/sub for real-time sync
-      await this.subClient.subscribe('memory:update', (message: string) => {
+      await this.subClient.subscribe("memory:update", (message: string) => {
         const data = JSON.parse(message);
-        this.emit('memory:update', data);
+        this.emit("memory:update", data);
       });
 
       // Initialize Vectra for semantic search
-      this.vectraMemory = new VectraMemory('./data/vectra-index', this.quiet);
+      this.vectraMemory = new VectraMemory("./data/vectra-index", this.quiet);
       await this.vectraMemory.initialize();
 
       this.isReady = true;
       this.isStarting = false;
-      this.emit('ready');
+      this.emit("ready");
 
-      this.log('Local memory system ready with vector search');
+      this.log("Local memory system ready with vector search");
     } catch (error) {
       this.isStarting = false;
-      this.logError('Failed to start embedded Redis:', error);
+      this.logError("Failed to start embedded Redis:", error);
       throw error;
     }
   }
@@ -102,16 +102,18 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
     if (this.redisServer) await this.redisServer.stop();
 
     this.isReady = false;
-    this.log('Embedded Redis server stopped');
+    this.log("Embedded Redis server stopped");
   }
 
-  async add(params: AddMemoryParams): Promise<{ id: string; status: string; local: boolean }> {
+  async add(
+    params: AddMemoryParams,
+  ): Promise<{ id: string; status: string; local: boolean }> {
     if (!this.isReady) await this.start();
-    if (!this.client) throw new Error('Redis client not initialized');
+    if (!this.client) throw new Error("Redis client not initialized");
 
     const id = crypto.randomUUID();
     const timestamp = new Date().toISOString();
-    const userId = params.user_id || params.userId || 'default';
+    const userId = params.user_id || params.userId || "default";
 
     const memoryData: Memory = {
       id,
@@ -120,10 +122,10 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
       metadata: {
         ...params.metadata,
         created_at: timestamp,
-        priority: params.priority || 'normal',
-        source: 'local',
-        tags: params.tags || []
-      }
+        priority: params.priority || "normal",
+        source: "local",
+        tags: params.tags || [],
+      },
     };
 
     // Store in Redis with TTL
@@ -135,7 +137,7 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
     // Also store in sorted set for efficient retrieval
     await this.client.zAdd(`memories:${userId}`, {
       score: Date.now(),
-      value: id
+      value: id,
     });
 
     // Add to vector index for semantic search
@@ -145,31 +147,34 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
           id,
           content: memoryData.content,
           user_id: userId,
-          metadata: memoryData.metadata
+          metadata: memoryData.metadata,
         });
       } catch (error) {
-        this.logError('Failed to add to vector index:', error);
+        this.logError("Failed to add to vector index:", error);
         // Continue - Redis storage is primary
       }
     }
 
     // Publish update for real-time sync
     if (this.pubClient) {
-      await this.pubClient.publish('memory:update', JSON.stringify({
-        action: 'add',
-        memory: memoryData
-      }));
+      await this.pubClient.publish(
+        "memory:update",
+        JSON.stringify({
+          action: "add",
+          memory: memoryData,
+        }),
+      );
     }
 
-    return { id, status: 'stored', local: true };
+    return { id, status: "stored", local: true };
   }
 
   async search(params: SearchMemoryParams): Promise<Memory[]> {
     if (!this.isReady) await this.start();
-    if (!this.client) throw new Error('Redis client not initialized');
+    if (!this.client) throw new Error("Redis client not initialized");
 
-    const userId = params.user_id || params.userId || 'default';
-    const query = params.query || '';
+    const userId = params.user_id || params.userId || "default";
+    const query = params.query || "";
     const limit = params.limit || 10;
 
     // Use hybrid search: semantic (Vectra) + keyword (Redis)
@@ -179,20 +184,21 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
     // 1. Semantic search using Vectra
     if (this.vectraMemory && query.trim()) {
       try {
-        const vectraResults = await this.vectraMemory.searchMemories(query, Math.ceil(limit * 0.7), userId);
+        const vectraResults = await this.vectraMemory.searchMemories(
+          query,
+          Math.ceil(limit * 0.7),
+          userId,
+        );
         semanticResults.push(...vectraResults);
       } catch (error) {
-        this.logError('Vectra search failed:', error);
+        this.logError("Vectra search failed:", error);
       }
     }
 
     // 2. Keyword search using Redis
-    const memoryIds = await this.client.zRange(
-      `memories:${userId}`,
-      0,
-      -1,
-      { REV: true }
-    );
+    const memoryIds = await this.client.zRange(`memories:${userId}`, 0, -1, {
+      REV: true,
+    });
 
     const scoredMemories: (Memory & { relevanceScore: number })[] = [];
 
@@ -210,10 +216,11 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
     }
 
     // Get top keyword results
-    keywordResults.push(...scoredMemories
-      .sort((a, b) => b.relevanceScore - a.relevanceScore)
-      .slice(0, Math.ceil(limit * 0.5))
-      .map(({ relevanceScore, ...memory }) => memory)
+    keywordResults.push(
+      ...scoredMemories
+        .sort((a, b) => b.relevanceScore - a.relevanceScore)
+        .slice(0, Math.ceil(limit * 0.5))
+        .map(({ relevanceScore, ...memory }) => memory),
     );
 
     // 3. Merge and deduplicate results
@@ -226,8 +233,10 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
           ...result,
           metadata: {
             ...result.metadata,
-            search_method: semanticResults.find(r => r.id === result.id) ? 'semantic' : 'keyword'
-          }
+            search_method: semanticResults.find((r) => r.id === result.id)
+              ? "semantic"
+              : "keyword",
+          },
         });
       }
     }
@@ -238,10 +247,13 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
   private calculateRelevanceScore(memory: Memory, query: string): number {
     if (!query) return 1; // Return all memories if no query
 
-    const queryWords = query.toLowerCase().split(/\s+/).filter(w => w.length > 2);
-    const content = (memory.content || '').toLowerCase();
+    const queryWords = query
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((w) => w.length > 2);
+    const content = (memory.content || "").toLowerCase();
     const metadata = JSON.stringify(memory.metadata || {}).toLowerCase();
-    const fullText = content + ' ' + metadata;
+    const fullText = content + " " + metadata;
 
     let score = 0;
 
@@ -262,7 +274,8 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
       }
 
       // Partial matches
-      const partialMatches = fullText.match(new RegExp(word.slice(0, -1), 'g')) || [];
+      const partialMatches =
+        fullText.match(new RegExp(word.slice(0, -1), "g")) || [];
       score += partialMatches.length * 1;
     }
 
@@ -271,9 +284,9 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
 
   async getAll(params: GetAllMemoriesParams): Promise<Memory[]> {
     if (!this.isReady) await this.start();
-    if (!this.client) throw new Error('Redis client not initialized');
+    if (!this.client) throw new Error("Redis client not initialized");
 
-    const userId = params.user_id || params.userId || 'default';
+    const userId = params.user_id || params.userId || "default";
     const limit = params.limit || 100;
     const offset = params.offset || 0;
 
@@ -281,7 +294,7 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
       `memories:${userId}`,
       offset,
       offset + limit - 1,
-      { REV: true }
+      { REV: true },
     );
 
     const memories: Memory[] = [];
@@ -296,9 +309,12 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
     return memories;
   }
 
-  async delete(memoryId: string, userId: string = 'default'): Promise<{ id: string; status: string }> {
+  async delete(
+    memoryId: string,
+    userId: string = "default",
+  ): Promise<{ id: string; status: string }> {
     if (!this.isReady) await this.start();
-    if (!this.client) throw new Error('Redis client not initialized');
+    if (!this.client) throw new Error("Redis client not initialized");
 
     const key = `memory:${userId}:${memoryId}`;
     await this.client.del(key);
@@ -309,26 +325,33 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
       try {
         await this.vectraMemory.deleteMemory(memoryId);
       } catch (error) {
-        this.logError('Failed to delete from vector index:', error);
+        this.logError("Failed to delete from vector index:", error);
         // Continue - Redis deletion is primary
       }
     }
 
     // Publish update for real-time sync
     if (this.pubClient) {
-      await this.pubClient.publish('memory:update', JSON.stringify({
-        action: 'delete',
-        id: memoryId,
-        userId
-      }));
+      await this.pubClient.publish(
+        "memory:update",
+        JSON.stringify({
+          action: "delete",
+          id: memoryId,
+          userId,
+        }),
+      );
     }
 
-    return { id: memoryId, status: 'deleted' };
+    return { id: memoryId, status: "deleted" };
   }
 
-  async update(memoryId: string, updates: Partial<Memory>, userId: string = 'default'): Promise<Memory> {
+  async update(
+    memoryId: string,
+    updates: Partial<Memory>,
+    userId: string = "default",
+  ): Promise<Memory> {
     if (!this.isReady) await this.start();
-    if (!this.client) throw new Error('Redis client not initialized');
+    if (!this.client) throw new Error("Redis client not initialized");
 
     const key = `memory:${userId}:${memoryId}`;
     const existing = await this.client.get(key);
@@ -344,18 +367,21 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
       metadata: {
         ...memory.metadata,
         ...updates.metadata,
-        updated_at: new Date().toISOString()
-      }
+        updated_at: new Date().toISOString(),
+      },
     };
 
     await this.client.setEx(key, 86400 * 30, JSON.stringify(updated));
 
     // Publish update for real-time sync
     if (this.pubClient) {
-      await this.pubClient.publish('memory:update', JSON.stringify({
-        action: 'update',
-        memory: updated
-      }));
+      await this.pubClient.publish(
+        "memory:update",
+        JSON.stringify({
+          action: "update",
+          memory: updated,
+        }),
+      );
     }
 
     return updated;
@@ -369,25 +395,25 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
     uptime: string;
   }> {
     if (!this.isReady) await this.start();
-    if (!this.client) throw new Error('Redis client not initialized');
+    if (!this.client) throw new Error("Redis client not initialized");
 
-    const info = await this.client.info('memory');
+    const info = await this.client.info("memory");
     const dbSize = await this.client.dbSize();
 
     return {
-      status: 'healthy',
-      type: 'embedded',
+      status: "healthy",
+      type: "embedded",
       memories: dbSize,
       memory_usage: info,
-      uptime: this.redisServer ? 'running' : 'stopped'
+      uptime: this.redisServer ? "running" : "stopped",
     };
   }
 
   async exportData(): Promise<Record<string, Memory>> {
     if (!this.isReady) await this.start();
-    if (!this.client) throw new Error('Redis client not initialized');
+    if (!this.client) throw new Error("Redis client not initialized");
 
-    const keys = await this.client.keys('memory:*');
+    const keys = await this.client.keys("memory:*");
     const data: Record<string, Memory> = {};
 
     for (const key of keys) {
@@ -400,21 +426,23 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
     return data;
   }
 
-  async importData(data: Record<string, Memory>): Promise<{ imported: number }> {
+  async importData(
+    data: Record<string, Memory>,
+  ): Promise<{ imported: number }> {
     if (!this.isReady) await this.start();
-    if (!this.client) throw new Error('Redis client not initialized');
+    if (!this.client) throw new Error("Redis client not initialized");
 
     for (const [key, value] of Object.entries(data)) {
       await this.client.setEx(key, 86400 * 30, JSON.stringify(value));
 
       // Extract userId and memoryId from key
-      const parts = key.split(':');
+      const parts = key.split(":");
       if (parts.length === 3) {
         const userId = parts[1];
         const memoryId = parts[2];
         await this.client.zAdd(`memories:${userId}`, {
           score: Date.now(),
-          value: memoryId
+          value: memoryId,
         });
       }
     }

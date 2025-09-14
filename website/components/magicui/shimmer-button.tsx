@@ -28,7 +28,7 @@ export const ShimmerButton = React.forwardRef<
       background = "rgba(0, 0, 0, 1)",
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <button
@@ -47,7 +47,7 @@ export const ShimmerButton = React.forwardRef<
           "group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap border border-white/10 px-6 py-3 text-white",
           "transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px",
           "animate-shimmer-button",
-          className
+          className,
         )}
         {...props}
       >
@@ -59,7 +59,7 @@ export const ShimmerButton = React.forwardRef<
             "after:absolute after:inset-[var(--cut)] after:rounded-[var(--radius)] after:content-['']",
             "after:[background:var(--bg)]",
             "before:[background:conic-gradient(from_0deg,transparent_0_340deg,var(--shimmer-color)_360deg)]",
-            "before:[translate:-50%_-15%]"
+            "before:[translate:-50%_-15%]",
           )}
         />
         <span className="relative z-10 flex items-center justify-center">
@@ -83,7 +83,7 @@ export const ShimmerButton = React.forwardRef<
         `}</style>
       </button>
     );
-  }
+  },
 );
 
 ShimmerButton.displayName = "ShimmerButton";

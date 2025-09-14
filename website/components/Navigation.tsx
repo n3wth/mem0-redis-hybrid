@@ -1,20 +1,18 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 export function Navigation() {
   return (
-    <nav
-      className="border-b border-white/10 bg-black/80 backdrop-blur-md sticky top-0 z-50 will-change-transform"
-    >
+    <nav className="border-b border-white/10 bg-black/80 backdrop-blur-md sticky top-0 z-50 will-change-transform">
       <div className="mx-auto px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           <div className="flex items-center">
             <Link
               href="/"
               className="text-2xl font-semibold text-white"
-              style={{ fontFamily: 'var(--font-brand)' }}
+              style={{ fontFamily: "var(--font-brand)" }}
             >
               r3call
             </Link>
@@ -51,5 +49,5 @@ export function Navigation() {
         </div>
       </div>
     </nav>
-  )
+  );
 }

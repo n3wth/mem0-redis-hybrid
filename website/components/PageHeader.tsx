@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
 interface PageHeaderProps {
-  title: string
-  subtitle?: string
-  children?: React.ReactNode
+  title: string;
+  subtitle?: string;
+  children?: React.ReactNode;
 }
 
 export function PageHeader({ title, subtitle, children }: PageHeaderProps) {
@@ -21,13 +21,11 @@ export function PageHeader({ title, subtitle, children }: PageHeaderProps) {
             {title}
           </h1>
           {subtitle && (
-            <p className="mt-6 text-lg leading-8 text-gray-600">
-              {subtitle}
-            </p>
+            <p className="mt-6 text-lg leading-8 text-gray-600">{subtitle}</p>
           )}
           {children}
         </div>
       </div>
     </div>
-  )
+  );
 }

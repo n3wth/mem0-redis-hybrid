@@ -26,8 +26,16 @@ const jetBrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "r3call - Intelligent Memory API | Sub-5ms Response Times",
-  description: "Hybrid memory system combining Redis caching with cloud persistence. Sub-5ms response times with 99.9% uptime SLA. Build context-aware AI applications with intelligent memory.",
-  keywords: ["memory API", "Redis cache", "AI memory", "context API", "hybrid storage", "low latency"],
+  description:
+    "Hybrid memory system combining Redis caching with cloud persistence. Sub-5ms response times with 99.9% uptime SLA. Build context-aware AI applications with intelligent memory.",
+  keywords: [
+    "memory API",
+    "Redis cache",
+    "AI memory",
+    "context API",
+    "hybrid storage",
+    "low latency",
+  ],
   authors: [{ name: "r3call" }],
   creator: "r3call",
   publisher: "r3call",
@@ -37,7 +45,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "r3call - Intelligent Memory API",
-    description: "Hybrid memory system combining Redis caching with cloud persistence. Sub-5ms response times with 99.9% uptime SLA.",
+    description:
+      "Hybrid memory system combining Redis caching with cloud persistence. Sub-5ms response times with 99.9% uptime SLA.",
     url: "https://r3call.newth.ai",
     siteName: "r3call",
     images: [
@@ -54,7 +63,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "r3call - Intelligent Memory API",
-    description: "Sub-5ms response times with 99.9% uptime SLA. Hybrid memory system for AI applications.",
+    description:
+      "Sub-5ms response times with 99.9% uptime SLA. Hybrid memory system for AI applications.",
     images: ["/og-image.jpg"],
     creator: "@recall_api",
   },
@@ -84,9 +94,23 @@ export default function RootLayout({
       <head>
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#4F46E5" />
         <script

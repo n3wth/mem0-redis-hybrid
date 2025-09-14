@@ -3,6 +3,7 @@
 ## Context: Pet Project Reality
 
 Since r3call is an early-stage pet project without established users, we need a different narrative approach:
+
 - **Lean into the innovation** (technical elegance, zero-config)
 - **Personal story** (built by developer who faced this problem)
 - **Open source credibility** (transparency, community-driven)
@@ -13,6 +14,7 @@ Since r3call is an early-stage pet project without established users, we need a 
 ### Hero Section Options
 
 **Option 1: Developer-to-Developer Honest**
+
 ```
 Headline: "Give your AI permanent memory"
 Subhead: "I got tired of repeating context to Claude every session. So I built r3call - a zero-config memory layer that just works. Try it with one command."
@@ -20,12 +22,14 @@ Badge: "Open Source • Built on Mem0"
 ```
 
 **Option 2: Problem-Solution Direct**
+
 ```
 Headline: "Your Claude sessions shouldn't start from zero"
 Subhead: "r3call adds persistent memory to any LLM. Local-first, zero configuration, works instantly. An open source project built for developers like you."
 ```
 
 **Option 3: Technical Innovation**
+
 ```
 Headline: "Memory persistence for LLMs, done right"
 Subhead: "Embedded Redis for instant start. Mem0 for reliable storage. MCP protocol for Claude and Gemini. Zero configuration required."
@@ -58,13 +62,17 @@ Instead of user testimonials, leverage:
 ## Realistic Feature Positioning
 
 ### Instead of "Used by thousands"
+
 **Say**: "Join the early adopters"
 
 ### Instead of "Production-proven"
+
 **Say**: "Built on production-ready infrastructure (Mem0 + Redis)"
 
 ### Instead of testimonials
+
 **Show**:
+
 - Clean code examples
 - Live demo that actually works
 - Clear documentation
@@ -73,6 +81,7 @@ Instead of user testimonials, leverage:
 ## The "Why I Built This" Section
 
 Add a personal touch:
+
 ```
 "I use Claude Code every day. Every morning, I'd spend 5 minutes
 explaining my project structure, preferences, and context. Again.
@@ -89,10 +98,12 @@ It's open source because this problem shouldn't exist."
 ## Adjusted Call-to-Actions
 
 ### Primary CTA
+
 "Try it now - npx r3call"
 (Lower commitment than "Get Started")
 
 ### Secondary CTAs
+
 - "View on GitHub" (build trust)
 - "Read the docs" (show completeness)
 - "Join Discord" (community building)
@@ -106,14 +117,14 @@ It's open source because this problem shouldn't exist."
 
 ## Comparison Table (Honest Version)
 
-| Feature | r3call | Raw Mem0 API | Vector DBs |
-|---------|---------|--------------|------------|
-| Setup Time | 30 seconds | 10 minutes | Hours |
-| Configuration | Zero | API keys | Complex |
-| Works Offline | ✅ | ❌ | ❌ |
-| Claude/Gemini Ready | ✅ | Needs code | Needs code |
-| Open Source | ✅ | ❌ | Varies |
-| Free to Start | ✅ | Limited | Limited |
+| Feature             | r3call     | Raw Mem0 API | Vector DBs |
+| ------------------- | ---------- | ------------ | ---------- |
+| Setup Time          | 30 seconds | 10 minutes   | Hours      |
+| Configuration       | Zero       | API keys     | Complex    |
+| Works Offline       | ✅         | ❌           | ❌         |
+| Claude/Gemini Ready | ✅         | Needs code   | Needs code |
+| Open Source         | ✅         | ❌           | Varies     |
+| Free to Start       | ✅         | Limited      | Limited    |
 
 ## FAQ Section (Early Stage)
 
@@ -132,6 +143,7 @@ A: Open an issue on GitHub! We're responsive and grateful for feedback.
 ## Content Priorities (Revised)
 
 ### Must Have (Launch)
+
 1. Clear problem statement
 2. Simple solution explanation
 3. Working demo
@@ -139,12 +151,14 @@ A: Open an issue on GitHub! We're responsive and grateful for feedback.
 5. GitHub link
 
 ### Nice to Have (Later)
+
 1. Comparison table
 2. Technical architecture diagram
 3. Use case examples
 4. Discord community
 
 ### Skip For Now
+
 1. User testimonials
 2. Usage metrics
 3. Enterprise features
@@ -153,12 +167,14 @@ A: Open an issue on GitHub! We're responsive and grateful for feedback.
 ## Messaging Tone
 
 **Be:**
+
 - Honest about project stage
 - Technically competent
 - Helpful and approachable
 - Excited about the solution
 
 **Avoid:**
+
 - Overpromising ("revolutionary", "game-changing")
 - Fake social proof
 - Enterprise jargon
@@ -209,6 +225,7 @@ A: Open an issue on GitHub! We're responsive and grateful for feedback.
 ## Success Metrics (Realistic)
 
 For an early-stage project, measure:
+
 - GitHub stars growth
 - npm weekly downloads
 - Documentation page views

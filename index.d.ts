@@ -28,7 +28,7 @@ export interface MemoryMetadata {
   [key: string]: any;
 }
 
-export type Priority = 'low' | 'normal' | 'high' | 'critical';
+export type Priority = "low" | "normal" | "high" | "critical";
 
 export interface AddMemoryOptions {
   content?: string;
@@ -122,20 +122,44 @@ export interface MCPTool {
 export interface MCPServer {
   tools: MCPTool[];
 
-  addMemory(options: AddMemoryOptions): Promise<{ memory_id: string; message: string }>;
-  searchMemory(options: SearchMemoryOptions): Promise<{ results: SearchResult[]; source: string }>;
-  getAllMemories(userId?: string): Promise<{ memories: Memory[]; source: string }>;
-  updateMemory(memoryId: string, content: string, metadata?: MemoryMetadata): Promise<{ success: boolean; message: string }>;
-  deleteMemory(memoryId: string): Promise<{ success: boolean; message: string }>;
-  deleteAllMemories(userId?: string): Promise<{ deleted: number; message: string }>;
-  getMemoryHistory(memoryId: string): Promise<{ history: any[]; message: string }>;
+  addMemory(
+    options: AddMemoryOptions,
+  ): Promise<{ memory_id: string; message: string }>;
+  searchMemory(
+    options: SearchMemoryOptions,
+  ): Promise<{ results: SearchResult[]; source: string }>;
+  getAllMemories(
+    userId?: string,
+  ): Promise<{ memories: Memory[]; source: string }>;
+  updateMemory(
+    memoryId: string,
+    content: string,
+    metadata?: MemoryMetadata,
+  ): Promise<{ success: boolean; message: string }>;
+  deleteMemory(
+    memoryId: string,
+  ): Promise<{ success: boolean; message: string }>;
+  deleteAllMemories(
+    userId?: string,
+  ): Promise<{ deleted: number; message: string }>;
+  getMemoryHistory(
+    memoryId: string,
+  ): Promise<{ history: any[]; message: string }>;
   getCacheStats(): Promise<CacheStats>;
   optimizeCache(): Promise<OptimizationResult>;
   clearCache(pattern?: string): Promise<{ cleared: number; message: string }>;
-  warmupCache(queries?: string[]): Promise<{ warmed: number; duration: string }>;
+  warmupCache(
+    queries?: string[],
+  ): Promise<{ warmed: number; duration: string }>;
   getHealth(): Promise<HealthStatus>;
-  exportMemories(format?: 'json' | 'csv', userId?: string): Promise<{ data: string; count: number }>;
-  importMemories(data: string, format?: 'json' | 'csv'): Promise<{ imported: number; failed: number }>;
+  exportMemories(
+    format?: "json" | "csv",
+    userId?: string,
+  ): Promise<{ data: string; count: number }>;
+  importMemories(
+    data: string,
+    format?: "json" | "csv",
+  ): Promise<{ imported: number; failed: number }>;
 }
 
 export class Mem0Error extends Error {
@@ -156,7 +180,7 @@ export class ValidationError extends Error {
 }
 
 export interface CircuitBreakerState {
-  state: 'CLOSED' | 'OPEN' | 'HALF_OPEN';
+  state: "CLOSED" | "OPEN" | "HALF_OPEN";
   failures: number;
   lastFailure: string | null;
 }
@@ -169,7 +193,7 @@ export interface RetryOptions {
   shouldRetry?: (error: Error) => boolean;
 }
 
-declare module '@n3wth/mem0-redis-hybrid' {
+declare module "@n3wth/mem0-redis-hybrid" {
   export function createServer(config?: {
     mem0?: Mem0Config;
     redis?: RedisConfig;
@@ -178,14 +202,11 @@ declare module '@n3wth/mem0-redis-hybrid' {
 
   export function withRetry<T>(
     fn: () => Promise<T>,
-    options?: RetryOptions
+    options?: RetryOptions,
   ): Promise<T>;
 
   export class CircuitBreaker {
-    constructor(options?: {
-      failureThreshold?: number;
-      resetTimeout?: number;
-    });
+    constructor(options?: { failureThreshold?: number; resetTimeout?: number });
     execute<T>(fn: () => Promise<T>): Promise<T>;
     getState(): CircuitBreakerState;
   }

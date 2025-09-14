@@ -1,7 +1,7 @@
-import { LocalIndex } from 'vectra';
-import path from 'path';
-import crypto from 'crypto';
-import type { Memory } from '../types/index.js';
+import { LocalIndex } from "vectra";
+import path from "path";
+import crypto from "crypto";
+import type { Memory } from "../types/index.js";
 
 interface VectraMemoryItem {
   id: string;
@@ -21,7 +21,7 @@ export class VectraMemory {
   private isInitialized: boolean = false;
   private quiet: boolean;
 
-  constructor(dataDir: string = './data/vectra-index', quiet: boolean = false) {
+  constructor(dataDir: string = "./data/vectra-index", quiet: boolean = false) {
     this.indexPath = path.resolve(dataDir);
     this.index = new LocalIndex(this.indexPath);
     this.quiet = quiet;
@@ -39,12 +39,12 @@ export class VectraMemory {
     try {
       if (!(await this.index.isIndexCreated())) {
         await this.index.createIndex();
-        this.log('✓ Vectra vector index created');
+        this.log("✓ Vectra vector index created");
       }
       this.isInitialized = true;
-      this.log('✓ Vectra memory system initialized');
+      this.log("✓ Vectra memory system initialized");
     } catch (error) {
-      this.log('Failed to initialize Vectra:', error);
+      this.log("Failed to initialize Vectra:", error);
       throw error;
     }
   }
@@ -61,20 +61,24 @@ export class VectraMemory {
           content: memory.content,
           user_id: memory.user_id,
           created_at: new Date().toISOString(),
-          priority: memory.metadata?.priority || 'normal',
-          ...memory.metadata
-        }
+          priority: memory.metadata?.priority || "normal",
+          ...memory.metadata,
+        },
       };
 
       await this.index.insertItem(item);
       return memory.id;
     } catch (error) {
-      this.log('Failed to add memory to Vectra:', error);
+      this.log("Failed to add memory to Vectra:", error);
       throw error;
     }
   }
 
-  async searchMemories(query: string, limit: number = 10, userId?: string): Promise<Memory[]> {
+  async searchMemories(
+    query: string,
+    limit: number = 10,
+    userId?: string,
+  ): Promise<Memory[]> {
     if (!this.isInitialized) await this.initialize();
 
     try {
@@ -83,21 +87,23 @@ export class VectraMemory {
 
       let filteredResults = results;
       if (userId) {
-        filteredResults = results.filter(r => r.item.metadata.user_id === userId);
+        filteredResults = results.filter(
+          (r) => r.item.metadata.user_id === userId,
+        );
       }
 
-      return filteredResults.slice(0, limit).map(result => ({
+      return filteredResults.slice(0, limit).map((result) => ({
         id: result.item.id,
         content: String(result.item.metadata.content),
         user_id: String(result.item.metadata.user_id),
         metadata: {
           ...result.item.metadata,
           similarity_score: 1 - result.score, // Convert distance to similarity
-          search_type: 'semantic'
-        }
+          search_type: "semantic",
+        },
       }));
     } catch (error) {
-      this.log('Failed to search Vectra memories:', error);
+      this.log("Failed to search Vectra memories:", error);
       return [];
     }
   }
@@ -108,7 +114,7 @@ export class VectraMemory {
     try {
       await this.index.deleteItem(memoryId);
     } catch (error) {
-      this.log('Failed to delete memory from Vectra:', error);
+      this.log("Failed to delete memory from Vectra:", error);
       // Don't throw - memory might not exist in vector index
     }
   }
@@ -124,14 +130,14 @@ export class VectraMemory {
       // Get basic stats (Vectra doesn't expose detailed stats)
       return {
         totalItems: 0, // Would need to query to get exact count
-        indexSize: 'unknown',
-        isHealthy: true
+        indexSize: "unknown",
+        isHealthy: true,
       };
     } catch (error) {
       return {
         totalItems: 0,
-        indexSize: 'unknown',
-        isHealthy: false
+        indexSize: "unknown",
+        isHealthy: false,
       };
     }
   }
@@ -139,8 +145,8 @@ export class VectraMemory {
   private async generateEmbedding(text: string): Promise<number[]> {
     // Simple text-to-vector conversion using character frequency
     // This is a placeholder - in production you'd use a proper embedding model
-    const cleanText = text.toLowerCase().replace(/[^\w\s]/g, '');
-    const words = cleanText.split(/\s+/).filter(w => w.length > 2);
+    const cleanText = text.toLowerCase().replace(/[^\w\s]/g, "");
+    const words = cleanText.split(/\s+/).filter((w) => w.length > 2);
 
     // Create a simple 384-dimensional vector based on word characteristics
     const vector = new Array(384).fill(0);
@@ -167,7 +173,9 @@ export class VectraMemory {
     }
 
     // Normalize vector
-    const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
+    const magnitude = Math.sqrt(
+      vector.reduce((sum, val) => sum + val * val, 0),
+    );
     if (magnitude > 0) {
       for (let i = 0; i < vector.length; i++) {
         vector[i] = vector[i] / magnitude;
@@ -181,7 +189,7 @@ export class VectraMemory {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash);

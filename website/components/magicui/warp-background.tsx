@@ -46,7 +46,7 @@ export const WarpBackground = ({
       const centerY = canvas.height / 2;
 
       for (let i = 0; i < 5; i++) {
-        const angle = (time * speed * 0.001) + (i * Math.PI * 2) / 5;
+        const angle = time * speed * 0.001 + (i * Math.PI * 2) / 5;
         const radius = 200 + Math.sin(time * 0.001 + i) * 100;
 
         const x = centerX + Math.cos(angle) * radius;
@@ -76,13 +76,15 @@ export const WarpBackground = ({
   }, [colors, speed]);
 
   return (
-    <div className={cn("relative w-full h-full overflow-hidden", containerClassName)}>
+    <div
+      className={cn(
+        "relative w-full h-full overflow-hidden",
+        containerClassName,
+      )}
+    >
       <canvas
         ref={canvasRef}
-        className={cn(
-          "absolute inset-0",
-          className
-        )}
+        className={cn("absolute inset-0", className)}
         style={{
           filter: `blur(${blur}px)`,
         }}

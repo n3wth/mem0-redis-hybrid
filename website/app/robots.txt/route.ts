@@ -7,8 +7,8 @@ Disallow: /api/
 Sitemap: https://r3call.newth.ai/sitemap.xml`,
     {
       headers: {
-        'Content-Type': 'text/plain',
+        "Content-Type": "text/plain",
       },
-    }
-  )
+    },
+  );
 }
