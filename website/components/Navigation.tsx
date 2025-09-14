@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
+import { RecallLogo } from './RecallLogo'
 
 export function Navigation() {
   return (
@@ -12,12 +13,13 @@ export function Navigation() {
       <div className="mx-auto px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <Link href="/" className="text-xl font-semibold text-white">
-              Recall
+            <Link href="/" className="flex items-center gap-1.5 text-xl font-semibold text-white">
+              <RecallLogo size={32} color="#ffffff" />
+              <span>Recall</span>
             </Link>
             <div className="hidden md:ml-10 md:flex md:space-x-2">
               <Link
-                href="/docs/getting-started/introduction"
+                href="/docs/introduction"
                 className="px-4 py-2 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all"
               >
                 Documentation

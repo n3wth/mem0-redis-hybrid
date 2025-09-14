@@ -61,7 +61,7 @@ export function DocsHeader() {
 
             {/* API Reference */}
             <a
-              href="/api-reference"
+              href="/docs/api-reference"
               className="px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-400 text-sm font-medium rounded-lg transition-colors"
             >
               API Reference

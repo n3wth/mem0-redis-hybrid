@@ -1,0 +1,151 @@
+<!-- Recall Logo SVG Assets - Copy and use these in your project -->
+
+<!-- ========== MAIN LOGO (Echo Ripple) ========== -->
+<!-- Use this as your primary logo -->
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <title>Recall Logo</title>
+  <circle cx="60" cy="60" r="12" fill="#4F46E5" opacity="1"/>
+  <circle cx="60" cy="60" r="24" fill="none" stroke="#4F46E5" stroke-width="2" opacity="0.6"/>
+  <circle cx="60" cy="60" r="36" fill="none" stroke="#4F46E5" stroke-width="2" opacity="0.3"/>
+  <circle cx="60" cy="60" r="48" fill="none" stroke="#4F46E5" stroke-width="1.5" opacity="0.15"/>
+</svg>
+
+<!-- ========== FAVICON 16x16 ========== -->
+<!-- Optimized for small size -->
+<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <title>Recall Favicon 16px</title>
+  <circle cx="8" cy="8" r="2" fill="#4F46E5"/>
+  <circle cx="8" cy="8" r="4" fill="none" stroke="#4F46E5" stroke-width="1" opacity="0.5"/>
+  <circle cx="8" cy="8" r="6" fill="none" stroke="#4F46E5" stroke-width="0.5" opacity="0.3"/>
+</svg>
+
+<!-- ========== FAVICON 32x32 ========== -->
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <title>Recall Favicon 32px</title>
+  <circle cx="16" cy="16" r="3" fill="#4F46E5"/>
+  <circle cx="16" cy="16" r="7" fill="none" stroke="#4F46E5" stroke-width="1" opacity="0.6"/>
+  <circle cx="16" cy="16" r="11" fill="none" stroke="#4F46E5" stroke-width="1" opacity="0.3"/>
+  <circle cx="16" cy="16" r="14" fill="none" stroke="#4F46E5" stroke-width="0.5" opacity="0.15"/>
+</svg>
+
+<!-- ========== APP ICON (with background) ========== -->
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <title>Recall App Icon</title>
+  <rect width="512" height="512" rx="112" fill="#4F46E5"/>
+  <circle cx="256" cy="256" r="48" fill="#ffffff"/>
+  <circle cx="256" cy="256" r="96" fill="none" stroke="#ffffff" stroke-width="8" opacity="0.8"/>
+  <circle cx="256" cy="256" r="144" fill="none" stroke="#ffffff" stroke-width="8" opacity="0.5"/>
+  <circle cx="256" cy="256" r="192" fill="none" stroke="#ffffff" stroke-width="6" opacity="0.3"/>
+</svg>
+
+<!-- ========== DARK MODE VERSION ========== -->
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <title>Recall Logo (Dark Mode)</title>
+  <circle cx="60" cy="60" r="12" fill="#ffffff"/>
+  <circle cx="60" cy="60" r="24" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.8"/>
+  <circle cx="60" cy="60" r="36" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5"/>
+  <circle cx="60" cy="60" r="48" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.3"/>
+</svg>
+
+<!-- ========== MONOCHROME VERSION ========== -->
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <title>Recall Logo (Monochrome)</title>
+  <circle cx="60" cy="60" r="12" fill="#000000"/>
+  <circle cx="60" cy="60" r="24" fill="none" stroke="#000000" stroke-width="2" opacity="0.6"/>
+  <circle cx="60" cy="60" r="36" fill="none" stroke="#000000" stroke-width="2" opacity="0.3"/>
+  <circle cx="60" cy="60" r="48" fill="none" stroke="#000000" stroke-width="1.5" opacity="0.15"/>
+</svg>
+
+<!-- ========== WITH TEXT HORIZONTAL ========== -->
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <title>Recall Logo with Text</title>
+  <!-- Logo -->
+  <g transform="translate(20, 30)">
+    <circle cx="0" cy="0" r="6" fill="#4F46E5"/>
+    <circle cx="0" cy="0" r="12" fill="none" stroke="#4F46E5" stroke-width="1.5" opacity="0.6"/>
+    <circle cx="0" cy="0" r="18" fill="none" stroke="#4F46E5" stroke-width="1.5" opacity="0.3"/>
+    <circle cx="0" cy="0" r="24" fill="none" stroke="#4F46E5" stroke-width="1" opacity="0.15"/>
+  </g>
+  <!-- Text (adjusted spacing - was x="60", now x="50" for tighter gap) -->
+  <text x="50" y="37" font-family="-apple-system, system-ui, sans-serif" font-size="32" font-weight="600" fill="#1a1a1a">Recall</text>
+</svg>
+
+<!-- ========== ANIMATED VERSION (CSS animation) ========== -->
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <title>Recall Logo Animated</title>
+  <style>
+    @keyframes pulse {
+      0%, 100% { opacity: 0.15; }
+      50% { opacity: 0.3; }
+    }
+    @keyframes pulse2 {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.5; }
+    }
+    @keyframes pulse3 {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 0.8; }
+    }
+    .ring1 { animation: pulse 3s ease-in-out infinite; }
+    .ring2 { animation: pulse2 3s ease-in-out infinite 0.5s; }
+    .ring3 { animation: pulse3 3s ease-in-out infinite 1s; }
+  </style>
+  <circle cx="60" cy="60" r="12" fill="#4F46E5"/>
+  <circle cx="60" cy="60" r="24" fill="none" stroke="#4F46E5" stroke-width="2" class="ring3"/>
+  <circle cx="60" cy="60" r="36" fill="none" stroke="#4F46E5" stroke-width="2" class="ring2"/>
+  <circle cx="60" cy="60" r="48" fill="none" stroke="#4F46E5" stroke-width="1.5" class="ring1"/>
+</svg>
+
+<!-- ========== REACT COMPONENT VERSION ========== -->
+<!--
+const RecallLogo = ({ size = 120, color = "#4F46E5", animated = false }) => (
+  <svg width={size} height={size} viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+    {animated && (
+      <style>
+        {`
+          @keyframes pulse {
+            0%, 100% { opacity: 0.15; }
+            50% { opacity: 0.3; }
+          }
+          @keyframes pulse2 {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.5; }
+          }
+          @keyframes pulse3 {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.8; }
+          }
+          .ring1 { animation: pulse 3s ease-in-out infinite; }
+          .ring2 { animation: pulse2 3s ease-in-out infinite 0.5s; }
+          .ring3 { animation: pulse3 3s ease-in-out infinite 1s; }
+        `}
+      </style>
+    )}
+    <circle cx="60" cy="60" r="12" fill={color} />
+    <circle
+      cx="60" cy="60" r="24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      opacity="0.6"
+      className={animated ? "ring3" : ""}
+    />
+    <circle
+      cx="60" cy="60" r="36"
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      opacity="0.3"
+      className={animated ? "ring2" : ""}
+    />
+    <circle
+      cx="60" cy="60" r="48"
+      fill="none"
+      stroke={color}
+      strokeWidth="1.5"
+      opacity="0.15"
+      className={animated ? "ring1" : ""}
+    />
+  </svg>
+);
+-->
