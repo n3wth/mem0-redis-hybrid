@@ -1287,7 +1287,7 @@ server.setRequestHandler(
               content: [
                 {
                   type: "text",
-                  text: `✓ ${result.length} ${result.length === 1 ? 'memory' : 'memories'} saved${args.priority === "high" ? " (priority cache)" : ""}`,
+                  text: `✓ ${result.length} ${result.length === 1 ? "memory" : "memories"} saved${args.priority === "high" ? " (priority cache)" : ""}`,
                 },
               ],
             };
@@ -1309,23 +1309,31 @@ server.setRequestHandler(
           ).length;
 
           // Simplified source label with symbols
-          const sourceInfo = cacheCount > 0 && cloudCount > 0
-            ? `⚡ ${cacheCount} cache | ☁ ${cloudCount} ${MODE === "local" ? "local" : "cloud"}`
-            : cacheCount > 0
-            ? `⚡ cache hit`
-            : MODE === "local"
-            ? `💾 local`
-            : `☁ cloud`;
+          const sourceInfo =
+            cacheCount > 0 && cloudCount > 0
+              ? `⚡ ${cacheCount} cache | ☁ ${cloudCount} ${MODE === "local" ? "local" : "cloud"}`
+              : cacheCount > 0
+                ? `⚡ cache hit`
+                : MODE === "local"
+                  ? `💾 local`
+                  : `☁ cloud`;
 
           // Compact results display with cache indicators
-          const compactResults = results.map((r, idx) => {
-            const preview = r.memory ?
-              r.memory.substring(0, 80).replace(/\n/g, ' ') +
-              (r.memory.length > 80 ? '...' : '') : '';
-            const sourceSymbol = r.source === "redis_cache" ? "⚡" :
-                               r.source === "local" ? "💾" : "☁";
-            return `${sourceSymbol} ${idx + 1}. [${r.id?.substring(0, 8) || 'unknown'}] ${preview}`;
-          }).join('\n');
+          const compactResults = results
+            .map((r, idx) => {
+              const preview = r.memory
+                ? r.memory.substring(0, 80).replace(/\n/g, " ") +
+                  (r.memory.length > 80 ? "..." : "")
+                : "";
+              const sourceSymbol =
+                r.source === "redis_cache"
+                  ? "⚡"
+                  : r.source === "local"
+                    ? "💾"
+                    : "☁";
+              return `${sourceSymbol} ${idx + 1}. [${r.id?.substring(0, 8) || "unknown"}] ${preview}`;
+            })
+            .join("\n");
 
           return {
             content: [
@@ -1456,10 +1464,14 @@ server.setRequestHandler(
           }
 
           // More concise response format with source symbols
-          const sourceSymbol = source === "cache" ? "⚡" :
-                              MODE === "local" ? "💾" : "☁";
-          const sourceLabel = source === "cache" ? "cache hit" :
-                             MODE === "local" ? "local" : "cloud";
+          const sourceSymbol =
+            source === "cache" ? "⚡" : MODE === "local" ? "💾" : "☁";
+          const sourceLabel =
+            source === "cache"
+              ? "cache hit"
+              : MODE === "local"
+                ? "local"
+                : "cloud";
 
           return {
             content: [
@@ -1591,14 +1603,20 @@ server.setRequestHandler(
             })),
           }));
 
-          const totalDuplicates = duplicates.reduce((sum, g) => sum + g.duplicates.length, 0);
+          const totalDuplicates = duplicates.reduce(
+            (sum, g) => sum + g.duplicates.length,
+            0,
+          );
           const compactSummary = duplicates
             .slice(0, 3)
-            .map(g => `• ${g.primary.id.substring(0, 8)}: ${g.duplicates.length} duplicate(s)`)
-            .join('\n');
+            .map(
+              (g) =>
+                `• ${g.primary.id.substring(0, 8)}: ${g.duplicates.length} duplicate(s)`,
+            )
+            .join("\n");
 
           const message = isDryRun
-            ? `Found ${totalDuplicates} duplicates in ${duplicates.length} groups\n${compactSummary}${duplicates.length > 3 ? `\n...and ${duplicates.length - 3} more groups` : ''}\n\nUse dry_run: false to delete`
+            ? `Found ${totalDuplicates} duplicates in ${duplicates.length} groups\n${compactSummary}${duplicates.length > 3 ? `\n...and ${duplicates.length - 3} more groups` : ""}\n\nUse dry_run: false to delete`
             : `✓ Deleted ${deleteCount} duplicates`;
 
           return {
@@ -1707,15 +1725,19 @@ server.setRequestHandler(
               totalAccess += parseInt(count || "0");
             }
 
-            const hitRate = cacheKeys.length > 0
-              ? Math.min(100, (totalAccess / cacheKeys.length) * 10).toFixed(0)
-              : "0";
+            const hitRate =
+              cacheKeys.length > 0
+                ? Math.min(100, (totalAccess / cacheKeys.length) * 10).toFixed(
+                    0,
+                  )
+                : "0";
 
-            const memUsage = info.split("used_memory_human:")[1]?.split("\r\n")[0] || "?";
+            const memUsage =
+              info.split("used_memory_human:")[1]?.split("\r\n")[0] || "?";
 
             const topItems = accessCounts
               .slice(0, 3)
-              .map(item => `${item.key.substring(0, 8)}: ${item.count}x`)
+              .map((item) => `${item.key.substring(0, 8)}: ${item.count}x`)
               .join(", ");
 
             return {
@@ -1741,16 +1763,22 @@ server.setRequestHandler(
         case "sync_status": {
           const pendingList = Array.from(pendingMemories.entries())
             .slice(0, 3)
-            .map(([id, data]) =>
-              `• ${id.substring(0, 8)} (${data.priority}, ${Math.round((Date.now() - data.timestamp) / 1000)}s)`
-            ).join('\n');
+            .map(
+              ([id, data]) =>
+                `• ${id.substring(0, 8)} (${data.priority}, ${Math.round((Date.now() - data.timestamp) / 1000)}s)`,
+            )
+            .join("\n");
 
           const status = [
-            `Redis: ${redisClient ? '✓' : '✗'}`,
-            `PubSub: ${pubSubClient ? '✓' : '✗'}`,
+            `Redis: ${redisClient ? "✓" : "✗"}`,
+            `PubSub: ${pubSubClient ? "✓" : "✗"}`,
             jobQueue.size > 0 ? `Jobs: ${jobQueue.size}` : null,
-            pendingMemories.size > 0 ? `Pending: ${pendingMemories.size}\n${pendingList}` : null,
-          ].filter(Boolean).join('\n');
+            pendingMemories.size > 0
+              ? `Pending: ${pendingMemories.size}\n${pendingList}`
+              : null,
+          ]
+            .filter(Boolean)
+            .join("\n");
 
           return {
             content: [
