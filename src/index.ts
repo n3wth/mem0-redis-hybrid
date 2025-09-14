@@ -13,7 +13,7 @@ import fetch from "node-fetch";
 import * as crypto from "crypto";
 import { createClient, RedisClientType } from "redis";
 import { LocalMemory } from "./lib/local-memory.js";
-import { EntityExtractor } from "./lib/entity-extractor.js";
+import { EntityExtractor } from "./lib/entity-extractor-spacy.js";
 import { EnhancedVectraMemory } from "./lib/enhanced-vectra-memory.js";
 
 // Type definitions
