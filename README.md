@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-r3call.newth.ai-blue)](https://r3call.newth.ai/docs)
 
-> Intelligent Memory Layer for AI Applications - Sub-5ms response times with automatic failover
+> Intelligent Memory Layer for AI Applications - Built for Gemini, Claude, and all LLMs
 
 ## Features
 
@@ -13,12 +13,14 @@
 - 🛡️ **99.9% uptime** - Automatic failover to cloud storage
 - 📈 **Unlimited scale** - Handle millions of requests per second
 - 🧠 **AI-native** - Semantic search and context management
-- 🔌 **Easy integration** - Works with Claude, GPT, and any LLM
+- 🔌 **Easy integration** - Works with Gemini, Claude, GPT, and any LLM
 
 ## Table of Contents
 
 - [Installation](#installation)
 - [Quick Start](#quick-start)
+- [Usage with Gemini CLI](#usage-with-gemini-cli)
+- [Usage with Claude Code](#usage-with-claude-code)
 - [Usage with Claude Desktop](#usage-with-claude-desktop)
 - [Architecture](#architecture)
 - [API Reference](#api-reference)
@@ -57,14 +59,40 @@ const memories = await recall.search({
 });
 ```
 
-## Usage with Claude Desktop
+## Usage with Gemini CLI
+
+Integrate r3call with Google's Gemini CLI for powerful memory-enhanced AI workflows:
+
+```bash
+# Set environment variables
+export MEM0_API_KEY="your_mem0_api_key"
+export REDIS_URL="redis://localhost:6379"
+
+# Use with Gemini for context-aware responses
+gemini "Remember: User prefers Python over JavaScript" | npx r3call add
+gemini "What are my coding preferences?" | npx r3call search
+
+# Advanced integration with piping
+echo "Project uses TypeScript and React" | npx r3call add --userId project-123
+gemini "Generate component based on project stack" --context "$(npx r3call get --userId project-123)"
+```
+
+## Usage with Claude Code
 
 ```bash
 # Quick install via Claude Code CLI
 claude mcp add r3call "npx r3call"
+
+# Claude Code will now remember context across sessions
+# Available commands in Claude:
+# - add_memory: Store information
+# - search_memory: Query memories
+# - get_all_memories: List all stored data
 ```
 
-Or add to `~/.claude/claude_desktop_config.json`:
+## Usage with Claude Desktop
+
+Add to `~/.claude/claude_desktop_config.json`:
 
 ```json
 {
