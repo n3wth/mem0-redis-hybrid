@@ -85,6 +85,7 @@ smithery.md
 SMITHERY_*.md
 validation-prompt.md
 AGENT_ORCHESTRATION.yaml
+CLAUDE.local.md
 launch-parallel-agents.sh
 start-development.sh
 install-mcp.sh
