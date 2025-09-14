@@ -79,10 +79,11 @@ const ProLogo: React.FC = () => (
 
 const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
   const [mode, setMode] = useState<
-    "menu" | "search" | "add" | "view" | "delete"
+    "menu" | "search" | "add" | "view" | "delete" | "detail"
   >("menu");
   const [memories, setMemories] = useState<Memory[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [newMemory, setNewMemory] = useState("");
   const [loading, setLoading] = useState(false);
@@ -273,13 +274,18 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
           break;
       }
     } else {
-      // In any other mode, ESC returns to menu
+      // In any other mode, ESC returns to menu or previous mode
       if (isEscape) {
-        setMode("menu");
-        setSearchQuery("");
-        setNewMemory("");
-        setMessage(null);
-        setSelectedIndex(0);
+        if (mode === "detail") {
+          setMode("view");
+          setSelectedMemory(null);
+        } else {
+          setMode("menu");
+          setSearchQuery("");
+          setNewMemory("");
+          setMessage(null);
+          setSelectedIndex(0);
+        }
         return;
       }
 
@@ -297,6 +303,10 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
           setSelectedIndex(0);
         } else if (input === "G") {
           setSelectedIndex(memories.length - 1);
+        } else if (key.return && mode === "view" && memories[selectedIndex]) {
+          // Enter in view mode shows detail
+          setSelectedMemory(memories[selectedIndex]);
+          setMode("detail");
         } else if (key.return && mode === "delete" && memories[selectedIndex]) {
           deleteMemory(memories[selectedIndex].id);
         } else if (input === "b") {
@@ -517,7 +527,7 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
         </Text>
       </Box>
 
-      <Box flexDirection="column" height={10}>
+      <Box flexDirection="column" height={11}>
         {loading ? (
           <Text>
             <SimpleSpinner /> Loading memories...
@@ -530,11 +540,11 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
           <>
             {memories
               .slice(
-                Math.max(0, selectedIndex - 4),
-                Math.min(memories.length, selectedIndex + 6),
+                Math.max(0, selectedIndex - 5),
+                Math.min(memories.length, selectedIndex + 7),
               )
               .map((memory, idx) => {
-                const actualIdx = idx + Math.max(0, selectedIndex - 4);
+                const actualIdx = idx + Math.max(0, selectedIndex - 5);
                 const isSelected = actualIdx === selectedIndex;
                 const date = memory.created_at
                   ? new Date(memory.created_at)
@@ -581,7 +591,7 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
       <Spacer />
       <Box>
         <Text dimColor>
-          ↑↓/jk: nav • g/G: top/bottom • PgUp/Dn: jump • d: delete • ESC: back
+          ↑↓/jk navigate • Enter view • d delete • g/G top/bottom • ESC back
         </Text>
       </Box>
     </Box>

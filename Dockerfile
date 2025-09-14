@@ -2,12 +2,7 @@
 FROM node:22-slim
 
 # Install build dependencies required for redis-memory-server
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    make \
-    g++ \
-    python3 \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y build-essential make g++ python3 && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
@@ -16,7 +11,17 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --only=production
+RUN if [ -f bun.lockb ]; then \
+      bun install --no-cache; \
+    elif [ -f pnpm-lock.yaml ]; then \
+      npm install -g pnpm && pnpm install --frozen-lockfile; \
+    elif [ -f yarn.lock ]; then \
+      yarn install --frozen-lockfile; \
+    elif [ -f package-lock.json ]; then \
+      npm ci; \
+    elif [ -f package.json ]; then \
+      npm install; \
+    fi
 
 # Copy source code
 COPY . .
