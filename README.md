@@ -471,10 +471,8 @@ gh pr create
 
 ## Support
 
-- **Documentation**: [r3call.newth.ai/docs](https://r3call.newth.ai/docs)
-- **Discord Community**: [discord.gg/recall](https://discord.gg/recall)
+- **Documentation**: [r3call.newth.ai](https://r3call.newth.ai)
 - **Issue Tracker**: [GitHub Issues](https://github.com/n3wth/r3call/issues)
-- **Enterprise Support**: [enterprise@newth.ai](mailto:enterprise@newth.ai)
 
 ## License
 
@@ -483,11 +481,10 @@ MIT © 2025 r3call Contributors
 ---
 
 <div align="center">
-  <p>Built by the team at <a href="https://newth.ai">Newth.ai</a></p>
+  <p>Built with ❤️ by the open source community</p>
   <p>
     <a href="https://r3call.newth.ai">Website</a> •
-    <a href="https://r3call.newth.ai/docs">Documentation</a> •
     <a href="https://github.com/n3wth/r3call">GitHub</a> •
-    <a href="https://twitter.com/n3wth">Twitter</a>
+    <a href="https://www.npmjs.com/package/r3call">npm</a>
   </p>
 </div>
