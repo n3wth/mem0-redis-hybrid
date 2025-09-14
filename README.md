@@ -60,6 +60,14 @@ const memories = await recall.search({
 
 Transform Claude into a personalized AI assistant that remembers your preferences, context, and conversations.
 
+#### Option 1: Claude Code CLI (Recommended)
+
+```bash
+claude mcp add r3call "npx r3call"
+```
+
+#### Option 2: Manual Configuration
+
 Add to `~/.claude/claude_desktop_config.json`:
 
 ```json

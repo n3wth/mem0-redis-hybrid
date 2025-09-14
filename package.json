@@ -1,5 +1,5 @@
 {
-  "name": "r3call",
+  "name": "@newth.ai/r3call",
   "version": "1.2.1",
   "description": "Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence",
   "main": "index.js",

@@ -41,7 +41,7 @@ const demos = [
   {
     title: "Claude Code + Project Context",
     commands: [
-      { type: 'typing', text: '$ claude mcp add r3call', delay: 0 },
+      { type: 'typing', text: '$ claude mcp add r3call "npx r3call"', delay: 0 },
       { type: 'animated', text: '◐ Installing MCP server...', className: 'text-blue-500', delay: 1500 },
       { type: 'animated', text: '✓ MCP server \'r3call\' added to claude_config.json', className: 'text-green-500', delay: 2500 },
       { type: 'typing', text: '$ claude --project saas-dashboard', delay: 3500 },
