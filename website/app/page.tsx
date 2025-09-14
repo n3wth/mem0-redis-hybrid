@@ -484,6 +484,7 @@ client.memories.add(
                 description="Find memories by meaning, not just keywords"
                 icon={<Cpu className="h-5 w-5 text-cyan-400" />}
                 gradient="from-cyan-900/20 to-blue-900/20"
+                span="col-span-2"
               />
 
               <BentoCard
@@ -505,6 +506,7 @@ client.memories.add(
                 description="In-memory data store for sub-millisecond response times"
                 icon={<Zap className="h-5 w-5 text-yellow-400" />}
                 gradient="from-yellow-900/20 to-orange-900/20"
+                span="col-span-2"
               />
 
               <BentoCard
@@ -526,7 +528,7 @@ client.memories.add(
                 description="Works with Claude Desktop, Gemini CLI, and any MCP client"
                 icon={<Globe className="h-5 w-5 text-green-400" />}
                 gradient="from-green-900/20 to-teal-900/20"
-                span="col-span-1"
+                span="col-span-2"
               />
 
               <BentoCard
