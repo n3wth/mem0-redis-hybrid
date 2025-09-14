@@ -10,11 +10,7 @@ import {
   Tool,
 } from "@modelcontextprotocol/sdk/types.js";
 import fetch from "node-fetch";
-import { createClient, RedisClientType } from "redis";
 import * as crypto from "crypto";
-import { LocalMemory } from "./lib/local-memory.js";
-import { EnhancedVectraMemory } from "./lib/enhanced-vectra-memory.js";
-import { EntityExtractor } from "./lib/entity-extractor.js";
 
 // Type definitions
 interface Memory {
@@ -168,7 +164,6 @@ const DEMO_MODE = MODE === "demo";
 
 const MEM0_USER_ID = process.env.MEM0_USER_ID || "oliver";
 const MEM0_BASE_URL = process.env.MEM0_BASE_URL || "https://api.mem0.ai";
-const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
 
 // Cache settings based on best practices
 const CACHE_TTL = 86400; // 24 hours for L1 cache
@@ -179,15 +174,8 @@ const BATCH_SIZE = 50; // Batch operations for efficiency
 const SYNC_INTERVAL = 300000; // 5 minutes background sync
 const SEARCH_CACHE_TTL = 300; // 5 minutes for search results cache
 
-// Initialize Redis clients
-let redisClient: RedisClientType | null = null;
-let pubSubClient: RedisClientType | null = null;
-let subscriberClient: RedisClientType | null = null;
-let localMemory: LocalMemory | null = null;
-
-// Intelligence components (only initialized in enhanced mode)
-let enhancedVectra: EnhancedVectraMemory | null = null;
-let entityExtractor: EntityExtractor | null = null;
+// In-memory store for demo purposes
+const memoryStore = new Map<string, Memory>();
 
 // Background job queue
 const jobQueue = new Map<string, Job>();
@@ -211,76 +199,13 @@ async function initializeRedis(): Promise<boolean> {
       await testClient.ping();
       await testClient.quit();
 
-      // If we get here, Redis is already running locally
       debugLog("Found existing Redis on localhost:6379, using it");
       process.env.REDIS_URL = "redis://localhost:6379";
-      // Fall through to external Redis connection logic
     } catch {
-      // No existing Redis, try embedded
-      try {
-        debugLog("Starting LocalMemory with embedded Redis...");
-        localMemory = new LocalMemory(QUIET_MODE);
-
-        // Add timeout for LocalMemory startup
-        const localMemoryPromise = localMemory.start();
-        const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(
-            () => reject(new Error("LocalMemory startup timeout")),
-            15000,
-          ),
-        );
-
-        await Promise.race([localMemoryPromise, timeoutPromise]);
-
-        // Get Redis clients from embedded server
-        redisClient = localMemory.getClient();
-        pubSubClient = localMemory.getPubClient();
-        subscriberClient = localMemory.getSubClient();
-
-        debugLog("LocalMemory clients:", {
-          redisClient: !!redisClient,
-          pubSubClient: !!pubSubClient,
-          subscriberClient: !!subscriberClient,
-        });
-
-        // Initialize enhanced intelligence if enabled
-        if (INTELLIGENCE_MODE === "enhanced") {
-          try {
-            debugLog("Initializing enhanced intelligence features...");
-
-            // Initialize vector memory with real embeddings
-            enhancedVectra = new EnhancedVectraMemory(
-              "./data/vectra-index",
-              QUIET_MODE,
-            );
-            await enhancedVectra.initialize();
-
-            // Initialize entity extractor
-            entityExtractor = new EntityExtractor(QUIET_MODE);
-
-            log("✓ AI intelligence features activated (default mode)");
-          } catch (error: any) {
-            console.error(
-              "Warning: Enhanced features failed to initialize:",
-              error.message,
-            );
-            console.error("  Continuing with basic mode");
-            INTELLIGENCE_MODE = "basic";
-          }
-        }
-
-        log(
-          "✓ Local memory system initialized with embedded Redis and vector search",
-        );
-        return true;
-      } catch (error: any) {
-        console.error("❌ Failed to start embedded Redis:", error.message);
-        debugLog("Embedded Redis error details:", error);
-
-        // Try to fallback to demo mode
-        console.error("   Falling back to demo mode (in-memory only)");
-        return false;
-      }
+      // No existing Redis, fallback to demo mode
+      console.error("No existing Redis found, falling back to demo mode (in-memory only)");
+      MODE = "demo";
+      return false;
     }
   }
 
@@ -1173,7 +1098,6 @@ async function invalidateCache(
 log("Mem0-Redis Hybrid MCP Server starting...");
 log(`User ID: ${MEM0_USER_ID}`);
 log(`API Base: ${MEM0_BASE_URL}`);
-log(`Redis: ${REDIS_URL}`);
 
 const server = new Server(
   {

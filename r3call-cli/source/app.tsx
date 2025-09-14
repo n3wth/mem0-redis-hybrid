@@ -2,7 +2,12 @@ import React, {useState, useEffect} from 'react';
 import {Box, Text, useInput, useApp, Newline} from 'ink';
 import TextInput from 'ink-text-input';
 import SimpleSpinner from './SimpleSpinner.js';
-import axios from 'axios';
+import {
+	loadMemories as apiLoadMemories,
+	searchMemories as apiSearchMemories,
+	addMemory as apiAddMemory,
+	deleteMemory as apiDeleteMemory,
+} from './api.js';
 
 interface Memory {
 	id: string;
@@ -29,18 +34,6 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 	const [message, setMessage] = useState<string | null>(null);
 	const {exit} = useApp();
 
-	const API_BASE = process.env['R3CALL_API_URL'] || 'http://localhost:3030';
-	const USER_ID = process.env['R3CALL_USER_ID'] || 'default';
-
-	const headers = apiKey
-		? {
-				Authorization: `Bearer ${apiKey}`,
-				'Content-Type': 'application/json',
-			}
-		: {
-				'Content-Type': 'application/json',
-			};
-
 	// Load all memories on start
 	useEffect(() => {
 		if (mode === 'view') {
@@ -52,11 +45,8 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 		setLoading(true);
 		setError(null);
 		try {
-			const response = await axios.get(`${API_BASE}/memories`, {
-				headers,
-				params: {user_id: USER_ID, limit: 50},
-			});
-			setMemories(response.data.memories || []);
+			const memories = await apiLoadMemories(apiKey);
+			setMemories(memories);
 		} catch (err: any) {
 			setError(err.message);
 		} finally {
@@ -70,17 +60,9 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 		setLoading(true);
 		setError(null);
 		try {
-			const response = await axios.post(
-				`${API_BASE}/search`,
-				{
-					query: searchQuery,
-					user_id: USER_ID,
-					limit: 20,
-				},
-				{headers},
-			);
-			setMemories(response.data.results || []);
-			setMessage(`Found ${response.data.results?.length || 0} memories`);
+			const results = await apiSearchMemories(searchQuery, apiKey);
+			setMemories(results);
+			setMessage(`Found ${results.length} memories`);
 		} catch (err: any) {
 			setError(err.message);
 		} finally {
@@ -94,14 +76,7 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 		setLoading(true);
 		setError(null);
 		try {
-			await axios.post(
-				`${API_BASE}/add`,
-				{
-					content: newMemory,
-					user_id: USER_ID,
-				},
-				{headers},
-			);
+			await apiAddMemory(newMemory, apiKey);
 			setMessage('Memory added successfully!');
 			setNewMemory('');
 			setTimeout(() => setMode('menu'), 2000);
@@ -116,7 +91,7 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 		setLoading(true);
 		setError(null);
 		try {
-			await axios.delete(`${API_BASE}/memory/${memoryId}`, {headers});
+			await apiDeleteMemory(memoryId, apiKey);
 			setMessage('Memory deleted successfully!');
 			loadMemories();
 		} catch (err: any) {
@@ -351,8 +326,6 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 	);
 };
 
-export default function App() {
-	const apiKey = process.env['MEM0_API_KEY'] || process.env['R3CALL_API_KEY'];
-
+export default function App({apiKey}: {apiKey?: string}) {
 	return <MemoryManager apiKey={apiKey} />;
 }
