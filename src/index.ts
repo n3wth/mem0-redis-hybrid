@@ -62,29 +62,37 @@ interface MemoryProcessMessage {
 
 // Configuration
 const MEM0_API_KEY = process.env.MEM0_API_KEY;
+const QUIET_MODE = process.env.QUIET_MODE !== 'false' && (!process.stdin.isTTY || process.env.NODE_ENV === 'production'); // Default to quiet for MCP
 
-// Determine operation mode - default to local when no API key
+// Determine operation mode - always default to local-first
 let MODE: 'local' | 'hybrid' | 'demo' = 'local';
 
-if (MEM0_API_KEY) {
-  MODE = 'hybrid';  // Has API key, use hybrid mode (local + cloud)
-} else if (process.argv.includes('--demo') || process.env.DEMO_MODE === 'true') {
+if (process.argv.includes('--demo') || process.env.DEMO_MODE === 'true') {
   MODE = 'demo';  // Demo mode (in-memory only, no persistence)
+} else if (MEM0_API_KEY && process.argv.includes('--hybrid')) {
+  MODE = 'hybrid';  // Only use hybrid if explicitly requested with --hybrid flag
 } else {
-  MODE = 'local';  // Default: local mode with embedded Redis (persistent)
+  MODE = 'local';  // Default: local mode with embedded Redis (persistent and fully offline)
 }
+
+// Helper for conditional logging
+const log = (message: string, ...args: any[]) => {
+  if (!QUIET_MODE) {
+    console.error(message, ...args);
+  }
+};
 
 // Log mode information
 if (MODE === 'local') {
-  console.error('🚀 Running in LOCAL MODE - Using embedded Redis server');
-  console.error('   Data persists locally between sessions');
+  log('🚀 Running in LOCAL MODE - Using embedded Redis server');
+  log('   Data persists locally between sessions');
   if (!MEM0_API_KEY) {
-    console.error('   💡 Tip: Add MEM0_API_KEY for cloud sync (get free at https://mem0.ai)');
+    log('   💡 Tip: Add MEM0_API_KEY for cloud sync (get free at https://mem0.ai)');
   }
 } else if (MODE === 'demo') {
-  console.error('🎮 Running in DEMO MODE - Using in-memory storage only');
+  log('🎮 Running in DEMO MODE - Using in-memory storage only');
 } else if (MODE === 'hybrid') {
-  console.error('☁️  Running in HYBRID MODE - Local cache + cloud storage');
+  log('☁️  Running in HYBRID MODE - Local cache + cloud storage');
 }
 
 // For backward compatibility
@@ -123,18 +131,36 @@ async function initializeRedis(): Promise<boolean> {
   // If in local mode, use embedded Redis
   if (MODE === 'local' && !process.env.REDIS_URL) {
     try {
-      localMemory = new LocalMemory();
-      await localMemory.start();
+      debugLog('Starting LocalMemory with embedded Redis...');
+      localMemory = new LocalMemory(QUIET_MODE);
+
+      // Add timeout for LocalMemory startup
+      const localMemoryPromise = localMemory.start();
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('LocalMemory startup timeout')), 15000)
+      );
+
+      await Promise.race([localMemoryPromise, timeoutPromise]);
 
       // Get Redis clients from embedded server
       redisClient = localMemory.getClient();
       pubSubClient = localMemory.getPubClient();
       subscriberClient = localMemory.getSubClient();
 
-      console.error('✓ Local memory system initialized with embedded Redis');
+      debugLog('LocalMemory clients:', {
+        redisClient: !!redisClient,
+        pubSubClient: !!pubSubClient,
+        subscriberClient: !!subscriberClient
+      });
+
+      log('✓ Local memory system initialized with embedded Redis and vector search');
       return true;
-    } catch (error) {
-      console.error('Failed to start embedded Redis:', error);
+    } catch (error: any) {
+      console.error('❌ Failed to start embedded Redis:', error.message);
+      debugLog('Embedded Redis error details:', error);
+
+      // Try to fallback to demo mode
+      console.error('   Falling back to demo mode (in-memory only)');
       return false;
     }
   }
@@ -534,13 +560,19 @@ async function searchFromMem0(query: string, limit: number): Promise<Memory[]> {
   }
 }
 
-// Helper function for mem0 API calls
+// Helper function for mem0 API calls - local-first with cloud fallback
 async function callMem0API(endpoint: string, method: string = 'GET', body: any = null): Promise<any> {
+  // Local mode: use local storage only
+  if (MODE === 'local') {
+    return simulateLocalAPI(endpoint, method, body);
+  }
+
   // Demo mode: simulate API with local storage
   if (DEMO_MODE) {
     return simulateMem0API(endpoint, method, body);
   }
 
+  // Hybrid mode: use cloud API
   const url = `${MEM0_BASE_URL}${endpoint}`;
   const options: any = {
     method,
@@ -567,6 +599,72 @@ async function callMem0API(endpoint: string, method: string = 'GET', body: any =
     console.error(`Mem0 API call failed: ${error.message}`);
     throw error;
   }
+}
+
+// Simulate Local API using LocalMemory - fully offline
+async function simulateLocalAPI(endpoint: string, method: string, body: any): Promise<any> {
+  if (!localMemory) {
+    throw new Error('Local memory not initialized');
+  }
+
+  const userId = body?.user_id || MEM0_USER_ID;
+
+  // Handle different endpoints
+  if (endpoint.includes('/memories/') && method === 'POST') {
+    // Add memory
+    const content = body.messages ? body.messages.map((m: any) => m.content).join(' ') : body.content;
+    const result = await localMemory.add({
+      content,
+      user_id: userId,
+      metadata: body.metadata || {},
+      priority: body.priority || 'normal'
+    });
+
+    return [{ id: result.id, memory: content, user_id: userId, created_at: new Date().toISOString() }];
+  }
+
+  if (endpoint.includes('/memories/search/') && method === 'POST') {
+    // Search memories
+    const results = await localMemory.search({
+      query: body.query,
+      user_id: userId,
+      limit: body.limit || 10
+    });
+    return { results: results.map(r => ({ ...r, memory: r.content, score: Math.random() })) };
+  }
+
+  if (endpoint.includes('/memories/') && method === 'GET') {
+    // Get all memories or specific memory
+    if (endpoint.includes('?')) {
+      // Get all memories with query params
+      const results = await localMemory.getAll({
+        user_id: userId,
+        limit: 100
+      });
+      return { memories: results.map(r => ({ ...r, memory: r.content })) };
+    } else {
+      // Get specific memory by ID (extract ID from endpoint)
+      const memoryId = endpoint.split('/').filter(p => p && p !== 'memories' && p !== 'v1').pop()?.replace('?user_id=' + userId, '');
+      if (memoryId) {
+        const allResults = await localMemory.getAll({ user_id: userId });
+        const found = allResults.find(r => r.id === memoryId);
+        if (found) {
+          return { ...found, memory: found.content };
+        }
+      }
+    }
+  }
+
+  if (endpoint.includes('/memories/') && method === 'DELETE') {
+    // Delete memory
+    const memoryId = endpoint.split('/').filter(p => p && p !== 'memories' && p !== 'v1').pop()?.split('?')[0];
+    if (memoryId) {
+      await localMemory.delete(memoryId, userId);
+    }
+    return { message: 'Memory deleted successfully (local mode)' };
+  }
+
+  return { message: 'Local mode - operation completed' };
 }
 
 // Simulate Mem0 API for demo mode
@@ -688,10 +786,10 @@ async function invalidateCache(memoryId: string, operation: string = 'update'): 
 }
 
 // Logging
-console.error('Mem0-Redis Hybrid MCP Server starting...');
-console.error(`User ID: ${MEM0_USER_ID}`);
-console.error(`API Base: ${MEM0_BASE_URL}`);
-console.error(`Redis: ${REDIS_URL}`);
+log('Mem0-Redis Hybrid MCP Server starting...');
+log(`User ID: ${MEM0_USER_ID}`);
+log(`API Base: ${MEM0_BASE_URL}`);
+log(`Redis: ${REDIS_URL}`);
 
 const server = new Server(
   {
@@ -1503,14 +1601,107 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
   }
 });
 
+// Enhanced logging and timeout handling
+const DEBUG = process.env.DEBUG === 'true' || process.argv.includes('--debug');
+
+function debugLog(message: string, data?: any) {
+  if (DEBUG) {
+    const timestamp = new Date().toISOString();
+    console.error(`[DEBUG ${timestamp}] ${message}`, data ? JSON.stringify(data, null, 2) : '');
+  }
+}
+
 async function main() {
-  await initializeRedis();
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-  console.error('✓ Mem0-Redis Hybrid MCP Server v2.0 running with async processing');
+  log('🚀 Starting r3call server...');
+  debugLog('Process arguments:', process.argv);
+  debugLog('Environment mode:', { MODE, MEM0_API_KEY: !!MEM0_API_KEY });
+
+  const startupTimeout = setTimeout(() => {
+    console.error('❌ Server startup timeout after 30 seconds');
+    console.error('   This may indicate an issue with Redis or dependencies');
+    console.error('   Try running with --debug for more information');
+    process.exit(1);
+  }, 30000);
+
+  try {
+    debugLog('Initializing Redis...');
+    const redisSuccess = await initializeRedis();
+    debugLog('Redis initialization result:', { success: redisSuccess });
+
+    debugLog('Creating transport...');
+    const transport = new StdioServerTransport();
+
+    debugLog('Connecting server...');
+    await server.connect(transport);
+
+    clearTimeout(startupTimeout);
+    log('✓ r3call MCP Server v2.0 running successfully');
+    log(`  Mode: ${MODE.toUpperCase()}`);
+    log(`  Redis: ${redisClient ? 'Connected' : 'Fallback'}`);
+    log(`  Vector Search: ${localMemory ? 'Enabled' : 'Disabled'}`);
+
+    // Add process signal handlers for graceful shutdown
+    process.on('SIGTERM', () => {
+      console.error('Received SIGTERM, shutting down gracefully...');
+      gracefulShutdown();
+    });
+
+    process.on('SIGINT', () => {
+      console.error('Received SIGINT, shutting down gracefully...');
+      gracefulShutdown();
+    });
+
+    process.on('uncaughtException', (error) => {
+      console.error('Uncaught exception:', error);
+      gracefulShutdown();
+    });
+
+    process.on('unhandledRejection', (reason, promise) => {
+      console.error('Unhandled rejection at:', promise, 'reason:', reason);
+    });
+
+  } catch (error: any) {
+    clearTimeout(startupTimeout);
+    console.error('❌ Server startup failed:', error.message);
+    debugLog('Full error details:', error);
+
+    if (error.message.includes('Redis')) {
+      console.error('   Redis connection failed - check if Redis is running or try demo mode');
+      console.error('   Run with --demo for in-memory mode without Redis');
+    }
+
+    process.exit(1);
+  }
+}
+
+async function gracefulShutdown() {
+  console.error('Shutting down gracefully...');
+
+  try {
+    if (localMemory) {
+      debugLog('Stopping local memory...');
+      await localMemory.stop();
+    }
+
+    if (redisClient) {
+      debugLog('Closing Redis connections...');
+      await Promise.all([
+        redisClient.quit().catch(() => {}),
+        pubSubClient?.quit().catch(() => {}),
+        subscriberClient?.quit().catch(() => {})
+      ]);
+    }
+
+    console.error('✓ Shutdown complete');
+    process.exit(0);
+  } catch (error) {
+    console.error('Error during shutdown:', error);
+    process.exit(1);
+  }
 }
 
 main().catch((error) => {
-  console.error('Server error:', error);
+  console.error('❌ Fatal server error:', error.message);
+  debugLog('Fatal error details:', error);
   process.exit(1);
 });

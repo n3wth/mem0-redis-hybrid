@@ -1,6 +1,6 @@
 {
   "name": "r3call",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "description": "Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence",
   "main": "dist/index.js",
   "module": "src/index.ts",
@@ -61,7 +61,8 @@
     "@modelcontextprotocol/sdk": "^1.18.0",
     "node-fetch": "^3.3.2",
     "redis": "^5.8.2",
-    "redis-memory-server": "^0.13.0"
+    "redis-memory-server": "^0.13.0",
+    "vectra": "^0.9.0"
   },
   "files": [
     "dist/**/*",

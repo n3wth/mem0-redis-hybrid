@@ -2,6 +2,7 @@ import { RedisMemoryServer } from 'redis-memory-server';
 import { createClient, RedisClientType } from 'redis';
 import crypto from 'crypto';
 import { EventEmitter } from 'events';
+import { VectraMemory } from './vectra-memory.js';
 import type {
   StorageBackend,
   Memory,
@@ -16,9 +17,28 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
   private client: RedisClientType | null = null;
   private pubClient: RedisClientType | null = null;
   private subClient: RedisClientType | null = null;
+  private vectraMemory: VectraMemory | null = null;
   private memories: Map<string, Memory> = new Map();
   private isStarting: boolean = false;
   private isReady: boolean = false;
+  private quiet: boolean;
+
+  constructor(quiet: boolean = false) {
+    super();
+    this.quiet = quiet;
+  }
+
+  private log(message: string, ...args: any[]) {
+    if (!this.quiet) {
+      console.log(message, ...args);
+    }
+  }
+
+  private logError(message: string, ...args: any[]) {
+    if (!this.quiet) {
+      console.error(message, ...args);
+    }
+  }
 
   async start(): Promise<void> {
     if (this.isReady) return;
@@ -28,7 +48,7 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
     }
 
     this.isStarting = true;
-    console.log('Starting embedded Redis server...');
+    this.log('Starting embedded Redis server...');
 
     try {
       // Start the embedded Redis server
@@ -39,7 +59,7 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
       const port = await this.redisServer.getPort();
       const redisUrl = `redis://${host}:${port}`;
 
-      console.log(`Embedded Redis server started at ${redisUrl}`);
+      this.log(`Embedded Redis server started at ${redisUrl}`);
 
       // Create Redis clients with proper typing
       this.client = createClient({ url: redisUrl }) as RedisClientType;
@@ -59,14 +79,18 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
         this.emit('memory:update', data);
       });
 
+      // Initialize Vectra for semantic search
+      this.vectraMemory = new VectraMemory('./data/vectra-index', this.quiet);
+      await this.vectraMemory.initialize();
+
       this.isReady = true;
       this.isStarting = false;
       this.emit('ready');
 
-      console.log('Local memory system ready');
+      this.log('Local memory system ready with vector search');
     } catch (error) {
       this.isStarting = false;
-      console.error('Failed to start embedded Redis:', error);
+      this.logError('Failed to start embedded Redis:', error);
       throw error;
     }
   }
@@ -78,7 +102,7 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
     if (this.redisServer) await this.redisServer.stop();
 
     this.isReady = false;
-    console.log('Embedded Redis server stopped');
+    this.log('Embedded Redis server stopped');
   }
 
   async add(params: AddMemoryParams): Promise<{ id: string; status: string; local: boolean }> {
@@ -114,6 +138,21 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
       value: id
     });
 
+    // Add to vector index for semantic search
+    if (this.vectraMemory) {
+      try {
+        await this.vectraMemory.addMemory({
+          id,
+          content: memoryData.content,
+          user_id: userId,
+          metadata: memoryData.metadata
+        });
+      } catch (error) {
+        this.logError('Failed to add to vector index:', error);
+        // Continue - Redis storage is primary
+      }
+    }
+
     // Publish update for real-time sync
     if (this.pubClient) {
       await this.pubClient.publish('memory:update', JSON.stringify({
@@ -133,31 +172,101 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
     const query = params.query || '';
     const limit = params.limit || 10;
 
-    // Get memory IDs from sorted set (most recent first)
+    // Use hybrid search: semantic (Vectra) + keyword (Redis)
+    const semanticResults: Memory[] = [];
+    const keywordResults: Memory[] = [];
+
+    // 1. Semantic search using Vectra
+    if (this.vectraMemory && query.trim()) {
+      try {
+        const vectraResults = await this.vectraMemory.searchMemories(query, Math.ceil(limit * 0.7), userId);
+        semanticResults.push(...vectraResults);
+      } catch (error) {
+        this.logError('Vectra search failed:', error);
+      }
+    }
+
+    // 2. Keyword search using Redis
     const memoryIds = await this.client.zRange(
       `memories:${userId}`,
-      -limit,
+      0,
       -1,
       { REV: true }
     );
 
-    const memories: Memory[] = [];
+    const scoredMemories: (Memory & { relevanceScore: number })[] = [];
+
     for (const id of memoryIds) {
       const key = `memory:${userId}:${id}`;
       const data = await this.client.get(key);
       if (data) {
         const memory = JSON.parse(data) as Memory;
+        const relevanceScore = this.calculateRelevanceScore(memory, query);
 
-        // Simple text matching for now (can be enhanced with vector search later)
-        if (!query ||
-            memory.content?.toLowerCase().includes(query.toLowerCase()) ||
-            JSON.stringify(memory.metadata).toLowerCase().includes(query.toLowerCase())) {
-          memories.push(memory);
+        if (relevanceScore > 0) {
+          scoredMemories.push({ ...memory, relevanceScore });
         }
       }
     }
 
-    return memories.slice(0, limit);
+    // Get top keyword results
+    keywordResults.push(...scoredMemories
+      .sort((a, b) => b.relevanceScore - a.relevanceScore)
+      .slice(0, Math.ceil(limit * 0.5))
+      .map(({ relevanceScore, ...memory }) => memory)
+    );
+
+    // 3. Merge and deduplicate results
+    const allResults = [...semanticResults, ...keywordResults];
+    const uniqueResults = new Map<string, Memory>();
+
+    for (const result of allResults) {
+      if (!uniqueResults.has(result.id)) {
+        uniqueResults.set(result.id, {
+          ...result,
+          metadata: {
+            ...result.metadata,
+            search_method: semanticResults.find(r => r.id === result.id) ? 'semantic' : 'keyword'
+          }
+        });
+      }
+    }
+
+    return Array.from(uniqueResults.values()).slice(0, limit);
+  }
+
+  private calculateRelevanceScore(memory: Memory, query: string): number {
+    if (!query) return 1; // Return all memories if no query
+
+    const queryWords = query.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+    const content = (memory.content || '').toLowerCase();
+    const metadata = JSON.stringify(memory.metadata || {}).toLowerCase();
+    const fullText = content + ' ' + metadata;
+
+    let score = 0;
+
+    for (const word of queryWords) {
+      // Exact phrase match gets highest score
+      if (fullText.includes(query.toLowerCase())) {
+        score += 10;
+      }
+
+      // Individual word matches
+      if (content.includes(word)) {
+        score += 5;
+      }
+
+      // Metadata matches
+      if (metadata.includes(word)) {
+        score += 3;
+      }
+
+      // Partial matches
+      const partialMatches = fullText.match(new RegExp(word.slice(0, -1), 'g')) || [];
+      score += partialMatches.length * 1;
+    }
+
+    return score;
   }
 
   async getAll(params: GetAllMemoriesParams): Promise<Memory[]> {
@@ -194,6 +303,16 @@ export class LocalMemory extends EventEmitter implements StorageBackend {
     const key = `memory:${userId}:${memoryId}`;
     await this.client.del(key);
     await this.client.zRem(`memories:${userId}`, memoryId);
+
+    // Remove from vector index
+    if (this.vectraMemory) {
+      try {
+        await this.vectraMemory.deleteMemory(memoryId);
+      } catch (error) {
+        this.logError('Failed to delete from vector index:', error);
+        // Continue - Redis deletion is primary
+      }
+    }
 
     // Publish update for real-time sync
     if (this.pubClient) {
