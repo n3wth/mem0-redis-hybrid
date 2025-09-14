@@ -73,3 +73,14 @@ tmp/
 temp/
 .vercel
 dist/
+
+# Internal documentation and planning
+publicity/
+homebrew/
+homebrew-core/
+*_ARCHITECTURE.md
+*_GUIDE.md
+*_CONTEXT.md
+smithery.md
+SMITHERY_*.md
+validation-prompt.md
