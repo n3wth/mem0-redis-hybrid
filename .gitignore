@@ -21,6 +21,10 @@ lerna-debug.log*
 *.key
 *.cert
 
+# Smithery specific
+smithery.local.yaml
+.smithery-credentials
+
 # IDE
 .vscode/
 .idea/

@@ -1,11 +1,37 @@
 # Smithery configuration file for r3call MCP server
 # Documentation: https://smithery.ai/docs/build/project-config/smithery-yaml
 
-runtime: "typescript"
+runtime: "node"
 
-# Environment variables that will be injected when running the server
-env:
-  NODE_ENV: "production"
+# Smithery API key for publishing (use environment variable SMITHERY_API_KEY)
+# apiKey: set via SMITHERY_API_KEY env var
+
+# Package information
+name: "r3call"
+description: "Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence"
+author: "n3wth"
+version: "1.2.1"
+
+# MCP server configuration
+mcp:
+  command: "npx"
+  args: ["@newth.ai/r3call"]
 
 # The server expects these environment variables from users
 # They will be prompted during installation via Smithery CLI
+inputSchema:
+  properties:
+    MEM0_API_KEY:
+      type: string
+      description: "API key for Mem0 service"
+      required: true
+    REDIS_URL:
+      type: string
+      description: "Redis connection URL"
+      default: "redis://localhost:6379"
+    DEBUG:
+      type: string
+      description: "Enable debug logging"
+      default: "false"
+  required:
+    - MEM0_API_KEY
