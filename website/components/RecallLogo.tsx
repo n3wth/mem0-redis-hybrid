@@ -110,12 +110,18 @@ export function RecallLogo({
       height={size}
       viewBox="0 0 120 120"
       xmlns="http://www.w3.org/2000/svg"
-      className={className}
+      className={`${className} drop-shadow-lg`}
     >
-      <circle cx="60" cy="60" r="12" fill={color} />
-      <circle cx="60" cy="60" r="24" fill="none" stroke={color} strokeWidth="3" />
-      <circle cx="60" cy="60" r="36" fill="none" stroke={color} strokeWidth="2.5" />
-      <circle cx="60" cy="60" r="48" fill="none" stroke={color} strokeWidth="2" />
+      <defs>
+        <radialGradient id="logoGradient" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={color} stopOpacity="1" />
+          <stop offset="100%" stopColor={color} stopOpacity="0.8" />
+        </radialGradient>
+      </defs>
+      <circle cx="60" cy="60" r="14" fill="url(#logoGradient)" />
+      <circle cx="60" cy="60" r="24" fill="none" stroke={color} strokeWidth="4" opacity="0.9" />
+      <circle cx="60" cy="60" r="36" fill="none" stroke={color} strokeWidth="3" opacity="0.7" />
+      <circle cx="60" cy="60" r="48" fill="none" stroke={color} strokeWidth="2" opacity="0.5" />
     </svg>
   )
 }

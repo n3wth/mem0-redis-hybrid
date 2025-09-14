@@ -11,11 +11,19 @@ export function Navigation() {
       className="border-b border-white/10 bg-black/50 backdrop-blur-xl sticky top-0 z-50"
     >
       <div className="mx-auto px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-1.5 text-xl font-semibold text-white">
-              <RecallLogo size={32} color="#ffffff" />
-              <span>Recall</span>
+            <Link
+              href="/"
+              className="group flex items-center gap-2.5 text-2xl font-bold text-white hover:scale-105 transition-transform duration-200"
+            >
+              <div className="relative">
+                <RecallLogo size={42} color="#ffffff" animated={false} />
+                <div className="absolute inset-0 bg-white/20 blur-xl group-hover:bg-white/30 transition-all duration-300" />
+              </div>
+              <span className="tracking-tight bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                Recall
+              </span>
             </Link>
             <div className="hidden md:ml-10 md:flex md:space-x-2">
               <Link
