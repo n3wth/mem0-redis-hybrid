@@ -11,7 +11,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import fetch from 'node-fetch';
 import { createClient, RedisClientType } from 'redis';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 
 // Type definitions
 interface Memory {

@@ -6,6 +6,7 @@
   "module": "src/index.ts",
   "type": "module",
   "bin": {
+    "r3call": "dist/index.js",
     "recall": "dist/index.js",
     "recall-cli": "dist/cli.js"
   },
@@ -62,22 +63,19 @@
     "redis-memory-server": "^0.13.0"
   },
   "files": [
-    "index.js",
-    "index.d.ts",
-    "cli.js",
-    "lib/**/*",
+    "dist/**/*",
     "examples/**/*",
     "README.md",
     "LICENSE"
   ],
-  "types": "index.d.ts",
+  "types": "dist/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
   "mcp": {
     "command": "node",
     "args": [
-      "index.js"
+      "dist/index.js"
     ],
     "description": "Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence",
     "env": {
@@ -99,6 +97,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.3.3",
+    "@types/react": "^19.1.13",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2"
   }
