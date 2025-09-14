@@ -15,7 +15,7 @@ Users can install r3call via Smithery:
 npx @smithery/cli install @n3wth/r3call --client claude
 
 # Or directly via Claude
-claude mcp add r3call "npx @newth.ai/r3call"
+claude mcp add r3call "npx r3call"
 ```
 
 ## Environment Variables

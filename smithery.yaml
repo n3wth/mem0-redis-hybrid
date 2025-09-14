@@ -15,7 +15,7 @@ version: "1.2.1"
 # MCP server configuration
 mcp:
   command: "npx"
-  args: ["@newth.ai/r3call"]
+  args: ["r3call"]
 
 # The server expects these environment variables from users
 # They will be prompted during installation via Smithery CLI

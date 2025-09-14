@@ -21,7 +21,7 @@ claude mcp add r3call "npx r3call"
 
 3. **Required Information**:
    - **Package Name**: `r3call`
-   - **NPM Package**: `r3call` (or `@newth.ai/r3call` if using scoped)
+   - **NPM Package**: `r3call`
    - **Description**: Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence
    - **Category**: AI Memory / Tools
    - **GitHub**: https://github.com/n3wth/r3call
