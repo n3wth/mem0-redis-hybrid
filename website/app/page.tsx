@@ -6,7 +6,6 @@ import { useState, lazy, Suspense } from 'react'
 import { Navigation } from '@/components/Navigation'
 import { Footer } from '@/components/Footer'
 import { Container } from '@/components/Grid'
-import { GradientOrb } from '@/components/GradientOrb'
 import { AnimatedCounter } from '@/components/AnimatedCounter'
 import { SpotlightCard } from '@/components/Spotlight'
 import { BentoGrid, BentoCard } from '@/components/BentoGrid'
@@ -64,9 +63,6 @@ print(response.id)`,
   return (
     <div className="min-h-screen bg-black">
       <Navigation />
-
-      {/* Add gradient orb background */}
-      <GradientOrb />
 
       {/* Hero - Clean and minimal with enhanced effects */}
       <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
