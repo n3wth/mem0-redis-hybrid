@@ -3,6 +3,7 @@
   "version": "1.2.1",
   "description": "Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence",
   "main": "index.js",
+  "module": "index.js",
   "type": "module",
   "bin": {
     "recall": "index.js",
