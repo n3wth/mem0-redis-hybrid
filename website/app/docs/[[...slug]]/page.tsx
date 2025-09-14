@@ -4,8 +4,7 @@ import remarkGfm from 'remark-gfm'
 import { getDocBySlug, getAllDocs } from '@/lib/mdx'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
-import { ArchitectureDiagram } from '@/components/ArchitectureDiagram'
-import { CodeTabs } from '@/components/CodeTabs'
+import { MDXComponents } from '@/components/MDXComponents'
 
 export async function generateStaticParams() {
   const docs = await getAllDocs()
@@ -15,8 +14,7 @@ export async function generateStaticParams() {
 }
 
 const components = {
-  ArchitectureDiagram,
-  CodeTabs,
+  ...MDXComponents,
   h1: ({ children }: any) => (
     <h1 className="text-4xl font-normal text-white mb-6">{children}</h1>
   ),
@@ -34,18 +32,6 @@ const components = {
   ),
   li: ({ children }: any) => (
     <li className="text-gray-400">{children}</li>
-  ),
-  code: ({ children }: any) => (
-    <code className="bg-white/5 text-white px-1.5 py-0.5 rounded text-sm font-mono">{children}</code>
-  ),
-  pre: ({ children }: any) => (
-    <div className="relative group mb-6">
-      <div className="relative rounded-lg overflow-hidden border border-white/10 bg-white/[0.01]">
-        <pre className="p-4 overflow-x-auto">
-          {children}
-        </pre>
-      </div>
-    </div>
   ),
   a: ({ href, children }: any) => {
     // Handle external links

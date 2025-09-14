@@ -18,7 +18,7 @@ export default function DocsLayout({
         <div className="flex gap-8">
           {/* Sidebar */}
           <aside className="hidden lg:block w-[260px] flex-shrink-0">
-            <div className="sticky top-32">
+            <div className="sticky top-[140px]">
               <DocsSidebar />
             </div>
           </aside>
@@ -30,7 +30,7 @@ export default function DocsLayout({
 
           {/* Table of Contents */}
           <aside className="hidden xl:block w-[240px] flex-shrink-0">
-            <div className="sticky top-32">
+            <div className="sticky top-[140px]">
               <TableOfContents />
             </div>
           </aside>

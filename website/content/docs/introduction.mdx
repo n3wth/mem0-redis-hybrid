@@ -9,9 +9,9 @@ Zero-configuration memory for AI. Works instantly with embedded Redis, optional 
 
 ## What's New
 
-🚀 **Local-First Mode** - No setup required, embedded Redis starts automatically
-💻 **100% TypeScript** - Full type safety and IntelliSense support
-⚡ **Zero Config** - Just run `npx r3call` and it works
+- **Local-First Mode** - No setup required, embedded Redis starts automatically
+- **100% TypeScript** - Full type safety and IntelliSense support
+- **Zero Config** - Just run `npx r3call` and it works
 
 ## Start building
 
@@ -57,18 +57,9 @@ Claude: Based on your preferences, I'd recommend TypeScript.
 
 ## Architecture
 
-```
-Claude Desktop → MCP Protocol → Recall Server
-                                      ↓
-                              Redis (L1 Cache)
-                                      ↓
-                              Mem0 Cloud (L2)
-```
+import { ArchitectureDiagram } from '@/components/ArchitectureDiagram'
 
-**Response times:**
-- Cache hit: Under 5ms
-- Cache miss: ~200ms
-- First store: ~10ms
+<ArchitectureDiagram />
 
 ## Core concepts
 

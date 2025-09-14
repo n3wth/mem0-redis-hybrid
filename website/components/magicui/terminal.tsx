@@ -16,7 +16,7 @@ export const Terminal = ({ children, className }: TerminalProps) => {
         "w-full max-w-4xl mx-auto rounded-lg border border-zinc-800 bg-zinc-950 shadow-2xl",
         className
       )}
-    >
+      suppressHydrationWarning>
       <div className="flex items-center gap-2 border-b border-zinc-800 bg-zinc-900 px-3 sm:px-4 py-2 sm:py-3 rounded-t-lg">
         <div className="flex gap-1.5 sm:gap-2">
           <div className="h-2 w-2 sm:h-3 sm:w-3 rounded-full bg-red-500" />
