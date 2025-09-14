@@ -62,13 +62,9 @@ export function BentoCard({
       {/* Content */}
       <div className="relative z-10">
         {icon && (
-          <motion.div
-            className="mb-4 inline-flex rounded-xl bg-white/5 p-3"
-            whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.5 }}
-          >
+          <div className="mb-4 inline-flex rounded-xl bg-white/5 p-3">
             {icon}
-          </motion.div>
+          </div>
         )}
 
         <motion.h3
