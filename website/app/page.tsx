@@ -96,18 +96,19 @@ print(response.id)`,
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
               </span>
-              Now Available
+              Claude Code + Gemini CLI Ready
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-6">
-              <span className="text-white">Intelligent memory</span>
+              <span className="text-white">Your AI never forgets</span>
               <br />
-              <span className="text-gray-500">for AI systems</span>
+              <span className="text-gray-500">what matters most</span>
             </h1>
 
             <p className="mx-auto max-w-2xl text-lg text-gray-400 mb-10 font-light">
-              Hybrid caching with Redis and cloud persistence. Sub-5ms latency.
-              Built for production AI applications.
+              Stop repeating yourself. Recall remembers your coding style, project
+              architecture, and personal preferences—turning Claude and Gemini into
+              AI assistants that truly know you. Sub-5ms retrieval. Zero context loss.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -151,10 +152,10 @@ print(response.id)`,
           <div className="max-w-4xl mx-auto relative z-10">
             <div className="mb-12 text-center">
               <h2 className="text-3xl font-normal text-white mb-3">
-                Simple integration
+                Works with Claude Code & Gemini CLI
               </h2>
               <p className="text-gray-400">
-                Watch how easy it is to get started
+                See real-world examples from your daily workflow
               </p>
             </div>
             <Suspense fallback={<div className="bg-gray-900 rounded-lg p-6 animate-pulse h-64" />}>
