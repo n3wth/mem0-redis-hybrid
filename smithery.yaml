@@ -1,0 +1,11 @@
+# Smithery configuration file for r3call MCP server
+# Documentation: https://smithery.ai/docs/build/project-config/smithery-yaml
+
+runtime: "typescript"
+
+# Environment variables that will be injected when running the server
+env:
+  NODE_ENV: "production"
+
+# The server expects these environment variables from users
+# They will be prompted during installation via Smithery CLI
