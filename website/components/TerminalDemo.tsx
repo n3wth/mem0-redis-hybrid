@@ -26,7 +26,7 @@ const demos = [
     title: "Gemini CLI + Personal Knowledge",
     commands: [
       { type: 'typing', text: '$ gemini --save "Oliver uses r3call for knowledge management"', delay: 0 },
-      { type: 'animated', text: 'Gemini CLI with mem0 context • Model: Gemini 1.5 Pro', className: 'text-gray-400', delay: 1500 },
+      { type: 'animated', text: 'Gemini CLI with r3call context • Model: Gemini 1.5 Pro', className: 'text-gray-400', delay: 1500 },
       { type: 'animated', text: '✓ Saved to r3call and GEMINI.md', className: 'text-green-500', delay: 2500 },
       { type: 'animated', text: '[Memory synced: Redis cache + Mem0 cloud]', className: 'text-gray-500 text-xs', delay: 3000 },
       { type: 'typing', text: '$ gemini -p "@./ explain my knowledge system"', delay: 4000 },
@@ -57,7 +57,7 @@ const demos = [
     title: "Gemini CLI + Cross-Project Analysis",
     commands: [
       { type: 'typing', text: '$ gemini check', delay: 0 },
-      { type: 'animated', text: 'Running 4 parallel checks with mem0 context...', className: 'text-blue-400', delay: 1500 },
+      { type: 'animated', text: 'Running 4 parallel checks with r3call context...', className: 'text-blue-400', delay: 1500 },
       { type: 'animated', text: '✓ Authentication: JWT with refresh tokens', className: 'text-green-400', delay: 2500 },
       { type: 'animated', text: '✓ Database: PostgreSQL with Prisma ORM', className: 'text-green-400', delay: 3000 },
       { type: 'animated', text: '✓ Testing: 87% coverage with Vitest', className: 'text-green-400', delay: 3500 },
