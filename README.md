@@ -19,7 +19,6 @@
 
 ## Table of Contents
 
-- [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Usage with Gemini CLI](#usage-with-gemini-cli)
 - [Usage with Claude Code](#usage-with-claude-code)
@@ -31,21 +30,13 @@
 - [Contributing](#contributing)
 - [License](#license)
 
-## Installation
-
-```bash
-npm install r3call
-```
-
 ## Quick Start
 
-### Zero Configuration (Local Mode by Default)
-
 ```bash
-# Just run it! No configuration needed - uses embedded Redis automatically
+# Just run it! Zero configuration needed
 npx r3call
 
-# Or install globally
+# Or install globally for frequent use
 npm install -g r3call
 r3call
 ```
