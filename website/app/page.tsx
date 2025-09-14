@@ -183,11 +183,12 @@ client.memories.add(
               </h1>
 
               <p className="mx-auto max-w-2xl text-lg text-gray-400 mb-10 font-light">
-                Stop re-explaining your context. r3call gives LLMs intelligent memory with
+                Stop re-explaining your context. r3call gives LLMs intelligent
+                memory with
                 <span className="text-white"> real vector embeddings</span>,
                 <span className="text-white"> entity extraction</span>, and
-                <span className="text-white"> knowledge graphs</span>.
-                Works with Claude Desktop, Gemini CLI, and any MCP-compatible client.
+                <span className="text-white"> knowledge graphs</span>. Works
+                with Claude Desktop, Gemini CLI, and any MCP-compatible client.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -546,7 +547,6 @@ client.memories.add(
                 gradient="from-red-900/20 to-orange-900/20"
                 span="col-span-3"
               />
-
             </BentoGrid>
           </Container>
         </section>

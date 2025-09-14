@@ -78,8 +78,10 @@ const QUIET_MODE =
   (!process.stdin.isTTY || process.env.NODE_ENV === "production"); // Default to quiet for MCP
 
 // Intelligence mode configuration - Enhanced by default!
-let INTELLIGENCE_MODE = process.env.INTELLIGENCE_MODE === "basic" ||
-                       process.argv.includes("--basic") ? "basic" : "enhanced";
+let INTELLIGENCE_MODE =
+  process.env.INTELLIGENCE_MODE === "basic" || process.argv.includes("--basic")
+    ? "basic"
+    : "enhanced";
 const ENABLE_ENTITY_EXTRACTION = INTELLIGENCE_MODE === "enhanced";
 const ENABLE_RELATIONSHIP_MAPPING = INTELLIGENCE_MODE === "enhanced";
 const ENABLE_REAL_EMBEDDINGS = INTELLIGENCE_MODE === "enhanced";
@@ -89,21 +91,29 @@ const ENABLE_SEMANTIC_SEARCH = INTELLIGENCE_MODE === "enhanced";
 if (INTELLIGENCE_MODE === "enhanced") {
   const originalStderrWrite = process.stderr.write.bind(process.stderr);
   process.stderr.write = (chunk: any, ...args: any[]): boolean => {
-    const str = chunk?.toString() || '';
-    if (str.includes('mutex') || str.includes('libc++') || str.includes('Invalid argument') || str.includes('dtype')) {
+    const str = chunk?.toString() || "";
+    if (
+      str.includes("mutex") ||
+      str.includes("libc++") ||
+      str.includes("Invalid argument") ||
+      str.includes("dtype")
+    ) {
       return true;
     }
     return originalStderrWrite(chunk, ...args);
   };
 
   // Also handle uncaught exceptions related to mutex
-  process.on('uncaughtException', (error) => {
-    if (error.message?.includes('mutex') || error.message?.includes('Invalid argument')) {
+  process.on("uncaughtException", (error) => {
+    if (
+      error.message?.includes("mutex") ||
+      error.message?.includes("Invalid argument")
+    ) {
       // Silently ignore mutex errors from transformers.js
       return;
     }
     // Re-throw other errors
-    console.error('Uncaught Exception:', error);
+    console.error("Uncaught Exception:", error);
     process.exit(1);
   });
 
@@ -116,8 +126,8 @@ if (INTELLIGENCE_MODE === "enhanced") {
       process.exit(0);
     }
   };
-  process.on('SIGTERM', cleanShutdown);
-  process.on('SIGINT', cleanShutdown);
+  process.on("SIGTERM", cleanShutdown);
+  process.on("SIGINT", cleanShutdown);
 }
 
 // Determine operation mode - always default to local-first
@@ -226,7 +236,7 @@ async function initializeRedis(): Promise<boolean> {
           // Initialize vector memory with real embeddings
           enhancedVectra = new EnhancedVectraMemory(
             "./data/vectra-index",
-            QUIET_MODE
+            QUIET_MODE,
           );
           await enhancedVectra.initialize();
 
@@ -235,7 +245,10 @@ async function initializeRedis(): Promise<boolean> {
 
           log("✓ AI intelligence features activated (default mode)");
         } catch (error: any) {
-          console.error("Warning: Enhanced features failed to initialize:", error.message);
+          console.error(
+            "Warning: Enhanced features failed to initialize:",
+            error.message,
+          );
           console.error("  Continuing with basic mode");
           INTELLIGENCE_MODE = "basic";
         }
@@ -623,9 +636,16 @@ async function smartSearch(
   let results: Memory[] = [];
 
   // Use enhanced vector search if available
-  if (INTELLIGENCE_MODE === "enhanced" && enhancedVectra && ENABLE_REAL_EMBEDDINGS) {
+  if (
+    INTELLIGENCE_MODE === "enhanced" &&
+    enhancedVectra &&
+    ENABLE_REAL_EMBEDDINGS
+  ) {
     try {
-      const vectorResults = await enhancedVectra.searchMemories(query, limit * 2);
+      const vectorResults = await enhancedVectra.searchMemories(
+        query,
+        limit * 2,
+      );
 
       // Extract entities from query for matching
       let queryEntities: any = null;
@@ -645,19 +665,36 @@ async function smartSearch(
         };
 
         // Keyword matching score
-        const queryKeywords = query.toLowerCase().split(/\W+/).filter(w => w.length > 2);
+        const queryKeywords = query
+          .toLowerCase()
+          .split(/\W+/)
+          .filter((w) => w.length > 2);
         const contentWords = result.content.toLowerCase().split(/\W+/);
-        const keywordMatches = queryKeywords.filter(k => contentWords.includes(k)).length;
-        scoreBreakdown.keyword_match = keywordMatches / Math.max(queryKeywords.length, 1);
+        const keywordMatches = queryKeywords.filter((k) =>
+          contentWords.includes(k),
+        ).length;
+        scoreBreakdown.keyword_match =
+          keywordMatches / Math.max(queryKeywords.length, 1);
 
         // Entity overlap score
         if (queryEntities && result.metadata?.entities) {
-          const entityTypes = ['people', 'organizations', 'technologies', 'projects'];
+          const entityTypes = [
+            "people",
+            "organizations",
+            "technologies",
+            "projects",
+          ];
           let totalOverlap = 0;
           for (const type of entityTypes) {
-            const queryEnts = queryEntities[type]?.map((e: any) => e.text.toLowerCase()) || [];
-            const memEnts = result.metadata.entities[type]?.map((e: any) => e.text.toLowerCase()) || [];
-            const overlap = queryEnts.filter((e: string) => memEnts.includes(e)).length;
+            const queryEnts =
+              queryEntities[type]?.map((e: any) => e.text.toLowerCase()) || [];
+            const memEnts =
+              result.metadata.entities[type]?.map((e: any) =>
+                e.text.toLowerCase(),
+              ) || [];
+            const overlap = queryEnts.filter((e: string) =>
+              memEnts.includes(e),
+            ).length;
             totalOverlap += overlap;
           }
           scoreBreakdown.entity_overlap = Math.min(totalOverlap * 0.2, 1);
@@ -666,13 +703,16 @@ async function smartSearch(
         // Recency bonus (if created within last 7 days)
         const createdAt = result.metadata?.created_at;
         if (createdAt) {
-          const ageInDays = (Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24);
+          const ageInDays =
+            (Date.now() - new Date(createdAt).getTime()) /
+            (1000 * 60 * 60 * 24);
           scoreBreakdown.recency_bonus = Math.max(0, (7 - ageInDays) / 7) * 0.1;
         }
 
         // Access frequency bonus
         if (result.metadata?.access_count) {
-          scoreBreakdown.access_frequency = Math.min(result.metadata.access_count / 10, 1) * 0.05;
+          scoreBreakdown.access_frequency =
+            Math.min(result.metadata.access_count / 10, 1) * 0.05;
         }
 
         // Calculate weighted final score
@@ -699,13 +739,19 @@ async function smartSearch(
             relationship: 0,
             recency: scoreBreakdown.recency_bonus,
           },
-          matched_entities: queryEntities ? Object.values(queryEntities).flat().map((e: any) => e.text) : [],
+          matched_entities: queryEntities
+            ? Object.values(queryEntities)
+                .flat()
+                .map((e: any) => e.text)
+            : [],
         };
         results.push(memory);
       }
 
       // Sort by final relevance score
-      results.sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0));
+      results.sort(
+        (a, b) => (b.relevance_score || 0) - (a.relevance_score || 0),
+      );
       results = results.slice(0, limit);
     } catch (error: any) {
       debugLog("Enhanced search error:", error.message);
@@ -1327,13 +1373,15 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
     },
     {
       name: "get_knowledge_graph",
-      description: "Get memories organized as a knowledge graph with entities and relationships",
+      description:
+        "Get memories organized as a knowledge graph with entities and relationships",
       inputSchema: {
         type: "object",
         properties: {
           entity_type: {
             type: "string",
-            description: "Filter by entity type (people, organizations, technologies, projects)",
+            description:
+              "Filter by entity type (people, organizations, technologies, projects)",
           },
           entity_name: {
             type: "string",
@@ -1341,7 +1389,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
           relationship_type: {
             type: "string",
-            description: "Filter by relationship type (WORKS_FOR, USES, BUILT_WITH, etc.)",
+            description:
+              "Filter by relationship type (WORKS_FOR, USES, BUILT_WITH, etc.)",
           },
           limit: {
             type: "number",
@@ -1363,7 +1412,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
           to_entity: {
             type: "string",
-            description: "Target entity name (optional - finds all if not specified)",
+            description:
+              "Target entity name (optional - finds all if not specified)",
           },
           max_depth: {
             type: "number",
@@ -1375,7 +1425,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
     },
   ];
-
 
   return { tools };
 });
@@ -2091,12 +2140,12 @@ server.setRequestHandler(
           const extraction = await entityExtractor.extract(text);
 
           const entitySummary = {
-            people: extraction.entities.people.map(e => e.text),
-            organizations: extraction.entities.organizations.map(e => e.text),
-            technologies: extraction.entities.technologies.map(e => e.text),
-            projects: extraction.entities.projects.map(e => e.text),
-            relationships: extraction.relationships.map(r =>
-              `${r.from} --[${r.type}]--> ${r.to}`
+            people: extraction.entities.people.map((e) => e.text),
+            organizations: extraction.entities.organizations.map((e) => e.text),
+            technologies: extraction.entities.technologies.map((e) => e.text),
+            projects: extraction.entities.projects.map((e) => e.text),
+            relationships: extraction.relationships.map(
+              (r) => `${r.from} --[${r.type}]--> ${r.to}`,
             ),
             keywords: extraction.keywords.slice(0, 10),
           };
@@ -2123,7 +2172,12 @@ server.setRequestHandler(
             };
           }
 
-          const { entity_type, entity_name, relationship_type, limit = 20 } = args as any;
+          const {
+            entity_type,
+            entity_name,
+            relationship_type,
+            limit = 20,
+          } = args as any;
 
           // Get all memories with entity/relationship data
           const allMemories = await enhancedVectra.getAllMemories();
@@ -2141,7 +2195,11 @@ server.setRequestHandler(
               if (entity_type && type !== entity_type) continue;
 
               for (const entity of entityList as any[]) {
-                if (entity_name && !entity.text.toLowerCase().includes(entity_name.toLowerCase())) continue;
+                if (
+                  entity_name &&
+                  !entity.text.toLowerCase().includes(entity_name.toLowerCase())
+                )
+                  continue;
 
                 const key = `${type}:${entity.text}`;
                 if (!entityMap.has(key)) {
@@ -2159,7 +2217,8 @@ server.setRequestHandler(
             // Collect relationships
             if (memory.metadata.relationships) {
               for (const rel of memory.metadata.relationships) {
-                if (relationship_type && rel.type !== relationship_type) continue;
+                if (relationship_type && rel.type !== relationship_type)
+                  continue;
 
                 graphEdges.push({
                   from: rel.from,
@@ -2179,7 +2238,11 @@ server.setRequestHandler(
             content: [
               {
                 type: "text",
-                text: JSON.stringify({ nodes: graphNodes, edges: graphEdges }, null, 2),
+                text: JSON.stringify(
+                  { nodes: graphNodes, edges: graphEdges },
+                  null,
+                  2,
+                ),
               },
             ],
           };
@@ -2218,7 +2281,7 @@ server.setRequestHandler(
           // BFS to find paths
           const paths: any[] = [];
           const queue: Array<{ node: string; path: any[]; depth: number }> = [
-            { node: from_entity, path: [], depth: 0 }
+            { node: from_entity, path: [], depth: 0 },
           ];
           const visited = new Set<string>();
 
@@ -2238,13 +2301,20 @@ server.setRequestHandler(
             const neighbors = graph.get(node);
             if (neighbors && depth < max_depth) {
               for (const neighbor of neighbors) {
-                const newPath = [...path, { from: node, to: neighbor.to, type: neighbor.type }];
+                const newPath = [
+                  ...path,
+                  { from: node, to: neighbor.to, type: neighbor.type },
+                ];
 
                 if (!to_entity && depth === max_depth - 1) {
                   // If no target specified, collect all paths at max depth
                   paths.push(newPath);
                 } else {
-                  queue.push({ node: neighbor.to, path: newPath, depth: depth + 1 });
+                  queue.push({
+                    node: neighbor.to,
+                    path: newPath,
+                    depth: depth + 1,
+                  });
                 }
               }
             }
@@ -2254,13 +2324,17 @@ server.setRequestHandler(
             content: [
               {
                 type: "text",
-                text: JSON.stringify({
-                  from: from_entity,
-                  to: to_entity || "any",
-                  max_depth,
-                  paths_found: paths.length,
-                  paths
-                }, null, 2),
+                text: JSON.stringify(
+                  {
+                    from: from_entity,
+                    to: to_entity || "any",
+                    max_depth,
+                    paths_found: paths.length,
+                    paths,
+                  },
+                  null,
+                  2,
+                ),
               },
             ],
           };

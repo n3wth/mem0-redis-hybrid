@@ -27,10 +27,7 @@ export class EnhancedVectraMemory {
   private embeddingModel: string = "Xenova/all-MiniLM-L6-v2";
   private embeddingDimension: number = 384; // all-MiniLM-L6-v2 produces 384-dim vectors
 
-  constructor(
-    dataDir: string = "./data/vectra-index",
-    quiet: boolean = false
-  ) {
+  constructor(dataDir: string = "./data/vectra-index", quiet: boolean = false) {
     this.indexPath = path.resolve(dataDir);
     this.index = new LocalIndex(this.indexPath);
     this.quiet = quiet;
@@ -53,9 +50,14 @@ export class EnhancedVectraMemory {
       const originalStderrWrite = process.stderr.write;
       if (this.quiet) {
         process.stderr.write = (chunk: any, ...args: any[]): boolean => {
-          const str = chunk?.toString() || '';
+          const str = chunk?.toString() || "";
           // Filter out mutex and libc++ errors from transformers.js
-          if (str.includes('mutex') || str.includes('libc++') || str.includes('Invalid argument') || str.includes('dtype')) {
+          if (
+            str.includes("mutex") ||
+            str.includes("libc++") ||
+            str.includes("Invalid argument") ||
+            str.includes("dtype")
+          ) {
             return true;
           }
           return originalStderrWrite.call(process.stderr, chunk, ...args);
@@ -69,12 +71,18 @@ export class EnhancedVectraMemory {
           device: "cpu",
           progress_callback: (progress: any) => {
             if (progress.status === "download" && !this.quiet) {
-              const percent = Math.round((progress.loaded / progress.total) * 100);
-              originalStderrWrite.call(process.stderr, `\rDownloading model: ${percent}%`);
-              if (percent === 100) originalStderrWrite.call(process.stderr, "\n");
+              const percent = Math.round(
+                (progress.loaded / progress.total) * 100,
+              );
+              originalStderrWrite.call(
+                process.stderr,
+                `\rDownloading model: ${percent}%`,
+              );
+              if (percent === 100)
+                originalStderrWrite.call(process.stderr, "\n");
             }
-          }
-        }
+          },
+        },
       );
 
       // Restore stderr
@@ -127,7 +135,7 @@ export class EnhancedVectraMemory {
   async searchMemories(
     query: string,
     limit: number = 10,
-    userId?: string
+    userId?: string,
   ): Promise<Memory[]> {
     if (!this.isInitialized) await this.initialize();
 
@@ -138,7 +146,7 @@ export class EnhancedVectraMemory {
       let filteredResults = results;
       if (userId) {
         filteredResults = results.filter(
-          (r) => r.item.metadata.user_id === userId
+          (r) => r.item.metadata.user_id === userId,
         );
       }
 
@@ -209,9 +217,13 @@ export class EnhancedVectraMemory {
       // Temporarily suppress stderr for mutex warnings
       const originalStderrWrite = process.stderr.write;
       process.stderr.write = (chunk: any, ...args: any[]): boolean => {
-        const str = chunk?.toString() || '';
+        const str = chunk?.toString() || "";
         // Filter out mutex and libc++ errors from transformers.js
-        if (str.includes('mutex') || str.includes('libc++') || str.includes('Invalid argument')) {
+        if (
+          str.includes("mutex") ||
+          str.includes("libc++") ||
+          str.includes("Invalid argument")
+        ) {
           return true;
         }
         return originalStderrWrite.call(process.stderr, chunk, ...args);
@@ -254,7 +266,7 @@ export class EnhancedVectraMemory {
 
     // Normalize
     const magnitude = Math.sqrt(
-      vector.reduce((sum, val) => sum + val * val, 0)
+      vector.reduce((sum, val) => sum + val * val, 0),
     );
 
     if (magnitude > 0) {
@@ -287,10 +299,7 @@ export class EnhancedVectraMemory {
   }
 
   // Find similar memories using semantic search
-  async findSimilar(
-    memoryId: string,
-    limit: number = 5
-  ): Promise<Memory[]> {
+  async findSimilar(memoryId: string, limit: number = 5): Promise<Memory[]> {
     try {
       // Get the memory's content
       const item = await this.index.getItem(memoryId);
@@ -299,8 +308,10 @@ export class EnhancedVectraMemory {
       // Search using its content
       return await this.searchMemories(
         item.metadata.content as string,
-        limit + 1 // Get one extra to exclude self
-      ).then(results => results.filter(r => r.id !== memoryId).slice(0, limit));
+        limit + 1, // Get one extra to exclude self
+      ).then((results) =>
+        results.filter((r) => r.id !== memoryId).slice(0, limit),
+      );
     } catch (error) {
       this.log("Failed to find similar memories:", error);
       return [];

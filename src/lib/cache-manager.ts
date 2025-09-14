@@ -28,9 +28,9 @@ export interface Memory {
 
 export interface CacheConfig {
   ttl: {
-    l1: number;      // Hot data TTL
-    l2: number;      // Warm data TTL
-    search: number;  // Search results TTL
+    l1: number; // Hot data TTL
+    l2: number; // Warm data TTL
+    search: number; // Search results TTL
   };
   maxSize: number;
   frequentAccessThreshold: number;
@@ -55,9 +55,9 @@ export class CacheManager {
     this.redisManager = redisManager;
     this.config = {
       ttl: {
-        l1: config?.ttl?.l1 || 86400,        // 24 hours
-        l2: config?.ttl?.l2 || 604800,       // 7 days
-        search: config?.ttl?.search || 300,  // 5 minutes
+        l1: config?.ttl?.l1 || 86400, // 24 hours
+        l2: config?.ttl?.l2 || 604800, // 7 days
+        search: config?.ttl?.search || 300, // 5 minutes
       },
       maxSize: config?.maxSize || 1000,
       frequentAccessThreshold: config?.frequentAccessThreshold || 3,
@@ -77,12 +77,9 @@ export class CacheManager {
       }
       return null;
     } catch (error: any) {
-      throw new CacheError(
-        'getCachedMemory',
-        error.message,
-        true,
-        { memoryId }
-      );
+      throw new CacheError("getCachedMemory", error.message, true, {
+        memoryId,
+      });
     }
   }
 
@@ -90,11 +87,11 @@ export class CacheManager {
   async setCachedMemory(
     memoryId: string,
     data: Memory,
-    ttl?: number
+    ttl?: number,
   ): Promise<void> {
     try {
       const key = CacheKeys.memory(memoryId);
-      const effectiveTtl = ttl || await this.determineTTL(memoryId);
+      const effectiveTtl = ttl || (await this.determineTTL(memoryId));
 
       await this.redisManager.set(key, JSON.stringify(data), effectiveTtl);
       await this.trackAccess(memoryId);
@@ -104,12 +101,9 @@ export class CacheManager {
         await this.indexMemoryForSearch(memoryId, data);
       }
     } catch (error: any) {
-      throw new CacheError(
-        'setCachedMemory',
-        error.message,
-        true,
-        { memoryId }
-      );
+      throw new CacheError("setCachedMemory", error.message, true, {
+        memoryId,
+      });
     }
   }
 
@@ -132,12 +126,9 @@ export class CacheManager {
         keywordsKey,
       ]);
     } catch (error: any) {
-      throw new CacheError(
-        'deleteCachedMemory',
-        error.message,
-        true,
-        { memoryId }
-      );
+      throw new CacheError("deleteCachedMemory", error.message, true, {
+        memoryId,
+      });
     }
   }
 
@@ -177,7 +168,7 @@ export class CacheManager {
   // Index memory for keyword search
   private async indexMemoryForSearch(
     memoryId: string,
-    memory: Memory
+    memory: Memory,
   ): Promise<void> {
     if (!memory.memory) return;
 
@@ -194,7 +185,7 @@ export class CacheManager {
         await this.redisManager.sAdd(CacheKeys.keyword(keyword), memoryId);
         await this.redisManager.expire(
           CacheKeys.keyword(keyword),
-          this.config.ttl.l1
+          this.config.ttl.l1,
         );
       }
 
@@ -202,11 +193,11 @@ export class CacheManager {
       if (keywords.length > 0) {
         await this.redisManager.sAdd(
           CacheKeys.memoryKeywords(memoryId),
-          keywords
+          keywords,
         );
         await this.redisManager.expire(
           CacheKeys.memoryKeywords(memoryId),
-          this.config.ttl.l1
+          this.config.ttl.l1,
         );
       }
     } catch (error: any) {
@@ -218,14 +209,14 @@ export class CacheManager {
   async cacheSearchResults(
     query: string,
     limit: number,
-    results: Memory[]
+    results: Memory[],
   ): Promise<void> {
     try {
       const key = CacheKeys.search(query, limit);
       await this.redisManager.set(
         key,
         JSON.stringify(results),
-        this.config.ttl.search
+        this.config.ttl.search,
       );
     } catch (error: any) {
       ErrorHandler.logError(error, "Failed to cache search results");
@@ -235,7 +226,7 @@ export class CacheManager {
   // Get cached search results
   async getCachedSearchResults(
     query: string,
-    limit: number
+    limit: number,
   ): Promise<Memory[] | null> {
     try {
       const key = CacheKeys.search(query, limit);
@@ -254,15 +245,11 @@ export class CacheManager {
       if (searchKeys.length > 0) {
         await this.redisManager.del(searchKeys);
         console.error(
-          `✓ Invalidated ${searchKeys.length} search cache entries`
+          `✓ Invalidated ${searchKeys.length} search cache entries`,
         );
       }
     } catch (error: any) {
-      throw new CacheError(
-        'invalidateSearchCache',
-        error.message,
-        false
-      );
+      throw new CacheError("invalidateSearchCache", error.message, false);
     }
   }
 
@@ -283,19 +270,12 @@ export class CacheManager {
         .slice(0, limit)
         .map((item) => item.key);
     } catch (error: any) {
-      throw new CacheError(
-        'getTopMemories',
-        error.message,
-        false
-      );
+      throw new CacheError("getTopMemories", error.message, false);
     }
   }
 
   // Search cache using keyword matching
-  async searchFromCache(
-    query: string,
-    limit: number
-  ): Promise<Memory[]> {
+  async searchFromCache(query: string, limit: number): Promise<Memory[]> {
     try {
       const queryKeywords = query
         .toLowerCase()
@@ -307,7 +287,7 @@ export class CacheManager {
       // Find memories matching keywords
       for (const keyword of queryKeywords) {
         const memoryIds = await this.redisManager.sMembers(
-          CacheKeys.keyword(keyword)
+          CacheKeys.keyword(keyword),
         );
         for (const memoryId of memoryIds) {
           const score = memoryScores.get(memoryId) || 0;
@@ -336,12 +316,10 @@ export class CacheManager {
 
       return results;
     } catch (error: any) {
-      throw new CacheError(
-        'searchFromCache',
-        error.message,
-        true,
-        { query, limit }
-      );
+      throw new CacheError("searchFromCache", error.message, true, {
+        query,
+        limit,
+      });
     }
   }
 
@@ -349,7 +327,7 @@ export class CacheManager {
   async optimizeCache(
     memories: Memory[],
     maxMemories: number,
-    forceRefresh: boolean = false
+    forceRefresh: boolean = false,
   ): Promise<{ cached: number; l1Count: number; l2Count: number }> {
     try {
       // Clear old cache if force refresh
@@ -389,12 +367,10 @@ export class CacheManager {
 
       return { cached, l1Count, l2Count };
     } catch (error: any) {
-      throw new CacheError(
-        'optimizeCache',
-        error.message,
-        false,
-        { maxMemories, forceRefresh }
-      );
+      throw new CacheError("optimizeCache", error.message, false, {
+        maxMemories,
+        forceRefresh,
+      });
     }
   }
 
@@ -424,7 +400,7 @@ export class CacheManager {
         topMemories.slice(0, 3).map(async (key) => ({
           key: key.substring(0, 8),
           count: (await this.redisManager.get(CacheKeys.access(key))) || "0",
-        }))
+        })),
       );
 
       // Calculate hit rate
@@ -445,33 +421,25 @@ export class CacheManager {
         topAccessed,
       };
     } catch (error: any) {
-      throw new CacheError(
-        'getCacheStats',
-        error.message,
-        false
-      );
+      throw new CacheError("getCacheStats", error.message, false);
     }
   }
 
   // Batch operations for efficiency
   async batchGet(memoryIds: string[]): Promise<(Memory | null)[]> {
     const results = await Promise.all(
-      memoryIds.map(id => this.getCachedMemory(id))
+      memoryIds.map((id) => this.getCachedMemory(id)),
     );
     return results;
   }
 
   async batchSet(memories: Memory[], ttl?: number): Promise<void> {
     await Promise.all(
-      memories.map(memory =>
-        this.setCachedMemory(memory.id, memory, ttl)
-      )
+      memories.map((memory) => this.setCachedMemory(memory.id, memory, ttl)),
     );
   }
 
   async batchDelete(memoryIds: string[]): Promise<void> {
-    await Promise.all(
-      memoryIds.map(id => this.deleteCachedMemory(id))
-    );
+    await Promise.all(memoryIds.map((id) => this.deleteCachedMemory(id)));
   }
 }

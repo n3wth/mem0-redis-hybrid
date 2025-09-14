@@ -4,25 +4,27 @@
 const originalWarn = console.warn;
 const originalError = console.error;
 console.warn = (...args: any[]) => {
-  const msg = args.join(' ');
-  if (msg.includes('dtype') || msg.includes('fp32') || msg.includes('mutex')) return;
+  const msg = args.join(" ");
+  if (msg.includes("dtype") || msg.includes("fp32") || msg.includes("mutex"))
+    return;
   originalWarn.apply(console, args);
 };
 console.error = (...args: any[]) => {
-  const msg = args.join(' ');
-  if (msg.includes('dtype') || msg.includes('fp32') || msg.includes('mutex')) return;
+  const msg = args.join(" ");
+  if (msg.includes("dtype") || msg.includes("fp32") || msg.includes("mutex"))
+    return;
   originalError.apply(console, args);
 };
 
-import blessed from 'blessed';
-import contrib from 'blessed-contrib';
-import { createClient, RedisClientType } from 'redis';
-import chalk from 'chalk';
-import Fuse from 'fuse.js';
-import { marked } from 'marked';
-import TerminalRenderer from 'marked-terminal';
-import fetch from 'node-fetch';
-import boxen from 'boxen';
+import blessed from "blessed";
+import contrib from "blessed-contrib";
+import { createClient, RedisClientType } from "redis";
+import chalk from "chalk";
+import Fuse from "fuse.js";
+import { marked } from "marked";
+import TerminalRenderer from "marked-terminal";
+import fetch from "node-fetch";
+import boxen from "boxen";
 
 // Configure marked for terminal rendering
 marked.setOptions({
@@ -31,9 +33,9 @@ marked.setOptions({
     width: 80,
     reflowText: true,
     tableOptions: {
-      chars: { 'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' }
-    }
-  })
+      chars: { mid: "", "left-mid": "", "mid-mid": "", "right-mid": "" },
+    },
+  }),
 });
 
 // Types
@@ -69,35 +71,35 @@ interface Theme {
 // Themes
 const themes: Record<string, Theme> = {
   dracula: {
-    primary: '#bd93f9',
-    secondary: '#8be9fd',
-    accent: '#50fa7b',
-    success: '#50fa7b',
-    warning: '#f1fa8c',
-    error: '#ff5555',
-    dim: '#6272a4',
-    bg: '#282a36'
+    primary: "#bd93f9",
+    secondary: "#8be9fd",
+    accent: "#50fa7b",
+    success: "#50fa7b",
+    warning: "#f1fa8c",
+    error: "#ff5555",
+    dim: "#6272a4",
+    bg: "#282a36",
   },
   nord: {
-    primary: '#88c0d0',
-    secondary: '#81a1c1',
-    accent: '#5e81ac',
-    success: '#a3be8c',
-    warning: '#ebcb8b',
-    error: '#bf616a',
-    dim: '#4c566a',
-    bg: '#2e3440'
+    primary: "#88c0d0",
+    secondary: "#81a1c1",
+    accent: "#5e81ac",
+    success: "#a3be8c",
+    warning: "#ebcb8b",
+    error: "#bf616a",
+    dim: "#4c566a",
+    bg: "#2e3440",
   },
   cyberpunk: {
-    primary: '#00ffff',
-    secondary: '#ff00ff',
-    accent: '#ffff00',
-    success: '#00ff00',
-    warning: '#ff8800',
-    error: '#ff0044',
-    dim: '#666666',
-    bg: '#0a0a0a'
-  }
+    primary: "#00ffff",
+    secondary: "#ff00ff",
+    accent: "#ffff00",
+    success: "#00ff00",
+    warning: "#ff8800",
+    error: "#ff0044",
+    dim: "#666666",
+    bg: "#0a0a0a",
+  },
 };
 
 class EnhancedMemoryManager {
@@ -123,26 +125,26 @@ class EnhancedMemoryManager {
   private currentTheme: Theme = themes.dracula;
   private isSearchMode: boolean = false;
   private isCommandMode: boolean = false;
-  private searchQuery: string = '';
+  private searchQuery: string = "";
   private memoryBeingAugmented: Memory | null = null;
 
   constructor() {
-    process.env.TERM = 'xterm-256color';
+    process.env.TERM = "xterm-256color";
 
     this.screen = blessed.screen({
       smartCSR: true,
-      title: 'r3call Memory Manager Pro',
+      title: "r3call Memory Manager Pro",
       fullUnicode: true,
       dockBorders: true,
       ignoreDockContrast: true,
-      terminal: 'xterm-256color',
+      terminal: "xterm-256color",
       forceUnicode: true,
       cursor: {
         artificial: true,
-        shape: 'block',
+        shape: "block",
         blink: true,
-        color: 'white'
-      }
+        color: "white",
+      },
     });
 
     this.setupUI();
@@ -155,7 +157,7 @@ class EnhancedMemoryManager {
     this.grid = new (contrib as any).grid({
       rows: 12,
       cols: 12,
-      screen: this.screen
+      screen: this.screen,
     });
 
     // Enhanced title with gradient effect
@@ -163,49 +165,49 @@ class EnhancedMemoryManager {
       parent: this.screen,
       top: 0,
       left: 0,
-      width: '100%',
+      width: "100%",
       height: 3,
       tags: true,
       border: {
-        type: 'line',
-        fg: this.currentTheme.primary
+        type: "line",
+        fg: this.currentTheme.primary,
       },
       style: {
         border: { fg: this.currentTheme.primary },
-        focus: { border: { fg: this.currentTheme.accent } }
-      }
+        focus: { border: { fg: this.currentTheme.accent } },
+      },
     });
 
-    const title = `{center}${chalk.hex(this.currentTheme.primary).bold('╔═══════════════════════════════════════╗')}{/center}
-{center}${chalk.hex(this.currentTheme.accent).bold('║  r3call Memory Manager Pro v2.0  ║')}{/center}
-{center}${chalk.hex(this.currentTheme.primary).bold('╚═══════════════════════════════════════╝')}{/center}`;
+    const title = `{center}${chalk.hex(this.currentTheme.primary).bold("╔═══════════════════════════════════════╗")}{/center}
+{center}${chalk.hex(this.currentTheme.accent).bold("║  r3call Memory Manager Pro v2.0  ║")}{/center}
+{center}${chalk.hex(this.currentTheme.primary).bold("╚═══════════════════════════════════════╝")}{/center}`;
 
     titleBox.setContent(title);
 
     // Memory list with better styling (left panel)
     this.memoryList = (blessed as any).list({
       parent: this.screen,
-      label: chalk.hex(this.currentTheme.primary)(' ▶ Memories '),
+      label: chalk.hex(this.currentTheme.primary)(" ▶ Memories "),
       top: 3,
       left: 0,
-      width: '35%',
-      height: '60%',
+      width: "35%",
+      height: "60%",
       border: {
-        type: 'line',
-        fg: this.currentTheme.secondary
+        type: "line",
+        fg: this.currentTheme.secondary,
       },
       style: {
         selected: {
           bg: this.currentTheme.accent,
-          fg: 'black',
-          bold: true
+          fg: "black",
+          bold: true,
         },
         item: {
-          fg: 'white'
+          fg: "white",
         },
         border: {
-          fg: this.currentTheme.secondary
-        }
+          fg: this.currentTheme.secondary,
+        },
       },
       keys: true,
       vi: true,
@@ -213,27 +215,27 @@ class EnhancedMemoryManager {
       scrollable: true,
       scrollbar: {
         bg: this.currentTheme.dim,
-        fg: this.currentTheme.accent
+        fg: this.currentTheme.accent,
       },
-      tags: true
+      tags: true,
     });
 
     // Content display with markdown support (center panel)
     this.contentBox = blessed.box({
       parent: this.screen,
-      label: chalk.hex(this.currentTheme.primary)(' ▶ Content '),
+      label: chalk.hex(this.currentTheme.primary)(" ▶ Content "),
       top: 3,
-      left: '35%',
-      width: '65%',
-      height: '60%',
+      left: "35%",
+      width: "65%",
+      height: "60%",
       border: {
-        type: 'line',
-        fg: this.currentTheme.secondary
+        type: "line",
+        fg: this.currentTheme.secondary,
       },
       style: {
         border: {
-          fg: this.currentTheme.secondary
-        }
+          fg: this.currentTheme.secondary,
+        },
       },
       scrollable: true,
       alwaysScroll: true,
@@ -242,52 +244,52 @@ class EnhancedMemoryManager {
       vi: true,
       scrollbar: {
         bg: this.currentTheme.dim,
-        fg: this.currentTheme.accent
+        fg: this.currentTheme.accent,
       },
-      tags: true
+      tags: true,
     });
 
     // Search results box (bottom left)
     this.searchBox = blessed.box({
       parent: this.screen,
-      label: chalk.hex(this.currentTheme.primary)(' 🔍 Search Results '),
-      top: '63%',
+      label: chalk.hex(this.currentTheme.primary)(" 🔍 Search Results "),
+      top: "63%",
       left: 0,
-      width: '50%',
-      height: '30%',
+      width: "50%",
+      height: "30%",
       border: {
-        type: 'line',
-        fg: this.currentTheme.warning
+        type: "line",
+        fg: this.currentTheme.warning,
       },
       style: {
         border: {
-          fg: this.currentTheme.warning
-        }
+          fg: this.currentTheme.warning,
+        },
       },
       scrollable: true,
       mouse: true,
       keys: true,
-      tags: true
+      tags: true,
     });
 
     // Minimap/Graph visualization (bottom right)
     this.minimap = blessed.box({
       parent: this.screen,
-      label: chalk.hex(this.currentTheme.primary)(' 🗺️  Memory Graph '),
-      top: '63%',
-      left: '50%',
-      width: '50%',
-      height: '30%',
+      label: chalk.hex(this.currentTheme.primary)(" 🗺️  Memory Graph "),
+      top: "63%",
+      left: "50%",
+      width: "50%",
+      height: "30%",
       border: {
-        type: 'line',
-        fg: this.currentTheme.accent
+        type: "line",
+        fg: this.currentTheme.accent,
       },
       style: {
         border: {
-          fg: this.currentTheme.accent
-        }
+          fg: this.currentTheme.accent,
+        },
       },
-      tags: true
+      tags: true,
     });
 
     // Enhanced status bar with live indicators
@@ -295,13 +297,13 @@ class EnhancedMemoryManager {
       parent: this.screen,
       bottom: 1,
       left: 0,
-      width: '100%',
+      width: "100%",
       height: 1,
       tags: true,
       style: {
-        fg: 'white',
-        bg: this.currentTheme.bg
-      }
+        fg: "white",
+        bg: this.currentTheme.bg,
+      },
     });
 
     // Command line (hidden by default)
@@ -309,39 +311,39 @@ class EnhancedMemoryManager {
       parent: this.screen,
       bottom: 0,
       left: 0,
-      width: '100%',
+      width: "100%",
       height: 1,
       style: {
-        fg: 'white',
+        fg: "white",
         bg: this.currentTheme.bg,
         border: {
-          fg: this.currentTheme.warning
-        }
+          fg: this.currentTheme.warning,
+        },
       },
       inputOnFocus: true,
-      hidden: true
+      hidden: true,
     });
 
     // Help overlay (hidden by default)
     this.helpBox = blessed.box({
       parent: this.screen,
-      top: 'center',
-      left: 'center',
-      width: '60%',
-      height: '60%',
+      top: "center",
+      left: "center",
+      width: "60%",
+      height: "60%",
       border: {
-        type: 'line',
-        fg: this.currentTheme.accent
+        type: "line",
+        fg: this.currentTheme.accent,
       },
       style: {
         border: {
-          fg: this.currentTheme.accent
+          fg: this.currentTheme.accent,
         },
-        bg: 'black'
+        bg: "black",
       },
       tags: true,
       hidden: true,
-      padding: 1
+      padding: 1,
     });
 
     this.updateStatusBar();
@@ -349,32 +351,32 @@ class EnhancedMemoryManager {
 
   private setupKeyBindings() {
     // Global keys
-    this.screen.key(['q', 'C-c'], () => {
+    this.screen.key(["q", "C-c"], () => {
       this.cleanup();
       process.exit(0);
     });
 
     // Navigation
-    this.screen.key(['j', 'down'], () => this.navigateDown());
-    this.screen.key(['k', 'up'], () => this.navigateUp());
-    this.screen.key(['g', 'home'], () => this.navigateFirst());
-    this.screen.key(['G', 'end'], () => this.navigateLast());
-    this.screen.key(['pagedown'], () => this.navigatePageDown());
-    this.screen.key(['pageup'], () => this.navigatePageUp());
+    this.screen.key(["j", "down"], () => this.navigateDown());
+    this.screen.key(["k", "up"], () => this.navigateUp());
+    this.screen.key(["g", "home"], () => this.navigateFirst());
+    this.screen.key(["G", "end"], () => this.navigateLast());
+    this.screen.key(["pagedown"], () => this.navigatePageDown());
+    this.screen.key(["pageup"], () => this.navigatePageUp());
 
     // Actions
-    this.screen.key(['/', 'C-f'], () => this.enterSearchMode());
-    this.screen.key([':'], () => this.enterCommandMode());
-    this.screen.key(['e'], () => this.enrichWithExa());
-    this.screen.key(['r', 'f5'], () => this.refresh());
-    this.screen.key(['?', 'h'], () => this.toggleHelp());
-    this.screen.key(['t'], () => this.cycleTheme());
-    this.screen.key(['s'], () => this.saveAugmentedMemory());
-    this.screen.key(['d'], () => this.deleteMemory());
-    this.screen.key(['a'], () => this.addMemory());
-    this.screen.key(['enter'], () => this.viewMemoryDetails());
-    this.screen.key(['tab'], () => this.switchFocus());
-    this.screen.key(['escape'], () => this.exitMode());
+    this.screen.key(["/", "C-f"], () => this.enterSearchMode());
+    this.screen.key([":"], () => this.enterCommandMode());
+    this.screen.key(["e"], () => this.enrichWithExa());
+    this.screen.key(["r", "f5"], () => this.refresh());
+    this.screen.key(["?", "h"], () => this.toggleHelp());
+    this.screen.key(["t"], () => this.cycleTheme());
+    this.screen.key(["s"], () => this.saveAugmentedMemory());
+    this.screen.key(["d"], () => this.deleteMemory());
+    this.screen.key(["a"], () => this.addMemory());
+    this.screen.key(["enter"], () => this.viewMemoryDetails());
+    this.screen.key(["tab"], () => this.switchFocus());
+    this.screen.key(["escape"], () => this.exitMode());
 
     // Number keys for quick selection
     for (let i = 1; i <= 9; i++) {
@@ -386,7 +388,7 @@ class EnhancedMemoryManager {
     }
 
     // List navigation
-    this.memoryList.on('select', (item: any, index: number) => {
+    this.memoryList.on("select", (item: any, index: number) => {
       this.selectedIndex = index;
       this.selectedMemory = this.filteredMemories[index];
       this.displayMemory();
@@ -399,7 +401,7 @@ class EnhancedMemoryManager {
 
       // Connect to Redis
       this.redisClient = createClient({
-        url: process.env.REDIS_URL || 'redis://localhost:6379'
+        url: process.env.REDIS_URL || "redis://localhost:6379",
       });
 
       await this.redisClient.connect();
@@ -407,9 +409,9 @@ class EnhancedMemoryManager {
 
       // Initialize fuzzy search
       this.fuse = new Fuse(this.memories, {
-        keys: ['memory', 'tags', 'metadata.category'],
+        keys: ["memory", "tags", "metadata.category"],
         threshold: 0.3,
-        includeScore: true
+        includeScore: true,
       });
 
       this.updateDisplay();
@@ -422,22 +424,24 @@ class EnhancedMemoryManager {
   private showLoadingScreen() {
     const loadingBox = blessed.box({
       parent: this.screen,
-      top: 'center',
-      left: 'center',
+      top: "center",
+      left: "center",
       width: 40,
       height: 10,
       border: {
-        type: 'line',
-        fg: this.currentTheme.accent
+        type: "line",
+        fg: this.currentTheme.accent,
       },
-      tags: true
+      tags: true,
     });
 
-    const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+    const frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
     let frameIndex = 0;
 
     const loadingInterval = setInterval(() => {
-      loadingBox.setContent(`{center}${chalk.hex(this.currentTheme.accent)(frames[frameIndex])} Loading memories...{/center}`);
+      loadingBox.setContent(
+        `{center}${chalk.hex(this.currentTheme.accent)(frames[frameIndex])} Loading memories...{/center}`,
+      );
       frameIndex = (frameIndex + 1) % frames.length;
       this.screen.render();
     }, 80);
@@ -453,24 +457,24 @@ class EnhancedMemoryManager {
     if (!this.redisClient) return;
 
     try {
-      const keys = await this.redisClient.keys('memory:*');
+      const keys = await this.redisClient.keys("memory:*");
       this.memories = [];
 
       for (const key of keys) {
-        if (key.includes(':keywords:') || key.includes(':access:')) continue;
+        if (key.includes(":keywords:") || key.includes(":access:")) continue;
 
         try {
           const data = await this.redisClient.get(key);
           if (data) {
             const memory = JSON.parse(data);
             this.memories.push({
-              id: key.replace('memory:', ''),
-              memory: memory.content || memory.memory || '',
+              id: key.replace("memory:", ""),
+              memory: memory.content || memory.memory || "",
               metadata: memory.metadata || {},
               created_at: memory.created_at || new Date().toISOString(),
-              user_id: memory.user_id || 'default',
+              user_id: memory.user_id || "default",
               augmented: memory.metadata?.augmented || false,
-              tags: memory.metadata?.tags || []
+              tags: memory.metadata?.tags || [],
             });
           }
         } catch (err) {
@@ -489,9 +493,13 @@ class EnhancedMemoryManager {
     const items = this.filteredMemories.map((memory, index) => {
       const date = new Date(memory.created_at);
       const dateStr = `${date.getMonth() + 1}/${date.getDate()}`;
-      const preview = memory.memory.substring(0, 30).replace(/\n/g, ' ');
-      const augIcon = memory.augmented ? chalk.hex(this.currentTheme.success)(' ⚡') : '';
-      const tagStr = memory.tags?.length ? chalk.hex(this.currentTheme.warning)(` [${memory.tags[0]}]`) : '';
+      const preview = memory.memory.substring(0, 30).replace(/\n/g, " ");
+      const augIcon = memory.augmented
+        ? chalk.hex(this.currentTheme.success)(" ⚡")
+        : "";
+      const tagStr = memory.tags?.length
+        ? chalk.hex(this.currentTheme.warning)(` [${memory.tags[0]}]`)
+        : "";
 
       return `${chalk.dim(dateStr)} ${preview}...${augIcon}${tagStr}`;
     });
@@ -505,7 +513,7 @@ class EnhancedMemoryManager {
 
   private displayMemory() {
     if (!this.selectedMemory) {
-      this.contentBox.setContent('{center}No memory selected{/center}');
+      this.contentBox.setContent("{center}No memory selected{/center}");
       return;
     }
 
@@ -514,16 +522,30 @@ class EnhancedMemoryManager {
       const rendered = marked(this.selectedMemory.memory) as string;
 
       // Add metadata header
-      const header = chalk.hex(this.currentTheme.primary).bold('═══ Memory Details ═══\n\n');
-      const metadata = chalk.hex(this.currentTheme.dim)([
-        `ID: ${this.selectedMemory.id}`,
-        `Created: ${new Date(this.selectedMemory.created_at).toLocaleString()}`,
-        `User: ${this.selectedMemory.user_id}`,
-        this.selectedMemory.augmented ? `Augmented: ✓` : '',
-        this.selectedMemory.tags?.length ? `Tags: ${this.selectedMemory.tags.join(', ')}` : ''
-      ].filter(Boolean).join('\n'));
+      const header = chalk
+        .hex(this.currentTheme.primary)
+        .bold("═══ Memory Details ═══\n\n");
+      const metadata = chalk.hex(this.currentTheme.dim)(
+        [
+          `ID: ${this.selectedMemory.id}`,
+          `Created: ${new Date(this.selectedMemory.created_at).toLocaleString()}`,
+          `User: ${this.selectedMemory.user_id}`,
+          this.selectedMemory.augmented ? `Augmented: ✓` : "",
+          this.selectedMemory.tags?.length
+            ? `Tags: ${this.selectedMemory.tags.join(", ")}`
+            : "",
+        ]
+          .filter(Boolean)
+          .join("\n"),
+      );
 
-      const content = header + rendered + '\n\n' + chalk.hex(this.currentTheme.dim)('─'.repeat(40)) + '\n' + metadata;
+      const content =
+        header +
+        rendered +
+        "\n\n" +
+        chalk.hex(this.currentTheme.dim)("─".repeat(40)) +
+        "\n" +
+        metadata;
 
       this.contentBox.setContent(content);
       this.contentBox.scrollTo(0);
@@ -539,15 +561,15 @@ class EnhancedMemoryManager {
     if (!this.selectedMemory) return;
 
     // Create a simple ASCII graph showing relationships
-    const relatedCount = this.memories.filter(m =>
-      m.tags?.some(t => this.selectedMemory?.tags?.includes(t))
+    const relatedCount = this.memories.filter((m) =>
+      m.tags?.some((t) => this.selectedMemory?.tags?.includes(t)),
     ).length;
 
     const graph = `
-    ${chalk.hex(this.currentTheme.accent)('Current Memory')}
+    ${chalk.hex(this.currentTheme.accent)("Current Memory")}
            │
            ├── ${chalk.hex(this.currentTheme.warning)(`Related: ${relatedCount}`)}
-           ├── ${chalk.hex(this.currentTheme.success)(`Augmented: ${this.selectedMemory.augmented ? '✓' : '✗'}`)}
+           ├── ${chalk.hex(this.currentTheme.success)(`Augmented: ${this.selectedMemory.augmented ? "✓" : "✗"}`)}
            └── ${chalk.hex(this.currentTheme.primary)(`Tags: ${this.selectedMemory.tags?.length || 0}`)}
 
     ${this.createMemoryVisualization()}
@@ -561,9 +583,11 @@ class EnhancedMemoryManager {
     const last7Days = new Array(7).fill(0);
     const now = new Date();
 
-    this.memories.forEach(memory => {
+    this.memories.forEach((memory) => {
       const date = new Date(memory.created_at);
-      const daysAgo = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+      const daysAgo = Math.floor(
+        (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
+      );
       if (daysAgo < 7) {
         last7Days[daysAgo]++;
       }
@@ -572,48 +596,61 @@ class EnhancedMemoryManager {
     const maxCount = Math.max(...last7Days, 1);
     const barHeight = 5;
 
-    let chart = chalk.hex(this.currentTheme.dim)('Last 7 days:\n');
+    let chart = chalk.hex(this.currentTheme.dim)("Last 7 days:\n");
     for (let i = barHeight; i > 0; i--) {
-      let row = '';
+      let row = "";
       for (let day = 6; day >= 0; day--) {
         const height = Math.ceil((last7Days[day] / maxCount) * barHeight);
-        row += height >= i ? chalk.hex(this.currentTheme.accent)('█ ') : '  ';
+        row += height >= i ? chalk.hex(this.currentTheme.accent)("█ ") : "  ";
       }
-      chart += row + '\n';
+      chart += row + "\n";
     }
-    chart += chalk.hex(this.currentTheme.dim)('──────────────\n');
-    chart += chalk.hex(this.currentTheme.dim)('6 5 4 3 2 1 0 days ago');
+    chart += chalk.hex(this.currentTheme.dim)("──────────────\n");
+    chart += chalk.hex(this.currentTheme.dim)("6 5 4 3 2 1 0 days ago");
 
     return chart;
   }
 
   private updateStatusBar() {
-    const mode = this.isSearchMode ? 'SEARCH' : this.isCommandMode ? 'COMMAND' : 'NORMAL';
-    const modeColor = this.isSearchMode || this.isCommandMode ? this.currentTheme.warning : this.currentTheme.success;
+    const mode = this.isSearchMode
+      ? "SEARCH"
+      : this.isCommandMode
+        ? "COMMAND"
+        : "NORMAL";
+    const modeColor =
+      this.isSearchMode || this.isCommandMode
+        ? this.currentTheme.warning
+        : this.currentTheme.success;
 
     const status = [
       chalk.hex(modeColor).bold(` ${mode} `),
-      chalk.hex(this.currentTheme.dim)('│'),
+      chalk.hex(this.currentTheme.dim)("│"),
       chalk.hex(this.currentTheme.primary)(` 📚 ${this.memories.length} `),
-      chalk.hex(this.currentTheme.dim)('│'),
-      chalk.hex(this.currentTheme.accent)(` ⚡ ${this.memories.filter(m => m.augmented).length} `),
-      chalk.hex(this.currentTheme.dim)('│'),
-      chalk.hex(this.currentTheme.secondary)(` 🔍 ${this.filteredMemories.length} `),
-      chalk.hex(this.currentTheme.dim)('│'),
-      chalk.hex(this.currentTheme.dim)(` ? help │ / search │ e enrich │ q quit `)
-    ].join('');
+      chalk.hex(this.currentTheme.dim)("│"),
+      chalk.hex(this.currentTheme.accent)(
+        ` ⚡ ${this.memories.filter((m) => m.augmented).length} `,
+      ),
+      chalk.hex(this.currentTheme.dim)("│"),
+      chalk.hex(this.currentTheme.secondary)(
+        ` 🔍 ${this.filteredMemories.length} `,
+      ),
+      chalk.hex(this.currentTheme.dim)("│"),
+      chalk.hex(this.currentTheme.dim)(
+        ` ? help │ / search │ e enrich │ q quit `,
+      ),
+    ].join("");
 
     this.statusBar.setContent(status);
   }
 
   private async enrichWithExa() {
     if (!this.selectedMemory) {
-      this.showError('No memory selected');
+      this.showError("No memory selected");
       return;
     }
 
     if (!process.env.EXA_API_KEY) {
-      this.showError('EXA_API_KEY not configured');
+      this.showError("EXA_API_KEY not configured");
       return;
     }
 
@@ -621,29 +658,32 @@ class EnhancedMemoryManager {
     const query = this.selectedMemory.memory.substring(0, 100);
 
     try {
-      this.searchBox.setContent(chalk.hex(this.currentTheme.warning)('⏳ Searching with Exa...'));
+      this.searchBox.setContent(
+        chalk.hex(this.currentTheme.warning)("⏳ Searching with Exa..."),
+      );
       this.screen.render();
 
-      const response = await fetch('https://api.exa.ai/search', {
-        method: 'POST',
+      const response = await fetch("https://api.exa.ai/search", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': process.env.EXA_API_KEY
+          "Content-Type": "application/json",
+          "x-api-key": process.env.EXA_API_KEY,
         },
         body: JSON.stringify({
           query,
           numResults: 5,
-          useAutoprompt: true
-        })
+          useAutoprompt: true,
+        }),
       });
 
-      const data = await response.json() as any;
-      this.exaResults = data.results?.map((r: any, index: number) => ({
-        title: r.title,
-        url: r.url,
-        snippet: r.text?.substring(0, 200) || '',
-        relevance: r.score || 0
-      })) || [];
+      const data = (await response.json()) as any;
+      this.exaResults =
+        data.results?.map((r: any, index: number) => ({
+          title: r.title,
+          url: r.url,
+          snippet: r.text?.substring(0, 200) || "",
+          relevance: r.score || 0,
+        })) || [];
 
       this.displayExaResults();
     } catch (error) {
@@ -653,19 +693,31 @@ class EnhancedMemoryManager {
 
   private displayExaResults() {
     if (this.exaResults.length === 0) {
-      this.searchBox.setContent(chalk.hex(this.currentTheme.warning)('No results found'));
+      this.searchBox.setContent(
+        chalk.hex(this.currentTheme.warning)("No results found"),
+      );
       return;
     }
 
-    let content = chalk.hex(this.currentTheme.accent).bold('Exa Search Results:\n\n');
+    let content = chalk
+      .hex(this.currentTheme.accent)
+      .bold("Exa Search Results:\n\n");
 
     this.exaResults.forEach((result, index) => {
-      content += chalk.hex(this.currentTheme.primary)(`[${index + 1}] ${result.title}\n`);
-      content += chalk.hex(this.currentTheme.dim)(`    ${result.snippet.substring(0, 80)}...\n`);
-      content += chalk.hex(this.currentTheme.secondary)(`    ${result.url}\n\n`);
+      content += chalk.hex(this.currentTheme.primary)(
+        `[${index + 1}] ${result.title}\n`,
+      );
+      content += chalk.hex(this.currentTheme.dim)(
+        `    ${result.snippet.substring(0, 80)}...\n`,
+      );
+      content += chalk.hex(this.currentTheme.secondary)(
+        `    ${result.url}\n\n`,
+      );
     });
 
-    content += chalk.hex(this.currentTheme.warning)('\nPress [1-5] to augment with result, [S] to save first');
+    content += chalk.hex(this.currentTheme.warning)(
+      "\nPress [1-5] to augment with result, [S] to save first",
+    );
 
     this.searchBox.setContent(content);
     this.screen.render();
@@ -673,7 +725,7 @@ class EnhancedMemoryManager {
 
   private async saveAugmentedMemory() {
     if (!this.memoryBeingAugmented || this.exaResults.length === 0) {
-      this.showError('No augmentation in progress');
+      this.showError("No augmentation in progress");
       return;
     }
 
@@ -709,16 +761,16 @@ Updated: ${new Date().toISOString()}`;
       metadata: {
         ...this.memoryBeingAugmented.metadata,
         augmented: true,
-        augmentation_source: 'exa',
+        augmentation_source: "exa",
         augmentation_date: new Date().toISOString(),
-        exa_url: result.url
-      }
+        exa_url: result.url,
+      },
     };
 
     try {
       await this.redisClient.set(
         `memory:${this.memoryBeingAugmented.id}`,
-        JSON.stringify(augmentedMemory)
+        JSON.stringify(augmentedMemory),
       );
 
       this.showSuccess(`Memory augmented with result #${index + 1}`);
@@ -764,7 +816,10 @@ Updated: ${new Date().toISOString()}`;
 
   private navigatePageDown() {
     const pageSize = 10;
-    this.selectedIndex = Math.min(this.selectedIndex + pageSize, this.filteredMemories.length - 1);
+    this.selectedIndex = Math.min(
+      this.selectedIndex + pageSize,
+      this.filteredMemories.length - 1,
+    );
     this.memoryList.select(this.selectedIndex);
     this.selectedMemory = this.filteredMemories[this.selectedIndex];
     this.displayMemory();
@@ -782,15 +837,15 @@ Updated: ${new Date().toISOString()}`;
     this.isSearchMode = true;
     this.commandLine.show();
     this.commandLine.focus();
-    this.commandLine.setValue('/');
+    this.commandLine.setValue("/");
     this.updateStatusBar();
 
-    this.commandLine.on('submit', (value: string) => {
+    this.commandLine.on("submit", (value: string) => {
       this.performSearch(value.substring(1));
       this.exitMode();
     });
 
-    this.commandLine.on('cancel', () => {
+    this.commandLine.on("cancel", () => {
       this.exitMode();
     });
 
@@ -801,15 +856,15 @@ Updated: ${new Date().toISOString()}`;
     this.isCommandMode = true;
     this.commandLine.show();
     this.commandLine.focus();
-    this.commandLine.setValue(':');
+    this.commandLine.setValue(":");
     this.updateStatusBar();
 
-    this.commandLine.on('submit', (value: string) => {
+    this.commandLine.on("submit", (value: string) => {
       this.executeCommand(value.substring(1));
       this.exitMode();
     });
 
-    this.commandLine.on('cancel', () => {
+    this.commandLine.on("cancel", () => {
       this.exitMode();
     });
 
@@ -820,7 +875,7 @@ Updated: ${new Date().toISOString()}`;
     this.isSearchMode = false;
     this.isCommandMode = false;
     this.commandLine.hide();
-    this.commandLine.setValue('');
+    this.commandLine.setValue("");
     this.memoryList.focus();
     this.updateStatusBar();
     this.screen.render();
@@ -831,7 +886,7 @@ Updated: ${new Date().toISOString()}`;
       this.filteredMemories = [...this.memories];
     } else if (this.fuse) {
       const results = this.fuse.search(query);
-      this.filteredMemories = results.map(r => r.item);
+      this.filteredMemories = results.map((r) => r.item);
     }
 
     this.selectedIndex = 0;
@@ -840,19 +895,19 @@ Updated: ${new Date().toISOString()}`;
   }
 
   private executeCommand(command: string) {
-    const [cmd, ...args] = command.split(' ');
+    const [cmd, ...args] = command.split(" ");
 
     switch (cmd) {
-      case 'theme':
+      case "theme":
         this.cycleTheme();
         break;
-      case 'export':
+      case "export":
         this.exportMemories();
         break;
-      case 'stats':
+      case "stats":
         this.showStats();
         break;
-      case 'clear':
+      case "clear":
         this.clearSearch();
         break;
       default:
@@ -862,8 +917,9 @@ Updated: ${new Date().toISOString()}`;
 
   private cycleTheme() {
     const themeNames = Object.keys(themes);
-    const currentIndex = themeNames.findIndex(name =>
-      JSON.stringify(themes[name]) === JSON.stringify(this.currentTheme)
+    const currentIndex = themeNames.findIndex(
+      (name) =>
+        JSON.stringify(themes[name]) === JSON.stringify(this.currentTheme),
     );
     const nextIndex = (currentIndex + 1) % themeNames.length;
     this.currentTheme = themes[themeNames[nextIndex]];
@@ -872,9 +928,9 @@ Updated: ${new Date().toISOString()}`;
     this.screen.destroy();
     this.screen = blessed.screen({
       smartCSR: true,
-      title: 'r3call Memory Manager Pro',
+      title: "r3call Memory Manager Pro",
       fullUnicode: true,
-      terminal: 'xterm-256color'
+      terminal: "xterm-256color",
     });
 
     this.setupUI();
@@ -887,10 +943,10 @@ Updated: ${new Date().toISOString()}`;
   private toggleHelp() {
     if (this.helpBox.hidden) {
       const helpContent = `
-${chalk.hex(this.currentTheme.accent).bold('r3call Memory Manager Pro - Help')}
-${chalk.hex(this.currentTheme.dim)('─'.repeat(40))}
+${chalk.hex(this.currentTheme.accent).bold("r3call Memory Manager Pro - Help")}
+${chalk.hex(this.currentTheme.dim)("─".repeat(40))}
 
-${chalk.hex(this.currentTheme.primary).bold('Navigation:')}
+${chalk.hex(this.currentTheme.primary).bold("Navigation:")}
   j/↓         Move down
   k/↑         Move up
   g/Home      Go to first
@@ -898,7 +954,7 @@ ${chalk.hex(this.currentTheme.primary).bold('Navigation:')}
   PgDn        Page down
   PgUp        Page up
 
-${chalk.hex(this.currentTheme.primary).bold('Actions:')}
+${chalk.hex(this.currentTheme.primary).bold("Actions:")}
   /           Search memories
   :           Command mode
   e           Enrich with Exa
@@ -911,13 +967,13 @@ ${chalk.hex(this.currentTheme.primary).bold('Actions:')}
   ?/h         Toggle help
   q           Quit
 
-${chalk.hex(this.currentTheme.primary).bold('Commands:')}
+${chalk.hex(this.currentTheme.primary).bold("Commands:")}
   :theme      Change theme
   :export     Export memories
   :stats      Show statistics
   :clear      Clear search
 
-${chalk.hex(this.currentTheme.dim)('Press any key to close...')}
+${chalk.hex(this.currentTheme.dim)("Press any key to close...")}
 `;
 
       this.helpBox.setContent(helpContent);
@@ -932,10 +988,10 @@ ${chalk.hex(this.currentTheme.dim)('Press any key to close...')}
   }
 
   private clearSearch() {
-    this.searchQuery = '';
+    this.searchQuery = "";
     this.filteredMemories = [...this.memories];
     this.updateMemoryList();
-    this.showSuccess('Search cleared');
+    this.showSuccess("Search cleared");
   }
 
   private async deleteMemory() {
@@ -943,7 +999,7 @@ ${chalk.hex(this.currentTheme.dim)('Press any key to close...')}
 
     try {
       await this.redisClient.del(`memory:${this.selectedMemory.id}`);
-      this.showSuccess('Memory deleted');
+      this.showSuccess("Memory deleted");
       await this.refresh();
     } catch (error) {
       this.showError(`Failed to delete: ${error}`);
@@ -952,7 +1008,7 @@ ${chalk.hex(this.currentTheme.dim)('Press any key to close...')}
 
   private async addMemory() {
     // This would open a form to add a new memory
-    this.showError('Add memory not implemented yet');
+    this.showError("Add memory not implemented yet");
   }
 
   private viewMemoryDetails() {
@@ -979,17 +1035,17 @@ ${chalk.hex(this.currentTheme.dim)('Press any key to close...')}
   private showStats() {
     const stats = {
       total: this.memories.length,
-      augmented: this.memories.filter(m => m.augmented).length,
-      recent: this.memories.filter(m => {
+      augmented: this.memories.filter((m) => m.augmented).length,
+      recent: this.memories.filter((m) => {
         const date = new Date(m.created_at);
         const now = new Date();
-        return (now.getTime() - date.getTime()) < 7 * 24 * 60 * 60 * 1000;
-      }).length
+        return now.getTime() - date.getTime() < 7 * 24 * 60 * 60 * 1000;
+      }).length,
     };
 
     const content = `
-${chalk.hex(this.currentTheme.accent).bold('Memory Statistics')}
-${chalk.hex(this.currentTheme.dim)('─'.repeat(30))}
+${chalk.hex(this.currentTheme.accent).bold("Memory Statistics")}
+${chalk.hex(this.currentTheme.dim)("─".repeat(30))}
 
 Total Memories: ${chalk.hex(this.currentTheme.primary)(stats.total.toString())}
 Augmented: ${chalk.hex(this.currentTheme.success)(stats.augmented.toString())}
@@ -1005,7 +1061,7 @@ ${this.createMemoryVisualization()}
   private async refresh() {
     await this.loadMemories();
     this.updateDisplay();
-    this.showSuccess('Refreshed');
+    this.showSuccess("Refreshed");
   }
 
   private updateDisplay() {
@@ -1020,18 +1076,18 @@ ${this.createMemoryVisualization()}
   private showSuccess(message: string) {
     const notification = blessed.box({
       parent: this.screen,
-      top: 'center',
-      left: 'center',
+      top: "center",
+      left: "center",
       width: message.length + 4,
       height: 3,
       content: chalk.hex(this.currentTheme.success)(`✓ ${message}`),
       border: {
-        type: 'line',
-        fg: this.currentTheme.success
+        type: "line",
+        fg: this.currentTheme.success,
       },
       style: {
-        bg: 'black'
-      }
+        bg: "black",
+      },
     });
 
     this.screen.render();
@@ -1045,18 +1101,18 @@ ${this.createMemoryVisualization()}
   private showError(message: string) {
     const notification = blessed.box({
       parent: this.screen,
-      top: 'center',
-      left: 'center',
+      top: "center",
+      left: "center",
       width: Math.min(message.length + 4, 60),
       height: 3,
       content: chalk.hex(this.currentTheme.error)(`✗ ${message}`),
       border: {
-        type: 'line',
-        fg: this.currentTheme.error
+        type: "line",
+        fg: this.currentTheme.error,
       },
       style: {
-        bg: 'black'
-      }
+        bg: "black",
+      },
     });
 
     this.screen.render();
@@ -1081,10 +1137,10 @@ const manager = new EnhancedMemoryManager();
 manager.run();
 
 // Handle graceful shutdown
-process.on('SIGTERM', () => {
+process.on("SIGTERM", () => {
   process.exit(0);
 });
 
-process.on('SIGINT', () => {
+process.on("SIGINT", () => {
   process.exit(0);
 });

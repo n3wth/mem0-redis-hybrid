@@ -1,24 +1,24 @@
-import React, {useState, useEffect} from 'react';
-import {Text} from 'ink';
+import React, { useState, useEffect } from "react";
+import { Text } from "ink";
 
-const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+const frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
 interface SpinnerProps {
-	type?: string;
+  type?: string;
 }
 
 export const SimpleSpinner: React.FC<SpinnerProps> = () => {
-	const [frame, setFrame] = useState(0);
+  const [frame, setFrame] = useState(0);
 
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setFrame(prev => (prev + 1) % frames.length);
-		}, 80);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFrame((prev) => (prev + 1) % frames.length);
+    }, 80);
 
-		return () => clearInterval(interval);
-	}, []);
+    return () => clearInterval(interval);
+  }, []);
 
-	return <Text color="cyan">{frames[frame]}</Text>;
+  return <Text color="cyan">{frames[frame]}</Text>;
 };
 
 export default SimpleSpinner;

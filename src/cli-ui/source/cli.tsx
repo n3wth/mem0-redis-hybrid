@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-import React from 'react';
-import {render} from 'ink';
-import meow from 'meow';
-import App from './app.js';
+import React from "react";
+import { render } from "ink";
+import meow from "meow";
+import App from "./app.js";
 
 const cli = meow(
-	`
+  `
 	Usage
 	  $ r3call-cli
 
@@ -25,25 +25,25 @@ const cli = meow(
 	  R3CALL_USER_ID   User ID for memories
 	  MEM0_API_KEY     Alternative API key
 `,
-	{
-		importMeta: import.meta,
-		flags: {
-			apiUrl: {
-				type: 'string',
-			},
-			userId: {
-				type: 'string',
-			},
-		},
-	},
+  {
+    importMeta: import.meta,
+    flags: {
+      apiUrl: {
+        type: "string",
+      },
+      userId: {
+        type: "string",
+      },
+    },
+  },
 );
 
 // Set environment variables from CLI flags if provided
 if (cli.flags.apiUrl) {
-	process.env['R3CALL_API_URL'] = cli.flags.apiUrl;
+  process.env["R3CALL_API_URL"] = cli.flags.apiUrl;
 }
 if (cli.flags.userId) {
-	process.env['R3CALL_USER_ID'] = cli.flags.userId;
+  process.env["R3CALL_USER_ID"] = cli.flags.userId;
 }
 
 render(<App />);

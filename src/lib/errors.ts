@@ -11,7 +11,7 @@ export class R3callError extends Error {
     message: string,
     public readonly code: string,
     public readonly retryable: boolean = false,
-    context?: Record<string, any>
+    context?: Record<string, any>,
   ) {
     super(message);
     this.name = this.constructor.name;
@@ -35,7 +35,7 @@ export class R3callError extends Error {
 
 export class RedisConnectionError extends R3callError {
   constructor(message: string, context?: Record<string, any>) {
-    super(message, 'REDIS_CONNECTION_ERROR', true, context);
+    super(message, "REDIS_CONNECTION_ERROR", true, context);
   }
 }
 
@@ -43,13 +43,13 @@ export class RedisOperationError extends R3callError {
   constructor(
     operation: string,
     originalError: Error,
-    context?: Record<string, any>
+    context?: Record<string, any>,
   ) {
     super(
       `Redis operation '${operation}' failed: ${originalError.message}`,
-      'REDIS_OPERATION_ERROR',
+      "REDIS_OPERATION_ERROR",
       true,
-      { ...context, operation, originalError: originalError.message }
+      { ...context, operation, originalError: originalError.message },
     );
   }
 }
@@ -59,28 +59,26 @@ export class CacheError extends R3callError {
     operation: string,
     message: string,
     retryable: boolean = true,
-    context?: Record<string, any>
+    context?: Record<string, any>,
   ) {
-    super(
-      `Cache ${operation} failed: ${message}`,
-      'CACHE_ERROR',
-      retryable,
-      { ...context, operation }
-    );
+    super(`Cache ${operation} failed: ${message}`, "CACHE_ERROR", retryable, {
+      ...context,
+      operation,
+    });
   }
 }
 
 export class Mem0APIError extends R3callError {
   constructor(
     public readonly statusCode?: number,
-    message: string = 'Mem0 API request failed',
-    context?: Record<string, any>
+    message: string = "Mem0 API request failed",
+    context?: Record<string, any>,
   ) {
     super(
       message,
-      'MEM0_API_ERROR',
+      "MEM0_API_ERROR",
       statusCode ? statusCode >= 500 : true, // 5xx errors are retryable
-      { ...context, statusCode }
+      { ...context, statusCode },
     );
   }
 }
@@ -89,28 +87,24 @@ export class DuplicateMemoryError extends R3callError {
   constructor(
     public readonly existingId: string,
     public readonly similarity: number,
-    existingMemory?: string
+    existingMemory?: string,
   ) {
     super(
       `Duplicate memory detected (${Math.round(similarity * 100)}% similar)`,
-      'DUPLICATE_MEMORY',
+      "DUPLICATE_MEMORY",
       false,
-      { existingId, similarity, existingMemory }
+      { existingId, similarity, existingMemory },
     );
   }
 }
 
 export class ValidationError extends R3callError {
-  constructor(
-    field: string,
-    message: string,
-    context?: Record<string, any>
-  ) {
+  constructor(field: string, message: string, context?: Record<string, any>) {
     super(
       `Validation failed for '${field}': ${message}`,
-      'VALIDATION_ERROR',
+      "VALIDATION_ERROR",
       false,
-      { ...context, field }
+      { ...context, field },
     );
   }
 }
@@ -119,13 +113,13 @@ export class TimeoutError extends R3callError {
   constructor(
     operation: string,
     timeoutMs: number,
-    context?: Record<string, any>
+    context?: Record<string, any>,
   ) {
     super(
       `Operation '${operation}' timed out after ${timeoutMs}ms`,
-      'TIMEOUT_ERROR',
+      "TIMEOUT_ERROR",
       true,
-      { ...context, operation, timeoutMs }
+      { ...context, operation, timeoutMs },
     );
   }
 }
@@ -135,14 +129,12 @@ export class JobQueueError extends R3callError {
     jobId: string,
     message: string,
     retryable: boolean = true,
-    context?: Record<string, any>
+    context?: Record<string, any>,
   ) {
-    super(
-      `Job '${jobId}' failed: ${message}`,
-      'JOB_QUEUE_ERROR',
-      retryable,
-      { ...context, jobId }
-    );
+    super(`Job '${jobId}' failed: ${message}`, "JOB_QUEUE_ERROR", retryable, {
+      ...context,
+      jobId,
+    });
   }
 }
 
@@ -151,13 +143,13 @@ export class IntelligenceError extends R3callError {
     feature: string,
     message: string,
     fallbackAvailable: boolean = true,
-    context?: Record<string, any>
+    context?: Record<string, any>,
   ) {
     super(
       `Intelligence feature '${feature}' failed: ${message}`,
-      'INTELLIGENCE_ERROR',
+      "INTELLIGENCE_ERROR",
       false,
-      { ...context, feature, fallbackAvailable }
+      { ...context, feature, fallbackAvailable },
     );
   }
 }
@@ -166,13 +158,13 @@ export class InitializationError extends R3callError {
   constructor(
     component: string,
     message: string,
-    context?: Record<string, any>
+    context?: Record<string, any>,
   ) {
     super(
       `Failed to initialize ${component}: ${message}`,
-      'INITIALIZATION_ERROR',
+      "INITIALIZATION_ERROR",
       false,
-      { ...context, component }
+      { ...context, component },
     );
   }
 }
@@ -187,7 +179,7 @@ export class ErrorHandler {
   static async withRetry<T>(
     operation: () => Promise<T>,
     operationName: string,
-    maxRetries: number = this.MAX_RETRIES
+    maxRetries: number = this.MAX_RETRIES,
   ): Promise<T> {
     let lastError: Error | undefined;
 
@@ -210,41 +202,45 @@ export class ErrorHandler {
         // Wait before retry with exponential backoff
         const delay = this.RETRY_DELAYS[attempt] || 5000;
         console.error(
-          `${operationName} failed (attempt ${attempt + 1}/${maxRetries + 1}), retrying in ${delay}ms...`
+          `${operationName} failed (attempt ${attempt + 1}/${maxRetries + 1}), retrying in ${delay}ms...`,
         );
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
 
     // All retries exhausted
     throw new R3callError(
       `${operationName} failed after ${maxRetries + 1} attempts`,
-      'MAX_RETRIES_EXCEEDED',
+      "MAX_RETRIES_EXCEEDED",
       false,
-      { lastError: lastError?.message, operationName, attempts: maxRetries + 1 }
+      {
+        lastError: lastError?.message,
+        operationName,
+        attempts: maxRetries + 1,
+      },
     );
   }
 
   static handleError(error: any, context?: string): never {
     if (error instanceof R3callError) {
-      console.error(`[${error.code}] ${context || 'Error'}:`, error.message);
+      console.error(`[${error.code}] ${context || "Error"}:`, error.message);
       if (error.context) {
-        console.error('Context:', JSON.stringify(error.context, null, 2));
+        console.error("Context:", JSON.stringify(error.context, null, 2));
       }
     } else {
-      console.error(`${context || 'Unexpected error'}:`, error);
+      console.error(`${context || "Unexpected error"}:`, error);
     }
     throw error;
   }
 
   static logError(error: any, context?: string): void {
     if (error instanceof R3callError) {
-      console.error(`[${error.code}] ${context || 'Error'}:`, error.message);
-      if (error.context && process.env.DEBUG === 'true') {
-        console.error('Debug context:', JSON.stringify(error.context, null, 2));
+      console.error(`[${error.code}] ${context || "Error"}:`, error.message);
+      if (error.context && process.env.DEBUG === "true") {
+        console.error("Debug context:", JSON.stringify(error.context, null, 2));
       }
     } else {
-      console.error(`${context || 'Error'}:`, error?.message || error);
+      console.error(`${context || "Error"}:`, error?.message || error);
     }
   }
 }

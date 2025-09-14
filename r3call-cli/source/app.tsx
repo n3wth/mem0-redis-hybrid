@@ -17,7 +17,9 @@ interface AppProps {
 }
 
 const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
-	const [mode, setMode] = useState<'menu' | 'search' | 'add' | 'view' | 'delete'>('menu');
+	const [mode, setMode] = useState<
+		'menu' | 'search' | 'add' | 'view' | 'delete'
+	>('menu');
 	const [memories, setMemories] = useState<Memory[]>([]);
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const [searchQuery, setSearchQuery] = useState('');
@@ -30,12 +32,14 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 	const API_BASE = process.env['R3CALL_API_URL'] || 'http://localhost:3030';
 	const USER_ID = process.env['R3CALL_USER_ID'] || 'default';
 
-	const headers = apiKey ? {
-		'Authorization': `Bearer ${apiKey}`,
-		'Content-Type': 'application/json'
-	} : {
-		'Content-Type': 'application/json'
-	};
+	const headers = apiKey
+		? {
+				Authorization: `Bearer ${apiKey}`,
+				'Content-Type': 'application/json',
+			}
+		: {
+				'Content-Type': 'application/json',
+			};
 
 	// Load all memories on start
 	useEffect(() => {
@@ -50,7 +54,7 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 		try {
 			const response = await axios.get(`${API_BASE}/memories`, {
 				headers,
-				params: { user_id: USER_ID, limit: 50 }
+				params: {user_id: USER_ID, limit: 50},
 			});
 			setMemories(response.data.memories || []);
 		} catch (err: any) {
@@ -66,11 +70,15 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 		setLoading(true);
 		setError(null);
 		try {
-			const response = await axios.post(`${API_BASE}/search`, {
-				query: searchQuery,
-				user_id: USER_ID,
-				limit: 20
-			}, { headers });
+			const response = await axios.post(
+				`${API_BASE}/search`,
+				{
+					query: searchQuery,
+					user_id: USER_ID,
+					limit: 20,
+				},
+				{headers},
+			);
 			setMemories(response.data.results || []);
 			setMessage(`Found ${response.data.results?.length || 0} memories`);
 		} catch (err: any) {
@@ -86,10 +94,14 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 		setLoading(true);
 		setError(null);
 		try {
-			await axios.post(`${API_BASE}/add`, {
-				content: newMemory,
-				user_id: USER_ID
-			}, { headers });
+			await axios.post(
+				`${API_BASE}/add`,
+				{
+					content: newMemory,
+					user_id: USER_ID,
+				},
+				{headers},
+			);
 			setMessage('Memory added successfully!');
 			setNewMemory('');
 			setTimeout(() => setMode('menu'), 2000);
@@ -104,7 +116,7 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 		setLoading(true);
 		setError(null);
 		try {
-			await axios.delete(`${API_BASE}/memory/${memoryId}`, { headers });
+			await axios.delete(`${API_BASE}/memory/${memoryId}`, {headers});
 			setMessage('Memory deleted successfully!');
 			loadMemories();
 		} catch (err: any) {
@@ -183,7 +195,9 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 
 	const renderSearch = () => (
 		<Box flexDirection="column">
-			<Text bold color="cyan">Search Memories</Text>
+			<Text bold color="cyan">
+				Search Memories
+			</Text>
 			<Text color="gray">─────────────────────</Text>
 			<Box>
 				<Text>Query: </Text>
@@ -207,7 +221,9 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 					{memories.map((memory, idx) => (
 						<Box key={memory.id} marginY={1}>
 							<Text color={idx === selectedIndex ? 'cyan' : 'white'}>
-								{memory.similarity ? `[${(memory.similarity * 100).toFixed(1)}%] ` : ''}
+								{memory.similarity
+									? `[${(memory.similarity * 100).toFixed(1)}%] `
+									: ''}
 								{memory.content.substring(0, 80)}...
 							</Text>
 						</Box>
@@ -221,7 +237,9 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 
 	const renderAdd = () => (
 		<Box flexDirection="column">
-			<Text bold color="cyan">Add New Memory</Text>
+			<Text bold color="cyan">
+				Add New Memory
+			</Text>
 			<Text color="gray">─────────────────────</Text>
 			<Box>
 				<Text>Content: </Text>
@@ -245,7 +263,9 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 
 	const renderView = () => (
 		<Box flexDirection="column">
-			<Text bold color="cyan">All Memories</Text>
+			<Text bold color="cyan">
+				All Memories
+			</Text>
 			<Text color="gray">─────────────────────</Text>
 			{loading && (
 				<Box>
@@ -277,7 +297,9 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 
 	const renderDelete = () => (
 		<Box flexDirection="column">
-			<Text bold color="red">Delete Memory</Text>
+			<Text bold color="red">
+				Delete Memory
+			</Text>
 			<Text color="gray">─────────────────────</Text>
 			{loading && (
 				<Box>
@@ -290,7 +312,7 @@ const MemoryManager: React.FC<AppProps> = ({apiKey}) => {
 			)}
 			{memories.length > 0 && (
 				<Box flexDirection="column">
-					<Text color="yellow">⚠️  Select a memory to delete:</Text>
+					<Text color="yellow">⚠️ Select a memory to delete:</Text>
 					<Text color="gray">Use ↑/↓ to navigate, Enter to delete</Text>
 					<Newline />
 					{memories.map((memory, idx) => (

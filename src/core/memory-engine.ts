@@ -1,7 +1,7 @@
-import sqlite3 from 'sqlite3';
+import sqlite3 from "sqlite3";
 const { Database } = sqlite3;
-import { createClient, RedisClientType } from 'redis';
-import Fuse from 'fuse.js';
+import { createClient, RedisClientType } from "redis";
+import Fuse from "fuse.js";
 
 // Types
 interface Memory {
@@ -47,14 +47,21 @@ export class MemoryEngine {
   private fuse: Fuse<Memory> | null = null;
   private memoryCache: Map<string, Memory> = new Map();
   private searchCache: Map<string, Memory[]> = new Map();
-  private stats: CacheStats = { hits: 0, misses: 0, hitRate: 0, size: 0, memory: 0 };
+  private stats: CacheStats = {
+    hits: 0,
+    misses: 0,
+    hitRate: 0,
+    size: 0,
+    memory: 0,
+  };
 
   // Performance monitoring
   private operationTimes: Map<string, number[]> = new Map();
 
   constructor(
-    private dbPath: string = './data/memories.db',
-    private redisUrl: string = process.env.REDIS_URL || 'redis://localhost:6379'
+    private dbPath: string = "./data/memories.db",
+    private redisUrl: string = process.env.REDIS_URL ||
+      "redis://localhost:6379",
   ) {
     this.db = new Database(dbPath);
     this.initializeDatabase();
@@ -85,12 +92,24 @@ export class MemoryEngine {
         `);
 
         // Indexes for lightning-fast queries
-        this.db.run('CREATE INDEX IF NOT EXISTS idx_memories_user_id ON memories(user_id)');
-        this.db.run('CREATE INDEX IF NOT EXISTS idx_memories_project ON memories(project)');
-        this.db.run('CREATE INDEX IF NOT EXISTS idx_memories_directory ON memories(directory)');
-        this.db.run('CREATE INDEX IF NOT EXISTS idx_memories_last_used ON memories(last_used DESC)');
-        this.db.run('CREATE INDEX IF NOT EXISTS idx_memories_use_count ON memories(use_count DESC)');
-        this.db.run('CREATE INDEX IF NOT EXISTS idx_memories_search_text ON memories(search_text)');
+        this.db.run(
+          "CREATE INDEX IF NOT EXISTS idx_memories_user_id ON memories(user_id)",
+        );
+        this.db.run(
+          "CREATE INDEX IF NOT EXISTS idx_memories_project ON memories(project)",
+        );
+        this.db.run(
+          "CREATE INDEX IF NOT EXISTS idx_memories_directory ON memories(directory)",
+        );
+        this.db.run(
+          "CREATE INDEX IF NOT EXISTS idx_memories_last_used ON memories(last_used DESC)",
+        );
+        this.db.run(
+          "CREATE INDEX IF NOT EXISTS idx_memories_use_count ON memories(use_count DESC)",
+        );
+        this.db.run(
+          "CREATE INDEX IF NOT EXISTS idx_memories_search_text ON memories(search_text)",
+        );
 
         // Full-text search
         this.db.run(`
@@ -112,7 +131,7 @@ export class MemoryEngine {
         resolve(undefined);
       });
     }).then(() => {
-      this.recordOperation('db_init', performance.now() - startTime);
+      this.recordOperation("db_init", performance.now() - startTime);
       this.loadMemoriesIntoCache();
     });
   }
@@ -121,9 +140,9 @@ export class MemoryEngine {
     try {
       this.redis = createClient({ url: this.redisUrl });
       await this.redis.connect();
-      console.log('✓ Redis cache connected');
+      console.log("✓ Redis cache connected");
     } catch (error) {
-      console.warn('⚠ Redis unavailable, using local cache only');
+      console.warn("⚠ Redis unavailable, using local cache only");
       this.redis = null;
     }
   }
@@ -133,43 +152,51 @@ export class MemoryEngine {
 
     return new Promise((resolve) => {
       // Load most recent and frequently used memories into cache
-      this.db.all(`
+      this.db.all(
+        `
         SELECT * FROM memories
         ORDER BY
           CASE WHEN last_used > datetime('now', '-7 days') THEN use_count ELSE 0 END DESC,
           last_used DESC
         LIMIT 1000
-      `, [], (err, rows: any[]) => {
-        if (!err && rows) {
-          const memories: Memory[] = rows.map(this.parseMemoryRow);
+      `,
+        [],
+        (err, rows: any[]) => {
+          if (!err && rows) {
+            const memories: Memory[] = rows.map(this.parseMemoryRow);
 
-          // Populate memory cache
-          memories.forEach(memory => {
-            this.memoryCache.set(memory.id, memory);
-          });
+            // Populate memory cache
+            memories.forEach((memory) => {
+              this.memoryCache.set(memory.id, memory);
+            });
 
-          // Initialize Fuse.js for fuzzy search
-          this.fuse = new Fuse(memories, {
-            keys: [
-              { name: 'content', weight: 0.7 },
-              { name: 'tags', weight: 0.2 },
-              { name: 'metadata.category', weight: 0.1 }
-            ],
-            threshold: 0.3,
-            includeScore: true,
-            useExtendedSearch: true
-          });
+            // Initialize Fuse.js for fuzzy search
+            this.fuse = new Fuse(memories, {
+              keys: [
+                { name: "content", weight: 0.7 },
+                { name: "tags", weight: 0.2 },
+                { name: "metadata.category", weight: 0.1 },
+              ],
+              threshold: 0.3,
+              includeScore: true,
+              useExtendedSearch: true,
+            });
 
-          this.stats.size = memories.length;
-          this.recordOperation('cache_load', performance.now() - startTime);
-          console.log(`✓ Loaded ${memories.length} memories into cache (${Math.round(performance.now() - startTime)}ms)`);
-        }
-        resolve(undefined);
-      });
+            this.stats.size = memories.length;
+            this.recordOperation("cache_load", performance.now() - startTime);
+            console.log(
+              `✓ Loaded ${memories.length} memories into cache (${Math.round(performance.now() - startTime)}ms)`,
+            );
+          }
+          resolve(undefined);
+        },
+      );
     });
   }
 
-  async addMemory(memory: Omit<Memory, 'id' | 'created_at' | 'updated_at'>): Promise<string> {
+  async addMemory(
+    memory: Omit<Memory, "id" | "created_at" | "updated_at">,
+  ): Promise<string> {
     const startTime = performance.now();
     const id = this.generateId();
     const now = new Date().toISOString();
@@ -181,8 +208,8 @@ export class MemoryEngine {
       updated_at: now,
       metadata: {
         use_count: 0,
-        ...memory.metadata
-      }
+        ...memory.metadata,
+      },
     };
 
     // Add to database
@@ -198,7 +225,7 @@ export class MemoryEngine {
       await this.redis.setEx(`memory:${id}`, 3600, JSON.stringify(fullMemory));
     }
 
-    this.recordOperation('add_memory', performance.now() - startTime);
+    this.recordOperation("add_memory", performance.now() - startTime);
     return id;
   }
 
@@ -208,7 +235,7 @@ export class MemoryEngine {
     // Check local cache first
     if (this.memoryCache.has(id)) {
       this.stats.hits++;
-      this.recordOperation('get_memory_cache', performance.now() - startTime);
+      this.recordOperation("get_memory_cache", performance.now() - startTime);
       return this.memoryCache.get(id)!;
     }
 
@@ -220,7 +247,10 @@ export class MemoryEngine {
           const memory = JSON.parse(cached) as Memory;
           this.memoryCache.set(id, memory);
           this.stats.hits++;
-          this.recordOperation('get_memory_redis', performance.now() - startTime);
+          this.recordOperation(
+            "get_memory_redis",
+            performance.now() - startTime,
+          );
           return memory;
         }
       } catch (error) {
@@ -238,18 +268,21 @@ export class MemoryEngine {
     }
 
     this.stats.misses++;
-    this.recordOperation('get_memory_db', performance.now() - startTime);
+    this.recordOperation("get_memory_db", performance.now() - startTime);
     return memory;
   }
 
-  async searchMemories(query: string, options: SearchOptions = {}): Promise<Memory[]> {
+  async searchMemories(
+    query: string,
+    options: SearchOptions = {},
+  ): Promise<Memory[]> {
     const startTime = performance.now();
     const cacheKey = JSON.stringify({ query, options });
 
     // Check search cache first
     if (this.searchCache.has(cacheKey)) {
       this.stats.hits++;
-      this.recordOperation('search_cache', performance.now() - startTime);
+      this.recordOperation("search_cache", performance.now() - startTime);
       return this.searchCache.get(cacheKey)!;
     }
 
@@ -258,7 +291,7 @@ export class MemoryEngine {
     if (options.fuzzy !== false && this.fuse) {
       // Fuzzy search with Fuse.js
       const fuseResults = this.fuse.search(query);
-      results = fuseResults.map(result => result.item);
+      results = fuseResults.map((result) => result.item);
     } else {
       // Full-text search with SQLite
       results = await this.fullTextSearch(query, options);
@@ -266,14 +299,14 @@ export class MemoryEngine {
 
     // Apply filters
     if (options.project) {
-      results = results.filter(m => m.project === options.project);
+      results = results.filter((m) => m.project === options.project);
     }
     if (options.directory) {
-      results = results.filter(m => m.directory === options.directory);
+      results = results.filter((m) => m.directory === options.directory);
     }
     if (options.tags && options.tags.length > 0) {
-      results = results.filter(m =>
-        options.tags!.some(tag => m.tags.includes(tag))
+      results = results.filter((m) =>
+        options.tags!.some((tag) => m.tags.includes(tag)),
       );
     }
 
@@ -285,7 +318,7 @@ export class MemoryEngine {
     this.searchCache.set(cacheKey, results);
 
     this.stats.misses++;
-    this.recordOperation('search', performance.now() - startTime);
+    this.recordOperation("search", performance.now() - startTime);
     return results;
   }
 
@@ -294,21 +327,25 @@ export class MemoryEngine {
 
     return new Promise((resolve) => {
       // First try to get memories with last_used, then fall back to created_at
-      this.db.all(`
+      this.db.all(
+        `
         SELECT * FROM memories
         ORDER BY
           CASE WHEN last_used IS NOT NULL THEN last_used ELSE created_at END DESC
         LIMIT ?
-      `, [limit], (err, rows: any[]) => {
-        if (err) {
-          resolve([]);
-          return;
-        }
+      `,
+        [limit],
+        (err, rows: any[]) => {
+          if (err) {
+            resolve([]);
+            return;
+          }
 
-        const memories = rows.map(this.parseMemoryRow);
-        this.recordOperation('get_recent', performance.now() - startTime);
-        resolve(memories);
-      });
+          const memories = rows.map(this.parseMemoryRow);
+          this.recordOperation("get_recent", performance.now() - startTime);
+          resolve(memories);
+        },
+      );
     });
   }
 
@@ -316,20 +353,24 @@ export class MemoryEngine {
     const startTime = performance.now();
 
     return new Promise((resolve) => {
-      this.db.all(`
+      this.db.all(
+        `
         SELECT * FROM memories
         ORDER BY created_at DESC
         LIMIT ?
-      `, [limit], (err, rows: any[]) => {
-        if (err) {
-          resolve([]);
-          return;
-        }
+      `,
+        [limit],
+        (err, rows: any[]) => {
+          if (err) {
+            resolve([]);
+            return;
+          }
 
-        const memories = rows.map(this.parseMemoryRow);
-        this.recordOperation('get_all', performance.now() - startTime);
-        resolve(memories);
-      });
+          const memories = rows.map(this.parseMemoryRow);
+          this.recordOperation("get_all", performance.now() - startTime);
+          resolve(memories);
+        },
+      );
     });
   }
 
@@ -337,21 +378,25 @@ export class MemoryEngine {
     const startTime = performance.now();
 
     return new Promise((resolve) => {
-      this.db.all(`
+      this.db.all(
+        `
         SELECT * FROM memories
         WHERE use_count > 0
         ORDER BY use_count DESC, last_used DESC
         LIMIT ?
-      `, [limit], (err, rows: any[]) => {
-        if (err) {
-          resolve([]);
-          return;
-        }
+      `,
+        [limit],
+        (err, rows: any[]) => {
+          if (err) {
+            resolve([]);
+            return;
+          }
 
-        const memories = rows.map(this.parseMemoryRow);
-        this.recordOperation('get_popular', performance.now() - startTime);
-        resolve(memories);
-      });
+          const memories = rows.map(this.parseMemoryRow);
+          this.recordOperation("get_popular", performance.now() - startTime);
+          resolve(memories);
+        },
+      );
     });
   }
 
@@ -359,11 +404,14 @@ export class MemoryEngine {
     const now = new Date().toISOString();
 
     // Update database
-    this.db.run(`
+    this.db.run(
+      `
       UPDATE memories
       SET use_count = use_count + 1, last_used = ?
       WHERE id = ?
-    `, [now, id]);
+    `,
+      [now, id],
+    );
 
     // Update cache
     const memory = this.memoryCache.get(id);
@@ -386,7 +434,7 @@ export class MemoryEngine {
     const updated: Memory = {
       ...memory,
       ...updates,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
     // Update database
@@ -401,14 +449,14 @@ export class MemoryEngine {
       await this.redis.setEx(`memory:${id}`, 3600, JSON.stringify(updated));
     }
 
-    this.recordOperation('update_memory', performance.now() - startTime);
+    this.recordOperation("update_memory", performance.now() - startTime);
   }
 
   async deleteMemory(id: string): Promise<void> {
     const startTime = performance.now();
 
     // Remove from database
-    this.db.run('DELETE FROM memories WHERE id = ?', [id]);
+    this.db.run("DELETE FROM memories WHERE id = ?", [id]);
 
     // Remove from caches
     this.memoryCache.delete(id);
@@ -419,10 +467,17 @@ export class MemoryEngine {
       await this.redis.del(`memory:${id}`);
     }
 
-    this.recordOperation('delete_memory', performance.now() - startTime);
+    this.recordOperation("delete_memory", performance.now() - startTime);
   }
 
-  getPerformanceStats(): { [operation: string]: { avg: number; count: number; min: number; max: number } } {
+  getPerformanceStats(): {
+    [operation: string]: {
+      avg: number;
+      count: number;
+      min: number;
+      max: number;
+    };
+  } {
     const stats: any = {};
 
     for (const [operation, times] of this.operationTimes) {
@@ -434,7 +489,7 @@ export class MemoryEngine {
         avg: Math.round(avg * 100) / 100,
         count: times.length,
         min: Math.round(min * 100) / 100,
-        max: Math.round(max * 100) / 100
+        max: Math.round(max * 100) / 100,
       };
     }
 
@@ -442,7 +497,8 @@ export class MemoryEngine {
   }
 
   getCacheStats(): CacheStats {
-    this.stats.hitRate = this.stats.hits / (this.stats.hits + this.stats.misses) * 100;
+    this.stats.hitRate =
+      (this.stats.hits / (this.stats.hits + this.stats.misses)) * 100;
     this.stats.memory = process.memoryUsage().heapUsed;
     return { ...this.stats };
   }
@@ -461,37 +517,46 @@ export class MemoryEngine {
       updated_at: row.updated_at,
       project: row.project,
       directory: row.directory,
-      tags: JSON.parse(row.tags || '[]'),
-      metadata: JSON.parse(row.metadata || '{}')
+      tags: JSON.parse(row.tags || "[]"),
+      metadata: JSON.parse(row.metadata || "{}"),
     };
   }
 
   private async insertMemoryToDb(memory: Memory): Promise<void> {
     return new Promise((resolve, reject) => {
-      const searchText = `${memory.content} ${memory.tags.join(' ')} ${memory.metadata.category || ''}`;
+      const searchText = `${memory.content} ${memory.tags.join(" ")} ${memory.metadata.category || ""}`;
 
-      this.db.run(`
+      this.db.run(
+        `
         INSERT INTO memories (
           id, content, user_id, created_at, updated_at,
           project, directory, tags, metadata, search_text
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `, [
-        memory.id, memory.content, memory.user_id,
-        memory.created_at, memory.updated_at,
-        memory.project, memory.directory,
-        JSON.stringify(memory.tags), JSON.stringify(memory.metadata),
-        searchText
-      ], function(err) {
-        if (err) reject(err);
-        else resolve();
-      });
+      `,
+        [
+          memory.id,
+          memory.content,
+          memory.user_id,
+          memory.created_at,
+          memory.updated_at,
+          memory.project,
+          memory.directory,
+          JSON.stringify(memory.tags),
+          JSON.stringify(memory.metadata),
+          searchText,
+        ],
+        function (err) {
+          if (err) reject(err);
+          else resolve();
+        },
+      );
     });
   }
 
   private async getMemoryFromDb(id: string): Promise<Memory | null> {
     return new Promise((resolve) => {
       this.db.get(
-        'SELECT * FROM memories WHERE id = ?',
+        "SELECT * FROM memories WHERE id = ?",
         [id],
         (err, row: any) => {
           if (err || !row) {
@@ -499,32 +564,44 @@ export class MemoryEngine {
           } else {
             resolve(this.parseMemoryRow(row));
           }
-        }
+        },
       );
     });
   }
 
   private async updateMemoryInDb(memory: Memory): Promise<void> {
     return new Promise((resolve, reject) => {
-      const searchText = `${memory.content} ${memory.tags.join(' ')} ${memory.metadata.category || ''}`;
+      const searchText = `${memory.content} ${memory.tags.join(" ")} ${memory.metadata.category || ""}`;
 
-      this.db.run(`
+      this.db.run(
+        `
         UPDATE memories SET
           content = ?, updated_at = ?, project = ?, directory = ?,
           tags = ?, metadata = ?, search_text = ?
         WHERE id = ?
-      `, [
-        memory.content, memory.updated_at, memory.project, memory.directory,
-        JSON.stringify(memory.tags), JSON.stringify(memory.metadata),
-        searchText, memory.id
-      ], function(err) {
-        if (err) reject(err);
-        else resolve();
-      });
+      `,
+        [
+          memory.content,
+          memory.updated_at,
+          memory.project,
+          memory.directory,
+          JSON.stringify(memory.tags),
+          JSON.stringify(memory.metadata),
+          searchText,
+          memory.id,
+        ],
+        function (err) {
+          if (err) reject(err);
+          else resolve();
+        },
+      );
     });
   }
 
-  private async fullTextSearch(query: string, options: SearchOptions): Promise<Memory[]> {
+  private async fullTextSearch(
+    query: string,
+    options: SearchOptions,
+  ): Promise<Memory[]> {
     return new Promise((resolve) => {
       let sql = `
         SELECT m.* FROM memories m
@@ -534,11 +611,11 @@ export class MemoryEngine {
       const params: any[] = [query];
 
       if (options.project) {
-        sql += ' AND m.project = ?';
+        sql += " AND m.project = ?";
         params.push(options.project);
       }
 
-      sql += ' ORDER BY bm25(fts) LIMIT ?';
+      sql += " ORDER BY bm25(fts) LIMIT ?";
       params.push(options.limit || 50);
 
       this.db.all(sql, params, (err, rows: any[]) => {

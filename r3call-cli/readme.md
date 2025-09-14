@@ -54,6 +54,7 @@ r3call-cli --user-id myuser
 ## Interface Navigation
 
 ### Main Menu
+
 - **[s]** - Search memories
 - **[a]** - Add new memory
 - **[v]** - View all memories
@@ -62,17 +63,20 @@ r3call-cli --user-id myuser
 - **ESC/Ctrl+C** - Exit at any time
 
 ### Search Mode
+
 - Type your search query
 - Press **Enter** to search
 - View results with similarity scores
 - Press **ESC** to return to menu
 
 ### Add Memory Mode
+
 - Type your memory content
 - Press **Enter** to save
 - Press **ESC** to cancel
 
 ### View/Delete Mode
+
 - Use **↑/↓** arrow keys to navigate
 - Press **Enter** to confirm deletion (in delete mode)
 - Press **[b]** to go back to menu
@@ -96,6 +100,7 @@ npm test
 ## Architecture
 
 Built with:
+
 - **React Ink**: React for CLIs
 - **TypeScript**: Type-safe development
 - **Axios**: HTTP client for API calls

@@ -8,7 +8,7 @@ import {
   RedisConnectionError,
   RedisOperationError,
   InitializationError,
-  ErrorHandler
+  ErrorHandler,
 } from "./errors.js";
 
 export interface RedisConfig {
@@ -31,7 +31,8 @@ export class RedisManager {
       url: config.url || process.env.REDIS_URL || "redis://localhost:6379",
       embedded: config.embedded ?? !config.url,
       quiet: config.quiet ?? true,
-      reconnectStrategy: config.reconnectStrategy || this.defaultReconnectStrategy,
+      reconnectStrategy:
+        config.reconnectStrategy || this.defaultReconnectStrategy,
     };
   }
 
@@ -57,11 +58,10 @@ export class RedisManager {
         return await this.initializeExternal();
       }
     } catch (error: any) {
-      throw new InitializationError(
-        'Redis',
-        error.message,
-        { embedded: this.config.embedded, url: this.config.url }
-      );
+      throw new InitializationError("Redis", error.message, {
+        embedded: this.config.embedded,
+        url: this.config.url,
+      });
     }
   }
 
@@ -74,7 +74,10 @@ export class RedisManager {
       // Add timeout for LocalMemory startup
       const startupPromise = this.localMemory.start();
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("LocalMemory startup timeout")), 15000)
+        setTimeout(
+          () => reject(new Error("LocalMemory startup timeout")),
+          15000,
+        ),
       );
 
       await Promise.race([startupPromise, timeoutPromise]);
@@ -94,7 +97,7 @@ export class RedisManager {
     } catch (error: any) {
       throw new RedisConnectionError(
         `Failed to start embedded Redis: ${error.message}`,
-        { embedded: true }
+        { embedded: true },
       );
     }
   }
@@ -141,7 +144,7 @@ export class RedisManager {
     } catch (error: any) {
       throw new RedisConnectionError(
         `Failed to connect to external Redis: ${error.message}`,
-        { url: this.config.url }
+        { url: this.config.url },
       );
     }
   }
@@ -150,7 +153,7 @@ export class RedisManager {
     const handleError = (clientName: string) => (err: Error) => {
       ErrorHandler.logError(
         new RedisOperationError(clientName, err),
-        `Redis ${clientName} Error`
+        `Redis ${clientName} Error`,
       );
     };
 
@@ -166,9 +169,9 @@ export class RedisManager {
 
     if (this.localMemory) {
       shutdownTasks.push(
-        this.localMemory.stop().catch(err =>
-          ErrorHandler.logError(err, "LocalMemory shutdown")
-        )
+        this.localMemory
+          .stop()
+          .catch((err) => ErrorHandler.logError(err, "LocalMemory shutdown")),
       );
     }
 
@@ -176,8 +179,10 @@ export class RedisManager {
       shutdownTasks.push(
         this.redisClient.quit().then(
           () => {},
-          err => { ErrorHandler.logError(err, "Redis client shutdown"); }
-        )
+          (err) => {
+            ErrorHandler.logError(err, "Redis client shutdown");
+          },
+        ),
       );
     }
 
@@ -185,8 +190,10 @@ export class RedisManager {
       shutdownTasks.push(
         this.pubSubClient.quit().then(
           () => {},
-          err => { ErrorHandler.logError(err, "PubSub client shutdown"); }
-        )
+          (err) => {
+            ErrorHandler.logError(err, "PubSub client shutdown");
+          },
+        ),
       );
     }
 
@@ -194,8 +201,10 @@ export class RedisManager {
       shutdownTasks.push(
         this.subscriberClient.quit().then(
           () => {},
-          err => { ErrorHandler.logError(err, "Subscriber client shutdown"); }
-        )
+          (err) => {
+            ErrorHandler.logError(err, "Subscriber client shutdown");
+          },
+        ),
       );
     }
 
@@ -205,10 +214,7 @@ export class RedisManager {
   }
 
   // Safe wrapper for Redis operations with error handling
-  async execute<T>(
-    operation: string,
-    handler: () => Promise<T>
-  ): Promise<T> {
+  async execute<T>(operation: string, handler: () => Promise<T>): Promise<T> {
     if (!this.isConnected || !this.redisClient) {
       throw new RedisConnectionError("Redis not connected");
     }
@@ -259,9 +265,12 @@ export class RedisManager {
   }
 
   async del(keys: string | string[]): Promise<number> {
-    return this.execute(`del:${Array.isArray(keys) ? keys.length : 1}`, async () => {
-      return await this.redisClient!.del(keys);
-    });
+    return this.execute(
+      `del:${Array.isArray(keys) ? keys.length : 1}`,
+      async () => {
+        return await this.redisClient!.del(keys);
+      },
+    );
   }
 
   async keys(pattern: string): Promise<string[]> {
@@ -323,7 +332,7 @@ export class RedisManager {
 
   async subscribe(
     channel: string,
-    handler: (message: string, channel: string) => void
+    handler: (message: string, channel: string) => void,
   ): Promise<void> {
     if (!this.subscriberClient) {
       throw new RedisConnectionError("Subscriber client not connected");
@@ -350,7 +359,7 @@ export class RedisManager {
 
   // Info operations
   async info(section?: string): Promise<string> {
-    return this.execute(`info:${section || 'all'}`, async () => {
+    return this.execute(`info:${section || "all"}`, async () => {
       return await this.redisClient!.info(section);
     });
   }

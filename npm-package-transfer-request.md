@@ -14,6 +14,7 @@ I've been developing a fully open-source (MIT licensed) memory management tool f
 I noticed that the "r3" package on npm hasn't been updated since its initial 0.0.1 release over a year ago and appears to be a minimal utility. I was wondering if you'd be willing to transfer ownership of the npm package name "r3" to me, as it would be a perfect fit for our project's CLI command.
 
 I'd be happy to:
+
 - Credit you in our documentation if desired
 - Help migrate any existing users if needed (though npm shows minimal usage)
 - Ensure the namespace is used for an actively maintained open-source project

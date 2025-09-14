@@ -47,7 +47,7 @@ export class PubSubManager {
     config?: {
       maxJobQueueSize?: number;
       defaultJobTimeout?: number;
-    }
+    },
   ) {
     this.redisManager = redisManager;
     this.maxJobQueueSize = config?.maxJobQueueSize || 1000;
@@ -97,7 +97,7 @@ export class PubSubManager {
   // Subscribe to a channel
   private async subscribe(
     channel: string,
-    handler: (message: string) => void | Promise<void>
+    handler: (message: string) => void | Promise<void>,
   ): Promise<void> {
     await this.redisManager.subscribe(channel, handler);
   }
@@ -113,7 +113,9 @@ export class PubSubManager {
   }
 
   // Handle cache invalidation
-  private async handleCacheInvalidation(data: CacheInvalidateMessage): Promise<void> {
+  private async handleCacheInvalidation(
+    data: CacheInvalidateMessage,
+  ): Promise<void> {
     console.error(`Cache invalidation: ${data.operation} for ${data.memoryId}`);
 
     const handler = this.handlers.get("cache:invalidate");
@@ -144,22 +146,22 @@ export class PubSubManager {
   }
 
   // Register a handler for a specific channel
-  registerHandler(channel: string, handler: (data: any) => void | Promise<void>): void {
+  registerHandler(
+    channel: string,
+    handler: (data: any) => void | Promise<void>,
+  ): void {
     this.handlers.set(channel, handler);
   }
 
   // Create an async job with timeout
-  createAsyncJob(
-    jobId: string,
-    timeoutMs?: number
-  ): Promise<any> {
+  createAsyncJob(jobId: string, timeoutMs?: number): Promise<any> {
     // Check queue size limit
     if (this.jobQueue.size >= this.maxJobQueueSize) {
       throw new JobQueueError(
         jobId,
         `Job queue full (max: ${this.maxJobQueueSize})`,
         false,
-        { queueSize: this.jobQueue.size }
+        { queueSize: this.jobQueue.size },
       );
     }
 
@@ -167,7 +169,11 @@ export class PubSubManager {
       const timeout = setTimeout(() => {
         if (this.jobQueue.has(jobId)) {
           this.jobQueue.delete(jobId);
-          reject(new TimeoutError("Job", timeoutMs || this.defaultJobTimeout, { jobId }));
+          reject(
+            new TimeoutError("Job", timeoutMs || this.defaultJobTimeout, {
+              jobId,
+            }),
+          );
         }
       }, timeoutMs || this.defaultJobTimeout);
 
@@ -183,7 +189,7 @@ export class PubSubManager {
   // Publish cache invalidation
   async invalidateCache(
     memoryId: string,
-    operation: string = "update"
+    operation: string = "update",
   ): Promise<void> {
     await this.publish("cache:invalidate", {
       memoryId,
@@ -196,7 +202,7 @@ export class PubSubManager {
   async completeJob(
     jobId: string,
     result?: any,
-    error?: string
+    error?: string,
   ): Promise<void> {
     await this.publish("job:complete", {
       jobId,
@@ -208,7 +214,7 @@ export class PubSubManager {
   // Queue memory for processing
   async queueMemoryProcessing(
     memoryId: string,
-    priority: string = "medium"
+    priority: string = "medium",
   ): Promise<void> {
     this.pendingMemories.set(memoryId, {
       priority,
@@ -224,7 +230,7 @@ export class PubSubManager {
   // Process pending memories (batch operation)
   async processPendingMemories(
     processor: (memoryId: string, priority: string) => Promise<void>,
-    maxAge: number = 60000
+    maxAge: number = 60000,
   ): Promise<void> {
     const now = Date.now();
     const toProcess: Array<[string, PendingMemory]> = [];
@@ -245,7 +251,7 @@ export class PubSubManager {
         } catch (error) {
           ErrorHandler.logError(error, `Failed to process memory ${memoryId}`);
         }
-      })
+      }),
     );
   }
 
@@ -286,7 +292,11 @@ export class PubSubManager {
         if (job.timeout) {
           clearTimeout(job.timeout);
         }
-        job.reject(new JobQueueError(jobId, "Job expired", false, { age: now - job.createdAt }));
+        job.reject(
+          new JobQueueError(jobId, "Job expired", false, {
+            age: now - job.createdAt,
+          }),
+        );
         this.jobQueue.delete(jobId);
         cleaned++;
       }

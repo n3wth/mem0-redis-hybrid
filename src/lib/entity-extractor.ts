@@ -117,7 +117,7 @@ export class EntityExtractor {
 
   private extractCustomEntities(
     doc: any,
-    entities: ExtractionResult["entities"]
+    entities: ExtractionResult["entities"],
   ): void {
     // Technology patterns
     const techPatterns = [
@@ -171,24 +171,69 @@ export class EntityExtractor {
 
   private extractRelationships(
     doc: any,
-    entities: ExtractionResult["entities"]
+    entities: ExtractionResult["entities"],
   ): ExtractedRelationship[] {
     const relationships: ExtractedRelationship[] = [];
 
     // Relationship patterns with confidence scores
     const patterns = [
-      { regex: /(\w+)\s+(?:works?|employed)\s+(?:at|for|with)\s+(\w+)/gi, type: "WORKS_FOR", confidence: 0.9 },
+      {
+        regex: /(\w+)\s+(?:works?|employed)\s+(?:at|for|with)\s+(\w+)/gi,
+        type: "WORKS_FOR",
+        confidence: 0.9,
+      },
       { regex: /(\w+)\s+manages?\s+(\w+)/gi, type: "MANAGES", confidence: 0.8 },
-      { regex: /(\w+)\s+(?:leads?|heads?)\s+(\w+)/gi, type: "LEADS", confidence: 0.8 },
-      { regex: /(\w+)\s+reports?\s+to\s+(\w+)/gi, type: "REPORTS_TO", confidence: 0.9 },
-      { regex: /(\w+)\s+(?:uses?|utilizing|leverages?)\s+(\w+)/gi, type: "USES", confidence: 0.7 },
-      { regex: /(\w+)\s+(?:built|created|developed)\s+(?:with|using|on)\s+(\w+)/gi, type: "BUILT_WITH", confidence: 0.8 },
-      { regex: /(\w+)\s+(?:owns?|founded|started)\s+(\w+)/gi, type: "OWNS", confidence: 0.9 },
-      { regex: /(\w+)\s+(?:located|based)\s+(?:in|at)\s+(\w+)/gi, type: "LOCATED_IN", confidence: 0.9 },
-      { regex: /(\w+)\s+(?:part|member|division)\s+of\s+(\w+)/gi, type: "PART_OF", confidence: 0.8 },
-      { regex: /(\w+)\s+(?:knows?|familiar\s+with)\s+(\w+)/gi, type: "KNOWS", confidence: 0.6 },
-      { regex: /(\w+)\s+(?:depends?\s+on|requires?)\s+(\w+)/gi, type: "DEPENDS_ON", confidence: 0.8 },
-      { regex: /(\w+)\s+(?:integrates?\s+with|connects?\s+to)\s+(\w+)/gi, type: "INTEGRATES_WITH", confidence: 0.7 },
+      {
+        regex: /(\w+)\s+(?:leads?|heads?)\s+(\w+)/gi,
+        type: "LEADS",
+        confidence: 0.8,
+      },
+      {
+        regex: /(\w+)\s+reports?\s+to\s+(\w+)/gi,
+        type: "REPORTS_TO",
+        confidence: 0.9,
+      },
+      {
+        regex: /(\w+)\s+(?:uses?|utilizing|leverages?)\s+(\w+)/gi,
+        type: "USES",
+        confidence: 0.7,
+      },
+      {
+        regex:
+          /(\w+)\s+(?:built|created|developed)\s+(?:with|using|on)\s+(\w+)/gi,
+        type: "BUILT_WITH",
+        confidence: 0.8,
+      },
+      {
+        regex: /(\w+)\s+(?:owns?|founded|started)\s+(\w+)/gi,
+        type: "OWNS",
+        confidence: 0.9,
+      },
+      {
+        regex: /(\w+)\s+(?:located|based)\s+(?:in|at)\s+(\w+)/gi,
+        type: "LOCATED_IN",
+        confidence: 0.9,
+      },
+      {
+        regex: /(\w+)\s+(?:part|member|division)\s+of\s+(\w+)/gi,
+        type: "PART_OF",
+        confidence: 0.8,
+      },
+      {
+        regex: /(\w+)\s+(?:knows?|familiar\s+with)\s+(\w+)/gi,
+        type: "KNOWS",
+        confidence: 0.6,
+      },
+      {
+        regex: /(\w+)\s+(?:depends?\s+on|requires?)\s+(\w+)/gi,
+        type: "DEPENDS_ON",
+        confidence: 0.8,
+      },
+      {
+        regex: /(\w+)\s+(?:integrates?\s+with|connects?\s+to)\s+(\w+)/gi,
+        type: "INTEGRATES_WITH",
+        confidence: 0.7,
+      },
     ];
 
     // Process each sentence
@@ -230,7 +275,7 @@ export class EntityExtractor {
 
   private findEntity(
     text: string,
-    entities: ExtractionResult["entities"]
+    entities: ExtractionResult["entities"],
   ): ExtractedEntity | null {
     const allEntities = [
       ...entities.people,
@@ -241,14 +286,13 @@ export class EntityExtractor {
     ];
 
     return (
-      allEntities.find(
-        (e) => e.text.toLowerCase() === text.toLowerCase()
-      ) || null
+      allEntities.find((e) => e.text.toLowerCase() === text.toLowerCase()) ||
+      null
     );
   }
 
   private deduplicateRelationships(
-    relationships: ExtractedRelationship[]
+    relationships: ExtractedRelationship[],
   ): ExtractedRelationship[] {
     const seen = new Set<string>();
     const unique: ExtractedRelationship[] = [];
@@ -268,7 +312,8 @@ export class EntityExtractor {
     const keywords = new Set<string>();
 
     // Extract nouns and important words
-    doc.tokens()
+    doc
+      .tokens()
       .filter((t: any) => {
         const pos = t.out(this.its.pos);
         const text = t.out();
@@ -292,8 +337,10 @@ export class EntityExtractor {
         const prevToken = tokens.itemAt(idx - 1);
         const prevPos = prevToken.out(this.its.pos);
 
-        if ((pos === "NOUN" && prevPos === "ADJ") ||
-            (pos === "NOUN" && prevPos === "NOUN")) {
+        if (
+          (pos === "NOUN" && prevPos === "ADJ") ||
+          (pos === "NOUN" && prevPos === "NOUN")
+        ) {
           const prev = prevToken.out();
           const current = t.out();
           keywords.add(`${prev.toLowerCase()} ${current.toLowerCase()}`);
@@ -320,13 +367,72 @@ export class EntityExtractor {
 
   private isStopWord(word: string): boolean {
     const stopWords = new Set([
-      "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",
-      "of", "with", "by", "from", "as", "is", "was", "are", "were", "been",
-      "have", "has", "had", "do", "does", "did", "will", "would", "could",
-      "should", "may", "might", "must", "can", "this", "that", "these",
-      "those", "i", "you", "he", "she", "it", "we", "they", "what", "which",
-      "who", "when", "where", "why", "how", "all", "each", "every", "both",
-      "few", "more", "most", "other", "some", "such", "than", "too", "very",
+      "the",
+      "a",
+      "an",
+      "and",
+      "or",
+      "but",
+      "in",
+      "on",
+      "at",
+      "to",
+      "for",
+      "of",
+      "with",
+      "by",
+      "from",
+      "as",
+      "is",
+      "was",
+      "are",
+      "were",
+      "been",
+      "have",
+      "has",
+      "had",
+      "do",
+      "does",
+      "did",
+      "will",
+      "would",
+      "could",
+      "should",
+      "may",
+      "might",
+      "must",
+      "can",
+      "this",
+      "that",
+      "these",
+      "those",
+      "i",
+      "you",
+      "he",
+      "she",
+      "it",
+      "we",
+      "they",
+      "what",
+      "which",
+      "who",
+      "when",
+      "where",
+      "why",
+      "how",
+      "all",
+      "each",
+      "every",
+      "both",
+      "few",
+      "more",
+      "most",
+      "other",
+      "some",
+      "such",
+      "than",
+      "too",
+      "very",
     ]);
 
     return stopWords.has(word.toLowerCase());

@@ -112,12 +112,15 @@ export class ToolHandlers {
 
     // Check for duplicates
     if (!skipDuplicateCheck && contentToCheck) {
-      const duplicateCheck = await this.checkForDuplicate(contentToCheck, user_id);
+      const duplicateCheck = await this.checkForDuplicate(
+        contentToCheck,
+        user_id,
+      );
       if (duplicateCheck?.isDuplicate) {
         throw new DuplicateMemoryError(
           duplicateCheck.existingId!,
           duplicateCheck.similarity!,
-          duplicateCheck.existingMemory
+          duplicateCheck.existingMemory,
         );
       }
     }
@@ -135,7 +138,7 @@ export class ToolHandlers {
     const results = await this.smartSearch(
       args.query,
       args.limit || 10,
-      args.prefer_cache !== false
+      args.prefer_cache !== false,
     );
 
     if (results.length === 0) {
@@ -227,7 +230,9 @@ export class ToolHandlers {
     // Get all memories
     const endpoint = `/v1/memories/?user_id=${user_id}&limit=1000`;
     const response = await this.callMem0API(endpoint, "GET");
-    const memories = Array.isArray(response) ? response : response.results || [];
+    const memories = Array.isArray(response)
+      ? response
+      : response.results || [];
 
     // Find duplicates
     const duplicates = this.findDuplicates(memories, threshold);
@@ -240,7 +245,7 @@ export class ToolHandlers {
 
     const totalDuplicates = duplicates.reduce(
       (sum, g) => sum + g.duplicates.length,
-      0
+      0,
     );
 
     const message = isDryRun
@@ -266,7 +271,7 @@ export class ToolHandlers {
     const stats = await this.context.cacheManager.optimizeCache(
       memories,
       maxMemories,
-      forceRefresh
+      forceRefresh,
     );
 
     return {
@@ -318,17 +323,23 @@ export class ToolHandlers {
 
   // Extract entities handler
   private async handleExtractEntities(args: any): Promise<any> {
-    if (this.context.intelligenceMode !== "enhanced" || !this.context.entityExtractor) {
+    if (
+      this.context.intelligenceMode !== "enhanced" ||
+      !this.context.entityExtractor
+    ) {
       throw new IntelligenceError(
         "entity-extraction",
         "Entity extraction not available in basic mode",
-        false
+        false,
       );
     }
 
     const { text } = args;
     if (!text) {
-      throw new ValidationError("text", "Text is required for entity extraction");
+      throw new ValidationError(
+        "text",
+        "Text is required for entity extraction",
+      );
     }
 
     const extraction = await this.context.entityExtractor.extract(text);
@@ -339,7 +350,7 @@ export class ToolHandlers {
       technologies: extraction.entities.technologies.map((e) => e.text),
       projects: extraction.entities.projects.map((e) => e.text),
       relationships: extraction.relationships.map(
-        (r) => `${r.from} --[${r.type}]--> ${r.to}`
+        (r) => `${r.from} --[${r.type}]--> ${r.to}`,
       ),
       keywords: extraction.keywords.slice(0, 10),
     };
@@ -351,11 +362,14 @@ export class ToolHandlers {
 
   // Get knowledge graph handler
   private async handleGetKnowledgeGraph(args: any): Promise<any> {
-    if (this.context.intelligenceMode !== "enhanced" || !this.context.enhancedVectra) {
+    if (
+      this.context.intelligenceMode !== "enhanced" ||
+      !this.context.enhancedVectra
+    ) {
       throw new IntelligenceError(
         "knowledge-graph",
         "Knowledge graph not available in basic mode",
-        false
+        false,
       );
     }
 
@@ -365,21 +379,26 @@ export class ToolHandlers {
     const { nodes, edges } = this.buildKnowledgeGraph(
       allMemories,
       { entity_type, entity_name, relationship_type },
-      limit
+      limit,
     );
 
     return {
-      content: [{ type: "text", text: JSON.stringify({ nodes, edges }, null, 2) }],
+      content: [
+        { type: "text", text: JSON.stringify({ nodes, edges }, null, 2) },
+      ],
     };
   }
 
   // Find connections handler
   private async handleFindConnections(args: any): Promise<any> {
-    if (this.context.intelligenceMode !== "enhanced" || !this.context.enhancedVectra) {
+    if (
+      this.context.intelligenceMode !== "enhanced" ||
+      !this.context.enhancedVectra
+    ) {
       throw new IntelligenceError(
         "find-connections",
         "Connection finding not available in basic mode",
-        false
+        false,
       );
     }
 
@@ -394,7 +413,7 @@ export class ToolHandlers {
       allMemories,
       from_entity,
       to_entity,
-      max_depth
+      max_depth,
     );
 
     return {
@@ -410,7 +429,7 @@ export class ToolHandlers {
               paths,
             },
             null,
-            2
+            2,
           ),
         },
       ],
@@ -420,16 +439,20 @@ export class ToolHandlers {
   // Helper: Check for duplicate memories
   private async checkForDuplicate(
     content: string,
-    user_id: string
+    user_id: string,
   ): Promise<DuplicateCheck | null> {
     if (!content) return null;
 
     try {
-      const searchResponse = await this.callMem0API("/v1/memories/search/", "POST", {
-        query: content.substring(0, 100),
-        user_id: user_id,
-        limit: 5,
-      });
+      const searchResponse = await this.callMem0API(
+        "/v1/memories/search/",
+        "POST",
+        {
+          query: content.substring(0, 100),
+          user_id: user_id,
+          limit: 5,
+        },
+      );
 
       const results = searchResponse.results || [];
 
@@ -437,7 +460,7 @@ export class ToolHandlers {
         if (result.memory) {
           const similarity = this.calculateSimilarity(
             content.toLowerCase(),
-            result.memory.toLowerCase()
+            result.memory.toLowerCase(),
           );
           if (similarity > 0.85) {
             return {
@@ -471,11 +494,14 @@ export class ToolHandlers {
   private async smartSearch(
     query: string,
     limit: number,
-    preferCache: boolean
+    preferCache: boolean,
   ): Promise<Memory[]> {
     // Check cache first
     if (preferCache) {
-      const cached = await this.context.cacheManager.getCachedSearchResults(query, limit);
+      const cached = await this.context.cacheManager.getCachedSearchResults(
+        query,
+        limit,
+      );
       if (cached) return cached;
     }
 
@@ -489,7 +515,7 @@ export class ToolHandlers {
       try {
         const vectorResults = await this.context.enhancedVectra.searchMemories(
           query,
-          limit
+          limit,
         );
         results = vectorResults.map((r) => ({
           id: r.id,
@@ -509,13 +535,16 @@ export class ToolHandlers {
       if (preferCache) {
         const cacheResults = await this.context.cacheManager.searchFromCache(
           query,
-          limit - results.length
+          limit - results.length,
         );
         results = [...results, ...cacheResults];
       }
 
       if (results.length < limit) {
-        const apiResults = await this.searchFromMem0(query, limit - results.length);
+        const apiResults = await this.searchFromMem0(
+          query,
+          limit - results.length,
+        );
         results = [...results, ...apiResults];
       }
     }
@@ -527,7 +556,10 @@ export class ToolHandlers {
   }
 
   // Helper: Search from Mem0 API
-  private async searchFromMem0(query: string, limit: number): Promise<Memory[]> {
+  private async searchFromMem0(
+    query: string,
+    limit: number,
+  ): Promise<Memory[]> {
     try {
       const endpoint = `/v1/memories/?user_id=${this.context.mem0UserId}&query=${encodeURIComponent(query)}&limit=${limit}`;
       const response = await this.callMem0API(endpoint, "GET");
@@ -561,8 +593,14 @@ export class ToolHandlers {
         if (priority === "high" && result.length > 0) {
           for (const memory of result) {
             if (memory.id) {
-              await this.context.cacheManager.setCachedMemory(memory.id, memory);
-              await this.context.pubSubManager.queueMemoryProcessing(memory.id, "high");
+              await this.context.cacheManager.setCachedMemory(
+                memory.id,
+                memory,
+              );
+              await this.context.pubSubManager.queueMemoryProcessing(
+                memory.id,
+                "high",
+              );
             }
           }
         }
@@ -571,7 +609,11 @@ export class ToolHandlers {
         await this.context.pubSubManager.completeJob(jobId, result.length);
       })
       .catch(async (error) => {
-        await this.context.pubSubManager.completeJob(jobId, undefined, error.message);
+        await this.context.pubSubManager.completeJob(
+          jobId,
+          undefined,
+          error.message,
+        );
       });
 
     return { content: [{ type: "text", text: "Saved" }] };
@@ -611,7 +653,7 @@ export class ToolHandlers {
 
         const similarity = this.calculateSimilarity(
           memories[i].memory?.toLowerCase() || "",
-          memories[j].memory?.toLowerCase() || ""
+          memories[j].memory?.toLowerCase() || "",
         );
 
         if (similarity >= threshold) {
@@ -633,7 +675,10 @@ export class ToolHandlers {
   }
 
   // Helper: Delete duplicate memories
-  private async deleteDuplicates(duplicates: any[], user_id: string): Promise<number> {
+  private async deleteDuplicates(
+    duplicates: any[],
+    user_id: string,
+  ): Promise<number> {
     let deleteCount = 0;
 
     for (const group of duplicates) {
@@ -641,7 +686,7 @@ export class ToolHandlers {
         try {
           await this.callMem0API(
             `/v1/memories/${dup.id}/?user_id=${user_id}`,
-            "DELETE"
+            "DELETE",
           );
           deleteCount++;
           await this.context.cacheManager.deleteCachedMemory(dup.id);
@@ -658,7 +703,7 @@ export class ToolHandlers {
   private buildKnowledgeGraph(
     memories: any[],
     filters: any,
-    limit: number
+    limit: number,
   ): { nodes: any[]; edges: any[] } {
     const graphNodes: any[] = [];
     const graphEdges: any[] = [];
@@ -675,7 +720,9 @@ export class ToolHandlers {
         for (const entity of entityList as any[]) {
           if (
             filters.entity_name &&
-            !entity.text.toLowerCase().includes(filters.entity_name.toLowerCase())
+            !entity.text
+              .toLowerCase()
+              .includes(filters.entity_name.toLowerCase())
           )
             continue;
 
@@ -695,7 +742,10 @@ export class ToolHandlers {
       // Process relationships
       if (memory.metadata.relationships) {
         for (const rel of memory.metadata.relationships) {
-          if (filters.relationship_type && rel.type !== filters.relationship_type)
+          if (
+            filters.relationship_type &&
+            rel.type !== filters.relationship_type
+          )
             continue;
 
           graphEdges.push({
@@ -719,7 +769,7 @@ export class ToolHandlers {
     memories: any[],
     fromEntity: string,
     toEntity: string | undefined,
-    maxDepth: number
+    maxDepth: number,
   ): any[] {
     // Build adjacency list
     const graph = new Map<string, Set<{ to: string; type: string }>>();
@@ -779,7 +829,7 @@ export class ToolHandlers {
   private async callMem0API(
     endpoint: string,
     method: string = "GET",
-    body: any = null
+    body: any = null,
   ): Promise<any> {
     // Handle different modes
     if (this.context.mode === "local") {
@@ -811,7 +861,7 @@ export class ToolHandlers {
       if (!response.ok) {
         throw new Mem0APIError(
           response.status,
-          data.error || `API error: ${response.status}`
+          data.error || `API error: ${response.status}`,
         );
       }
 

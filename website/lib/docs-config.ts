@@ -20,9 +20,7 @@ export const docsConfig: DocSection[] = [
   },
   {
     title: "AI Intelligence",
-    items: [
-      { title: "Overview", slug: "ai-intelligence", badge: "NEW" },
-    ],
+    items: [{ title: "Overview", slug: "ai-intelligence", badge: "NEW" }],
   },
   {
     title: "API Reference",

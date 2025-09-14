@@ -35,7 +35,8 @@ Every memory is automatically analyzed to extract meaningful entities:
 ### Example
 
 ```typescript
-const memory = "Sarah from Marketing works on the Dashboard project with React and TypeScript";
+const memory =
+  "Sarah from Marketing works on the Dashboard project with React and TypeScript";
 
 // Automatically extracts:
 // - People: ["Sarah"]
@@ -63,11 +64,11 @@ Search memories by meaning, not just keywords:
 ```typescript
 // Final score calculation
 const relevanceScore =
-  semanticSimilarity * 0.50 +  // Meaning-based matching
-  keywordOverlap * 0.20 +       // Traditional text matching
-  entityOverlap * 0.15 +        // Shared entities
-  recencyBonus * 0.10 +         // Prefer recent memories
-  accessFrequency * 0.05;       // Popular memories rank higher
+  semanticSimilarity * 0.5 + // Meaning-based matching
+  keywordOverlap * 0.2 + // Traditional text matching
+  entityOverlap * 0.15 + // Shared entities
+  recencyBonus * 0.1 + // Prefer recent memories
+  accessFrequency * 0.05; // Popular memories rank higher
 ```
 
 ### Example Usage
@@ -76,7 +77,7 @@ const relevanceScore =
 // Semantic search finds related concepts
 const results = await recall.search({
   query: "machine learning and AI",
-  limit: 5
+  limit: 5,
 });
 
 // Will find memories about:
@@ -149,12 +150,12 @@ find_connections(
 
 All AI features are optimized for speed:
 
-| Operation | Latency | Notes |
-|-----------|---------|-------|
-| Embedding generation | &lt;5ms | 384-dimensional vectors |
-| Entity extraction | &lt;10ms | Using wink-nlp |
-| Semantic search | &lt;10ms | For 1000+ memories |
-| Graph traversal | &lt;5ms | BFS with depth limit |
+| Operation            | Latency  | Notes                   |
+| -------------------- | -------- | ----------------------- |
+| Embedding generation | &lt;5ms  | 384-dimensional vectors |
+| Entity extraction    | &lt;10ms | Using wink-nlp          |
+| Semantic search      | &lt;10ms | For 1000+ memories      |
+| Graph traversal      | &lt;5ms  | BFS with depth limit    |
 
 ## Configuration
 
@@ -166,7 +167,7 @@ const recall = new Recall();
 
 // Or explicitly
 const recall = new Recall({
-  intelligenceMode: 'enhanced'
+  intelligenceMode: "enhanced",
 });
 ```
 
@@ -223,14 +224,15 @@ npx r3call --basic
 ```typescript
 // Store memories with automatic intelligence
 await recall.add({
-  content: "Met with Dr. Chen about the AI research project. She suggested using transformer models for better accuracy.",
-  userId: "researcher"
+  content:
+    "Met with Dr. Chen about the AI research project. She suggested using transformer models for better accuracy.",
+  userId: "researcher",
 });
 
 // Later, find connections
 const connections = await recall.findConnections({
   from: "Dr. Chen",
-  to: "transformer models"
+  to: "transformer models",
 });
 // Returns: Dr. Chen -> AI research project -> transformer models
 ```
@@ -240,14 +242,15 @@ const connections = await recall.findConnections({
 ```typescript
 // Store project context
 await recall.add({
-  content: "Dashboard project uses React v18, TypeScript v5, and connects to PostgreSQL database on AWS RDS.",
-  userId: "project-dashboard"
+  content:
+    "Dashboard project uses React v18, TypeScript v5, and connects to PostgreSQL database on AWS RDS.",
+  userId: "project-dashboard",
 });
 
 // Query technology stack
 const techStack = await recall.getKnowledgeGraph({
   entityType: "technology",
-  userId: "project-dashboard"
+  userId: "project-dashboard",
 });
 ```
 
@@ -256,14 +259,15 @@ const techStack = await recall.getKnowledgeGraph({
 ```typescript
 // Store team information
 await recall.add({
-  content: "Sarah leads the frontend team and reports to Mike. She specializes in React and accessibility.",
-  userId: "team"
+  content:
+    "Sarah leads the frontend team and reports to Mike. She specializes in React and accessibility.",
+  userId: "team",
 });
 
 // Find team relationships
 const teamGraph = await recall.getKnowledgeGraph({
   relationshipType: "REPORTS_TO",
-  userId: "team"
+  userId: "team",
 });
 ```
 
@@ -276,7 +280,7 @@ The embedding model uses ~100MB RAM. To reduce memory:
 ```typescript
 // Use basic mode for low-memory environments
 const recall = new Recall({
-  intelligenceMode: 'basic'
+  intelligenceMode: "basic",
 });
 ```
 
@@ -287,6 +291,7 @@ Models are downloaded on first use (~50MB). This is one-time only.
 ### Entity Extraction Accuracy
 
 For better extraction:
+
 - Use proper capitalization for names
 - Include context around entities
 - Use full sentences when possible

@@ -295,6 +295,7 @@ r3call now includes advanced AI capabilities that automatically enhance your mem
 ### Automatic Entity Extraction
 
 Every memory is analyzed to extract:
+
 - **People** - Names and references to individuals
 - **Organizations** - Companies, teams, groups
 - **Technologies** - Programming languages, frameworks, tools
@@ -319,6 +320,7 @@ npx r3call find-connections --from "Sarah" --to "Dashboard"
 ### Semantic Search with Relevance Scoring
 
 Search uses multiple factors for intelligent ranking:
+
 - **Semantic similarity** (50%) - Meaning-based matching
 - **Keyword overlap** (20%) - Traditional text matching
 - **Entity matching** (15%) - Shared people, orgs, tech
@@ -340,7 +342,7 @@ const recall = new Recall(); // Full AI intelligence
 
 // Opt-out if needed (basic mode)
 const recall = new Recall({
-  intelligenceMode: 'basic'
+  intelligenceMode: "basic",
 });
 ```
 
