@@ -521,6 +521,7 @@ client.memories.add(
                 description="Compressed entries with automatic TTL management"
                 icon={<Database className="h-5 w-5 text-purple-400" />}
                 gradient="from-purple-900/20 to-pink-900/20"
+                span="col-span-2"
               />
 
               <BentoCard
@@ -543,6 +544,7 @@ client.memories.add(
                 description="Embedded Redis server, no external dependencies"
                 icon={<Lock className="h-5 w-5 text-red-400" />}
                 gradient="from-red-900/20 to-orange-900/20"
+                span="col-span-3"
               />
 
             </BentoGrid>
