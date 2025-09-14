@@ -55,7 +55,7 @@ export class EnhancedVectraMemory {
         process.stderr.write = (chunk: any, ...args: any[]): boolean => {
           const str = chunk?.toString() || '';
           // Filter out mutex and libc++ errors from transformers.js
-          if (str.includes('mutex') || str.includes('libc++') || str.includes('Invalid argument')) {
+          if (str.includes('mutex') || str.includes('libc++') || str.includes('Invalid argument') || str.includes('dtype')) {
             return true;
           }
           return originalStderrWrite.call(process.stderr, chunk, ...args);

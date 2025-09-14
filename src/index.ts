@@ -90,7 +90,7 @@ if (INTELLIGENCE_MODE === "enhanced") {
   const originalStderrWrite = process.stderr.write.bind(process.stderr);
   process.stderr.write = (chunk: any, ...args: any[]): boolean => {
     const str = chunk?.toString() || '';
-    if (str.includes('mutex') || str.includes('libc++') || str.includes('Invalid argument')) {
+    if (str.includes('mutex') || str.includes('libc++') || str.includes('Invalid argument') || str.includes('dtype')) {
       return true;
     }
     return originalStderrWrite(chunk, ...args);
@@ -2296,7 +2296,7 @@ function debugLog(message: string, data?: any) {
   }
 }
 
-async function main() {
+export async function startServer() {
   log("🚀 Starting r3call server...");
   debugLog("Process arguments:", process.argv);
   debugLog("Environment mode:", { MODE, MEM0_API_KEY: !!MEM0_API_KEY });
@@ -2396,8 +2396,11 @@ async function gracefulShutdown() {
   }
 }
 
-main().catch((error) => {
-  console.error("❌ Fatal server error:", error.message);
-  debugLog("Fatal error details:", error);
-  process.exit(1);
-});
+// Only run the server if this file is executed directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  startServer().catch((error) => {
+    console.error("❌ Fatal server error:", error.message);
+    debugLog("Fatal error details:", error);
+    process.exit(1);
+  });
+}
