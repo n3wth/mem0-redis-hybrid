@@ -4,7 +4,7 @@
 
 import * as crypto from "crypto";
 import { CallToolRequest } from "@modelcontextprotocol/sdk/types.js";
-import { CacheManager, Memory } from "../lib/cache-manager.js";
+import { CacheManager, Memory } from "../lib/cache-manager-optimized.js";
 import { PubSubManager } from "../lib/pubsub-manager.js";
 import {
   ErrorHandler,

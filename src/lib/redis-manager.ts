@@ -317,6 +317,40 @@ export class RedisManager {
     });
   }
 
+  // Hash operations for optimized cache manager
+  async hIncrBy(key: string, field: string, increment: number): Promise<number> {
+    return this.execute(`hIncrBy:${key}:${field}`, async () => {
+      return await this.redisClient!.hIncrBy(key, field, increment);
+    });
+  }
+
+  async hGet(key: string, field: string): Promise<string | undefined> {
+    return this.execute(`hGet:${key}:${field}`, async () => {
+      const result = await this.redisClient!.hGet(key, field);
+      return result ?? undefined;
+    });
+  }
+
+  async hGetAll(key: string): Promise<Record<string, string>> {
+    return this.execute(`hGetAll:${key}`, async () => {
+      return await this.redisClient!.hGetAll(key);
+    });
+  }
+
+  async hDel(key: string, fields: string | string[]): Promise<number> {
+    return this.execute(`hDel:${key}`, async () => {
+      return await this.redisClient!.hDel(key, fields);
+    });
+  }
+
+  // SCAN operation for better performance
+  async scan(cursor: string, options?: { MATCH?: string; COUNT?: number }): Promise<{ cursor: string; keys: string[] }> {
+    return this.execute(`scan:${cursor}`, async () => {
+      const result = await this.redisClient!.scan(cursor, options);
+      return result;
+    });
+  }
+
   // Pub/Sub operations
   async publish(channel: string, message: string): Promise<number> {
     if (!this.pubSubClient) {
