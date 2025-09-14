@@ -171,10 +171,10 @@ print(response.id)`,
           <div className="max-w-4xl mx-auto">
             <div className="mb-12">
               <h2 className="text-3xl font-normal text-white mb-3">
-                Use any language
+                Start building in seconds
               </h2>
               <p className="text-gray-400">
-                SDKs available for all major platforms
+                Drop-in SDKs for your stack. Type-safe. Battle-tested. Production-ready.
               </p>
             </div>
 
@@ -215,10 +215,10 @@ print(response.id)`,
         <Container size="lg">
           <div className="mb-12">
             <h2 className="text-3xl font-normal text-white mb-3">
-              Enterprise features
+              Built for scale, designed for speed
             </h2>
             <p className="text-gray-400">
-              Everything you need for production workloads
+              Production infrastructure that just works. No compromises. No surprises.
             </p>
           </div>
 
@@ -226,33 +226,33 @@ print(response.id)`,
             {[
               {
                 icon: Zap,
-                name: 'Two-tier caching',
-                description: 'L1 hot cache (24h) and L2 warm cache (7d) with automatic promotion',
+                name: 'Lightning-fast recall',
+                description: 'Two-tier intelligent caching. Hot memories in 2ms. Everything else under 5ms.',
               },
               {
                 icon: Shield,
-                name: 'Automatic failover',
-                description: 'Seamless fallback with circuit breaker pattern for high availability',
+                name: 'Never lose context',
+                description: 'Automatic failover and circuit breakers. Your memories persist even when systems don\'t.',
               },
               {
                 icon: Database,
-                name: 'Real-time sync',
-                description: 'Pub/Sub invalidation with 5-minute background synchronization',
+                name: 'Always in sync',
+                description: 'Real-time Pub/Sub updates. Background sync every 5 minutes. Zero drift guaranteed.',
               },
               {
                 icon: Globe,
-                name: 'Edge optimized',
-                description: '12 global regions for low-latency access worldwide',
+                name: 'Global by default',
+                description: '12 edge locations worldwide. Your AI remembers everything, everywhere, instantly.',
               },
               {
                 icon: Code,
-                name: 'Type safe',
-                description: 'Full TypeScript support with comprehensive type definitions',
+                name: 'Developer-first',
+                description: 'Full TypeScript support. Autocomplete everything. Ship with confidence.',
               },
               {
                 icon: Lock,
-                name: 'SOC 2 compliant',
-                description: 'Enterprise security with end-to-end encryption',
+                name: 'Enterprise-grade security',
+                description: 'SOC 2 Type II certified. End-to-end encryption. Your memories, protected.',
               },
             ].map((feature) => {
               const Icon = feature.icon
@@ -276,10 +276,10 @@ print(response.id)`,
         <Container size="sm">
           <div className="text-center">
             <h2 className="text-3xl font-normal text-white mb-3">
-              Ready to build?
+              Give your AI perfect memory
             </h2>
             <p className="text-gray-400 mb-8">
-              Start using Recall in your AI applications today
+              Join developers who've eliminated context switching forever. One command to start.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
