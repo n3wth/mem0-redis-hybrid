@@ -113,13 +113,13 @@ print(response.id)`,
               <span className="text-white">Stop repeating yourself</span>
               <br />
               <GradientText gradient="from-gray-400 to-gray-600" className="inline-block">
-                to Claude every morning
+                to Gemini and Claude
               </GradientText>
             </h1>
 
             <p className="mx-auto max-w-2xl text-lg text-gray-400 mb-10 font-light">
               I got tired of explaining my project context every session. So I built r3call -
-              a zero-config memory layer that gives Claude and Gemini permanent memory.
+              a zero-config memory layer that gives Gemini and Claude permanent memory.
               Works instantly. Runs locally. Just one command to start.
             </p>
 
@@ -150,9 +150,9 @@ print(response.id)`,
             <div className="mt-16 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 max-w-2xl mx-auto">
               <div className="text-center">
                 <div className="text-xl sm:text-2xl font-light text-white mb-1">
-                  <AnimatedCounter to={5} suffix="ms" prefix="<" duration={2} />
+                  Fast
                 </div>
-                <div className="text-xs text-gray-500">Faster than autocomplete</div>
+                <div className="text-xs text-gray-500">Local Redis caching</div>
               </div>
               <div className="text-center">
                 <div className="text-xl sm:text-2xl font-light text-white mb-1">
@@ -184,7 +184,7 @@ print(response.id)`,
           <div className="max-w-4xl mx-auto relative z-10">
             <div className="mb-12 text-center">
               <h2 className="text-3xl font-normal text-white mb-3">
-                Works with Claude Code & Gemini CLI
+                Works with Gemini CLI & Claude Code
               </h2>
               <p className="text-gray-400">
                 See real-world examples from your daily workflow
@@ -206,7 +206,7 @@ print(response.id)`,
                 Start building in seconds
               </h2>
               <p className="text-gray-400">
-                Drop-in SDKs for your stack. Type-safe. Battle-tested. Production-ready.
+                Drop-in SDKs for your stack. Type-safe. Zero configuration.
               </p>
             </div>
 
@@ -247,39 +247,39 @@ print(response.id)`,
           <Container size="lg">
           <div className="mb-12">
             <h2 className="text-3xl font-normal text-white mb-3">
-              Built for scale, designed for speed
+              Features that actually matter
             </h2>
             <p className="text-gray-400">
-              Production infrastructure that just works. No compromises. No surprises.
+              Local-first memory with cloud backup. Simple, fast, reliable.
             </p>
           </div>
 
           <BentoGrid>
             <BentoCard
-              title="Sub-5ms Response Times"
-              description="Redis L1 cache with intelligent tiering. Median response in 2ms, 99th percentile under 5ms."
+              title="Fast Local Caching"
+              description="Redis L1 cache for low-latency responses. Optimized for AI workloads."
               icon={<Zap className="h-5 w-5 text-yellow-400" />}
               gradient="from-yellow-900/20 to-orange-900/20"
               span="col-span-2"
             >
               <div className="mt-4 flex items-center gap-4">
                 <div className="text-2xl font-light text-white">
-                  <AnimatedCounter to={5} suffix="ms" prefix="<" duration={1.5} />
+                  Redis
                 </div>
-                <div className="text-xs text-gray-500">P99 response time</div>
+                <div className="text-xs text-gray-500">In-memory performance</div>
               </div>
             </BentoCard>
 
             <BentoCard
-              title="99.9% Uptime"
-              description="Automatic failover to cloud storage. Service availability SLA guaranteed."
+              title="Automatic Failover"
+              description="Falls back to cloud storage when Redis is unavailable. No data loss."
               icon={<Shield className="h-5 w-5 text-blue-400" />}
               gradient="from-blue-900/20 to-cyan-900/20"
             />
 
             <BentoCard
-              title="Unlimited Scale"
-              description="Handle millions of requests per second. 10:1 memory compression ratio."
+              title="Efficient Storage"
+              description="Smart compression and intelligent caching strategies."
               icon={<Database className="h-5 w-5 text-purple-400" />}
               gradient="from-purple-900/20 to-pink-900/20"
             />

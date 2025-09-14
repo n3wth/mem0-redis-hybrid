@@ -1,7 +1,6 @@
 # r3call
 
 [![npm version](https://badge.fury.io/js/r3call.svg)](https://www.npmjs.com/package/r3call)
-[![GitHub stars](https://img.shields.io/github/stars/n3wth/r3call)](https://github.com/n3wth/r3call)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-r3call.newth.ai-blue)](https://r3call.newth.ai)
 
@@ -9,13 +8,13 @@
 
 ## Features
 
-- 🚀 **Sub-5ms response times** - Redis L1 cache with intelligent tiering
-- 🛡️ **99.9% uptime** - Automatic failover to cloud storage
-- 📈 **Unlimited scale** - Handle millions of requests per second
+- 🚀 **Fast local caching** - Redis L1 cache for low-latency responses
+- 🛡️ **Automatic failover** - Falls back to cloud storage when Redis is unavailable
 - 🧠 **AI-native** - Semantic search and context management
 - 🔌 **Easy integration** - Works with Gemini, Claude, GPT, and any LLM
 - 💻 **100% TypeScript** - Full type safety and IntelliSense support
-- 🏠 **Local-first mode** - Works offline with embedded Redis server
+- 🏠 **Local-first** - Works offline with embedded Redis server
+- 📦 **Zero configuration** - Just run `npx r3call` to get started
 
 ## Table of Contents
 
@@ -140,14 +139,14 @@ Add to `~/.claude/claude_desktop_config.json`:
   </picture>
 </div>
 
-r3call implements a sophisticated multi-tier caching strategy optimized for AI workloads:
+r3call implements a multi-tier caching strategy designed for AI workloads:
 
 ```
 ┌─────────────┐      ┌──────────────┐      ┌─────────────┐
 │ Application │ ───► │   L1 Cache   │ ───► │  L2 Cache   │ ───► Cloud Storage
-│             │      │   (Redis)    │      │  (7 days)   │      (Permanent)
+│             │      │   (Redis)    │      │  (Weekly)   │      (Permanent)
 └─────────────┘      └──────────────┘      └─────────────┘
-                          <5ms                  <20ms              <200ms
+                          Fast                 Faster              Reliable
 ```
 
 ## Core Features
@@ -179,9 +178,9 @@ const results = await recall.search({
 });
 ```
 
-### Production Ready
+### Monitoring Support
 
-Built for enterprise deployments with comprehensive monitoring:
+Includes basic monitoring capabilities:
 
 ```typescript
 // Monitor cache performance
@@ -269,16 +268,15 @@ export const ai = createAI({
 });
 ```
 
-## Performance Benchmarks
+## Performance Characteristics
 
-| Metric | Value | Description |
-|--------|-------|-------------|
-| **Latency (p50)** | 2ms | Median response time |
-| **Latency (p99)** | 5ms | 99th percentile response |
-| **Throughput** | 1M+ req/s | Sustained load capacity |
-| **Cache Hit Rate** | >90% | Typical production ratio |
-| **Uptime** | 99.9% | Service availability SLA |
-| **Memory Efficiency** | 10:1 | Compression ratio |
+r3call is designed for speed with local Redis caching. In local development:
+- Redis provides fast in-memory caching
+- Automatic compression for larger entries
+- Efficient connection pooling
+- Falls back gracefully when Redis is unavailable
+
+*Note: Actual performance depends on your Redis setup and network conditions.*
 
 ## API Reference
 
@@ -319,14 +317,14 @@ interface RecallConfig {
 
 ### Core Methods
 
-| Method | Description | Response Time | Example |
-|--------|-------------|---------------|---------|
-| `add()` | Store new memory | <10ms | `await recall.add({ content, userId, priority })` |
-| `search()` | Query memories | <5ms | `await recall.search({ query, limit })` |
-| `get()` | Retrieve by ID | <5ms | `await recall.get(memoryId)` |
-| `update()` | Modify memory | <10ms | `await recall.update(id, { content })` |
-| `delete()` | Remove memory | <10ms | `await recall.delete(memoryId)` |
-| `getAll()` | List all memories | <50ms | `await recall.getAll({ userId })` |
+| Method | Description | Example |
+|--------|-------------|---------|
+| `add()` | Store new memory | `await recall.add({ content, userId, priority })` |
+| `search()` | Query memories | `await recall.search({ query, limit })` |
+| `get()` | Retrieve by ID | `await recall.get(memoryId)` |
+| `update()` | Modify memory | `await recall.update(id, { content })` |
+| `delete()` | Remove memory | `await recall.delete(memoryId)` |
+| `getAll()` | List all memories | `await recall.getAll({ userId })` |
 
 ## MCP Tools
 
@@ -391,33 +389,9 @@ MAX_CONNECTIONS=10               # Connection pool size
 LOG_LEVEL=info                   # Logging verbosity
 ```
 
-## Monitoring & Observability
+## Monitoring
 
-### Metrics
-
-r3call exposes Prometheus-compatible metrics:
-
-```typescript
-// Available metrics
-recall_cache_hits_total
-recall_cache_misses_total
-recall_request_duration_seconds
-recall_memory_operations_total
-recall_redis_connections_active
-```
-
-### Health Checks
-
-```bash
-# Liveness probe
-curl http://localhost:3000/health/live
-
-# Readiness probe
-curl http://localhost:3000/health/ready
-
-# Detailed health status
-curl http://localhost:3000/health/detailed
-```
+r3call includes basic monitoring capabilities through the `cacheStats()` and `health()` methods. Future versions may include more comprehensive metrics and health check endpoints.
 
 ## Troubleshooting
 
@@ -502,7 +476,7 @@ MIT © 2025 r3call Contributors
 ---
 
 <div align="center">
-  <p>Built with ❤️ by the open source community</p>
+  <p>A personal project to solve my own Claude context problem</p>
   <p>
     <a href="https://r3call.newth.ai">Website</a> •
     <a href="https://github.com/n3wth/r3call">GitHub</a> •
