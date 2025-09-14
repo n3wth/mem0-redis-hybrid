@@ -21,19 +21,19 @@ export function Navigation() {
             <div className="hidden md:ml-10 md:flex md:space-x-2">
               <Link
                 href="/docs/introduction"
-                className="px-4 py-2 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all"
+                className="px-4 py-3 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all min-h-[44px] flex items-center"
               >
                 Documentation
               </Link>
               <Link
                 href="/docs/api-reference"
-                className="px-4 py-2 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all"
+                className="px-4 py-3 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all min-h-[44px] flex items-center"
               >
                 API
               </Link>
               <a
                 href="https://github.com/n3wth/r3call"
-                className="px-4 py-2 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all"
+                className="px-4 py-3 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all min-h-[44px] flex items-center"
               >
                 GitHub
               </a>
@@ -42,7 +42,7 @@ export function Navigation() {
           <div className="flex items-center space-x-4">
             <Link
               href="/docs/quickstart"
-              className="group inline-flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg bg-white text-black hover:bg-gray-100 transition-all"
+              className="group inline-flex items-center gap-1 px-5 py-3 text-sm font-medium rounded-lg bg-white text-black hover:bg-gray-100 transition-all min-h-[44px]"
             >
               Get started
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

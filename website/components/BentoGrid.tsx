@@ -67,7 +67,7 @@ export function BentoCard({
         )}
 
         <motion.h3
-          className="mb-2 text-xl font-semibold text-white"
+          className="mb-2 text-xl font-semibold text-white break-words"
           initial={{ x: -20, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.1 }}
@@ -77,7 +77,7 @@ export function BentoCard({
 
         {description && (
           <motion.p
-            className="mb-4 text-gray-400"
+            className="mb-4 text-gray-400 break-words"
             initial={{ x: -20, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}

@@ -13,7 +13,7 @@ export const Terminal = ({ children, className }: TerminalProps) => {
   return (
     <div
       className={cn(
-        "w-full max-w-4xl mx-auto rounded-lg border border-zinc-800 bg-zinc-950 shadow-2xl",
+        "mx-auto rounded-lg border border-zinc-800 bg-zinc-950 shadow-2xl",
         className
       )}
       suppressHydrationWarning>
