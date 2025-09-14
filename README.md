@@ -14,6 +14,8 @@
 - 📈 **Unlimited scale** - Handle millions of requests per second
 - 🧠 **AI-native** - Semantic search and context management
 - 🔌 **Easy integration** - Works with Gemini, Claude, GPT, and any LLM
+- 💻 **100% TypeScript** - Full type safety and IntelliSense support
+- 🏠 **Local-first mode** - Works offline with embedded Redis server
 
 ## Table of Contents
 
@@ -37,12 +39,25 @@ npm install r3call
 
 ## Quick Start
 
+### Local-First Mode (No Dependencies)
+
+```bash
+# Run with embedded Redis - no external dependencies needed!
+R3CALL_LOCAL=true npx r3call
+
+# Or install globally
+npm install -g r3call
+r3call --local
+```
+
+### Hybrid Mode (Local + Cloud)
+
 ```typescript
 import { Recall } from 'r3call';
 
 const recall = new Recall({
-  apiKey: process.env.MEM0_API_KEY,
-  redis: process.env.REDIS_URL
+  apiKey: process.env.MEM0_API_KEY,  // Optional for cloud sync
+  redis: process.env.REDIS_URL       // Optional - uses embedded if not provided
 });
 
 // Store memory with context
