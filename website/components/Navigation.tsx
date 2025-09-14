@@ -13,7 +13,7 @@ export function Navigation() {
           <div className="flex items-center">
             <Link
               href="/"
-              className="text-2xl font-semibold text-white transition-transform duration-200 hover:scale-105"
+              className="text-2xl font-semibold text-white"
               style={{ fontFamily: 'var(--font-brand)' }}
             >
               r3call

@@ -37,39 +37,28 @@ export default function Home() {
 // Zero configuration - works immediately
 const recall = new Recall();
 
-// Remember work context
+// Store memory locally
 await recall.add({
-  content: 'Dashboard uses Next.js 14, TypeScript, and Tailwind CSS',
-  userId: 'work'
+  content: 'User prefers TypeScript and dark mode themes',
+  userId: 'user_123'
 });
 
-// Remember personal context
-await recall.add({
-  content: 'Kids: Emma (8, loves robotics), Josh (5, into dinosaurs)',
-  userId: 'personal'
-});
-
-// AI remembers across sessions
-const context = await recall.search({
-  query: 'What framework am I using?',
-  userId: 'work'
+// Retrieve memories instantly
+const memories = await recall.search({
+  query: 'What are the user preferences?',
+  userId: 'user_123'
 });`,
     python: `from r3call import Recall
 
-# Works with any LLM via MCP protocol
+# Zero configuration - works out of the box
 client = Recall()
 
-# Store project requirements
-client.memories.add(
-    content="API needs rate limiting and OAuth2",
-    metadata={"project": "backend"}
+response = client.memories.add(
+    content="User prefers dark mode UI",
+    metadata={"user_id": "user_123"}
 )
 
-# Store meeting notes
-client.memories.add(
-    content="Team standup is 9am PST on Tuesdays",
-    metadata={"type": "schedule"}
-)`,
+print(response.id)`,
     curl: `curl https://api.r3call.newth.ai/v1/memories \\
   -H "Authorization: Bearer $MEM0_API_KEY" \\
   -H "Content-Type: application/json" \\
@@ -121,15 +110,15 @@ client.memories.add(
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-8 leading-[1.15]">
-              <span className="text-white block">Persistent memory for</span>
+              <span className="text-white block">Your AI assistant</span>
               <GradientText gradient="from-gray-400 to-gray-600" className="inline-block mt-1">
-                AI assistants
+                finally remembers you
               </GradientText>
             </h1>
 
             <p className="mx-auto max-w-2xl text-lg text-gray-400 mb-10 font-light">
-              Stop re-explaining your context. r3call gives LLMs memory that persists across sessions.
-              Works with Claude Desktop, Gemini CLI, and any MCP-compatible client.
+              Give Gemini and Claude persistent memory. No more explaining your tech stack every morning.
+              No more repeating context after lunch. Just seamless conversations that build on yesterday's work.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -147,151 +136,44 @@ client.memories.add(
                   <Copy className="h-4 w-4 text-gray-600 group-hover:text-black transition-colors relative" />
                 )}
               </button>
-
-              <Link
-                href="/docs/quickstart"
-                className="inline-flex items-center gap-1 px-6 py-3 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              <a
+                href="https://github.com/n3wth/r3call"
+                className="px-6 py-3 text-base font-medium rounded-lg border border-white/20 text-white hover:bg-white/5 transition-all"
               >
-                View Documentation
-                <ArrowRight className="h-4 w-4" />
-              </Link>
+                View on GitHub
+              </a>
             </div>
 
-            {/* Stats - Minimal version */}
-            <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 mx-auto max-w-2xl">
+            {/* Animated metrics - contextualized */}
+            <div className="mt-16 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 max-w-2xl mx-auto">
               <div className="text-center">
                 <div className="text-xl sm:text-2xl font-light text-white mb-1">
-                  &lt; 1 min
+                  <AnimatedCounter to={30} suffix="s" duration={2} />
                 </div>
-                <div className="text-xs text-gray-400">To get started</div>
+                <div className="text-xs text-gray-500">To get started</div>
               </div>
               <div className="text-center">
                 <div className="text-xl sm:text-2xl font-light text-white mb-1">
                   <AnimatedCounter to={0} suffix="" duration={2.5} />
                 </div>
-                <div className="text-xs text-gray-400">Config files</div>
+                <div className="text-xs text-gray-500">Config files</div>
               </div>
               <div className="text-center">
                 <div className="text-xl sm:text-2xl font-light text-white mb-1">
-                  Local-first
+                  <AnimatedCounter to={100} suffix="%" duration={3} />
                 </div>
-                <div className="text-xs text-gray-400">Design</div>
+                <div className="text-xs text-gray-500">Local-first</div>
               </div>
               <div className="text-center">
                 <div className="text-xl sm:text-2xl font-light text-white mb-1">
                   <AnimatedCounter to={1} suffix="" duration={2} />
                 </div>
-                <div className="text-xs text-gray-400">Command</div>
+                <div className="text-xs text-gray-500">Command</div>
               </div>
             </div>
           </div>
           </div>
         </div>
-
-        {/* The Context Problem Section - MOVED UP */}
-        <section className="py-32 border-t border-white/5 relative overflow-hidden">
-          {/* Background effects */}
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-gradient-to-b from-purple-900/5 via-transparent to-blue-900/5" />
-          </div>
-
-          {/* Modern split layout inspired by Every.to and OpenAI */}
-          <Container size="lg">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-normal text-white mb-4">
-                The context problem
-              </h2>
-              <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-                Every conversation starts from zero. Your carefully built context vanishes the moment you close the window.
-              </p>
-            </div>
-
-            <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
-              {/* Before - Without r3call */}
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-500/[0.02] to-gray-600/[0.02] rounded-2xl" />
-                <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-8 border border-white/10 h-full hover:border-white/20 transition-colors">
-                  <div className="mb-8">
-                    <h3 className="text-xl font-medium text-white">Without memory</h3>
-                    <p className="text-sm text-gray-400 mt-1">Constant repetition</p>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="relative">
-                      <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-gray-500/30 via-gray-500/20 to-transparent" />
-                      <div className="pl-6 space-y-3">
-                        <div className="bg-gradient-to-r from-gray-500/[0.05] to-transparent rounded-xl p-4 border border-gray-500/10">
-                          <p className="text-xs font-mono text-gray-400 mb-2">Work context</p>
-                          <p className="text-sm text-gray-300">"I'm building a React dashboard with TypeScript..."</p>
-                        </div>
-                        <div className="bg-gradient-to-r from-gray-500/[0.05] to-transparent rounded-xl p-4 border border-gray-500/10">
-                          <p className="text-xs font-mono text-gray-400 mb-2">Personal task</p>
-                          <p className="text-sm text-gray-300">"Remember my daughter Emma's science project?"</p>
-                        </div>
-                        <div className="bg-gradient-to-r from-gray-500/[0.05] to-transparent rounded-xl p-4 border border-gray-500/10">
-                          <p className="text-xs font-mono text-gray-400 mb-2">Next session</p>
-                          <p className="text-sm text-gray-300">"Wait, what were the project requirements?"</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-8 pt-6 border-t border-white/5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <RefreshCw className="h-4 w-4 animate-spin-slow" />
-                          <span>Endless loop</span>
-                        </div>
-                        <span className="text-xs text-gray-400/60 font-mono">Time lost daily</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* After - With r3call */}
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.03] to-blue-600/[0.03] rounded-2xl" />
-                <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-8 border border-white/10 h-full hover:border-white/20 transition-colors">
-                  <div className="mb-8">
-                    <h3 className="text-xl font-medium text-white">With r3call</h3>
-                    <p className="text-sm text-gray-400 mt-1">Continuous context</p>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="relative">
-                      <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-blue-500/30 via-blue-500/20 to-transparent" />
-                      <div className="pl-6 space-y-3">
-                        <div className="bg-gradient-to-r from-blue-500/[0.05] to-transparent rounded-xl p-4 border border-blue-500/10">
-                          <p className="text-xs font-mono text-blue-400 mb-2">Initial setup</p>
-                          <p className="text-sm text-gray-300">AI learns your work, family, and preferences</p>
-                        </div>
-                        <div className="bg-gradient-to-r from-blue-500/[0.05] to-transparent rounded-xl p-4 border border-blue-500/10">
-                          <p className="text-xs font-mono text-blue-400 mb-2">Every session</p>
-                          <p className="text-sm text-gray-300">Continues exactly where you left off</p>
-                        </div>
-                        <div className="bg-gradient-to-r from-blue-500/[0.05] to-transparent rounded-xl p-4 border border-blue-500/10">
-                          <p className="text-xs font-mono text-blue-400 mb-2">Over time</p>
-                          <p className="text-sm text-gray-300">Remembers your projects, people, and patterns</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-8 pt-6 border-t border-white/5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <Check className="h-4 w-4 text-blue-400" />
-                          <span>Always ready</span>
-                        </div>
-                        <span className="text-xs text-blue-400/60 font-mono">Full context retention</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </Container>
-        </section>
 
         {/* Interactive Terminal Demo */}
         <section className="py-32 border-t border-white/5 relative overflow-hidden">
@@ -299,7 +181,7 @@ client.memories.add(
           <Container size="lg">
           <div className="max-w-4xl mx-auto relative z-10">
             <div className="mb-12 text-center">
-              <h2 className="text-3xl sm:text-4xl font-normal text-white mb-4">
+              <h2 className="text-3xl font-normal text-white mb-3">
                 See it in action
               </h2>
               <p className="text-gray-400">
@@ -317,9 +199,9 @@ client.memories.add(
         <section className="py-32 border-t border-white/5">
           <Container size="lg">
           <div className="max-w-4xl mx-auto">
-            <div className="mb-12 text-center">
-              <h2 className="text-3xl sm:text-4xl font-normal text-white mb-4">
-                Simple integration
+            <div className="mb-12">
+              <h2 className="text-3xl font-normal text-white mb-3">
+                Works with your stack
               </h2>
               <p className="text-gray-400">
                 Native SDKs with full TypeScript support
@@ -337,7 +219,7 @@ client.memories.add(
                         flex-1 px-4 py-3 text-sm font-medium capitalize transition-all
                         ${activeTab === lang
                           ? 'text-white bg-white/5 border-b border-white'
-                          : 'text-gray-400 hover:text-gray-300'
+                          : 'text-gray-500 hover:text-gray-300'
                         }
                       `}
                     >
@@ -361,9 +243,9 @@ client.memories.add(
         {/* Features - Stunning Bento Grid */}
         <section className="py-32 border-t border-white/5 relative">
           <Container size="lg">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl sm:text-4xl font-normal text-white mb-4">
-              Open source memory layer
+          <div className="mb-12">
+            <h2 className="text-3xl font-normal text-white mb-3">
+              Built for developers, by a developer
             </h2>
             <p className="text-gray-400">
               Every feature addresses a real pain point from daily AI coding
@@ -372,52 +254,52 @@ client.memories.add(
 
           <BentoGrid>
             <BentoCard
-              title="Redis-powered caching"
-              description="In-memory data store for sub-millisecond response times"
+              title="Lightning Fast"
+              description="Local Redis cache means instant responses, no network latency"
               icon={<Zap className="h-5 w-5 text-yellow-400" />}
               gradient="from-yellow-900/20 to-orange-900/20"
               span="col-span-2"
             />
 
             <BentoCard
-              title="Automatic failover"
-              description="Works offline with local Redis, syncs when online"
+              title="Always Available"
+              description="Seamless failover between local and cloud storage"
               icon={<Shield className="h-5 w-5 text-blue-400" />}
               gradient="from-blue-900/20 to-cyan-900/20"
             />
 
             <BentoCard
-              title="Efficient storage"
-              description="Compressed entries with automatic TTL management"
+              title="Smart Storage"
+              description="Intelligent compression keeps memory usage minimal"
               icon={<Database className="h-5 w-5 text-purple-400" />}
               gradient="from-purple-900/20 to-pink-900/20"
             />
 
             <BentoCard
-              title="MCP protocol compatible"
-              description="Works with Claude Desktop, Gemini CLI, and any MCP client"
+              title="Universal Compatibility"
+              description="Works with Gemini, Claude, GPT-4, and any LLM you prefer"
               icon={<Globe className="h-5 w-5 text-green-400" />}
               gradient="from-green-900/20 to-teal-900/20"
               span="col-span-2"
             />
 
             <BentoCard
-              title="TypeScript SDK"
-              description="Full type definitions with IntelliSense support"
+              title="TypeScript Native"
+              description="Full type safety with autocomplete that just works"
               icon={<Code className="h-5 w-5 text-indigo-400" />}
               gradient="from-indigo-900/20 to-blue-900/20"
             />
 
             <BentoCard
-              title="Local-first architecture"
-              description="Embedded Redis server, no external dependencies"
+              title="Works Offline"
+              description="No internet? No problem. Everything runs locally"
               icon={<Lock className="h-5 w-5 text-red-400" />}
               gradient="from-red-900/20 to-orange-900/20"
             />
 
             <BentoCard
-              title="Zero configuration"
-              description="npx r3call starts with embedded Redis automatically"
+              title="One-Line Setup"
+              description="MCP protocol means it just works with Claude Desktop"
               icon={<Sparkles className="h-5 w-5 text-pink-400" />}
               gradient="from-pink-900/20 to-purple-900/20"
             />
@@ -425,17 +307,117 @@ client.memories.add(
           </Container>
         </section>
 
-        {/* Bottom CTA section */}
-        <section className="py-32 border-t border-white/5">
-          <Container size="sm">
-            <div className="flex justify-center">
+        {/* Personal Story Section */}
+        <section className="py-32 border-t border-white/5 relative overflow-hidden">
+          {/* Background effects */}
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-gradient-to-b from-purple-900/5 via-transparent to-blue-900/5" />
+          </div>
+
+          {/* Modern split layout inspired by Every.to and OpenAI */}
+          <Container size="lg">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl sm:text-5xl font-normal text-white mb-6">
+                The context problem
+              </h2>
+              <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+                Every conversation starts from zero. Your carefully built context vanishes the moment you close the window.
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
+              {/* Before - Without r3call */}
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-500/[0.02] to-gray-600/[0.02] rounded-2xl" />
+                <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-8 border border-white/10 h-full hover:border-white/20 transition-colors">
+                  <div className="mb-8">
+                    <h3 className="text-xl font-medium text-white">Without memory</h3>
+                    <p className="text-sm text-gray-500 mt-1">Constant repetition</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="relative">
+                      <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-gray-500/30 via-gray-500/20 to-transparent" />
+                      <div className="pl-6 space-y-3">
+                        <div className="bg-gradient-to-r from-gray-500/[0.05] to-transparent rounded-xl p-4 border border-gray-500/10">
+                          <p className="text-xs font-mono text-gray-400 mb-2">Morning session</p>
+                          <p className="text-sm text-gray-300">"I'm using Next.js 14 with TypeScript..."</p>
+                        </div>
+                        <div className="bg-gradient-to-r from-gray-500/[0.05] to-transparent rounded-xl p-4 border border-gray-500/10">
+                          <p className="text-xs font-mono text-gray-400 mb-2">Afternoon context switch</p>
+                          <p className="text-sm text-gray-300">"Let me explain my architecture again..."</p>
+                        </div>
+                        <div className="bg-gradient-to-r from-gray-500/[0.05] to-transparent rounded-xl p-4 border border-gray-500/10">
+                          <p className="text-xs font-mono text-gray-400 mb-2">Next day</p>
+                          <p className="text-sm text-gray-300">"Starting from scratch. Again."</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-8 pt-6 border-t border-white/5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <RefreshCw className="h-4 w-4 animate-spin-slow" />
+                          <span>Endless loop</span>
+                        </div>
+                        <span className="text-xs text-gray-400/60 font-mono">Time lost daily</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* After - With r3call */}
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.03] to-blue-600/[0.03] rounded-2xl" />
+                <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-8 border border-white/10 h-full hover:border-white/20 transition-colors">
+                  <div className="mb-8">
+                    <h3 className="text-xl font-medium text-white">With r3call</h3>
+                    <p className="text-sm text-gray-500 mt-1">Continuous context</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="relative">
+                      <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-blue-500/30 via-blue-500/20 to-transparent" />
+                      <div className="pl-6 space-y-3">
+                        <div className="bg-gradient-to-r from-blue-500/[0.05] to-transparent rounded-xl p-4 border border-blue-500/10">
+                          <p className="text-xs font-mono text-blue-400 mb-2">Initial setup</p>
+                          <p className="text-sm text-gray-300">AI learns your context once</p>
+                        </div>
+                        <div className="bg-gradient-to-r from-blue-500/[0.05] to-transparent rounded-xl p-4 border border-blue-500/10">
+                          <p className="text-xs font-mono text-blue-400 mb-2">Every session</p>
+                          <p className="text-sm text-gray-300">Picks up exactly where you left off</p>
+                        </div>
+                        <div className="bg-gradient-to-r from-blue-500/[0.05] to-transparent rounded-xl p-4 border border-blue-500/10">
+                          <p className="text-xs font-mono text-blue-400 mb-2">Over time</p>
+                          <p className="text-sm text-gray-300">Learns patterns, grows with your project</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-8 pt-6 border-t border-white/5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <Check className="h-4 w-4 text-blue-400" />
+                          <span>Always ready</span>
+                        </div>
+                        <span className="text-xs text-blue-400/60 font-mono">Full context retention</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom CTA section */}
+            <div className="mt-16 flex justify-center">
               <div className="relative group max-w-2xl w-full">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-transparent to-blue-500/10 rounded-2xl blur-xl" />
                 <div className="relative bg-black/60 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
                   <p className="text-center text-lg text-gray-300 mb-6">
-                    Redis caching. Mem0 persistence. Zero configuration.
+                    Built on Redis for speed. Powered by Mem0 for intelligence.
                     <br />
-                    <span className="text-white font-medium">Start building context-aware AI applications.</span>
+                    <span className="text-white font-medium">One command to transform your AI workflow.</span>
                   </p>
                   <div className="flex justify-center">
                     <button
