@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Build outputs
+dist/
+*.tsbuildinfo
+
+# Development files
+.git/
+.gitignore
+README.md
+docs/
+examples/
+test/
+*.test.js
+*.test.ts
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Temporary files
+tmp/
+temp/
+
+# Analytics and monitoring
+analytics/
+memory-graph/
+microservices-design/
+realtime-sync/
+search-query/
+vector-embedding/
+r3call-cli/
+website/
+
+# Data files
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Scripts
+scripts/
+*.sh
