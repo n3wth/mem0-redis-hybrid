@@ -46,13 +46,46 @@ const components = {
       </div>
     </div>
   ),
-  a: ({ href, children }: any) => (
-    <Link href={href} className="text-blue-400 hover:text-blue-300 transition-colors">
-      {children}
-    </Link>
-  ),
+  a: ({ href, children }: any) => {
+    // Handle external links
+    if (href?.startsWith('http')) {
+      return (
+        <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 transition-colors">
+          {children}
+        </a>
+      )
+    }
+    // Handle internal links
+    return (
+      <Link href={href || '#'} className="text-blue-400 hover:text-blue-300 transition-colors">
+        {children}
+      </Link>
+    )
+  },
   strong: ({ children }: any) => (
     <strong className="text-white font-medium">{children}</strong>
+  ),
+  table: ({ children }: any) => (
+    <div className="overflow-x-auto mb-6">
+      <table className="min-w-full divide-y divide-white/10">
+        {children}
+      </table>
+    </div>
+  ),
+  thead: ({ children }: any) => (
+    <thead className="bg-white/[0.02]">{children}</thead>
+  ),
+  tbody: ({ children }: any) => (
+    <tbody className="divide-y divide-white/10">{children}</tbody>
+  ),
+  tr: ({ children }: any) => (
+    <tr>{children}</tr>
+  ),
+  th: ({ children }: any) => (
+    <th className="px-4 py-3 text-left text-sm font-medium text-white">{children}</th>
+  ),
+  td: ({ children }: any) => (
+    <td className="px-4 py-3 text-sm text-gray-400">{children}</td>
   ),
 }
 
