@@ -1409,6 +1409,50 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         required: ["from_entity"],
       },
     },
+    {
+      name: "import_memories",
+      description: "Bulk import memories from mem0 API or JSON file",
+      inputSchema: {
+        type: "object",
+        properties: {
+          source: {
+            type: "string",
+            enum: ["mem0_api", "json_file"],
+            description: "Source of memories to import",
+          },
+          api_key: {
+            type: "string",
+            description: "Mem0 API key (required for mem0_api source)",
+          },
+          user_id: {
+            type: "string",
+            default: MEM0_USER_ID,
+            description: "User ID for mem0 API",
+          },
+          file_path: {
+            type: "string",
+            description: "Path to JSON file (required for json_file source)",
+          },
+          batch_size: {
+            type: "number",
+            default: 50,
+            description: "Number of memories to import per batch",
+          },
+          priority: {
+            type: "string",
+            enum: ["high", "medium", "low"],
+            default: "high",
+            description: "Cache priority for imported memories",
+          },
+          skip_duplicates: {
+            type: "boolean",
+            default: true,
+            description: "Skip duplicate memories during import",
+          },
+        },
+        required: ["source"],
+      },
+    },
   ];
 
   return { tools };
@@ -2320,6 +2364,201 @@ server.setRequestHandler(
                   null,
                   2,
                 ),
+              },
+            ],
+          };
+        }
+
+        case "import_memories": {
+          const {
+            source,
+            api_key,
+            user_id = MEM0_USER_ID,
+            file_path,
+            batch_size = 50,
+            priority = "high",
+            skip_duplicates = true,
+          } = args;
+
+          let memories: any[] = [];
+          let importStats = {
+            total: 0,
+            imported: 0,
+            skipped: 0,
+            failed: 0,
+            duplicates: 0,
+          };
+
+          // Fetch memories based on source
+          if (source === "mem0_api") {
+            if (!api_key) {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: "Error: api_key required for mem0_api source",
+                  },
+                ],
+                isError: true,
+              };
+            }
+
+            try {
+              // Fetch from mem0 API using v1 endpoint (returns all memories)
+              const response = await fetch(
+                `https://api.mem0.ai/v1/memories/?user_id=${user_id}&limit=1000`,
+                {
+                  headers: {
+                    Authorization: `Token ${api_key}`,
+                    "Content-Type": "application/json",
+                  },
+                },
+              );
+
+              if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+              }
+
+              const data = await response.json() as any;
+              memories = Array.isArray(data) ? data : (data.results || data.memories || []);
+            } catch (error: any) {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: `Failed to fetch from mem0: ${error.message}`,
+                  },
+                ],
+                isError: true,
+              };
+            }
+          } else if (source === "json_file") {
+            if (!file_path) {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: "Error: file_path required for json_file source",
+                  },
+                ],
+                isError: true,
+              };
+            }
+
+            try {
+              const fs = await import("fs/promises");
+              const fileContent = await fs.readFile(file_path, "utf-8");
+              const data = JSON.parse(fileContent);
+              memories = Array.isArray(data) ? data : (data.results || data.memories || []);
+            } catch (error: any) {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: `Failed to read file: ${error.message}`,
+                  },
+                ],
+                isError: true,
+              };
+            }
+          }
+
+          importStats.total = memories.length;
+          console.error(`Starting import of ${importStats.total} memories...`);
+
+          // Process memories in batches
+          for (let i = 0; i < memories.length; i += batch_size) {
+            const batch = memories.slice(i, i + batch_size);
+            const batchEnd = Math.min(i + batch_size, memories.length);
+            console.error(
+              `Processing batch ${Math.floor(i / batch_size) + 1}/${Math.ceil(memories.length / batch_size)} (memories ${i + 1}-${batchEnd})`,
+            );
+
+            for (const memory of batch) {
+              try {
+                // Extract content
+                const content = memory.memory || memory.content || "";
+                if (!content) {
+                  importStats.skipped++;
+                  continue;
+                }
+
+                // Check for duplicates if enabled
+                if (skip_duplicates) {
+                  const duplicateCheck = await checkForDuplicate(content, user_id);
+                  if (duplicateCheck && duplicateCheck.isDuplicate) {
+                    importStats.duplicates++;
+                    importStats.skipped++;
+                    continue;
+                  }
+                }
+
+                // Add to local system
+                const memoryToStore: Memory = {
+                  id: memory.id || crypto.randomBytes(16).toString("hex"),
+                  memory: content,
+                  metadata: memory.metadata || {},
+                  created_at: memory.created_at || new Date().toISOString(),
+                  updated_at: memory.updated_at || new Date().toISOString(),
+                  user_id: user_id,
+                };
+
+                // Cache with specified priority
+                if (redisClient) {
+                  const ttl = priority === "high" ? CACHE_TTL : CACHE_TTL_L2;
+                  await setCachedMemory(memoryToStore.id, memoryToStore, ttl);
+
+                  // Index for search
+                  await indexMemoryForSearch(memoryToStore.id, memoryToStore);
+                }
+
+                // Add to local storage if in local mode
+                if (MODE === "local" && localMemory) {
+                  await localMemory.add({
+                    content: content,
+                    user_id: user_id,
+                    metadata: memory.metadata || {},
+                    priority: priority as any,
+                  });
+                }
+
+                // Add to enhanced vector store if available
+                if (INTELLIGENCE_MODE === "enhanced" && enhancedVectra) {
+                  await enhancedVectra.addMemory({
+                    id: memoryToStore.id,
+                    content: content,
+                    user_id: user_id,
+                    metadata: {
+                      ...memory.metadata,
+                      priority: priority as any,
+                    },
+                  });
+                }
+
+                importStats.imported++;
+              } catch (error: any) {
+                console.error(`Failed to import memory: ${error.message}`);
+                importStats.failed++;
+              }
+            }
+
+            // Small delay between batches to avoid overwhelming the system
+            if (batchEnd < memories.length) {
+              await new Promise((resolve) => setTimeout(resolve, 100));
+            }
+          }
+
+          // Invalidate search cache after import
+          await invalidateSearchCache();
+
+          const summary = `Import complete: ${importStats.imported}/${importStats.total} imported, ${importStats.duplicates} duplicates skipped, ${importStats.failed} failed`;
+          console.error(summary);
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: summary,
               },
             ],
           };
