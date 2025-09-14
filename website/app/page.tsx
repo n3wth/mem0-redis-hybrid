@@ -1,11 +1,17 @@
 'use client'
 
-import { Check, Zap, Shield, ArrowRight, Code, Database, Lock, Globe } from 'lucide-react'
+import { Check, Zap, Shield, ArrowRight, Code, Database, Lock, Globe, Sparkles, Cpu, Layers, Gauge } from 'lucide-react'
 import Link from 'next/link'
 import { useState, lazy, Suspense } from 'react'
 import { Navigation } from '@/components/Navigation'
 import { Footer } from '@/components/Footer'
 import { Container } from '@/components/Grid'
+import { GradientOrb } from '@/components/GradientOrb'
+import { AnimatedCounter } from '@/components/AnimatedCounter'
+import { SpotlightCard } from '@/components/Spotlight'
+import { BentoGrid, BentoCard } from '@/components/BentoGrid'
+import { TextReveal, GradientText, TypewriterText } from '@/components/TextReveal'
+import { FloatingDots, GridPattern } from '@/components/FloatingDots'
 // Lazy load heavy components
 const TerminalDemo = lazy(() => import('@/components/TerminalDemo').then(module => ({ default: module.TerminalDemo })))
 const RainbowButton = lazy(() => import('@/components/magicui/rainbow-button').then(module => ({ default: module.RainbowButton })))
@@ -59,20 +65,22 @@ print(response.id)`,
     <div className="min-h-screen bg-black">
       <Navigation />
 
-      {/* Hero - Clean and minimal */}
+      {/* Add gradient orb background */}
+      <GradientOrb />
+
+      {/* Hero - Clean and minimal with enhanced effects */}
       <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+        {/* Grid pattern background */}
+        <GridPattern />
+
+        {/* Floating dots */}
+        <FloatingDots count={30} />
+
         {/* Animated gradient background */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,100,255,0.13),transparent_50%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(100,150,255,0.13),transparent_50%)]" />
-        </div>
-
-        {/* Animated orbs */}
-        <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 sm:w-96 sm:h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
         </div>
 
         {/* Floating particles */}
@@ -84,9 +92,6 @@ print(response.id)`,
             size={0.6}
           />
         </Suspense>
-
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] opacity-5" />
 
         <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
           <div className="mx-auto max-w-4xl">
@@ -102,7 +107,9 @@ print(response.id)`,
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-6">
               <span className="text-white">Your AI never forgets</span>
               <br />
-              <span className="text-gray-500">what matters most</span>
+              <GradientText gradient="from-gray-400 to-gray-600" className="inline-block">
+                what matters most
+              </GradientText>
             </h1>
 
             <p className="mx-auto max-w-2xl text-lg text-gray-400 mb-10 font-light">
@@ -127,19 +134,32 @@ print(response.id)`,
               </Link>
             </div>
 
-            {/* Clean metrics */}
+            {/* Animated metrics */}
             <div className="mt-16 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 max-w-2xl mx-auto">
-              {[
-                { label: 'Latency', value: '<5ms' },
-                { label: 'Uptime', value: '99.9%' },
-                { label: 'Throughput', value: '1M/s' },
-                { label: 'Regions', value: '12' },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="text-xl sm:text-2xl font-light text-white mb-1">{stat.value}</div>
-                  <div className="text-xs text-gray-500 uppercase tracking-wider">{stat.label}</div>
+              <div className="text-center">
+                <div className="text-xl sm:text-2xl font-light text-white mb-1">
+                  <AnimatedCounter to={5} suffix="ms" prefix="<" duration={2} />
                 </div>
-              ))}
+                <div className="text-xs text-gray-500 uppercase tracking-wider">Latency</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xl sm:text-2xl font-light text-white mb-1">
+                  <AnimatedCounter to={99.9} decimals={1} suffix="%" duration={2.5} />
+                </div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider">Uptime</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xl sm:text-2xl font-light text-white mb-1">
+                  <AnimatedCounter to={1000000} suffix="/s" duration={3} />
+                </div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider">Throughput</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xl sm:text-2xl font-light text-white mb-1">
+                  <AnimatedCounter to={12} duration={2} />
+                </div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider">Regions</div>
+              </div>
             </div>
           </div>
         </div>
@@ -210,8 +230,8 @@ print(response.id)`,
         </Container>
       </section>
 
-      {/* Features - Card grid */}
-      <section className="py-24 border-t border-white/5">
+      {/* Features - Stunning Bento Grid */}
+      <section className="py-24 border-t border-white/5 relative">
         <Container size="lg">
           <div className="mb-12">
             <h2 className="text-3xl font-normal text-white mb-3">
@@ -222,52 +242,73 @@ print(response.id)`,
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              {
-                icon: Zap,
-                name: 'Lightning-fast recall',
-                description: 'Two-tier intelligent caching. Hot memories in 2ms. Everything else under 5ms.',
-              },
-              {
-                icon: Shield,
-                name: 'Never lose context',
-                description: 'Automatic failover and circuit breakers. Your memories persist even when systems don\'t.',
-              },
-              {
-                icon: Database,
-                name: 'Always in sync',
-                description: 'Real-time Pub/Sub updates. Background sync every 5 minutes. Zero drift guaranteed.',
-              },
-              {
-                icon: Globe,
-                name: 'Global by default',
-                description: '12 edge locations worldwide. Your AI remembers everything, everywhere, instantly.',
-              },
-              {
-                icon: Code,
-                name: 'Developer-first',
-                description: 'Full TypeScript support. Autocomplete everything. Ship with confidence.',
-              },
-              {
-                icon: Lock,
-                name: 'Enterprise-grade security',
-                description: 'SOC 2 Type II certified. End-to-end encryption. Your memories, protected.',
-              },
-            ].map((feature) => {
-              const Icon = feature.icon
-              return (
-                <div
-                  key={feature.name}
-                  className="group p-6 rounded-xl border border-white/10 bg-white/[0.01] hover:bg-white/[0.03] transition-all"
-                >
-                  <Icon className="h-5 w-5 text-white mb-4" />
-                  <h3 className="text-base font-medium text-white mb-2">{feature.name}</h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">{feature.description}</p>
+          <BentoGrid>
+            <BentoCard
+              title="Lightning-fast recall"
+              description="Two-tier intelligent caching. Hot memories in 2ms. Everything else under 5ms."
+              icon={<Zap className="h-5 w-5 text-yellow-400" />}
+              gradient="from-yellow-900/20 to-orange-900/20"
+              span="col-span-1 lg:col-span-2"
+            >
+              <div className="mt-4 flex items-center gap-4">
+                <div className="text-2xl font-light text-white">
+                  <AnimatedCounter to={2} suffix="ms" duration={1.5} />
                 </div>
-              )
-            })}
-          </div>
+                <div className="text-xs text-gray-500">Hot cache response</div>
+              </div>
+            </BentoCard>
+
+            <BentoCard
+              title="Never lose context"
+              description="Automatic failover and circuit breakers. Your memories persist."
+              icon={<Shield className="h-5 w-5 text-blue-400" />}
+              gradient="from-blue-900/20 to-cyan-900/20"
+            />
+
+            <BentoCard
+              title="Always in sync"
+              description="Real-time Pub/Sub updates. Background sync every 5 minutes."
+              icon={<Database className="h-5 w-5 text-purple-400" />}
+              gradient="from-purple-900/20 to-pink-900/20"
+            />
+
+            <BentoCard
+              title="Global by default"
+              description="12 edge locations worldwide. Your AI remembers everything, everywhere."
+              icon={<Globe className="h-5 w-5 text-green-400" />}
+              gradient="from-green-900/20 to-teal-900/20"
+              span="col-span-1 lg:col-span-2"
+            >
+              <div className="mt-4 grid grid-cols-3 gap-2">
+                {['US-East', 'EU-West', 'AP-South'].map((region) => (
+                  <div key={region} className="text-xs text-gray-400 bg-white/5 rounded px-2 py-1">
+                    {region}
+                  </div>
+                ))}
+              </div>
+            </BentoCard>
+
+            <BentoCard
+              title="Developer-first"
+              description="Full TypeScript support. Autocomplete everything."
+              icon={<Code className="h-5 w-5 text-indigo-400" />}
+              gradient="from-indigo-900/20 to-blue-900/20"
+            />
+
+            <BentoCard
+              title="Enterprise-grade security"
+              description="SOC 2 Type II certified. End-to-end encryption."
+              icon={<Lock className="h-5 w-5 text-red-400" />}
+              gradient="from-red-900/20 to-orange-900/20"
+            />
+
+            <BentoCard
+              title="AI-Native Architecture"
+              description="Purpose-built for LLMs with semantic search and vector indexing."
+              icon={<Sparkles className="h-5 w-5 text-pink-400" />}
+              gradient="from-pink-900/20 to-purple-900/20"
+            />
+          </BentoGrid>
         </Container>
       </section>
 
