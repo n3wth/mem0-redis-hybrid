@@ -1,0 +1,46 @@
+{
+  "name": "@mem0-hybrid/realtime-sync",
+  "version": "1.0.0",
+  "description": "Enhanced real-time sync service with RabbitMQ, event replay, and monitoring",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node test/test-suite.js",
+    "docker:up": "docker-compose -f docker/docker-compose.yml up -d",
+    "docker:down": "docker-compose -f docker/docker-compose.yml down",
+    "docker:logs": "docker-compose -f docker/docker-compose.yml logs -f",
+    "monitor": "node src/monitor.js"
+  },
+  "dependencies": {
+    "ws": "^8.14.2",
+    "amqplib": "^0.10.3",
+    "ioredis": "^5.3.2",
+    "pino": "^8.16.1",
+    "pino-pretty": "^10.2.3",
+    "express": "^4.18.2",
+    "compression": "^1.7.4",
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "rate-limiter-flexible": "^3.0.8",
+    "uuid": "^9.0.1",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.6",
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "websocket",
+    "realtime",
+    "sync",
+    "rabbitmq",
+    "redis",
+    "message-queue",
+    "event-streaming"
+  ]
+}

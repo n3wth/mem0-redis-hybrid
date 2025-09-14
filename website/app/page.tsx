@@ -23,7 +23,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('node')
 
   const codeExamples = {
-    node: `import Recall from '@n3wth/recall';
+    node: `import Recall from 'r3call';
 
 const client = new Recall({
   apiKey: process.env.MEM0_API_KEY,
@@ -36,7 +36,7 @@ const response = await client.memories.add({
 });
 
 console.log(response.id);`,
-    python: `from recall import Recall
+    python: `from r3call import Recall
 
 client = Recall(
     api_key=os.environ["MEM0_API_KEY"],

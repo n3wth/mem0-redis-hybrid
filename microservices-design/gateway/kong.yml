@@ -1,0 +1,103 @@
+_format_version: "3.0"
+
+services:
+  - name: memory-storage
+    url: http://memory-storage:3000
+    routes:
+      - name: memory-storage-route
+        paths:
+          - /api/memories
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+        strip_path: true
+
+  - name: vector-embedding
+    url: http://vector-embedding:3001
+    routes:
+      - name: vector-embedding-route
+        paths:
+          - /api/embeddings
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+        strip_path: true
+
+  - name: search-query
+    url: http://search-query:3002
+    routes:
+      - name: search-query-route
+        paths:
+          - /api/search
+        methods:
+          - GET
+          - POST
+        strip_path: true
+
+  - name: memory-graph
+    url: http://memory-graph:3003
+    routes:
+      - name: memory-graph-route
+        paths:
+          - /api/graph
+        methods:
+          - GET
+          - POST
+        strip_path: true
+
+  - name: realtime-sync
+    url: http://realtime-sync:3004
+    routes:
+      - name: realtime-sync-route
+        paths:
+          - /api/sync
+        methods:
+          - GET
+          - POST
+        strip_path: true
+
+  - name: analytics
+    url: http://analytics:3005
+    routes:
+      - name: analytics-route
+        paths:
+          - /api/analytics
+        methods:
+          - GET
+          - POST
+        strip_path: true
+
+plugins:
+  - name: cors
+    config:
+      origins:
+        - "*"
+      methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS
+      headers:
+        - Accept
+        - Accept-Version
+        - Content-Length
+        - Content-MD5
+        - Content-Type
+        - Date
+        - X-Auth-Token
+      exposed_headers:
+        - X-Auth-Token
+      credentials: true
+      max_age: 3600
+      preflight_continue: false
+
+  - name: rate-limiting
+    config:
+      minute: 100
+      hour: 1000
+      policy: local

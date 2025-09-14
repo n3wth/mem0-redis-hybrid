@@ -7,8 +7,8 @@
   <p>Sub-5ms response times · Automatic failover · Built for scale</p>
 
   <p>
-    <a href="https://www.npmjs.com/package/@n3wth/recall"><img src="https://img.shields.io/npm/v/@n3wth/recall?style=flat&colorA=000000&colorB=000000" alt="npm version" /></a>
-    <a href="https://www.npmjs.com/package/@n3wth/recall"><img src="https://img.shields.io/npm/dm/@n3wth/recall?style=flat&colorA=000000&colorB=000000" alt="npm downloads" /></a>
+    <a href="https://www.npmjs.com/package/r3call"><img src="https://img.shields.io/npm/v/r3call?style=flat&colorA=000000&colorB=000000" alt="npm version" /></a>
+    <a href="https://www.npmjs.com/package/r3call"><img src="https://img.shields.io/npm/dm/r3call?style=flat&colorA=000000&colorB=000000" alt="npm downloads" /></a>
     <a href="https://github.com/n3wth/recall/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-black?style=flat&colorA=000000&colorB=000000" alt="license" /></a>
     <a href="https://recall.newth.ai/docs"><img src="https://img.shields.io/badge/docs-recall.newth.ai-black?style=flat&colorA=000000&colorB=000000" alt="documentation" /></a>
   </p>
@@ -29,13 +29,13 @@ Modern AI applications need memory that's both **fast** and **persistent**. Reca
 ### Installation
 
 ```bash
-npm install @n3wth/recall
+npm install r3call
 ```
 
 ### Basic Usage
 
 ```typescript
-import { Recall } from '@n3wth/recall';
+import { Recall } from 'r3call';
 
 const recall = new Recall({
   apiKey: process.env.MEM0_API_KEY,
@@ -67,7 +67,7 @@ Add to `~/.claude/claude_desktop_config.json`:
   "mcpServers": {
     "recall": {
       "command": "npx",
-      "args": ["@n3wth/recall"],
+      "args": ["r3call"],
       "env": {
         "MEM0_API_KEY": "your_mem0_api_key",
         "REDIS_URL": "redis://localhost:6379"
@@ -149,7 +149,7 @@ if (!health.redis.connected) {
 
 ```typescript
 // app/api/memory/route.ts
-import { Recall } from '@n3wth/recall';
+import { Recall } from 'r3call';
 import { NextResponse } from 'next/server';
 
 const recall = new Recall({
@@ -197,7 +197,7 @@ class RecallMemory(BaseChatMemory):
 
 ```typescript
 import { createAI } from 'ai';
-import { Recall } from '@n3wth/recall';
+import { Recall } from 'r3call';
 
 const recall = new Recall({ apiKey: process.env.MEM0_API_KEY! });
 

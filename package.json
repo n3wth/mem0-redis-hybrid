@@ -1,16 +1,16 @@
 {
-  "name": "@n3wth/recall",
-  "version": "1.2.0",
+  "name": "r3call",
+  "version": "1.2.1",
   "description": "Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence",
   "main": "index.js",
   "type": "module",
   "bin": {
-    "recall": "./index.js",
-    "recall-cli": "./cli.js"
+    "recall": "index.js",
+    "recall-cli": "cli.js"
   },
   "scripts": {
     "start": "node index.js",
-    "test": "node --test test/test-suite.js",
+    "test": "node test/run-tests.js",
     "test:watch": "node --test --watch test/test-suite.js",
     "dev": "node --watch index.js",
     "cli": "node cli.js",
@@ -18,7 +18,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepublishOnly": "npm test || true",
+    "prepublishOnly": "NPM_PUBLISH=true npm test || true",
     "version": "npm run format && git add -A",
     "postversion": "git push && git push --tags",
     "release": "./scripts/auto-release.sh",
@@ -70,5 +70,28 @@
   "types": "index.d.ts",
   "publishConfig": {
     "access": "public"
+  },
+  "mcp": {
+    "command": "node",
+    "args": [
+      "index.js"
+    ],
+    "description": "Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence",
+    "env": {
+      "MEM0_API_KEY": {
+        "description": "API key for Mem0 service",
+        "required": true
+      },
+      "REDIS_URL": {
+        "description": "Redis connection URL (default: redis://localhost:6379)",
+        "required": true,
+        "default": "redis://localhost:6379"
+      },
+      "DEBUG": {
+        "description": "Enable debug logging",
+        "required": false,
+        "default": "false"
+      }
+    }
   }
 }
