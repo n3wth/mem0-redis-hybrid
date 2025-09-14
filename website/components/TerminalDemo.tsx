@@ -25,11 +25,11 @@ const demos = [
   {
     title: "Gemini CLI + Personal Knowledge",
     commands: [
-      { type: 'typing', text: '$ gm --save "Oliver uses mem0-hybrid for knowledge management"', delay: 0 },
+      { type: 'typing', text: '$ gemini --save "Oliver uses mem0-hybrid for knowledge management"', delay: 0 },
       { type: 'animated', text: 'Gemini CLI with mem0 context • Model: Gemini 1.5 Pro', className: 'text-gray-400', delay: 1500 },
       { type: 'animated', text: '✓ Saved to mem0-hybrid and GEMINI.md', className: 'text-green-500', delay: 2500 },
       { type: 'animated', text: '[Memory synced: Redis cache + Mem0 cloud]', className: 'text-gray-500 text-xs', delay: 3000 },
-      { type: 'typing', text: '$ gm -p "@./ explain my knowledge system"', delay: 4000 },
+      { type: 'typing', text: '$ gemini -p "@./ explain my knowledge system"', delay: 4000 },
       { type: 'animated', text: '📚 Retrieving context from mem0-hybrid...', className: 'text-blue-400', delay: 5500 },
       { type: 'animated', text: 'Based on your setup, you use mem0-hybrid which combines:', className: 'text-gray-400', delay: 6500 },
       { type: 'animated', text: '• L1 Cache: Redis (sub-5ms responses)', className: 'text-gray-300', delay: 7000 },
@@ -56,13 +56,13 @@ const demos = [
   {
     title: "Gemini CLI + Cross-Project Analysis",
     commands: [
-      { type: 'typing', text: '$ gcheck', delay: 0 },
+      { type: 'typing', text: '$ gemini check', delay: 0 },
       { type: 'animated', text: 'Running 4 parallel checks with mem0 context...', className: 'text-blue-400', delay: 1500 },
       { type: 'animated', text: '✓ Authentication: JWT with refresh tokens', className: 'text-green-400', delay: 2500 },
       { type: 'animated', text: '✓ Database: PostgreSQL with Prisma ORM', className: 'text-green-400', delay: 3000 },
       { type: 'animated', text: '✓ Testing: 87% coverage with Vitest', className: 'text-green-400', delay: 3500 },
       { type: 'animated', text: '✓ Performance: Core Web Vitals passing', className: 'text-green-400', delay: 4000 },
-      { type: 'typing', text: '$ gcompare "auth implementation" project-a project-b', delay: 5000 },
+      { type: 'typing', text: '$ gemini compare "auth implementation" project-a project-b', delay: 5000 },
       { type: 'animated', text: 'Analyzing with mem0-enhanced context...', className: 'text-blue-400', delay: 6500 },
       { type: 'animated', text: 'Project A: OAuth 2.0 with social providers', className: 'text-gray-300', delay: 7500 },
       { type: 'animated', text: 'Project B: Magic link authentication', className: 'text-gray-300', delay: 8000 },
