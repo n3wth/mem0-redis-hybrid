@@ -84,3 +84,11 @@ homebrew-core/
 smithery.md
 SMITHERY_*.md
 validation-prompt.md
+AGENT_ORCHESTRATION.yaml
+launch-parallel-agents.sh
+start-development.sh
+install-mcp.sh
+smithery.yaml
+.env.example
+tsconfig.tsbuildinfo
+*.sh
