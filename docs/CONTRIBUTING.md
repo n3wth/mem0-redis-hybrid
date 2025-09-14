@@ -46,11 +46,11 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ```bash
 # Clone your fork
-git clone https://github.com/your-username/mem0-redis-hybrid.git
-cd mem0-redis-hybrid
+git clone https://github.com/your-username/recall.git
+cd recall
 
 # Add upstream remote
-git remote add upstream https://github.com/n3wth/mem0-redis-hybrid.git
+git remote add upstream https://github.com/n3wth/recall.git
 
 # Install dependencies
 npm install
@@ -138,7 +138,7 @@ Closes #123
 ## Project Structure
 
 ```
-mem0-redis-hybrid/
+recall/
 ├── index.js              # Main server implementation
 ├── test.js               # Primary test suite
 ├── test-cache-invalidation.js  # Cache invalidation tests
@@ -167,8 +167,8 @@ mem0-redis-hybrid/
 ## Getting Help
 
 - Check the [README](README.md) for usage documentation
-- Search [existing issues](https://github.com/n3wth/mem0-redis-hybrid/issues)
-- Join discussions in [GitHub Discussions](https://github.com/n3wth/mem0-redis-hybrid/discussions)
+- Search [existing issues](https://github.com/n3wth/recall/issues)
+- Join discussions in [GitHub Discussions](https://github.com/n3wth/recall/discussions)
 - Ask questions in issues with the `question` label
 
 ## Recognition

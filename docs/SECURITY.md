@@ -78,8 +78,8 @@ We use automated tools to monitor and update dependencies:
 ## Contact
 
 For any security-related questions, contact:
-- Email: security@mem0hybrid.dev
-- GitHub Security Advisories: [Enable private vulnerability reporting](https://github.com/newth/mem0-redis-hybrid/security)
+- Email: security@recall.newth.ai
+- GitHub Security Advisories: [Enable private vulnerability reporting](https://github.com/n3wth/recall/security)
 
 ## Acknowledgments
 

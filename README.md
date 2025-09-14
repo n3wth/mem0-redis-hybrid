@@ -1,4 +1,4 @@
-# Recall
+# r3call
 
 <div align="center">
   <img src="https://recall.newth.ai/og-image.png" alt="Recall - Intelligent Memory for AI" width="100%" />
@@ -65,7 +65,7 @@ Add to `~/.claude/claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
-    "recall": {
+    "r3call": {
       "command": "npx",
       "args": ["r3call"],
       "env": {
