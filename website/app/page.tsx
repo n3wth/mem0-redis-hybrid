@@ -165,10 +165,9 @@ client.memories.add(
           <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
             <div className="mx-auto max-w-4xl">
               {/* Updated badge with AI features */}
-              <div className="mb-6 inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500/10 to-blue-500/10 px-4 py-2 text-sm font-medium text-white border border-emerald-500/30">
-                <Sparkles className="h-4 w-4 text-emerald-400" />
+              <div className="mb-6 inline-flex flex-col sm:flex-row items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500/10 to-blue-500/10 px-4 py-2 text-sm font-medium text-white border border-emerald-500/30">
                 <span className="bg-gradient-to-r from-emerald-400 to-blue-400 text-transparent bg-clip-text font-semibold">
-                  NEW: AI Intelligence with Semantic Search & Knowledge Graphs
+                  AI Intelligence with Semantic Search & Knowledge Graphs
                 </span>
               </div>
 
@@ -217,7 +216,7 @@ client.memories.add(
               </div>
 
               {/* Stats - Minimal version */}
-              <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 mx-auto max-w-2xl">
+              <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 mx-auto max-w-2xl sm:w-full">
                 <div className="text-center">
                   <div className="text-xl sm:text-2xl font-light text-white mb-1">
                     &lt; 1 min

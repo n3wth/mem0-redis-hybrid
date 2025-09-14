@@ -24,11 +24,11 @@ export function DocsHeader() {
             {/* Search */}
             <button
               onClick={() => setShowSearch(true)}
-              className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors sm:w-48"
             >
               <Search className="h-4 w-4 text-gray-400" />
-              <span className="text-sm text-gray-400">Search</span>
-              <div className="flex items-center gap-1 ml-8">
+              <span className="hidden sm:inline text-sm text-gray-400">Search</span>
+              <div className="hidden sm:flex items-center gap-1 ml-4 sm:ml-8">
                 <kbd className="px-1.5 py-0.5 text-xs bg-white/10 rounded border border-white/20">
                   ⌘
                 </kbd>
@@ -68,7 +68,7 @@ export function DocsHeader() {
             {/* API Reference */}
             <a
               href="/docs/api-reference"
-              className="px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-400 text-sm font-medium rounded-lg transition-colors"
+              className="hidden sm:inline-flex px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-400 text-sm font-medium rounded-lg transition-colors"
             >
               API Reference
             </a>
