@@ -120,16 +120,18 @@ export function TerminalDemo() {
               </TypingAnimation>
             )
           } else {
-            let text = cmd.text
+            let displayText: React.ReactNode = cmd.text
             if (cmd.userText) {
-              text = <><span className="text-blue-400">You:</span> {text.replace('You: ', '')}</>
+              const cleanText = cmd.text.replace('You: ', '')
+              displayText = <><span className="text-blue-400">You:</span> {cleanText}</>
             } else if (cmd.assistantText) {
-              text = <><span className="text-purple-400">Claude:</span> {text.replace('Claude: ', '')}</>
+              const cleanText = cmd.text.replace('Claude: ', '')
+              displayText = <><span className="text-purple-400">Claude:</span> {cleanText}</>
             }
 
             return (
               <AnimatedSpan key={index} className={cmd.className} delay={cmd.delay}>
-                <span>{text}</span>
+                <span>{displayText}</span>
               </AnimatedSpan>
             )
           }
