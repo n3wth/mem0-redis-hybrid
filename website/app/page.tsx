@@ -11,7 +11,7 @@ import { AnimatedCounter } from '@/components/AnimatedCounter'
 import { SpotlightCard } from '@/components/Spotlight'
 import { BentoGrid, BentoCard } from '@/components/BentoGrid'
 import { TextReveal, GradientText, TypewriterText } from '@/components/TextReveal'
-import { FloatingDots, GridPattern } from '@/components/FloatingDots'
+import { FloatingDots } from '@/components/FloatingDots'
 // Lazy load heavy components
 const TerminalDemo = lazy(() => import('@/components/TerminalDemo').then(module => ({ default: module.TerminalDemo })))
 const RainbowButton = lazy(() => import('@/components/magicui/rainbow-button').then(module => ({ default: module.RainbowButton })))
@@ -70,9 +70,6 @@ print(response.id)`,
 
       {/* Hero - Clean and minimal with enhanced effects */}
       <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        {/* Grid pattern background */}
-        <GridPattern />
-
         {/* Floating dots */}
         <FloatingDots count={30} />
 
