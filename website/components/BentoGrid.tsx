@@ -29,7 +29,7 @@ interface BentoCardProps {
   className?: string
   children?: ReactNode
   gradient?: string
-  span?: 'col-span-1' | 'col-span-2' | 'col-span-3' | 'row-span-2'
+  span?: string
 }
 
 export function BentoCard({

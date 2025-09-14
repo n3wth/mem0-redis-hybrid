@@ -130,51 +130,63 @@ ensure_worktree() {
 echo -e "${BLUE}Setting up worktrees...${NC}"
 echo "------------------------"
 
-# Define services and their primary tasks
-declare -A services=(
-    ["memory-storage"]="- Implement PostgreSQL schema
+# Define services and their primary tasks using functions instead of associative array
+get_service_tasks() {
+    local service=$1
+    case $service in
+        "memory-storage")
+            echo "- Implement PostgreSQL schema
 - Create Redis caching layer
 - Build REST API endpoints
 - Add GraphQL resolvers"
-
-    ["vector-embedding"]="- Integrate OpenAI API
+            ;;
+        "vector-embedding")
+            echo "- Integrate OpenAI API
 - Setup Sentence-Transformers
 - Implement FAISS indexing
 - Create embedding cache"
-
-    ["search-query"]="- Setup Elasticsearch
+            ;;
+        "search-query")
+            echo "- Setup Elasticsearch
 - Implement query parser
 - Build ranking algorithm
 - Create GraphQL API"
-
-    ["memory-graph"]="- Design Neo4j schema
+            ;;
+        "memory-graph")
+            echo "- Design Neo4j schema
 - Implement graph traversal
 - Add community detection
 - Build visualization API"
-
-    ["realtime-sync"]="- Enhance WebSocket server
+            ;;
+        "realtime-sync")
+            echo "- Enhance WebSocket server
 - Integrate RabbitMQ
 - Build subscription system
 - Add event replay"
-
-    ["analytics"]="- Setup Prometheus metrics
+            ;;
+        "analytics")
+            echo "- Setup Prometheus metrics
 - Create Grafana dashboards
 - Build analytics API
 - Implement aggregations"
-)
+            ;;
+    esac
+}
 
 # Launch Claude agents for primary services
 echo -e "\n${GREEN}=== Launching Claude Agents ===${NC}"
 for service in "memory-storage" "vector-embedding" "search-query" "memory-graph"; do
     worktree_path=$(ensure_worktree "$service")
-    launch_claude "$service" "$worktree_path" "${services[$service]}"
+    tasks=$(get_service_tasks "$service")
+    launch_claude "$service" "$worktree_path" "$tasks"
 done
 
 # Launch Gemini agents for additional services
 echo -e "\n${YELLOW}=== Launching Gemini Agents ===${NC}"
 for service in "realtime-sync" "analytics"; do
     worktree_path=$(ensure_worktree "$service")
-    launch_gemini "$service" "$worktree_path" "${services[$service]}"
+    tasks=$(get_service_tasks "$service")
+    launch_gemini "$service" "$worktree_path" "$tasks"
 done
 
 # Create monitoring dashboard
@@ -294,7 +306,7 @@ echo "  - 4 Claude Code sessions (primary services)"
 echo "  - 2 Gemini sessions (additional services)"
 echo ""
 echo "📁 Worktree Locations:"
-for service in "${!services[@]}"; do
+for service in "memory-storage" "vector-embedding" "search-query" "memory-graph" "realtime-sync" "analytics"; do
     echo "  - ../recall-${service}"
 done
 echo ""

@@ -245,7 +245,7 @@ print(response.id)`,
               description="Two-tier intelligent caching. Hot memories in 2ms. Everything else under 5ms."
               icon={<Zap className="h-5 w-5 text-yellow-400" />}
               gradient="from-yellow-900/20 to-orange-900/20"
-              span="col-span-1 lg:col-span-2"
+              span="col-span-2"
             >
               <div className="mt-4 flex items-center gap-4">
                 <div className="text-2xl font-light text-white">
@@ -274,7 +274,7 @@ print(response.id)`,
               description="12 edge locations worldwide. Your AI remembers everything, everywhere."
               icon={<Globe className="h-5 w-5 text-green-400" />}
               gradient="from-green-900/20 to-teal-900/20"
-              span="col-span-1 lg:col-span-2"
+              span="col-span-2"
             >
               <div className="mt-4 grid grid-cols-3 gap-2">
                 {['US-East', 'EU-West', 'AP-South'].map((region) => (
