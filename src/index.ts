@@ -1342,7 +1342,7 @@ server.setRequestHandler(
                 : "";
               return cleanMemory;
             })
-            .filter(m => m); // Remove empty memories
+            .filter((m) => m); // Remove empty memories
 
           // Single memory - return it directly
           if (memories.length === 1) {
@@ -1499,7 +1499,10 @@ server.setRequestHandler(
             content: [
               {
                 type: "text",
-                text: memories.length === 0 ? "No memories found" : `${memories.length} ${memories.length === 1 ? "memory" : "memories"} retrieved`,
+                text:
+                  memories.length === 0
+                    ? "No memories found"
+                    : `${memories.length} ${memories.length === 1 ? "memory" : "memories"} retrieved`,
               },
             ],
           };
@@ -1784,9 +1787,10 @@ server.setRequestHandler(
 
         case "sync_status": {
           const pendingCount = pendingMemories.size + jobQueue.size;
-          const statusText = pendingCount > 0
-            ? `${pendingCount} operations pending`
-            : "All operations complete";
+          const statusText =
+            pendingCount > 0
+              ? `${pendingCount} operations pending`
+              : "All operations complete";
 
           return {
             content: [
