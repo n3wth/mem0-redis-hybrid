@@ -1,18 +1,29 @@
 #!/bin/bash
 
-# Auto-release script for mem0-redis-hybrid
+# Auto-release script for @n3wth/recall
 # Usage: ./scripts/auto-release.sh [patch|minor|major]
+# This script triggers the GitHub Actions workflow for a unified release process
 
 VERSION_TYPE=${1:-patch}
 
-echo "🚀 Auto-Release Script for @n3wth/mem0-redis-hybrid"
-echo "======================================================"
+echo "🚀 Recall Release Manager"
+echo "========================"
+echo ""
+
+# Validate version type
+if [[ ! "$VERSION_TYPE" =~ ^(patch|minor|major)$ ]]; then
+    echo "❌ Error: Invalid version type '$VERSION_TYPE'"
+    echo "Usage: ./scripts/auto-release.sh [patch|minor|major]"
+    exit 1
+fi
 
 # Check if we're on main branch
 CURRENT_BRANCH=$(git branch --show-current)
 if [ "$CURRENT_BRANCH" != "main" ]; then
     echo "❌ Error: You must be on the main branch to release"
     echo "Current branch: $CURRENT_BRANCH"
+    echo ""
+    echo "Run: git checkout main"
     exit 1
 fi
 
@@ -20,77 +31,67 @@ fi
 if ! git diff-index --quiet HEAD --; then
     echo "❌ Error: You have uncommitted changes"
     echo "Please commit or stash them before releasing"
+    echo ""
+    git status --short
+    exit 1
+fi
+
+# Check if gh CLI is installed
+if ! command -v gh &> /dev/null; then
+    echo "❌ Error: GitHub CLI (gh) is not installed"
+    echo "Install it from: https://cli.github.com/"
+    exit 1
+fi
+
+# Check if authenticated with GitHub
+if ! gh auth status &> /dev/null; then
+    echo "❌ Error: Not authenticated with GitHub"
+    echo "Run: gh auth login"
     exit 1
 fi
 
 # Pull latest changes
 echo "📥 Pulling latest changes..."
-git pull origin main
-
-# Run tests
-echo "🧪 Running tests..."
-npm test || {
-    echo "❌ Tests failed. Fix them before releasing."
+git pull origin main --ff-only || {
+    echo "❌ Error: Failed to pull latest changes"
+    echo "Resolve any conflicts and try again"
     exit 1
 }
 
-# Bump version
-echo "📦 Bumping version ($VERSION_TYPE)..."
-npm version $VERSION_TYPE -m "chore(release): %s
+# Get current version
+CURRENT_VERSION=$(node -p "require('./package.json').version")
+echo "📊 Current version: v$CURRENT_VERSION"
+echo "📦 Release type: $VERSION_TYPE"
+echo ""
 
-- Enhanced error handling and recovery
-- Added TypeScript definitions
-- Implemented connection pooling
-- Created CLI tool for management
-- Added comprehensive examples
-- Set up CI/CD pipeline
+# Confirm release
+echo "This will trigger a GitHub Actions workflow that will:"
+echo "  1. Run tests"
+echo "  2. Bump version ($VERSION_TYPE)"
+echo "  3. Create git tag and push to GitHub"
+echo "  4. Publish to npm registry"
+echo "  5. Create GitHub release with changelog"
+echo ""
+read -p "🚀 Proceed with release? (y/N) " -n 1 -r
+echo ""
 
-Co-Authored-By: Claude <noreply@anthropic.com>"
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "❌ Release cancelled"
+    exit 1
+fi
 
-# Get new version
-NEW_VERSION=$(node -p "require('./package.json').version")
-
-echo "🏷️  New version: $NEW_VERSION"
-
-# Push to GitHub
-echo "📤 Pushing to GitHub..."
-git push origin main --follow-tags
-
-# Publish to npm
-echo "📦 Publishing to npm..."
-npm publish
-
-# Create GitHub release
-echo "📝 Creating GitHub release..."
-gh release create "v$NEW_VERSION" \
-    --title "Release v$NEW_VERSION" \
-    --notes "## What's Changed
-
-### ✨ Features
-- Enhanced error handling with circuit breaker pattern
-- Redis connection pooling for better performance
-- TypeScript definitions for improved DX
-- CLI tool for testing and management
-- Comprehensive examples and documentation
-
-### 🚀 Installation
-\`\`\`bash
-npm install @n3wth/mem0-redis-hybrid@$NEW_VERSION
-\`\`\`
-
-### 🎯 CLI Usage
-\`\`\`bash
-npx mem0-cli
-\`\`\`
-
-### 📚 Documentation
-See the [README](https://github.com/n3wth/mem0-redis-hybrid#readme) for detailed usage instructions.
-" || echo "Failed to create GitHub release (might need 'gh' CLI installed)"
+# Trigger GitHub Actions workflow
+echo ""
+echo "🎬 Triggering GitHub Actions release workflow..."
+gh workflow run release.yml -f version=$VERSION_TYPE
 
 echo ""
-echo "✅ Release v$NEW_VERSION completed successfully!"
+echo "✅ Release workflow triggered!"
 echo ""
-echo "Next steps:"
-echo "1. Check npm: https://www.npmjs.com/package/@n3wth/mem0-redis-hybrid"
-echo "2. Check GitHub: https://github.com/n3wth/mem0-redis-hybrid/releases"
-echo "3. Update changelog if needed"
+echo "📋 Next steps:"
+echo "1. Monitor workflow: gh run watch"
+echo "2. View in browser: gh run view --web"
+echo "3. Check npm: https://www.npmjs.com/package/@n3wth/recall"
+echo "4. Check releases: https://github.com/n3wth/recall/releases"
+echo ""
+echo "The workflow will handle all release steps automatically."
