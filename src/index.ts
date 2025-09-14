@@ -13,6 +13,8 @@ import fetch from "node-fetch";
 import { createClient, RedisClientType } from "redis";
 import * as crypto from "crypto";
 import { LocalMemory } from "./lib/local-memory.js";
+import { EnhancedVectraMemory } from "./lib/enhanced-vectra-memory.js";
+import { EntityExtractor } from "./lib/entity-extractor.js";
 
 // Type definitions
 interface Memory {
@@ -24,6 +26,15 @@ interface Memory {
   user_id: string;
   source?: string;
   relevance_score?: number;
+  score_breakdown?: {
+    semantic: number;
+    keyword: number;
+    entity: number;
+    relationship: number;
+    recency: number;
+  };
+  matched_entities?: string[];
+  matched_relationships?: string[];
 }
 
 interface DuplicateCheck {
@@ -65,6 +76,49 @@ const MEM0_API_KEY = process.env.MEM0_API_KEY;
 const QUIET_MODE =
   process.env.QUIET_MODE !== "false" &&
   (!process.stdin.isTTY || process.env.NODE_ENV === "production"); // Default to quiet for MCP
+
+// Intelligence mode configuration - Enhanced by default!
+let INTELLIGENCE_MODE = process.env.INTELLIGENCE_MODE === "basic" ||
+                       process.argv.includes("--basic") ? "basic" : "enhanced";
+const ENABLE_ENTITY_EXTRACTION = INTELLIGENCE_MODE === "enhanced";
+const ENABLE_RELATIONSHIP_MAPPING = INTELLIGENCE_MODE === "enhanced";
+const ENABLE_REAL_EMBEDDINGS = INTELLIGENCE_MODE === "enhanced";
+const ENABLE_SEMANTIC_SEARCH = INTELLIGENCE_MODE === "enhanced";
+
+// Suppress mutex warnings from transformers.js globally
+if (INTELLIGENCE_MODE === "enhanced") {
+  const originalStderrWrite = process.stderr.write.bind(process.stderr);
+  process.stderr.write = (chunk: any, ...args: any[]): boolean => {
+    const str = chunk?.toString() || '';
+    if (str.includes('mutex') || str.includes('libc++') || str.includes('Invalid argument')) {
+      return true;
+    }
+    return originalStderrWrite(chunk, ...args);
+  };
+
+  // Also handle uncaught exceptions related to mutex
+  process.on('uncaughtException', (error) => {
+    if (error.message?.includes('mutex') || error.message?.includes('Invalid argument')) {
+      // Silently ignore mutex errors from transformers.js
+      return;
+    }
+    // Re-throw other errors
+    console.error('Uncaught Exception:', error);
+    process.exit(1);
+  });
+
+  // Handle SIGTERM and SIGINT for clean shutdown
+  const cleanShutdown = () => {
+    if (QUIET_MODE) {
+      // Force immediate exit to avoid mutex warnings
+      (process as any).reallyExit?.(0) || process.exit(0);
+    } else {
+      process.exit(0);
+    }
+  };
+  process.on('SIGTERM', cleanShutdown);
+  process.on('SIGINT', cleanShutdown);
+}
 
 // Determine operation mode - always default to local-first
 let MODE: "local" | "hybrid" | "demo" = "local";
@@ -121,6 +175,10 @@ let pubSubClient: RedisClientType | null = null;
 let subscriberClient: RedisClientType | null = null;
 let localMemory: LocalMemory | null = null;
 
+// Intelligence components (only initialized in enhanced mode)
+let enhancedVectra: EnhancedVectraMemory | null = null;
+let entityExtractor: EntityExtractor | null = null;
+
 // Background job queue
 const jobQueue = new Map<string, Job>();
 const pendingMemories = new Map<string, PendingMemory>();
@@ -159,6 +217,29 @@ async function initializeRedis(): Promise<boolean> {
         pubSubClient: !!pubSubClient,
         subscriberClient: !!subscriberClient,
       });
+
+      // Initialize enhanced intelligence if enabled
+      if (INTELLIGENCE_MODE === "enhanced") {
+        try {
+          debugLog("Initializing enhanced intelligence features...");
+
+          // Initialize vector memory with real embeddings
+          enhancedVectra = new EnhancedVectraMemory(
+            "./data/vectra-index",
+            QUIET_MODE
+          );
+          await enhancedVectra.initialize();
+
+          // Initialize entity extractor
+          entityExtractor = new EntityExtractor(QUIET_MODE);
+
+          log("✓ AI intelligence features activated (default mode)");
+        } catch (error: any) {
+          console.error("Warning: Enhanced features failed to initialize:", error.message);
+          console.error("  Continuing with basic mode");
+          INTELLIGENCE_MODE = "basic";
+        }
+      }
 
       log(
         "✓ Local memory system initialized with embedded Redis and vector search",
@@ -366,6 +447,38 @@ async function processMemoryAsync(
           ? CACHE_TTL
           : CACHE_TTL_L2;
 
+      // Enhanced intelligence processing
+      if (INTELLIGENCE_MODE === "enhanced" && memory.memory) {
+        try {
+          // Extract entities and relationships
+          if (ENABLE_ENTITY_EXTRACTION && entityExtractor) {
+            const extraction = await entityExtractor.extract(memory.memory);
+            memory.entities = extraction.entities;
+            memory.relationships = extraction.relationships;
+            memory.keywords = extraction.keywords;
+          }
+
+          // Generate real embeddings
+          if (ENABLE_REAL_EMBEDDINGS && enhancedVectra) {
+            await enhancedVectra.addMemory({
+              id: memoryId,
+              content: memory.memory,
+              user_id: memory.user_id,
+              metadata: {
+                entities: memory.entities,
+                relationships: memory.relationships,
+                keywords: memory.keywords,
+                priority: priority as "low" | "normal" | "high" | "critical",
+                access_count: accessCount,
+              },
+            });
+          }
+        } catch (error: any) {
+          debugLog("Enhanced processing error:", error.message);
+          // Continue with basic processing
+        }
+      }
+
       // Cache with appropriate TTL
       await setCachedMemory(memoryId, memory, ttl);
 
@@ -509,24 +622,120 @@ async function smartSearch(
   // Determine search strategy based on preferCache
   let results: Memory[] = [];
 
-  if (preferCache && redisClient) {
-    // Try cache-first approach with keyword matching
-    results = await searchFromCache(query, limit);
+  // Use enhanced vector search if available
+  if (INTELLIGENCE_MODE === "enhanced" && enhancedVectra && ENABLE_REAL_EMBEDDINGS) {
+    try {
+      const vectorResults = await enhancedVectra.searchMemories(query, limit * 2);
 
-    // If not enough results, fallback to mem0
-    if (results.length < limit) {
+      // Extract entities from query for matching
+      let queryEntities: any = null;
+      if (ENABLE_ENTITY_EXTRACTION && entityExtractor) {
+        const extraction = await entityExtractor.extract(query);
+        queryEntities = extraction.entities;
+      }
+
+      // Calculate multi-factor relevance scores
+      for (const result of vectorResults) {
+        const scoreBreakdown: any = {
+          semantic_similarity: result.metadata?.similarity_score || 0,
+          keyword_match: 0,
+          entity_overlap: 0,
+          recency_bonus: 0,
+          access_frequency: 0,
+        };
+
+        // Keyword matching score
+        const queryKeywords = query.toLowerCase().split(/\W+/).filter(w => w.length > 2);
+        const contentWords = result.content.toLowerCase().split(/\W+/);
+        const keywordMatches = queryKeywords.filter(k => contentWords.includes(k)).length;
+        scoreBreakdown.keyword_match = keywordMatches / Math.max(queryKeywords.length, 1);
+
+        // Entity overlap score
+        if (queryEntities && result.metadata?.entities) {
+          const entityTypes = ['people', 'organizations', 'technologies', 'projects'];
+          let totalOverlap = 0;
+          for (const type of entityTypes) {
+            const queryEnts = queryEntities[type]?.map((e: any) => e.text.toLowerCase()) || [];
+            const memEnts = result.metadata.entities[type]?.map((e: any) => e.text.toLowerCase()) || [];
+            const overlap = queryEnts.filter((e: string) => memEnts.includes(e)).length;
+            totalOverlap += overlap;
+          }
+          scoreBreakdown.entity_overlap = Math.min(totalOverlap * 0.2, 1);
+        }
+
+        // Recency bonus (if created within last 7 days)
+        const createdAt = result.metadata?.created_at;
+        if (createdAt) {
+          const ageInDays = (Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24);
+          scoreBreakdown.recency_bonus = Math.max(0, (7 - ageInDays) / 7) * 0.1;
+        }
+
+        // Access frequency bonus
+        if (result.metadata?.access_count) {
+          scoreBreakdown.access_frequency = Math.min(result.metadata.access_count / 10, 1) * 0.05;
+        }
+
+        // Calculate weighted final score
+        const finalScore =
+          scoreBreakdown.semantic_similarity * 0.5 +
+          scoreBreakdown.keyword_match * 0.2 +
+          scoreBreakdown.entity_overlap * 0.15 +
+          scoreBreakdown.recency_bonus * 0.1 +
+          scoreBreakdown.access_frequency * 0.05;
+
+        // Map vector result to Memory interface
+        const memory: Memory = {
+          id: result.id,
+          memory: result.content,
+          metadata: result.metadata,
+          created_at: result.metadata?.created_at || new Date().toISOString(),
+          user_id: result.user_id,
+          source: "enhanced_vector",
+          relevance_score: finalScore,
+          score_breakdown: {
+            semantic: scoreBreakdown.semantic_similarity,
+            keyword: scoreBreakdown.keyword_match,
+            entity: scoreBreakdown.entity_overlap,
+            relationship: 0,
+            recency: scoreBreakdown.recency_bonus,
+          },
+          matched_entities: queryEntities ? Object.values(queryEntities).flat().map((e: any) => e.text) : [],
+        };
+        results.push(memory);
+      }
+
+      // Sort by final relevance score
+      results.sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0));
+      results = results.slice(0, limit);
+    } catch (error: any) {
+      debugLog("Enhanced search error:", error.message);
+      // Fallback to basic search
+    }
+  }
+
+  // Fallback to basic search if enhanced not available or didn't return enough results
+  if (results.length < limit) {
+    if (preferCache && redisClient) {
+      // Try cache-first approach with keyword matching
+      const cacheResults = await searchFromCache(query, limit - results.length);
+      results = [...results, ...cacheResults];
+
+      // If not enough results, fallback to mem0
+      if (results.length < limit) {
+        const mem0Results = await searchFromMem0(query, limit - results.length);
+        results = [...results, ...mem0Results];
+      }
+    } else {
+      // Cloud-first approach (prefer_cache = false)
       const mem0Results = await searchFromMem0(query, limit - results.length);
       results = [...results, ...mem0Results];
-    }
-  } else {
-    // Cloud-first approach (prefer_cache = false)
-    results = await searchFromMem0(query, limit);
 
-    // Cache the results for next time
-    if (redisClient && results.length > 0) {
-      for (const memory of results) {
-        if (memory.id && memory.source === "mem0_cloud") {
-          await setCachedMemory(memory.id, memory);
+      // Cache the results for next time
+      if (redisClient && mem0Results.length > 0) {
+        for (const memory of mem0Results) {
+          if (memory.id && memory.source === "mem0_cloud") {
+            await setCachedMemory(memory.id, memory);
+          }
         }
       }
     }
@@ -1102,7 +1311,71 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         properties: {},
       },
     },
+    {
+      name: "extract_entities",
+      description: "Extract entities and relationships from text using NLP",
+      inputSchema: {
+        type: "object",
+        properties: {
+          text: {
+            type: "string",
+            description: "Text to extract entities from",
+          },
+        },
+        required: ["text"],
+      },
+    },
+    {
+      name: "get_knowledge_graph",
+      description: "Get memories organized as a knowledge graph with entities and relationships",
+      inputSchema: {
+        type: "object",
+        properties: {
+          entity_type: {
+            type: "string",
+            description: "Filter by entity type (people, organizations, technologies, projects)",
+          },
+          entity_name: {
+            type: "string",
+            description: "Filter by specific entity name",
+          },
+          relationship_type: {
+            type: "string",
+            description: "Filter by relationship type (WORKS_FOR, USES, BUILT_WITH, etc.)",
+          },
+          limit: {
+            type: "number",
+            default: 20,
+            description: "Maximum number of nodes to return",
+          },
+        },
+      },
+    },
+    {
+      name: "find_connections",
+      description: "Find connections between entities in the knowledge graph",
+      inputSchema: {
+        type: "object",
+        properties: {
+          from_entity: {
+            type: "string",
+            description: "Starting entity name",
+          },
+          to_entity: {
+            type: "string",
+            description: "Target entity name (optional - finds all if not specified)",
+          },
+          max_depth: {
+            type: "number",
+            default: 2,
+            description: "Maximum relationship depth to traverse",
+          },
+        },
+        required: ["from_entity"],
+      },
+    },
   ];
+
 
   return { tools };
 });
@@ -1802,6 +2075,197 @@ server.setRequestHandler(
           };
         }
 
+        case "extract_entities": {
+          if (INTELLIGENCE_MODE !== "enhanced" || !entityExtractor) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: "Entity extraction failed to initialize. Restart server or use --basic flag to disable.",
+                },
+              ],
+            };
+          }
+
+          const { text } = args as { text: string };
+          const extraction = await entityExtractor.extract(text);
+
+          const entitySummary = {
+            people: extraction.entities.people.map(e => e.text),
+            organizations: extraction.entities.organizations.map(e => e.text),
+            technologies: extraction.entities.technologies.map(e => e.text),
+            projects: extraction.entities.projects.map(e => e.text),
+            relationships: extraction.relationships.map(r =>
+              `${r.from} --[${r.type}]--> ${r.to}`
+            ),
+            keywords: extraction.keywords.slice(0, 10),
+          };
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(entitySummary, null, 2),
+              },
+            ],
+          };
+        }
+
+        case "get_knowledge_graph": {
+          if (INTELLIGENCE_MODE !== "enhanced" || !enhancedVectra) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: "Knowledge graph failed to initialize. Restart server or use --basic flag to disable.",
+                },
+              ],
+            };
+          }
+
+          const { entity_type, entity_name, relationship_type, limit = 20 } = args as any;
+
+          // Get all memories with entity/relationship data
+          const allMemories = await enhancedVectra.getAllMemories();
+
+          const graphNodes: any[] = [];
+          const graphEdges: any[] = [];
+          const entityMap = new Map<string, any>();
+
+          for (const memory of allMemories) {
+            if (!memory.metadata?.entities) continue;
+
+            // Filter and collect entities
+            const entities = memory.metadata.entities;
+            for (const [type, entityList] of Object.entries(entities)) {
+              if (entity_type && type !== entity_type) continue;
+
+              for (const entity of entityList as any[]) {
+                if (entity_name && !entity.text.toLowerCase().includes(entity_name.toLowerCase())) continue;
+
+                const key = `${type}:${entity.text}`;
+                if (!entityMap.has(key)) {
+                  entityMap.set(key, {
+                    id: key,
+                    type,
+                    name: entity.text,
+                    memories: [],
+                  });
+                }
+                entityMap.get(key).memories.push(memory.id);
+              }
+            }
+
+            // Collect relationships
+            if (memory.metadata.relationships) {
+              for (const rel of memory.metadata.relationships) {
+                if (relationship_type && rel.type !== relationship_type) continue;
+
+                graphEdges.push({
+                  from: rel.from,
+                  to: rel.to,
+                  type: rel.type,
+                  confidence: rel.confidence,
+                  memory_id: memory.id,
+                });
+              }
+            }
+          }
+
+          // Convert to array and limit
+          graphNodes.push(...Array.from(entityMap.values()).slice(0, limit));
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify({ nodes: graphNodes, edges: graphEdges }, null, 2),
+              },
+            ],
+          };
+        }
+
+        case "find_connections": {
+          if (INTELLIGENCE_MODE !== "enhanced" || !enhancedVectra) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: "Connection finding failed to initialize. Restart server or use --basic flag to disable.",
+                },
+              ],
+            };
+          }
+
+          const { from_entity, to_entity, max_depth = 2 } = args as any;
+
+          // Simple BFS to find connections
+          const allMemories = await enhancedVectra.getAllMemories();
+          const graph = new Map<string, Set<{ to: string; type: string }>>();
+
+          // Build adjacency list
+          for (const memory of allMemories) {
+            if (!memory.metadata?.relationships) continue;
+
+            for (const rel of memory.metadata.relationships) {
+              if (!graph.has(rel.from)) {
+                graph.set(rel.from, new Set());
+              }
+              graph.get(rel.from)!.add({ to: rel.to, type: rel.type });
+            }
+          }
+
+          // BFS to find paths
+          const paths: any[] = [];
+          const queue: Array<{ node: string; path: any[]; depth: number }> = [
+            { node: from_entity, path: [], depth: 0 }
+          ];
+          const visited = new Set<string>();
+
+          while (queue.length > 0 && paths.length < 10) {
+            const { node, path, depth } = queue.shift()!;
+
+            if (visited.has(node) || depth > max_depth) continue;
+            visited.add(node);
+
+            // Check if we reached target
+            if (to_entity && node === to_entity && path.length > 0) {
+              paths.push(path);
+              continue;
+            }
+
+            // Explore neighbors
+            const neighbors = graph.get(node);
+            if (neighbors && depth < max_depth) {
+              for (const neighbor of neighbors) {
+                const newPath = [...path, { from: node, to: neighbor.to, type: neighbor.type }];
+
+                if (!to_entity && depth === max_depth - 1) {
+                  // If no target specified, collect all paths at max depth
+                  paths.push(newPath);
+                } else {
+                  queue.push({ node: neighbor.to, path: newPath, depth: depth + 1 });
+                }
+              }
+            }
+          }
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify({
+                  from: from_entity,
+                  to: to_entity || "any",
+                  max_depth,
+                  paths_found: paths.length,
+                  paths
+                }, null, 2),
+              },
+            ],
+          };
+        }
+
         default:
           throw new Error(`Unknown tool: ${name}`);
       }
@@ -1860,6 +2324,16 @@ async function main() {
     log(`  Mode: ${MODE.toUpperCase()}`);
     log(`  Redis: ${redisClient ? "Connected" : "Fallback"}`);
     log(`  Vector Search: ${localMemory ? "Enabled" : "Disabled"}`);
+
+    // Show intelligence mode status
+    if (INTELLIGENCE_MODE === "enhanced") {
+      log("  AI Intelligence: ENABLED (default)");
+      log("  • Real embeddings (384-dim)");
+      log("  • Entity extraction");
+      log("  • Knowledge graph tools");
+    } else {
+      log("  AI Intelligence: DISABLED (--basic mode)");
+    }
 
     // Add process signal handlers for graceful shutdown
     process.on("SIGTERM", () => {

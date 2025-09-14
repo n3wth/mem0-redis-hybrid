@@ -8,13 +8,15 @@
   "bin": {
     "r3call": "dist/index.js",
     "recall": "dist/index.js",
-    "recall-cli": "dist/cli.js"
+    "recall-cli": "dist/cli.js",
+    "r3call-manage": "dist/cli-manager.js"
   },
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "test": "node test/run-tests.js",
+    "test:intelligence": "node test/test-intelligence.js",
     "test:watch": "node --test --watch test/test-suite.js",
     "cli": "node dist/cli.js",
     "prepublishOnly": "npm run build",
@@ -57,12 +59,20 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@huggingface/transformers": "^3.7.3",
     "@mdx-js/react": "^3.1.1",
     "@modelcontextprotocol/sdk": "^1.18.0",
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.11.0",
+    "boxen": "^7.1.1",
+    "chalk": "^5.3.0",
+    "cli-spinners": "^2.9.2",
     "node-fetch": "^3.3.2",
     "redis": "^5.8.2",
     "redis-memory-server": "^0.13.0",
-    "vectra": "^0.9.0"
+    "vectra": "^0.9.0",
+    "wink-eng-lite-web-model": "^1.8.1",
+    "wink-nlp": "^2.4.0"
   },
   "files": [
     "dist/**/*",

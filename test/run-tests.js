@@ -17,6 +17,15 @@ const testProcess = spawn("node", ["--test", "test/test-suite.js"], {
   },
 });
 
+// Also run intelligence tests
+const intelligenceTest = spawn("node", ["test/test-intelligence.js"], {
+  stdio: "inherit",
+  env: {
+    ...process.env,
+    QUIET_MODE: "true",
+  },
+});
+
 // Set a hard timeout
 const timeout = setTimeout(() => {
   console.log("\nTest timeout reached - terminating");
