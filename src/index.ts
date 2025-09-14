@@ -202,9 +202,22 @@ const demoStorage = {
 async function initializeRedis(): Promise<boolean> {
   // If in local mode, use embedded Redis
   if (MODE === "local" && !process.env.REDIS_URL) {
+    // First, try to connect to existing Redis on localhost:6379
     try {
-      debugLog("Starting LocalMemory with embedded Redis...");
-      localMemory = new LocalMemory(QUIET_MODE);
+      const testClient = createClient({ url: "redis://localhost:6379" }) as RedisClientType;
+      await testClient.connect();
+      await testClient.ping();
+      await testClient.quit();
+
+      // If we get here, Redis is already running locally
+      debugLog("Found existing Redis on localhost:6379, using it");
+      process.env.REDIS_URL = "redis://localhost:6379";
+      // Fall through to external Redis connection logic
+    } catch {
+      // No existing Redis, try embedded
+      try {
+        debugLog("Starting LocalMemory with embedded Redis...");
+        localMemory = new LocalMemory(QUIET_MODE);
 
       // Add timeout for LocalMemory startup
       const localMemoryPromise = localMemory.start();
@@ -265,6 +278,7 @@ async function initializeRedis(): Promise<boolean> {
       // Try to fallback to demo mode
       console.error("   Falling back to demo mode (in-memory only)");
       return false;
+    }
     }
   }
 
