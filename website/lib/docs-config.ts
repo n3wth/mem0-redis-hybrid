@@ -74,10 +74,13 @@ export const searchConfig = {
   },
 };
 
+import { getPackageVersion } from './version';
+
+const currentVersion = getPackageVersion();
+
 export const versionConfig = {
-  current: "1.0.0",
+  current: currentVersion,
   versions: [
-    { version: "1.0.0", label: "v1.0 (Current)", path: "/docs" },
-    { version: "0.9.0", label: "v0.9", path: "/docs/v0.9" },
+    { version: currentVersion, label: `v${currentVersion} (Current)`, path: "/docs" },
   ],
 };
