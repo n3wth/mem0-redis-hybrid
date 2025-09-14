@@ -67,17 +67,12 @@ interface AppProps {
 
 const ProLogo: React.FC = () => (
   <Box flexDirection="column" marginBottom={1}>
-    <Gradient name="rainbow">
+    <Text color="cyan">
       <BigText text="R3CALL" font="chrome" />
-    </Gradient>
+    </Text>
     <Box marginTop={-1}>
-      <Text color="cyan" bold>
-        MEMORY INTELLIGENCE SYSTEM
-      </Text>
-      <Text color="gray"> • </Text>
-      <Text color="yellow">v{process.env.npm_package_version || "1.2.7"}</Text>
-      <Text color="gray"> • </Text>
-      <Text dimColor>{new Date().toLocaleDateString()}</Text>
+      <Text dimColor>v{process.env.npm_package_version || "1.2.7"}</Text>
+      <Text dimColor>  •  ^C to quit</Text>
     </Box>
   </Box>
 );
@@ -319,119 +314,40 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
       <Box flexDirection="row" justifyContent="space-between">
         {/* Left side - Menu */}
         <Box flexDirection="column" width="55%">
-          <Box marginBottom={1}>
-            <Text bold color="cyan">
-              QUICK ACTIONS
-            </Text>
-            <Text color="gray"> ────────────────────</Text>
-          </Box>
-
           <Box flexDirection="column" gap={0}>
             <Box>
-              <Text color="cyan" bold>
-                [1]
-              </Text>
-              <Text color="green" bold>
-                {" "}
-                S
-              </Text>
-              <Text>earch</Text>
-              <Text dimColor> Fuzzy & semantic</Text>
+              <Text color="green" bold>[S]</Text>
+              <Text> Search</Text>
+              <Text dimColor>  Semantic search</Text>
             </Box>
             <Box>
-              <Text color="cyan" bold>
-                [2]
-              </Text>
-              <Text color="green" bold>
-                {" "}
-                A
-              </Text>
-              <Text>dd </Text>
-              <Text dimColor> Quick capture</Text>
+              <Text color="green" bold>[A]</Text>
+              <Text> Add   </Text>
+              <Text dimColor>  New memory</Text>
             </Box>
             <Box>
-              <Text color="cyan" bold>
-                [3]
-              </Text>
-              <Text color="green" bold>
-                {" "}
-                V
-              </Text>
-              <Text>iew </Text>
-              <Text dimColor> Browse all ({stats.total})</Text>
+              <Text color="green" bold>[V]</Text>
+              <Text> View  </Text>
+              <Text dimColor>  All {stats.total} memories</Text>
             </Box>
             <Box>
-              <Text color="cyan" bold>
-                [4]
-              </Text>
-              <Text color="red" bold>
-                {" "}
-                D
-              </Text>
-              <Text>elete</Text>
-              <Text dimColor> Remove entries</Text>
+              <Text color="red" bold>[D]</Text>
+              <Text> Delete</Text>
+              <Text dimColor>  Remove memory</Text>
             </Box>
             <Box marginTop={1}>
-              <Text color="cyan" bold>
-                [Q]
-              </Text>
-              <Text color="yellow"> Quit </Text>
-              <Text dimColor> Exit r3call</Text>
+              <Text color="yellow" bold>[Q]</Text>
+              <Text> Quit</Text>
             </Box>
-          </Box>
-
-          <Box marginTop={2}>
-            <Text dimColor bold>
-              TIPS:{" "}
-            </Text>
-            <Text dimColor>Use numbers for quick access</Text>
           </Box>
         </Box>
 
         {/* Right side - Stats */}
         <Box flexDirection="column" width="40%">
-          <Box marginBottom={1}>
-            <Text bold color="cyan">
-              SYSTEM STATUS
-            </Text>
-            <Text color="gray"> ─────────────</Text>
-          </Box>
-
           <Box flexDirection="column">
-            <Box>
-              <ActivityIndicator active={true} />
-              <Text> Memory </Text>
-              <Text color="green" bold>
-                {stats.total}
-              </Text>
-              <Text dimColor> items</Text>
-            </Box>
-            <Box>
-              <ActivityIndicator active={true} />
-              <Text> Cache </Text>
-              <Text color="blue" bold>
-                {stats.cached}
-              </Text>
-              <Text dimColor> hits</Text>
-            </Box>
-            <Box>
-              <ActivityIndicator active={true} />
-              <Text> Search </Text>
-              <Text color="yellow" bold>
-                &lt;{stats.searchSpeed}ms
-              </Text>
-            </Box>
-            <Box>
-              <ActivityIndicator active={false} />
-              <Text> Cloud </Text>
-              <Text dimColor>Offline</Text>
-            </Box>
-            <Box marginTop={1}>
-              <Text dimColor>━━━━━━━━━━━━━━━━━</Text>
-            </Box>
-            <Box>
-              <Text dimColor>Last sync: {stats.lastSync}</Text>
-            </Box>
+            <Text dimColor>Total memories: <Text color="white">{stats.total}</Text></Text>
+            <Text dimColor>Cache hits: <Text color="white">{stats.cached}</Text></Text>
+            <Text dimColor>Search: <Text color="white">&lt;{stats.searchSpeed}ms</Text></Text>
           </Box>
         </Box>
       </Box>
@@ -448,11 +364,6 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
         {error && (
           <Box>
             <Text color="red">✗ {error}</Text>
-          </Box>
-        )}
-        {!message && !error && (
-          <Box>
-            <Text dimColor>Ready • Press a number or letter to begin</Text>
           </Box>
         )}
       </Box>
@@ -615,36 +526,34 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
                 ? new Date(memory.created_at)
                 : null;
               const age = date ? getRelativeTime(date) : "";
-              const contentPreview = (memory.content || "").substring(0, 45);
+
+              // Format content with proper truncation and fixed width
+              let content = memory.content || "";
+              const maxContentLength = 46;
+              if (content.length > maxContentLength) {
+                content = content.substring(0, maxContentLength - 3) + "...";
+              } else {
+                content = content.padEnd(maxContentLength, " ");
+              }
+
+              // Format timestamp with fixed width
+              const timestamp = age ? `• ${age}` : "";
+              const timestampPadded = timestamp.padStart(10, " ");
+
+              // Build the formatted line with fixed positions
+              const arrow = isSelected ? "▶" : " ";
+              const num = String(actualIdx + 1).padStart(3, " ");
+              const line = `${arrow}   ${num} │ ${content} ${timestampPadded}`;
 
               return (
-                <Box key={memory.id}>
-                  <Box width={6}>
-                    <Text
-                      color={isSelected ? "cyan" : "white"}
-                      dimColor={!isSelected}
-                    >
-                      {isSelected ? "▶ " : "  "}
-                      {String(actualIdx + 1).padStart(3, " ")}
-                    </Text>
-                  </Box>
-                  <Text color="gray">│ </Text>
-                  <Box width={50}>
-                    <Text
-                      color={isSelected ? "cyan" : "white"}
-                      bold={isSelected}
-                      dimColor={!isSelected}
-                    >
-                      {contentPreview.padEnd(45, " ")}
-                      {memory.content && memory.content.length > 45
-                        ? "..."
-                        : "   "}
-                    </Text>
-                  </Box>
-                  <Box width={10} justifyContent="flex-end">
-                    <Text dimColor>• {age.padStart(8, " ")}</Text>
-                  </Box>
-                </Box>
+                <Text
+                  key={memory.id}
+                  color={isSelected ? "cyan" : "white"}
+                  bold={isSelected}
+                  dimColor={!isSelected}
+                >
+                  {line}
+                </Text>
               );
             })}
         </Box>
@@ -694,31 +603,33 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
                 ? new Date(memory.created_at)
                 : null;
               const age = date ? getRelativeTime(date) : "";
-              const contentPreview = (memory.content || "").substring(0, 45);
+
+              // Format content with proper truncation and fixed width
+              let content = memory.content || "";
+              const maxContentLength = 46;
+              if (content.length > maxContentLength) {
+                content = content.substring(0, maxContentLength - 3) + "...";
+              } else {
+                content = content.padEnd(maxContentLength, " ");
+              }
+
+              // Format timestamp with fixed width
+              const timestamp = age ? `• ${age}` : "";
+              const timestampPadded = timestamp.padStart(10, " ");
+
+              // Build the formatted line with fixed positions
+              const arrow = isSelected ? "▶" : " ";
+              const num = String(actualIdx + 1).padStart(3, " ");
+              const line = `${arrow}   ${num} │ ${content} ${timestampPadded}`;
+
               return (
-                <Box key={memory.id}>
-                  <Box width={6}>
-                    <Text color={isSelected ? "red" : "gray"}>
-                      {isSelected ? "▶ " : "  "}
-                      {String(actualIdx + 1).padStart(3, " ")}
-                    </Text>
-                  </Box>
-                  <Text color="gray">│ </Text>
-                  <Box width={50}>
-                    <Text
-                      color={isSelected ? "redBright" : "gray"}
-                      strikethrough={isSelected}
-                    >
-                      {contentPreview.padEnd(45, " ")}
-                      {memory.content && memory.content.length > 45
-                        ? "..."
-                        : "   "}
-                    </Text>
-                  </Box>
-                  <Box width={10} justifyContent="flex-end">
-                    <Text dimColor>• {age.padStart(8, " ")}</Text>
-                  </Box>
-                </Box>
+                <Text
+                  key={memory.id}
+                  color={isSelected ? "redBright" : "gray"}
+                  strikethrough={isSelected}
+                >
+                  {line}
+                </Text>
               );
             })}
         </Box>
@@ -750,23 +661,6 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
         {mode === "delete" && renderDelete()}
       </Box>
 
-      <Box justifyContent="center" marginTop={1}>
-        <Text dimColor>r3call</Text>
-        <Text dimColor> • </Text>
-        <Text dimColor>
-          {mode === "menu"
-            ? "Main Menu"
-            : mode === "search"
-              ? "Search Mode"
-              : mode === "add"
-                ? "Add Mode"
-                : mode === "view"
-                  ? "View Mode"
-                  : "Delete Mode"}
-        </Text>
-        <Text dimColor> • </Text>
-        <Text dimColor>^C: force quit</Text>
-      </Box>
     </Box>
   );
 };
