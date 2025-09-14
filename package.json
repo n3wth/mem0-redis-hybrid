@@ -17,6 +17,7 @@
     "benchmark": "node benchmark/index.js",
     "lint": "eslint .",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "prepublishOnly": "npm test || true",
     "version": "npm run format && git add -A",
     "postversion": "git push && git push --tags",

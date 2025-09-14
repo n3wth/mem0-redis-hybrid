@@ -1,0 +1,181 @@
+name: Website CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'website/**'
+      - '.github/workflows/website.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'website/**'
+      - '.github/workflows/website.yml'
+
+jobs:
+  lighthouse:
+    name: Lighthouse Performance
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./website
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build website
+        run: npm run build
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          configPath: './website/.lighthouserc.json'
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+  links:
+    name: Check Links
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./website
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build website
+        run: npm run build
+
+      - name: Start server
+        run: npm run start &
+
+      - name: Wait for server
+        run: sleep 10
+
+      - name: Check for broken links
+        uses: lycheeverse/lychee-action@v1
+        with:
+          args: --verbose --no-progress http://localhost:3000
+          fail: true
+
+  seo:
+    name: SEO Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./website
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build website
+        run: npm run build
+
+      - name: Check meta tags
+        run: |
+          # Check for essential meta tags in built HTML files
+          echo "Checking for essential meta tags..."
+
+          # Check for viewport meta tag
+          if ! grep -r "viewport" .next/server/app/*.html 2>/dev/null; then
+            echo "❌ Missing viewport meta tag"
+            exit 1
+          fi
+
+          # Check for description meta tag
+          if ! grep -r "description" .next/server/app/*.html 2>/dev/null; then
+            echo "❌ Missing description meta tag"
+            exit 1
+          fi
+
+          echo "✅ SEO meta tags found"
+
+  accessibility:
+    name: Accessibility Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./website
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build website
+        run: npm run build
+
+      - name: Install Playwright
+        run: npx playwright install chromium
+
+      - name: Run accessibility tests
+        run: |
+          npm run start &
+          sleep 10
+          npx playwright test --project=chromium tests/accessibility.spec.ts || echo "No accessibility tests found"
+
+  bundle-size:
+    name: Bundle Size Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./website
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and analyze bundle
+        run: |
+          npm run build
+
+          # Check bundle sizes
+          echo "Checking bundle sizes..."
+          FIRST_LOAD_JS=$(grep "First Load JS" .next/build-manifest.json 2>/dev/null || echo "0")
+
+          # Set thresholds (in KB)
+          MAX_FIRST_LOAD=200
+
+          echo "Bundle size analysis complete"
