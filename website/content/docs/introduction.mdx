@@ -5,14 +5,20 @@ title: Introduction
 
 # Recall Documentation
 
-Add persistent memory to AI applications. Store context in Redis, sync to the cloud, retrieve in milliseconds.
+Zero-configuration memory for AI. Works instantly with embedded Redis, optional cloud sync.
+
+## What's New
+
+🚀 **Local-First Mode** - No setup required, embedded Redis starts automatically
+💻 **100% TypeScript** - Full type safety and IntelliSense support
+⚡ **Zero Config** - Just run `npx r3call` and it works
 
 ## Start building
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
   <a href="/docs/quickstart" className="block p-6 rounded-lg border border-white/10 hover:border-white/20 transition-colors">
     <h3 className="text-lg font-medium text-white mb-2">Quickstart →</h3>
-    <p className="text-gray-400 text-sm">Add memory to Claude Desktop in 2 minutes</p>
+    <p className="text-gray-400 text-sm">Get started in 30 seconds - zero configuration</p>
   </a>
 
   <a href="/docs/api-reference" className="block p-6 rounded-lg border border-white/10 hover:border-white/20 transition-colors">
@@ -23,7 +29,7 @@ Add persistent memory to AI applications. Store context in Redis, sync to the cl
 
 ## How Recall works
 
-Recall is an MCP server that gives Claude Desktop persistent memory. Your conversations are stored locally in Redis for instant access and backed up to Mem0's cloud for permanence.
+Recall is an MCP server that gives AI applications persistent memory. By default, it uses an embedded Redis server for local storage - no setup needed. Optionally add cloud sync with Mem0.
 
 ```json
 // ~/.claude/claude_desktop_config.json
@@ -31,11 +37,8 @@ Recall is an MCP server that gives Claude Desktop persistent memory. Your conver
   "mcpServers": {
     "recall": {
       "command": "npx",
-      "args": ["@n3wth/recall"],
-      "env": {
-        "MEM0_API_KEY": "mem0_...",
-        "REDIS_URL": "redis://localhost:6379"
-      }
+      "args": ["r3call"]
+      // No environment variables needed!
     }
   }
 }

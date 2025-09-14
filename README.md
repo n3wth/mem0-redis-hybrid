@@ -35,33 +35,48 @@
 ```bash
 # Just run it! Zero configuration needed
 npx r3call
-
-# Or install globally for frequent use
-npm install -g r3call
-r3call
 ```
 
-### Hybrid Mode (Local + Cloud Sync)
+That's it! r3call automatically starts with an embedded Redis server. No setup required.
+
+### Installation Options
+
+```bash
+# For frequent use, install globally:
+npm install -g r3call
+r3call
+
+# Or add to your project:
+npm install r3call
+```
+
+### Basic Usage
 
 ```typescript
 import { Recall } from 'r3call';
 
-const recall = new Recall({
-  apiKey: process.env.MEM0_API_KEY,  // Optional for cloud sync
-  redis: process.env.REDIS_URL       // Optional - uses embedded if not provided
-});
+// Zero configuration - works immediately
+const recall = new Recall();
 
-// Store memory with context
+// Store memory locally
 await recall.add({
   content: 'User prefers TypeScript and dark mode themes',
-  userId: 'user_123',
-  priority: 'high'
+  userId: 'user_123'
 });
 
-// Retrieve relevant memories instantly
+// Retrieve memories instantly
 const memories = await recall.search({
   query: 'What are the user preferences?',
   userId: 'user_123'
+});
+```
+
+### Optional: Enable Cloud Sync
+
+```typescript
+// Add Mem0 API key for cloud backup (get free at mem0.ai)
+const recall = new Recall({
+  apiKey: process.env.MEM0_API_KEY
 });
 ```
 

@@ -8,33 +8,47 @@ title: Installation
 ## Prerequisites
 
 - Node.js 18.0.0 or higher
-- Redis server (local or remote)
-- Mem0 API key from [mem0.ai](https://mem0.ai)
+- That's it! No Redis or API keys required
+
+## Quick Start (Zero Configuration)
+
+```bash
+# Run immediately with npx
+npx r3call
+
+# Or install globally
+npm install -g r3call
+r3call
+```
+
+r3call automatically starts an embedded Redis server - no setup needed!
 
 ## Package Installation
 
 ### npm
 ```bash
-npm install @n3wth/recall
+npm install r3call
 ```
 
 ### Yarn
 ```bash
-yarn add @n3wth/recall
+yarn add r3call
 ```
 
 ### pnpm
 ```bash
-pnpm add @n3wth/recall
+pnpm add r3call
 ```
 
-## Configuration
+## Optional Configuration
 
-### Environment Variables
+### Enable Cloud Sync (Optional)
 
 ```bash
+# Get a free API key from mem0.ai
 MEM0_API_KEY="your-mem0-api-key"
-MEM0_USER_ID="your-user-id"
+
+# Use external Redis (optional - embedded by default)
 REDIS_URL="redis://localhost:6379"
 ```
 
@@ -47,7 +61,7 @@ Add to `~/.claude/claude_desktop_config.json`:
   "mcpServers": {
     "recall": {
       "command": "npx",
-      "args": ["@n3wth/recall"],
+      "args": ["r3call"],
       "env": {
         "MEM0_API_KEY": "your-api-key",
         "REDIS_URL": "redis://localhost:6379"

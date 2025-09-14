@@ -5,41 +5,19 @@ title: Quick Start
 
 # Quick Start
 
-Set up Recall in 2 minutes. This guide covers installation, configuration, and your first memory operation.
+Get r3call running in 30 seconds - zero configuration required.
 
-## Before you begin
-
-You'll need:
-- [Claude Desktop](https://claude.ai/download) installed
-- [Node.js 18+](https://nodejs.org) installed
-- [Redis](https://redis.io) running locally or in the cloud
-- A [Mem0 API key](https://mem0.ai) (free tier available)
-
-## Step 1: Start Redis
+## Step 1: Run r3call
 
 ```bash
-# macOS
-brew install redis
-brew services start redis
-
-# Docker (all platforms)
-docker run -d -p 6379:6379 redis:alpine
-
-# Verify it's running
-redis-cli ping
-# Should return: PONG
+npx r3call
 ```
 
-## Step 2: Get your Mem0 API key
+That's it! r3call automatically starts with an embedded Redis server. No setup needed.
 
-1. Sign up at [mem0.ai](https://mem0.ai)
-2. Go to **Dashboard** → **API Keys**
-3. Click **Create new key**
-4. Copy the key starting with `mem0_`
+## Step 2: Configure Claude Desktop
 
-## Step 3: Configure Claude Desktop
-
-Add Recall to your Claude Desktop configuration:
+Open your Claude Desktop configuration:
 
 ```bash
 # macOS/Linux
@@ -49,30 +27,27 @@ nano ~/.claude/claude_desktop_config.json
 notepad %APPDATA%\Claude\claude_desktop_config.json
 ```
 
-Add this configuration:
+Add this simple configuration:
 
 ```json
 {
   "mcpServers": {
     "recall": {
       "command": "npx",
-      "args": ["@n3wth/recall"],
-      "env": {
-        "MEM0_API_KEY": "mem0_YOUR_KEY_HERE",
-        "REDIS_URL": "redis://localhost:6379"
-      }
+      "args": ["r3call"]
+      // No environment variables needed!
     }
   }
 }
 ```
 
-## Step 4: Restart Claude Desktop
+## Step 3: Restart Claude Desktop
 
 1. Quit Claude Desktop completely
 2. Start Claude Desktop again
 3. Open a new conversation
 
-## Step 5: Test it works
+## Step 4: Test it works
 
 In Claude Desktop, type:
 
@@ -92,26 +67,43 @@ Claude should recall your information from the previous conversation.
 
 When you ask Claude to remember something:
 
-1. **Storage**: The memory is stored in Redis (local cache)
-2. **Backup**: It's synced to Mem0 cloud (permanent storage)
-3. **Retrieval**: Future queries search both cache and cloud
-4. **Response**: Relevant memories are returned in under 5ms from cache
+1. **Local Storage**: Memory is instantly stored in the embedded Redis server
+2. **Persistence**: Data persists between sessions on your local machine
+3. **Fast Retrieval**: Memories are retrieved in under 5ms
+4. **Zero Dependencies**: Everything runs locally, no external services needed
 
-## Configuration options
+## Optional: Advanced Configuration
 
-### Use Redis Cloud
+### Enable Cloud Sync
 
-For production or remote access:
+Want to backup memories to the cloud? Add a Mem0 API key:
 
 ```json
 {
   "mcpServers": {
     "recall": {
       "command": "npx",
-      "args": ["@n3wth/recall"],
+      "args": ["r3call"],
       "env": {
-        "MEM0_API_KEY": "mem0_...",
-        "REDIS_URL": "redis://default:password@redis-12345.c1.us-east-1.ec2.cloud.redislabs.com:12345"
+        "MEM0_API_KEY": "mem0_..."  // Get free at mem0.ai
+      }
+    }
+  }
+}
+```
+
+### Use External Redis
+
+For production or shared Redis:
+
+```json
+{
+  "mcpServers": {
+    "recall": {
+      "command": "npx",
+      "args": ["r3call"],
+      "env": {
+        "REDIS_URL": "redis://your-redis-server:6379"
       }
     }
   }

@@ -23,13 +23,12 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('node')
 
   const codeExamples = {
-    node: `import Recall from 'r3call';
+    node: `import { Recall } from 'r3call';
 
-const client = new Recall({
-  apiKey: process.env.MEM0_API_KEY,
-  redis: process.env.REDIS_URL
-});
+// Zero configuration - uses embedded Redis automatically
+const client = new Recall();
 
+// Store memory locally (no cloud needed)
 const response = await client.memories.add({
   content: 'User prefers dark mode UI',
   metadata: { user_id: 'user_123' }
@@ -38,10 +37,8 @@ const response = await client.memories.add({
 console.log(response.id);`,
     python: `from r3call import Recall
 
-client = Recall(
-    api_key=os.environ["MEM0_API_KEY"],
-    redis_url=os.environ["REDIS_URL"]
-)
+# Zero configuration - works out of the box
+client = Recall()
 
 response = client.memories.add(
     content="User prefers dark mode UI",
