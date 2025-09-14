@@ -71,7 +71,7 @@ jobs:
         run: sleep 10
 
       - name: Check for broken links
-        uses: lycheeverse/lychee-action@v1
+        uses: lycheeverse/lychee-action@v2.0.2
         with:
           args: --verbose --no-progress http://localhost:3000
           fail: true
