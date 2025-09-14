@@ -8,18 +8,18 @@ import { RecallLogo } from './RecallLogo'
 export function Navigation() {
   return (
     <nav
-      className="border-b border-white/10 bg-black/50 backdrop-blur-xl sticky top-0 z-50"
+      className="border-b border-white/10 bg-black/80 backdrop-blur-md sticky top-0 z-50 will-change-transform"
     >
       <div className="mx-auto px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           <div className="flex items-center">
             <Link
               href="/"
-              className="group flex items-center gap-2.5 text-2xl font-bold text-white hover:scale-105 transition-transform duration-200"
+              className="group flex items-center gap-2.5 text-2xl font-bold text-white transition-transform duration-200 hover:scale-105"
             >
               <div className="relative">
                 <RecallLogo size={42} color="#ffffff" animated={false} />
-                <div className="absolute inset-0 bg-white/20 blur-xl group-hover:bg-white/30 transition-all duration-300" />
+                <div className="absolute inset-0 bg-white/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </div>
               <span className="tracking-tight bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                 Recall
