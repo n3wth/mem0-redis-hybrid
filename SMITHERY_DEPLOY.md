@@ -2,7 +2,9 @@
 
 ## Status
 
-r3call is published on Smithery: https://smithery.ai/server/@n3wth/r3call
+- **Smithery Registry**: https://smithery.ai/server/@n3wth/r3call
+- **Documentation Website**: https://r3call.newth.ai
+- **Vercel Dashboard**: https://vercel.com/n3wth/r3call
 
 ## Installation
 
