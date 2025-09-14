@@ -204,7 +204,9 @@ async function initializeRedis(): Promise<boolean> {
   if (MODE === "local" && !process.env.REDIS_URL) {
     // First, try to connect to existing Redis on localhost:6379
     try {
-      const testClient = createClient({ url: "redis://localhost:6379" }) as RedisClientType;
+      const testClient = createClient({
+        url: "redis://localhost:6379",
+      }) as RedisClientType;
       await testClient.connect();
       await testClient.ping();
       await testClient.quit();
@@ -219,66 +221,66 @@ async function initializeRedis(): Promise<boolean> {
         debugLog("Starting LocalMemory with embedded Redis...");
         localMemory = new LocalMemory(QUIET_MODE);
 
-      // Add timeout for LocalMemory startup
-      const localMemoryPromise = localMemory.start();
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(
-          () => reject(new Error("LocalMemory startup timeout")),
-          15000,
-        ),
-      );
+        // Add timeout for LocalMemory startup
+        const localMemoryPromise = localMemory.start();
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(
+            () => reject(new Error("LocalMemory startup timeout")),
+            15000,
+          ),
+        );
 
-      await Promise.race([localMemoryPromise, timeoutPromise]);
+        await Promise.race([localMemoryPromise, timeoutPromise]);
 
-      // Get Redis clients from embedded server
-      redisClient = localMemory.getClient();
-      pubSubClient = localMemory.getPubClient();
-      subscriberClient = localMemory.getSubClient();
+        // Get Redis clients from embedded server
+        redisClient = localMemory.getClient();
+        pubSubClient = localMemory.getPubClient();
+        subscriberClient = localMemory.getSubClient();
 
-      debugLog("LocalMemory clients:", {
-        redisClient: !!redisClient,
-        pubSubClient: !!pubSubClient,
-        subscriberClient: !!subscriberClient,
-      });
+        debugLog("LocalMemory clients:", {
+          redisClient: !!redisClient,
+          pubSubClient: !!pubSubClient,
+          subscriberClient: !!subscriberClient,
+        });
 
-      // Initialize enhanced intelligence if enabled
-      if (INTELLIGENCE_MODE === "enhanced") {
-        try {
-          debugLog("Initializing enhanced intelligence features...");
+        // Initialize enhanced intelligence if enabled
+        if (INTELLIGENCE_MODE === "enhanced") {
+          try {
+            debugLog("Initializing enhanced intelligence features...");
 
-          // Initialize vector memory with real embeddings
-          enhancedVectra = new EnhancedVectraMemory(
-            "./data/vectra-index",
-            QUIET_MODE,
-          );
-          await enhancedVectra.initialize();
+            // Initialize vector memory with real embeddings
+            enhancedVectra = new EnhancedVectraMemory(
+              "./data/vectra-index",
+              QUIET_MODE,
+            );
+            await enhancedVectra.initialize();
 
-          // Initialize entity extractor
-          entityExtractor = new EntityExtractor(QUIET_MODE);
+            // Initialize entity extractor
+            entityExtractor = new EntityExtractor(QUIET_MODE);
 
-          log("✓ AI intelligence features activated (default mode)");
-        } catch (error: any) {
-          console.error(
-            "Warning: Enhanced features failed to initialize:",
-            error.message,
-          );
-          console.error("  Continuing with basic mode");
-          INTELLIGENCE_MODE = "basic";
+            log("✓ AI intelligence features activated (default mode)");
+          } catch (error: any) {
+            console.error(
+              "Warning: Enhanced features failed to initialize:",
+              error.message,
+            );
+            console.error("  Continuing with basic mode");
+            INTELLIGENCE_MODE = "basic";
+          }
         }
+
+        log(
+          "✓ Local memory system initialized with embedded Redis and vector search",
+        );
+        return true;
+      } catch (error: any) {
+        console.error("❌ Failed to start embedded Redis:", error.message);
+        debugLog("Embedded Redis error details:", error);
+
+        // Try to fallback to demo mode
+        console.error("   Falling back to demo mode (in-memory only)");
+        return false;
       }
-
-      log(
-        "✓ Local memory system initialized with embedded Redis and vector search",
-      );
-      return true;
-    } catch (error: any) {
-      console.error("❌ Failed to start embedded Redis:", error.message);
-      debugLog("Embedded Redis error details:", error);
-
-      // Try to fallback to demo mode
-      console.error("   Falling back to demo mode (in-memory only)");
-      return false;
-    }
     }
   }
 
@@ -323,7 +325,7 @@ async function initializeRedis(): Promise<boolean> {
     await Promise.all([
       redisClient.connect(),
       pubSubClient.connect(),
-      subscriberClient.connect()
+      subscriberClient.connect(),
     ]);
 
     // Set up pub/sub for cache invalidation and async processing
@@ -2410,14 +2412,16 @@ export async function startServer() {
 
     // Initialize Redis in background after server is ready
     debugLog("Initializing Redis in background...");
-    initializeRedis().then((redisSuccess) => {
-      debugLog("Redis initialization result:", { success: redisSuccess });
-      if (redisSuccess) {
-        log("  ✓ Redis cache ready");
-      }
-    }).catch((error) => {
-      debugLog("Redis initialization failed:", error);
-    });
+    initializeRedis()
+      .then((redisSuccess) => {
+        debugLog("Redis initialization result:", { success: redisSuccess });
+        if (redisSuccess) {
+          log("  ✓ Redis cache ready");
+        }
+      })
+      .catch((error) => {
+        debugLog("Redis initialization failed:", error);
+      });
     log("✓ r3call MCP Server v2.0 running successfully");
     log(`  Mode: ${MODE.toUpperCase()}`);
     log(`  Redis: ${redisClient ? "Connected" : "Fallback"}`);

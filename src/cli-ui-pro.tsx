@@ -553,9 +553,10 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
                 // Format timestamp with fixed width (right-aligned)
                 const timestamp = age || "";
                 const timestampWidth = 6; // Reduced timestamp width
-                const timestampPadded = timestamp.length > timestampWidth
-                  ? timestamp.substring(0, timestampWidth)
-                  : timestamp.padStart(timestampWidth, " ");
+                const timestampPadded =
+                  timestamp.length > timestampWidth
+                    ? timestamp.substring(0, timestampWidth)
+                    : timestamp.padStart(timestampWidth, " ");
 
                 // Build the formatted line with fixed positions
                 const arrow = isSelected ? "▶" : " ";
