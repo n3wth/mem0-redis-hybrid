@@ -28,6 +28,7 @@ smithery.local.yaml
 # IDE
 .vscode/
 .idea/
+.cursor/
 *.swp
 *.swo
 *~

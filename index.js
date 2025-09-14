@@ -9,29 +9,34 @@ import {
 import fetch from 'node-fetch';
 import { createClient } from 'redis';
 import crypto from 'crypto';
+import LocalMemory from './lib/local-memory.js';
 
 // Configuration
 const MEM0_API_KEY = process.env.MEM0_API_KEY;
+const LOCAL_MODE = process.env.R3CALL_LOCAL === 'true' || process.argv.includes('--local');
 const DEMO_MODE = process.env.DEMO_MODE === 'true' || (!MEM0_API_KEY && process.argv.includes('--demo'));
 
-if (!MEM0_API_KEY && !DEMO_MODE) {
-  console.error('❌ MEM0_API_KEY environment variable is required');
-  console.error('');
-  console.error('Quick start options:');
-  console.error('1. Try demo mode (no API key needed):');
-  console.error('   npx @n3wth/recall --demo');
-  console.error('');
-  console.error('2. Use with your API key:');
-  console.error('   MEM0_API_KEY="your-key" npx @n3wth/recall');
-  console.error('');
-  console.error('Get a free API key at https://mem0.ai');
-  process.exit(1);
+// Determine operation mode
+let MODE = 'hybrid'; // Default: hybrid (local + cloud)
+if (LOCAL_MODE || (!MEM0_API_KEY && !DEMO_MODE)) {
+  MODE = 'local'; // Local-first with embedded Redis
+} else if (DEMO_MODE) {
+  MODE = 'demo'; // Demo mode (in-memory only)
+} else if (!process.env.REDIS_URL) {
+  MODE = 'local'; // No Redis URL provided, use embedded
 }
 
-if (DEMO_MODE) {
-  console.error('🎮 Running in DEMO MODE - Using local memory only (no cloud storage)');
+if (MODE === 'local') {
+  console.error('🚀 Running in LOCAL MODE - Using embedded Redis server');
+  console.error('   Data is stored locally and persists between sessions');
+} else if (MODE === 'demo') {
+  console.error('🎮 Running in DEMO MODE - Using in-memory storage only');
+} else if (!MEM0_API_KEY) {
+  console.error('💡 No Mem0 API key provided - running in local-first mode');
+  console.error('   Get a free API key at https://mem0.ai for cloud sync');
 }
-const MEM0_USER_ID = process.env.MEM0_USER_ID || 'oliver';
+
+const MEM0_USER_ID = process.env.MEM0_USER_ID || 'default';
 const MEM0_BASE_URL = process.env.MEM0_BASE_URL || 'https://api.mem0.ai';
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 
@@ -44,16 +49,32 @@ const BATCH_SIZE = 50; // Batch operations for efficiency
 const SYNC_INTERVAL = 300000; // 5 minutes background sync
 const SEARCH_CACHE_TTL = 300; // 5 minutes for search results cache
 
-// Initialize Redis clients
+// Initialize storage clients
 let redisClient;
 let pubSubClient;
 let subscriberClient;
+let localMemory; // Local-first memory instance
 
 // Background job queue
 const jobQueue = new Map();
 const pendingMemories = new Map();
 
-async function initializeRedis() {
+async function initializeStorage() {
+  // If in local mode, use embedded Redis
+  if (MODE === 'local' || MODE === 'demo') {
+    localMemory = new LocalMemory();
+    await localMemory.start();
+
+    // Get Redis connection from embedded server
+    redisClient = localMemory.client;
+    pubSubClient = localMemory.pubClient;
+    subscriberClient = localMemory.subClient;
+
+    console.error('✓ Local memory system initialized with embedded Redis');
+    return true;
+  }
+
+  // Otherwise, try connecting to external Redis
   try {
     // Main Redis client for cache operations
     redisClient = createClient({
