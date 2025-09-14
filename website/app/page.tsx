@@ -261,14 +261,7 @@ print(response.id)`,
               icon={<Zap className="h-5 w-5 text-yellow-400" />}
               gradient="from-yellow-900/20 to-orange-900/20"
               span="col-span-2"
-            >
-              <div className="mt-4 flex items-center gap-4">
-                <div className="text-2xl font-light text-white">
-                  Redis
-                </div>
-                <div className="text-xs text-gray-500">In-memory performance</div>
-              </div>
-            </BentoCard>
+            />
 
             <BentoCard
               title="Automatic Failover"
@@ -290,15 +283,7 @@ print(response.id)`,
               icon={<Globe className="h-5 w-5 text-green-400" />}
               gradient="from-green-900/20 to-teal-900/20"
               span="col-span-2"
-            >
-              <div className="mt-4 grid grid-cols-3 gap-2">
-                {['Gemini', 'Claude', 'GPT'].map((model) => (
-                  <div key={model} className="text-xs text-gray-400 bg-white/5 rounded px-2 py-1">
-                    {model}
-                  </div>
-                ))}
-              </div>
-            </BentoCard>
+            />
 
             <BentoCard
               title="100% TypeScript"
