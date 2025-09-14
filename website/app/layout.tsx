@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, DM_Serif_Display } from "next/font/google";
+import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
@@ -17,11 +17,11 @@ const geistMono = Geist_Mono({
   preload: false, // Only preload if needed
 });
 
-const dmSerifDisplay = DM_Serif_Display({
-  variable: "--font-serif",
+const jetBrainsMono = JetBrains_Mono({
+  variable: "--font-brand",
   subsets: ["latin"],
   display: "swap",
-  weight: "400",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -108,7 +108,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${dmSerifDisplay.variable} antialiased min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} ${jetBrainsMono.variable} antialiased min-h-screen`}
         suppressHydrationWarning
       >
         {children}

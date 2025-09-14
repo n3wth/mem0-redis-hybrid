@@ -77,7 +77,7 @@ print(response.id)`,
       {/* Main content wrapper */}
       <main className="flex-1">
         {/* Hero - Clean and minimal with enhanced effects */}
-        <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+        <div className="relative min-h-[90vh] flex items-center justify-center overflow-visible py-20">
         {/* Floating dots */}
         <FloatingDots count={30} />
 
@@ -109,10 +109,9 @@ print(response.id)`,
               Open Source • Built on Mem0 • MIT License
             </div>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-6">
-              <span className="text-white">Your AI assistant</span>
-              <br />
-              <GradientText gradient="from-gray-400 to-gray-600" className="inline-block">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-8 leading-[1.15]">
+              <span className="text-white block">Your AI assistant</span>
+              <GradientText gradient="from-gray-400 to-gray-600" className="inline-block mt-1">
                 finally remembers you
               </GradientText>
             </h1>
