@@ -18,10 +18,22 @@ export function TableOfContents() {
     const getHeadings = () => {
       const elements = document.querySelectorAll('main h2, main h3')
       const items: TOCItem[] = []
+      const idCounts: Record<string, number> = {}
 
       elements.forEach((element) => {
-        const id = element.id || element.textContent?.toLowerCase().replace(/\s+/g, '-') || ''
+        const baseId = element.id || element.textContent?.toLowerCase().replace(/\s+/g, '-') || ''
+
+        // Track how many times we've seen this ID
+        if (idCounts[baseId]) {
+          idCounts[baseId]++
+        } else {
+          idCounts[baseId] = 1
+        }
+
+        // Make ID unique if we've seen it before
+        const id = idCounts[baseId] > 1 ? `${baseId}-${idCounts[baseId] - 1}` : baseId
         element.id = id
+
         items.push({
           id,
           text: element.textContent || '',
