@@ -318,7 +318,11 @@ export class RedisManager {
   }
 
   // Hash operations for optimized cache manager
-  async hIncrBy(key: string, field: string, increment: number): Promise<number> {
+  async hIncrBy(
+    key: string,
+    field: string,
+    increment: number,
+  ): Promise<number> {
     return this.execute(`hIncrBy:${key}:${field}`, async () => {
       return await this.redisClient!.hIncrBy(key, field, increment);
     });
@@ -344,7 +348,10 @@ export class RedisManager {
   }
 
   // SCAN operation for better performance
-  async scan(cursor: string, options?: { MATCH?: string; COUNT?: number }): Promise<{ cursor: string; keys: string[] }> {
+  async scan(
+    cursor: string,
+    options?: { MATCH?: string; COUNT?: number },
+  ): Promise<{ cursor: string; keys: string[] }> {
     return this.execute(`scan:${cursor}`, async () => {
       const result = await this.redisClient!.scan(cursor, options);
       return result;

@@ -72,7 +72,7 @@ const ProLogo: React.FC = () => (
     </Text>
     <Box marginTop={-1}>
       <Text dimColor>v{process.env.npm_package_version || "1.2.7"}</Text>
-      <Text dimColor>  •  ^C to quit</Text>
+      <Text dimColor> • ^C to quit</Text>
     </Box>
   </Box>
 );
@@ -316,27 +316,37 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
         <Box flexDirection="column" width="55%">
           <Box flexDirection="column" gap={0}>
             <Box>
-              <Text color="green" bold>[S]</Text>
+              <Text color="green" bold>
+                [S]
+              </Text>
               <Text> Search</Text>
-              <Text dimColor>  Semantic search</Text>
+              <Text dimColor> Semantic search</Text>
             </Box>
             <Box>
-              <Text color="green" bold>[A]</Text>
-              <Text> Add   </Text>
-              <Text dimColor>  New memory</Text>
+              <Text color="green" bold>
+                [A]
+              </Text>
+              <Text> Add </Text>
+              <Text dimColor> New memory</Text>
             </Box>
             <Box>
-              <Text color="green" bold>[V]</Text>
-              <Text> View  </Text>
-              <Text dimColor>  All {stats.total} memories</Text>
+              <Text color="green" bold>
+                [V]
+              </Text>
+              <Text> View </Text>
+              <Text dimColor> All {stats.total} memories</Text>
             </Box>
             <Box>
-              <Text color="red" bold>[D]</Text>
+              <Text color="red" bold>
+                [D]
+              </Text>
               <Text> Delete</Text>
-              <Text dimColor>  Remove memory</Text>
+              <Text dimColor> Remove memory</Text>
             </Box>
             <Box marginTop={1}>
-              <Text color="yellow" bold>[Q]</Text>
+              <Text color="yellow" bold>
+                [Q]
+              </Text>
               <Text> Quit</Text>
             </Box>
           </Box>
@@ -345,9 +355,15 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
         {/* Right side - Stats */}
         <Box flexDirection="column" width="40%">
           <Box flexDirection="column">
-            <Text dimColor>Total memories: <Text color="white">{stats.total}</Text></Text>
-            <Text dimColor>Cache hits: <Text color="white">{stats.cached}</Text></Text>
-            <Text dimColor>Search: <Text color="white">&lt;{stats.searchSpeed}ms</Text></Text>
+            <Text dimColor>
+              Total memories: <Text color="white">{stats.total}</Text>
+            </Text>
+            <Text dimColor>
+              Cache hits: <Text color="white">{stats.cached}</Text>
+            </Text>
+            <Text dimColor>
+              Search: <Text color="white">&lt;{stats.searchSpeed}ms</Text>
+            </Text>
           </Box>
         </Box>
       </Box>
@@ -518,42 +534,42 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
                 Math.min(memories.length, selectedIndex + 6),
               )
               .map((memory, idx) => {
-              const actualIdx = idx + Math.max(0, selectedIndex - 4);
-              const isSelected = actualIdx === selectedIndex;
-              const date = memory.created_at
-                ? new Date(memory.created_at)
-                : null;
-              const age = date ? getRelativeTime(date) : "";
+                const actualIdx = idx + Math.max(0, selectedIndex - 4);
+                const isSelected = actualIdx === selectedIndex;
+                const date = memory.created_at
+                  ? new Date(memory.created_at)
+                  : null;
+                const age = date ? getRelativeTime(date) : "";
 
-              // Format content with proper truncation and fixed width
-              let content = memory.content || "";
-              const maxContentLength = 46;
-              if (content.length > maxContentLength) {
-                content = content.substring(0, maxContentLength - 3) + "...";
-              } else {
-                content = content.padEnd(maxContentLength, " ");
-              }
+                // Format content with proper truncation and fixed width
+                let content = memory.content || "";
+                const maxContentLength = 46;
+                if (content.length > maxContentLength) {
+                  content = content.substring(0, maxContentLength - 3) + "...";
+                } else {
+                  content = content.padEnd(maxContentLength, " ");
+                }
 
-              // Format timestamp with fixed width
-              const timestamp = age ? `• ${age}` : "";
-              const timestampPadded = timestamp.padStart(10, " ");
+                // Format timestamp with fixed width
+                const timestamp = age ? `• ${age}` : "";
+                const timestampPadded = timestamp.padStart(10, " ");
 
-              // Build the formatted line with fixed positions
-              const arrow = isSelected ? "▶" : " ";
-              const num = String(actualIdx + 1).padStart(3, " ");
-              const line = `${arrow}   ${num} │ ${content} ${timestampPadded}`;
+                // Build the formatted line with fixed positions
+                const arrow = isSelected ? "▶" : " ";
+                const num = String(actualIdx + 1).padStart(3, " ");
+                const line = `${arrow}   ${num} │ ${content} ${timestampPadded}`;
 
-              return (
-                <Text
-                  key={memory.id}
-                  color={isSelected ? "cyan" : "white"}
-                  bold={isSelected}
-                  dimColor={!isSelected}
-                >
-                  {line}
-                </Text>
-              );
-            })}
+                return (
+                  <Text
+                    key={memory.id}
+                    color={isSelected ? "cyan" : "white"}
+                    bold={isSelected}
+                    dimColor={!isSelected}
+                  >
+                    {line}
+                  </Text>
+                );
+              })}
           </>
         )}
       </Box>
@@ -659,7 +675,6 @@ const MemoryManagerPro: React.FC<AppProps> = ({ memoryEngine }) => {
         {mode === "view" && renderView()}
         {mode === "delete" && renderDelete()}
       </Box>
-
     </Box>
   );
 };

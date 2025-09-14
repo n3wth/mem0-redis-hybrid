@@ -80,7 +80,7 @@ export class CacheManager {
   private async withTimeout<T>(
     operation: Promise<T>,
     operationName: string,
-    timeout?: number
+    timeout?: number,
   ): Promise<T> {
     const timeoutMs = timeout || this.config.operationTimeout;
 
@@ -89,8 +89,8 @@ export class CacheManager {
       new Promise<T>((_, reject) =>
         setTimeout(
           () => reject(new TimeoutError(operationName, timeoutMs)),
-          timeoutMs
-        )
+          timeoutMs,
+        ),
       ),
     ]);
   }
@@ -106,7 +106,7 @@ export class CacheManager {
 
     const operation = this.withTimeout(
       this._getCachedMemory(memoryId),
-      `getCachedMemory:${memoryId}`
+      `getCachedMemory:${memoryId}`,
     ).finally(() => {
       this.operationQueue.delete(operationKey);
     });
@@ -137,11 +137,11 @@ export class CacheManager {
   async setCachedMemory(
     memoryId: string,
     data: Memory,
-    ttl?: number
+    ttl?: number,
   ): Promise<void> {
     const operation = this.withTimeout(
       this._setCachedMemory(memoryId, data, ttl),
-      `setCachedMemory:${memoryId}`
+      `setCachedMemory:${memoryId}`,
     );
 
     return operation;
@@ -150,7 +150,7 @@ export class CacheManager {
   private async _setCachedMemory(
     memoryId: string,
     data: Memory,
-    ttl?: number
+    ttl?: number,
   ): Promise<void> {
     try {
       const key = CacheKeys.memory(memoryId);
@@ -161,7 +161,7 @@ export class CacheManager {
 
       // Index for search in background
       this.indexMemoryForSearchAsync(memoryId, data).catch((err) =>
-        ErrorHandler.logError(err, `Failed to index ${memoryId}`)
+        ErrorHandler.logError(err, `Failed to index ${memoryId}`),
       );
     } catch (error: any) {
       throw new CacheError("setCachedMemory", error.message, true, {
@@ -177,7 +177,7 @@ export class CacheManager {
       await this.redisManager.hIncrBy(
         CacheKeys.cacheMetadata(),
         `access:${memoryId}`,
-        1
+        1,
       );
     } catch (error: any) {
       ErrorHandler.logError(error, `Failed to track access for ${memoryId}`);
@@ -189,7 +189,7 @@ export class CacheManager {
     try {
       const count = await this.redisManager.hGet(
         CacheKeys.cacheMetadata(),
-        `access:${memoryId}`
+        `access:${memoryId}`,
       );
       return parseInt(count || "0");
     } catch {
@@ -202,7 +202,7 @@ export class CacheManager {
     const operation = this.withTimeout(
       this._getCacheStats(),
       "getCacheStats",
-      10000 // Allow more time for stats
+      10000, // Allow more time for stats
     );
 
     return operation;
@@ -215,7 +215,7 @@ export class CacheManager {
 
       // Get all access counts from hash in one operation
       const allAccess = await this.redisManager.hGetAll(
-        CacheKeys.cacheMetadata()
+        CacheKeys.cacheMetadata(),
       );
 
       // Calculate total access
@@ -294,7 +294,7 @@ export class CacheManager {
   // Async background indexing
   private async indexMemoryForSearchAsync(
     memoryId: string,
-    data: Memory
+    data: Memory,
   ): Promise<void> {
     // Extract keywords and index in background
     if (!data.memory) return;
@@ -318,9 +318,32 @@ export class CacheManager {
     // Simple keyword extraction - can be enhanced with NLP
     const words = text.toLowerCase().split(/\s+/);
     const stopWords = new Set([
-      "the", "is", "at", "which", "on", "a", "an", "and", "or", "but",
-      "in", "with", "to", "for", "of", "as", "by", "that", "this",
-      "it", "from", "be", "are", "was", "were", "been",
+      "the",
+      "is",
+      "at",
+      "which",
+      "on",
+      "a",
+      "an",
+      "and",
+      "or",
+      "but",
+      "in",
+      "with",
+      "to",
+      "for",
+      "of",
+      "as",
+      "by",
+      "that",
+      "this",
+      "it",
+      "from",
+      "be",
+      "are",
+      "was",
+      "were",
+      "been",
     ]);
 
     return words
@@ -332,7 +355,7 @@ export class CacheManager {
   async deleteCachedMemory(memoryId: string): Promise<void> {
     const operation = this.withTimeout(
       this._deleteCachedMemory(memoryId),
-      `deleteCachedMemory:${memoryId}`
+      `deleteCachedMemory:${memoryId}`,
     );
 
     return operation;
@@ -347,16 +370,13 @@ export class CacheManager {
       // Batch delete operations
       const deleteOps = [
         this.redisManager.del([CacheKeys.memory(memoryId), keywordsKey]),
-        this.redisManager.hDel(
-          CacheKeys.cacheMetadata(),
-          `access:${memoryId}`
-        ),
+        this.redisManager.hDel(CacheKeys.cacheMetadata(), `access:${memoryId}`),
       ];
 
       // Remove from keyword indices
       for (const keyword of keywords) {
         deleteOps.push(
-          this.redisManager.sRem(CacheKeys.keyword(keyword), memoryId)
+          this.redisManager.sRem(CacheKeys.keyword(keyword), memoryId),
         );
       }
 
@@ -385,7 +405,7 @@ export class CacheManager {
     for (let i = 0; i < memoryIds.length; i += chunkSize) {
       const chunk = memoryIds.slice(i, i + chunkSize);
       const chunkResults = await Promise.all(
-        chunk.map((id) => this.getCachedMemory(id))
+        chunk.map((id) => this.getCachedMemory(id)),
       );
       results.push(...chunkResults);
     }
@@ -400,13 +420,16 @@ export class CacheManager {
     for (let i = 0; i < memories.length; i += chunkSize) {
       const chunk = memories.slice(i, i + chunkSize);
       await Promise.allSettled(
-        chunk.map((memory) => this.setCachedMemory(memory.id, memory, ttl))
+        chunk.map((memory) => this.setCachedMemory(memory.id, memory, ttl)),
       );
     }
   }
 
   // Get cached search results
-  async getCachedSearch(query: string, limit: number): Promise<Memory[] | null> {
+  async getCachedSearch(
+    query: string,
+    limit: number,
+  ): Promise<Memory[] | null> {
     try {
       const key = CacheKeys.search(query, limit);
       const cached = await this.redisManager.get(key);
@@ -417,7 +440,10 @@ export class CacheManager {
   }
 
   // Alias for backward compatibility
-  async getCachedSearchResults(query: string, limit: number): Promise<Memory[] | null> {
+  async getCachedSearchResults(
+    query: string,
+    limit: number,
+  ): Promise<Memory[] | null> {
     return this.getCachedSearch(query, limit);
   }
 
@@ -425,14 +451,14 @@ export class CacheManager {
   async setCachedSearch(
     query: string,
     limit: number,
-    results: Memory[]
+    results: Memory[],
   ): Promise<void> {
     try {
       const key = CacheKeys.search(query, limit);
       await this.redisManager.set(
         key,
         JSON.stringify(results),
-        this.config.ttl.search
+        this.config.ttl.search,
       );
     } catch (error: any) {
       ErrorHandler.logError(error, `Failed to cache search for: ${query}`);
@@ -440,7 +466,11 @@ export class CacheManager {
   }
 
   // Alias for backward compatibility
-  async cacheSearchResults(query: string, limit: number, results: Memory[]): Promise<void> {
+  async cacheSearchResults(
+    query: string,
+    limit: number,
+    results: Memory[],
+  ): Promise<void> {
     return this.setCachedSearch(query, limit, results);
   }
 
@@ -483,8 +513,10 @@ export class CacheManager {
       const memoryIds = new Set<string>();
 
       for (const keyword of keywords) {
-        const ids = await this.redisManager.sMembers(CacheKeys.keyword(keyword));
-        ids.forEach(id => memoryIds.add(id));
+        const ids = await this.redisManager.sMembers(
+          CacheKeys.keyword(keyword),
+        );
+        ids.forEach((id) => memoryIds.add(id));
       }
 
       const memories = await this.batchGet(Array.from(memoryIds));
@@ -519,21 +551,21 @@ export class CacheManager {
   async optimizeCache(
     memories: Memory[],
     maxMemories: number,
-    forceRefresh: boolean
+    forceRefresh: boolean,
   ): Promise<{ cached: number; duration: string }> {
     const start = Date.now();
 
     try {
       // Get access stats to prioritize caching
       const allAccess = await this.redisManager.hGetAll(
-        CacheKeys.cacheMetadata()
+        CacheKeys.cacheMetadata(),
       );
 
       // Sort memories by access count
       const memoriesWithAccess = memories.map((memory) => ({
         memory,
         accessCount: parseInt(
-          allAccess[`access:${memory.id}`] as string || "0"
+          (allAccess[`access:${memory.id}`] as string) || "0",
         ),
       }));
 

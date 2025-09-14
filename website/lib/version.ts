@@ -1,6 +1,6 @@
 // Version is managed from the main package.json
 // Update this when releasing new versions
-export const PACKAGE_VERSION = "1.2.8";
+export const PACKAGE_VERSION = "1.2.9";
 
 export function getPackageVersion(): string {
   return PACKAGE_VERSION;
