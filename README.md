@@ -1,7 +1,7 @@
 # r3call
 
 <div align="center">
-  <img src="https://recall.newth.ai/og-image.png" alt="Recall - Intelligent Memory for AI" width="100%" />
+  <img src="https://recall.newth.ai/og-image.png" alt="r3call - Intelligent Memory for AI" width="100%" />
 
   <h3>Intelligent Memory Layer for AI Applications</h3>
   <p>Sub-5ms response times · Automatic failover · Built for scale</p>
@@ -14,9 +14,9 @@
   </p>
 </div>
 
-## Why Recall?
+## Why r3call?
 
-Modern AI applications need memory that's both **fast** and **persistent**. Recall delivers enterprise-grade memory infrastructure that scales with your application—from prototypes to production.
+Modern AI applications need memory that's both **fast** and **persistent**. r3call delivers enterprise-grade memory infrastructure that scales with your application—from prototypes to production.
 
 - **Lightning Fast**: Sub-5ms p99 latency with intelligent caching
 - **Bulletproof Reliability**: Automatic failover with 99.9% uptime SLA
@@ -83,11 +83,11 @@ Add to `~/.claude/claude_desktop_config.json`:
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://recall.newth.ai/architecture-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="https://recall.newth.ai/architecture-light.svg">
-    <img src="https://recall.newth.ai/architecture-dark.svg" alt="Recall Architecture" width="100%" />
+    <img src="https://recall.newth.ai/architecture-dark.svg" alt="r3call Architecture" width="100%" />
   </picture>
 </div>
 
-Recall implements a sophisticated multi-tier caching strategy optimized for AI workloads:
+r3call implements a sophisticated multi-tier caching strategy optimized for AI workloads:
 
 ```
 ┌─────────────┐      ┌──────────────┐      ┌─────────────┐
@@ -277,7 +277,7 @@ interface RecallConfig {
 
 ## MCP Tools
 
-When integrated with Claude Desktop, Recall provides these tools:
+When integrated with Claude Desktop, r3call provides these tools:
 
 - **`add_memory`** - Store information with intelligent categorization
 - **`search_memory`** - Find relevant context using semantic search
@@ -342,7 +342,7 @@ LOG_LEVEL=info                   # Logging verbosity
 
 ### Metrics
 
-Recall exposes Prometheus-compatible metrics:
+r3call exposes Prometheus-compatible metrics:
 
 ```typescript
 // Available metrics
@@ -389,7 +389,7 @@ docker run -d -p 6379:6379 redis:alpine
 <details>
 <summary><b>High latency on first request</b></summary>
 
-This is normal cold start behavior. Recall pre-warms connections:
+This is normal cold start behavior. r3call pre-warms connections:
 ```typescript
 // Pre-warm on startup
 await recall.warmup();
@@ -446,7 +446,7 @@ gh pr create
 
 ## License
 
-MIT © 2025 Recall Contributors
+MIT © 2025 r3call Contributors
 
 ---
 

@@ -55,9 +55,9 @@ recall/
 
 ## Understanding the Project
 
-### What is Recall?
+### What is r3call?
 
-Recall is an **intelligent memory infrastructure** that's evolving from a simple cache+storage system into a distributed microservices platform for augmented human cognition.
+r3call is an **intelligent memory infrastructure** that's evolving from a simple cache+storage system into a distributed microservices platform for augmented human cognition.
 
 ### Current State (January 2025)
 
@@ -248,4 +248,4 @@ npm run dev
 4. Start building
 5. Document as you go
 
-**Welcome to Recall. Let's build the future of human memory together.**
+**Welcome to r3call. Let's build the future of human memory together.**

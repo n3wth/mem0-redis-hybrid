@@ -1,6 +1,6 @@
-# Style Guide for Recall
+# Style Guide for r3call
 
-This document outlines the style and formatting guidelines for all documentation, code, and communications in the Recall project.
+This document outlines the style and formatting guidelines for all documentation, code, and communications in the r3call project.
 
 ## Writing Style
 
@@ -25,7 +25,7 @@ This document outlines the style and formatting guidelines for all documentation
 
 ### Brand Guidelines
 
-- Always use "Recall" as the product name
+- Always use "r3call" as the product name
 - Always use "Newth.ai" (not "Newth") for company references
 - Use current year (2025) in all copyright notices
 
@@ -51,7 +51,7 @@ Keep code examples clean and professional:
 const recall = new Recall({ apiKey: 'mem0_...' });
 
 // Bad: Comment with emoji
-// 🎯 Initialize Recall
+// 🎯 Initialize r3call
 ```
 
 ## Commit Messages

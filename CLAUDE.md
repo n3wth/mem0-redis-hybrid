@@ -1,4 +1,4 @@
-# Claude Instructions for Recall Project
+# Claude Instructions for r3call Project
 
 ## CRITICAL: Read STYLE_GUIDE.md First
 

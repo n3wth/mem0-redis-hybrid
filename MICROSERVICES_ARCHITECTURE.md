@@ -1,8 +1,8 @@
-# Recall Microservices Architecture & Parallel Development Plan
+# r3call Microservices Architecture & Parallel Development Plan
 
 ## Executive Summary
 
-Transform Recall from a monolithic memory system into a distributed, microservices-based platform where specialized agents can develop and deploy features independently. This architecture enables massive parallelization of development and infinite scalability.
+Transform r3call from a monolithic memory system into a distributed, microservices-based platform where specialized agents can develop and deploy features independently. This architecture enables massive parallelization of development and infinite scalability.
 
 ## Core Architecture Principles
 
@@ -489,4 +489,4 @@ This microservices architecture enables:
 4. **Technology diversity** optimal for each domain
 5. **Rapid innovation** through isolated experimentation
 
-The modular design ensures that Recall can evolve from a memory system to a comprehensive intelligence platform, with each service contributing specialized capabilities while maintaining loose coupling and high cohesion.
+The modular design ensures that r3call can evolve from a memory system to a comprehensive intelligence platform, with each service contributing specialized capabilities while maintaining loose coupling and high cohesion.
