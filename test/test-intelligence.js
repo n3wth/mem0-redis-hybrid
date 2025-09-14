@@ -24,7 +24,11 @@ async function testDefaultMode() {
 
   return new Promise((resolve, reject) => {
     const server = spawn("node", ["dist/index.js"], {
-      env: { ...process.env, QUIET_MODE: "false", INTELLIGENCE_MODE: "enhanced" },
+      env: {
+        ...process.env,
+        QUIET_MODE: "false",
+        INTELLIGENCE_MODE: "enhanced",
+      },
     });
 
     let output = "";

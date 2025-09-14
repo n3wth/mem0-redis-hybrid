@@ -168,7 +168,10 @@ describe("Mem0-Redis Hybrid MCP Server", () => {
       assert.ok(response.result);
       assert.ok(response.result.content[0]);
       const text = response.result.content[0].text;
-      assert.ok(text.includes("memories cached") || text.includes("Cache not available"));
+      assert.ok(
+        text.includes("memories cached") ||
+          text.includes("Cache not available"),
+      );
     });
   });
 
@@ -308,7 +311,10 @@ describe("Mem0-Redis Hybrid MCP Server", () => {
 
       assert.ok(response.result);
       assert.ok(response.result.content[0]);
-      assert.ok(response.result.content[0].text.includes("optimized") || response.result.content[0].text.includes("ready"));
+      assert.ok(
+        response.result.content[0].text.includes("optimized") ||
+          response.result.content[0].text.includes("ready"),
+      );
     });
   });
 });

@@ -1,44 +1,44 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Brain, RotateCcw } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Brain, RotateCcw } from "lucide-react";
 
 const conversations = {
   without: [
     {
       day: "Monday",
       user: "I'm building a React app with TypeScript for my startup",
-      ai: "I'll help you with your React TypeScript project"
+      ai: "I'll help you with your React TypeScript project",
     },
     {
       day: "Tuesday",
       user: "I need help with my React TypeScript app again",
-      ai: "What kind of React TypeScript app are you building?"
+      ai: "What kind of React TypeScript app are you building?",
     },
     {
       day: "Wednesday",
       user: "Remember that React app? I use TypeScript and Tailwind",
-      ai: "Can you tell me more about your project?"
-    }
+      ai: "Can you tell me more about your project?",
+    },
   ],
   with: [
     {
       day: "Monday",
       user: "I'm building a React app with TypeScript for my startup",
-      ai: "Got it! I'll remember your tech stack"
+      ai: "Got it! I'll remember your tech stack",
     },
     {
       day: "Tuesday",
       user: "Can you help debug that TypeScript error?",
-      ai: "The type error in your auth component? Try this fix..."
+      ai: "The type error in your auth component? Try this fix...",
     },
     {
       day: "Wednesday",
       user: "How's the startup app coming along?",
-      ai: "Your React app is looking good! Ready to add the payment flow we discussed?"
-    }
-  ]
+      ai: "Your React app is looking good! Ready to add the payment flow we discussed?",
+    },
+  ],
 };
 
 export function MemoryComparison() {
@@ -68,7 +68,9 @@ export function MemoryComparison() {
     }
   }, [cycleCount, currentDay]);
 
-  const currentConversations = isWithMemory ? conversations.with : conversations.without;
+  const currentConversations = isWithMemory
+    ? conversations.with
+    : conversations.without;
 
   return (
     <section className="py-32 border-t border-white/5 relative overflow-hidden">
@@ -89,8 +91,8 @@ export function MemoryComparison() {
               onClick={() => setIsWithMemory(false)}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
                 !isWithMemory
-                  ? 'bg-gray-800 text-white'
-                  : 'text-gray-400 hover:text-white'
+                  ? "bg-gray-800 text-white"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
               Without r3
@@ -99,8 +101,8 @@ export function MemoryComparison() {
               onClick={() => setIsWithMemory(true)}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
                 isWithMemory
-                  ? 'bg-emerald-900/30 text-emerald-400'
-                  : 'text-gray-400 hover:text-white'
+                  ? "bg-emerald-900/30 text-emerald-400"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
               With r3
@@ -114,7 +116,9 @@ export function MemoryComparison() {
             {/* Header */}
             <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className={`w-2 h-2 rounded-full ${isWithMemory ? 'bg-emerald-400' : 'bg-gray-400'}`} />
+                <div
+                  className={`w-2 h-2 rounded-full ${isWithMemory ? "bg-emerald-400" : "bg-gray-400"}`}
+                />
                 <span className="text-sm font-medium text-white">
                   {currentConversations[currentDay].day}
                 </span>
@@ -123,7 +127,9 @@ export function MemoryComparison() {
                 {isWithMemory ? (
                   <>
                     <Brain className="h-4 w-4 text-emerald-400" />
-                    <span className="text-xs text-emerald-400">Memory active</span>
+                    <span className="text-xs text-emerald-400">
+                      Memory active
+                    </span>
                   </>
                 ) : (
                   <>
@@ -153,7 +159,9 @@ export function MemoryComparison() {
                           {currentConversations[currentDay].user}
                         </p>
                       </div>
-                      <p className="text-xs text-gray-500 mt-1 text-right">You</p>
+                      <p className="text-xs text-gray-500 mt-1 text-right">
+                        You
+                      </p>
                     </div>
                   </div>
 
@@ -180,8 +188,8 @@ export function MemoryComparison() {
                     key={i}
                     className={`h-1 rounded-full transition-all duration-300 ${
                       i === currentDay
-                        ? `w-8 ${isWithMemory ? 'bg-emerald-400' : 'bg-gray-400'}`
-                        : 'w-1 bg-gray-600'
+                        ? `w-8 ${isWithMemory ? "bg-emerald-400" : "bg-gray-400"}`
+                        : "w-1 bg-gray-600"
                     }`}
                   />
                 ))}
@@ -194,8 +202,7 @@ export function MemoryComparison() {
             <p className="text-sm text-gray-400">
               {isWithMemory
                 ? "Context builds naturally over time"
-                : "Every conversation starts from scratch"
-              }
+                : "Every conversation starts from scratch"}
             </p>
           </div>
         </div>

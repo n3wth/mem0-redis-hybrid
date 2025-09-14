@@ -155,8 +155,14 @@ client.memories.add(
           {/* Enhanced animated gradient background with depth */}
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-black to-blue-900/10" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,100,255,0.08),transparent_50%)] animate-pulse" style={{ animationDuration: '8s' }} />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(100,150,255,0.08),transparent_50%)] animate-pulse" style={{ animationDuration: '10s', animationDelay: '1s' }} />
+            <div
+              className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,100,255,0.08),transparent_50%)] animate-pulse"
+              style={{ animationDuration: "8s" }}
+            />
+            <div
+              className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(100,150,255,0.08),transparent_50%)] animate-pulse"
+              style={{ animationDuration: "10s", animationDelay: "1s" }}
+            />
             {/* New aurora-like gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-transparent via-purple-500/[0.03] to-transparent transform translate-y-full animate-aurora" />
           </div>
@@ -165,7 +171,9 @@ client.memories.add(
             <div className="mx-auto max-w-4xl">
               {/* Professional value prop badge - simplified for mobile */}
               <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/[0.03] backdrop-blur-sm px-3 py-1.5 text-xs font-medium border border-white/[0.08]">
-                <span className="text-white sm:hidden">Persistent AI Memory</span>
+                <span className="text-white sm:hidden">
+                  Persistent AI Memory
+                </span>
                 <span className="hidden sm:inline-flex sm:items-center sm:gap-3">
                   <span className="text-purple-300">Lightning-fast cache</span>
                   <span className="text-white/40">×</span>
@@ -187,7 +195,11 @@ client.memories.add(
                 <motion.span
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{
+                    duration: 0.8,
+                    delay: 0.2,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
                   className="text-white inline-block mt-1"
                 >
                   permanent memory
@@ -197,10 +209,21 @@ client.memories.add(
               {/* Mobile-first subtitle */}
               <p className="mx-auto max-w-2xl text-base sm:text-base lg:text-lg text-white/90 mb-8 sm:mb-10 font-light leading-relaxed px-4 sm:px-0">
                 <span className="sm:hidden">
-                  Context that persists across every AI conversation. Works with Claude, GPT, and Gemini.
+                  Context that persists across every AI conversation. Works with
+                  Claude, GPT, and Gemini.
                 </span>
                 <span className="hidden sm:inline">
-                  r3 combines <span className="text-white font-medium">sub-millisecond caching</span> with <span className="text-white font-medium">semantic memory storage</span> to create continuity across every conversation. Compatible with all major AI assistants. Deploy in seconds, configure nothing.
+                  r3 combines{" "}
+                  <span className="text-white font-medium">
+                    sub-millisecond caching
+                  </span>{" "}
+                  with{" "}
+                  <span className="text-white font-medium">
+                    semantic memory storage
+                  </span>{" "}
+                  to create continuity across every conversation. Compatible
+                  with all major AI assistants. Deploy in seconds, configure
+                  nothing.
                 </span>
               </p>
 
@@ -236,49 +259,73 @@ client.memories.add(
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.4,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
                   className="text-center"
                 >
                   <div className="text-xl sm:text-2xl font-light text-white">
                     <AnimatedCounter to={5} suffix="ms" duration={1.5} />
                   </div>
-                  <div className="text-xs sm:text-sm text-white/60">Response time</div>
+                  <div className="text-xs sm:text-sm text-white/60">
+                    Response time
+                  </div>
                 </motion.div>
 
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.5,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
                   className="text-center"
                 >
                   <div className="text-xl sm:text-2xl font-light text-white">
                     ∞
                   </div>
-                  <div className="text-xs sm:text-sm text-white/60">Memory retention</div>
+                  <div className="text-xs sm:text-sm text-white/60">
+                    Memory retention
+                  </div>
                 </motion.div>
 
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.6,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
                   className="text-center sm:block hidden"
                 >
                   <div className="text-xl sm:text-2xl font-light text-white">
                     <AnimatedCounter to={100} suffix="%" duration={1.5} />
                   </div>
-                  <div className="text-xs sm:text-sm text-white/60">Privacy-first</div>
+                  <div className="text-xs sm:text-sm text-white/60">
+                    Privacy-first
+                  </div>
                 </motion.div>
 
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.7,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
                   className="text-center sm:block hidden"
                 >
                   <div className="text-xl sm:text-2xl font-light text-white">
                     <AnimatedCounter to={0} duration={1.5} />
                   </div>
-                  <div className="text-xs sm:text-sm text-white/60">Configuration</div>
+                  <div className="text-xs sm:text-sm text-white/60">
+                    Configuration
+                  </div>
                 </motion.div>
               </div>
             </div>
@@ -347,7 +394,13 @@ client.memories.add(
                   </nav>
                 </div>
                 <CodeBlock
-                  language={activeTab === "node" ? "javascript" : activeTab === "curl" ? "bash" : activeTab}
+                  language={
+                    activeTab === "node"
+                      ? "javascript"
+                      : activeTab === "curl"
+                        ? "bash"
+                        : activeTab
+                  }
                 >
                   {codeExamples[activeTab as keyof typeof codeExamples]}
                 </CodeBlock>
@@ -372,15 +425,19 @@ client.memories.add(
               <BentoCard
                 title="AI Intelligence Engine"
                 description="Real vector embeddings, entity extraction, and knowledge graphs - all running locally"
-                icon={<Sparkles className="h-6 w-6 text-gray-400 transition-colors duration-500 group-hover:text-emerald-400" />}
+                icon={
+                  <Sparkles className="h-6 w-6 text-gray-400 transition-colors duration-500 group-hover:text-emerald-400" />
+                }
                 gradient="from-emerald-500/20 to-blue-500/20"
                 span="lg:col-span-3"
-                              />
+              />
 
               <BentoCard
                 title="Semantic Search"
                 description="Find memories by meaning, not just keywords"
-                icon={<Cpu className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-cyan-400" />}
+                icon={
+                  <Cpu className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-cyan-400" />
+                }
                 gradient="from-cyan-900/20 to-blue-900/20"
                 span="lg:col-span-2"
               />
@@ -388,21 +445,27 @@ client.memories.add(
               <BentoCard
                 title="Knowledge Graph"
                 description="Build connections between people, projects, and technologies"
-                icon={<Layers className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-purple-400" />}
+                icon={
+                  <Layers className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-purple-400" />
+                }
                 gradient="from-purple-900/20 to-indigo-900/20"
               />
 
               <BentoCard
                 title="<10ms Latency"
                 description="Lightning fast local processing with optimized embeddings"
-                icon={<Gauge className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-orange-400" />}
+                icon={
+                  <Gauge className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-orange-400" />
+                }
                 gradient="from-orange-900/20 to-red-900/20"
               />
 
               <BentoCard
                 title="Redis-powered caching"
                 description="In-memory data store for sub-millisecond response times"
-                icon={<Zap className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-yellow-400" />}
+                icon={
+                  <Zap className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-yellow-400" />
+                }
                 gradient="from-yellow-900/20 to-orange-900/20"
                 span="lg:col-span-2"
               />
@@ -410,7 +473,9 @@ client.memories.add(
               <BentoCard
                 title="Automatic failover"
                 description="Works offline with local Redis, syncs when online"
-                icon={<Shield className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-blue-400" />}
+                icon={
+                  <Shield className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-blue-400" />
+                }
                 gradient="from-blue-900/20 to-cyan-900/20"
               />
 

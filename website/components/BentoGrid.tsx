@@ -56,10 +56,12 @@ export function BentoCard({
       transition={{ duration: 0.3 }}
     >
       {/* Color gradient that appears on hover */}
-      <div className={cn(
-        "absolute inset-0 rounded-3xl bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100",
-        gradient
-      )} />
+      <div
+        className={cn(
+          "absolute inset-0 rounded-3xl bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100",
+          gradient,
+        )}
+      />
 
       {/* Content */}
       <div className="relative z-10">

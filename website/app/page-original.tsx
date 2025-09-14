@@ -454,9 +454,7 @@ print(response.id)`,
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.03] to-blue-600/[0.03] rounded-2xl" />
                 <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-8 border border-white/10 h-full hover:border-white/20 transition-colors">
                   <div className="mb-8">
-                    <h3 className="text-xl font-medium text-white">
-                      With r3
-                    </h3>
+                    <h3 className="text-xl font-medium text-white">With r3</h3>
                     <p className="text-sm text-gray-500 mt-1">
                       Continuous context
                     </p>

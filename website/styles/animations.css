@@ -1,17 +1,29 @@
 /* Orbiting particles */
 @keyframes orbit-1 {
-  from { transform: rotate(0deg) translateX(20px) rotate(0deg); }
-  to { transform: rotate(360deg) translateX(20px) rotate(-360deg); }
+  from {
+    transform: rotate(0deg) translateX(20px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(20px) rotate(-360deg);
+  }
 }
 
 @keyframes orbit-2 {
-  from { transform: rotate(0deg) translateX(25px) rotate(0deg); }
-  to { transform: rotate(-360deg) translateX(25px) rotate(360deg); }
+  from {
+    transform: rotate(0deg) translateX(25px) rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg) translateX(25px) rotate(360deg);
+  }
 }
 
 @keyframes orbit-3 {
-  from { transform: rotate(0deg) translateX(18px) rotate(0deg); }
-  to { transform: rotate(360deg) translateX(18px) rotate(-360deg); }
+  from {
+    transform: rotate(0deg) translateX(18px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(18px) rotate(-360deg);
+  }
 }
 
 .animate-orbit-1 {
@@ -28,8 +40,12 @@
 
 /* Shimmer effect */
 @keyframes shimmer {
-  0% { transform: translateX(-100%) skewX(-12deg); }
-  100% { transform: translateX(200%) skewX(-12deg); }
+  0% {
+    transform: translateX(-100%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(200%) skewX(-12deg);
+  }
 }
 
 .animate-shimmer {
@@ -38,8 +54,15 @@
 
 /* Subtle morph */
 @keyframes subtle-morph {
-  0%, 100% { border-radius: 20% 80% 80% 20% / 20% 20% 80% 80%; transform: scale(1); }
-  50% { border-radius: 80% 20% 20% 80% / 80% 80% 20% 20%; transform: scale(1.05); }
+  0%,
+  100% {
+    border-radius: 20% 80% 80% 20% / 20% 20% 80% 80%;
+    transform: scale(1);
+  }
+  50% {
+    border-radius: 80% 20% 20% 80% / 80% 80% 20% 20%;
+    transform: scale(1.05);
+  }
 }
 
 .animate-subtle-morph {
@@ -48,8 +71,15 @@
 
 /* Breathing glow */
 @keyframes breathe {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.1); }
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
 }
 
 .animate-breathe {
@@ -58,9 +88,17 @@
 
 /* Data flow */
 @keyframes data-flow {
-  0% { transform: translateX(-100%); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: translateX(100%); opacity: 0; }
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
 }
 
 .animate-data-flow {
@@ -69,7 +107,8 @@
 
 /* Quantum dots */
 @keyframes quantum-1 {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.2;
     transform: scale(1);
   }
@@ -80,7 +119,8 @@
 }
 
 @keyframes quantum-2 {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.2;
     transform: scale(1);
   }
@@ -91,7 +131,8 @@
 }
 
 @keyframes quantum-3 {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.2;
     transform: scale(1);
   }
@@ -102,7 +143,8 @@
 }
 
 @keyframes quantum-4 {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.2;
     transform: scale(1);
   }

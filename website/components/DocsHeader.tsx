@@ -27,7 +27,9 @@ export function DocsHeader() {
               className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors sm:w-48"
             >
               <Search className="h-4 w-4 text-gray-400" />
-              <span className="hidden sm:inline text-sm text-gray-400">Search</span>
+              <span className="hidden sm:inline text-sm text-gray-400">
+                Search
+              </span>
               <div className="hidden sm:flex items-center gap-1 ml-4 sm:ml-8">
                 <kbd className="px-1.5 py-0.5 text-xs bg-white/10 rounded border border-white/20">
                   ⌘

@@ -4,10 +4,10 @@
 
 We are committed to ensuring the security of r3. We release patches for security vulnerabilities for the latest version of the package.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| Latest  | ✓                  |
-| < 1.0.0 | ✗                  |
+| Version | Supported |
+| ------- | --------- |
+| Latest  | ✓         |
+| < 1.0.0 | ✗         |
 
 ## Reporting a Vulnerability
 
@@ -141,6 +141,7 @@ We use automated tools to monitor and update dependencies:
 ### Response Team
 
 The security response team consists of:
+
 - Project maintainers
 - Security advisors
 - Community security contributors

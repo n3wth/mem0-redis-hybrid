@@ -30,7 +30,9 @@ export const Terminal = ({ children, className }: TerminalProps) => {
         </div>
       </div>
       <div className="p-3 sm:p-4 font-mono text-xs sm:text-sm overflow-x-auto flex-1 min-h-[300px] sm:min-h-[400px]">
-        <div className="space-y-1 sm:space-y-2" suppressHydrationWarning>{children}</div>
+        <div className="space-y-1 sm:space-y-2" suppressHydrationWarning>
+          {children}
+        </div>
       </div>
     </div>
   );
@@ -64,7 +66,7 @@ export const AnimatedSpan = ({
         type: "spring",
         stiffness: 350,
         damping: 30,
-        mass: 0.8
+        mass: 0.8,
       }}
       className={cn("", className)}
     >
@@ -129,7 +131,7 @@ export const TypingAnimation = ({
             duration: 0.8,
             repeat: Infinity,
             repeatType: "reverse",
-            ease: [0.25, 0.1, 0.25, 1] // Apple's standard ease
+            ease: [0.25, 0.1, 0.25, 1], // Apple's standard ease
           }}
           className="inline-block w-2 h-4 bg-current ml-1 rounded-sm"
         />

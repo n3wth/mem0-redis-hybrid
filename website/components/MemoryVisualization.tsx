@@ -50,7 +50,9 @@ export function MemoryVisualization() {
   const [nodes, setNodes] = useState<MemoryNode[]>([]);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [highlightedNode, setHighlightedNode] = useState<string | null>(null);
-  const [activeConnections, setActiveConnections] = useState<Set<string>>(new Set());
+  const [activeConnections, setActiveConnections] = useState<Set<string>>(
+    new Set(),
+  );
   const [particles, setParticles] = useState<Particle[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number | undefined>(undefined);
@@ -149,9 +151,9 @@ export function MemoryVisualization() {
       for (let j = i + 1; j < newNodes.length; j++) {
         const node1 = newNodes[i];
         const node2 = newNodes[j];
-        if (node1.id.includes('satellite') && node2.id.includes('satellite')) {
+        if (node1.id.includes("satellite") && node2.id.includes("satellite")) {
           const distance = Math.sqrt(
-            Math.pow(node1.x - node2.x, 2) + Math.pow(node1.y - node2.y, 2)
+            Math.pow(node1.x - node2.x, 2) + Math.pow(node1.y - node2.y, 2),
           );
           if (distance < 15 && Math.random() > 0.6) {
             newConnections.push({
@@ -182,10 +184,7 @@ export function MemoryVisualization() {
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="absolute inset-0 overflow-hidden"
-    >
+    <div ref={containerRef} className="absolute inset-0 overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-transparent to-blue-900/10" />
@@ -200,16 +199,22 @@ export function MemoryVisualization() {
       {/* Connections */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none">
         <defs>
-          <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient
+            id="connectionGradient"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
             <stop offset="0%" stopColor="rgba(139, 92, 246, 0.4)" />
             <stop offset="50%" stopColor="rgba(59, 130, 246, 0.4)" />
             <stop offset="100%" stopColor="rgba(6, 182, 212, 0.4)" />
           </linearGradient>
           <filter id="glow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
             <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
         </defs>
@@ -252,7 +257,11 @@ export function MemoryVisualization() {
                 <>
                   <motion.circle
                     r={isActive ? "3" : "2"}
-                    fill={isActive ? "rgba(139, 92, 246, 1)" : "rgba(139, 92, 246, 0.6)"}
+                    fill={
+                      isActive
+                        ? "rgba(139, 92, 246, 1)"
+                        : "rgba(139, 92, 246, 0.6)"
+                    }
                     filter={isActive ? "url(#glow)" : undefined}
                   >
                     <animateMotion
@@ -276,7 +285,11 @@ export function MemoryVisualization() {
                   {/* Second particle with delay */}
                   <motion.circle
                     r={isActive ? "2" : "1.5"}
-                    fill={isActive ? "rgba(59, 130, 246, 1)" : "rgba(59, 130, 246, 0.5)"}
+                    fill={
+                      isActive
+                        ? "rgba(59, 130, 246, 1)"
+                        : "rgba(59, 130, 246, 0.5)"
+                    }
                     filter={isActive ? "url(#glow)" : undefined}
                   >
                     <animateMotion
@@ -296,7 +309,11 @@ export function MemoryVisualization() {
                   {/* Third particle with more delay */}
                   <motion.circle
                     r={isActive ? "1.5" : "1"}
-                    fill={isActive ? "rgba(6, 182, 212, 1)" : "rgba(6, 182, 212, 0.4)"}
+                    fill={
+                      isActive
+                        ? "rgba(6, 182, 212, 1)"
+                        : "rgba(6, 182, 212, 0.4)"
+                    }
                     filter={isActive ? "url(#glow)" : undefined}
                   >
                     <animateMotion
@@ -326,7 +343,7 @@ export function MemoryVisualization() {
         const isConnected = connections.some(
           (c) =>
             activeConnections.has(c.id) &&
-            (c.source === node.id || c.target === node.id)
+            (c.source === node.id || c.target === node.id),
         );
 
         return (
@@ -337,11 +354,11 @@ export function MemoryVisualization() {
               left: `${node.x}%`,
               top: `${node.y}%`,
               transform: "translate(-50%, -50%)",
-              zIndex: isHighlighted ? 20 : 10
+              zIndex: isHighlighted ? 20 : 10,
             }}
             initial={{ scale: 0, opacity: 0 }}
             animate={{
-              scale: isHighlighted ? 1.08 : (isConnected ? 1.02 : 1),
+              scale: isHighlighted ? 1.08 : isConnected ? 1.02 : 1,
               opacity: 1,
               y: [0, -3, 0, 3, 0], // Gentler breathing motion
               x: [0, -1, 0, 1, 0], // Subtle sway
@@ -357,23 +374,23 @@ export function MemoryVisualization() {
                 duration: 4 + node.pulseDelay,
                 repeat: Infinity,
                 ease: [0.4, 0, 0.6, 1], // Apple-style ease
-                repeatType: "loop"
+                repeatType: "loop",
               },
               x: {
                 duration: 6 + node.pulseDelay * 1.5,
                 repeat: Infinity,
                 ease: [0.4, 0, 0.6, 1],
-                repeatType: "loop"
-              }
+                repeatType: "loop",
+              },
             }}
             onHoverStart={() => {
               if (node.id.startsWith("main-")) {
                 setHighlightedNode(node.id);
                 // Activate connections for this node
                 const nodeConnections = connections.filter(
-                  c => c.source === node.id || c.target === node.id
+                  (c) => c.source === node.id || c.target === node.id,
                 );
-                setActiveConnections(new Set(nodeConnections.map(c => c.id)));
+                setActiveConnections(new Set(nodeConnections.map((c) => c.id)));
               }
             }}
             onHoverEnd={() => {
@@ -381,60 +398,60 @@ export function MemoryVisualization() {
               setActiveConnections(new Set());
             }}
           >
+            <div
+              className="relative"
+              style={{
+                width: node.size * (isHighlighted ? 1.5 : 1),
+                height: node.size * (isHighlighted ? 1.5 : 1),
+              }}
+            >
+              {/* Core */}
               <div
-                className="relative"
+                className="absolute inset-0 rounded-full"
                 style={{
-                  width: node.size * (isHighlighted ? 1.5 : 1),
-                  height: node.size * (isHighlighted ? 1.5 : 1),
+                  background: `radial-gradient(circle, ${node.color}ee, ${node.color}66)`,
+                  boxShadow: `0 0 ${isHighlighted ? 30 : 10}px ${node.color}44`,
                 }}
-              >
-                {/* Core */}
-                <div
-                  className="absolute inset-0 rounded-full"
-                  style={{
-                    background: `radial-gradient(circle, ${node.color}ee, ${node.color}66)`,
-                    boxShadow: `0 0 ${isHighlighted ? 30 : 10}px ${node.color}44`,
-                  }}
-                />
+              />
 
-                {/* Pulse rings */}
-                {(isHighlighted || isConnected) && (
-                  <>
-                    <motion.div
-                      className="absolute inset-0 rounded-full"
-                      style={{
-                        border: `1px solid ${node.color}44`,
-                      }}
-                      initial={{ scale: 1, opacity: 0.8 }}
-                      animate={{
-                        scale: 2,
-                        opacity: 0,
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: node.pulseDelay,
-                      }}
-                    />
-                    <motion.div
-                      className="absolute inset-0 rounded-full"
-                      style={{
-                        border: `1px solid ${node.color}33`,
-                      }}
-                      initial={{ scale: 1, opacity: 0.6 }}
-                      animate={{
-                        scale: 2.5,
-                        opacity: 0,
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: node.pulseDelay + 0.5,
-                      }}
-                    />
-                  </>
-                )}
-              </div>
+              {/* Pulse rings */}
+              {(isHighlighted || isConnected) && (
+                <>
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      border: `1px solid ${node.color}44`,
+                    }}
+                    initial={{ scale: 1, opacity: 0.8 }}
+                    animate={{
+                      scale: 2,
+                      opacity: 0,
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      delay: node.pulseDelay,
+                    }}
+                  />
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      border: `1px solid ${node.color}33`,
+                    }}
+                    initial={{ scale: 1, opacity: 0.6 }}
+                    animate={{
+                      scale: 2.5,
+                      opacity: 0,
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      delay: node.pulseDelay + 0.5,
+                    }}
+                  />
+                </>
+              )}
+            </div>
           </motion.div>
         );
       })}
@@ -450,7 +467,7 @@ export function MemoryVisualization() {
             backgroundColor: `rgba(255, 255, 255, ${particle.opacity})`,
             left: `${particle.left}%`,
             top: `${particle.top}%`,
-            filter: 'blur(0.5px)'
+            filter: "blur(0.5px)",
           }}
           animate={{
             y: -200,
@@ -461,7 +478,7 @@ export function MemoryVisualization() {
             delay: particle.delay,
             repeat: Infinity,
             ease: "linear",
-            times: [0, 0.1, 0.9, 1]
+            times: [0, 0.1, 0.9, 1],
           }}
         />
       ))}
@@ -470,10 +487,11 @@ export function MemoryVisualization() {
       <div
         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
         style={{
-          width: '60%',
-          height: '60%',
-          background: 'radial-gradient(circle, rgba(147, 51, 234, 0.1) 0%, transparent 70%)',
-          filter: 'blur(40px)'
+          width: "60%",
+          height: "60%",
+          background:
+            "radial-gradient(circle, rgba(147, 51, 234, 0.1) 0%, transparent 70%)",
+          filter: "blur(40px)",
         }}
       />
     </div>

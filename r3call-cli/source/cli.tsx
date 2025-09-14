@@ -42,7 +42,9 @@ if (cli.flags.apiUrl) process.env['R3CALL_API_URL'] = cli.flags.apiUrl;
 if (cli.flags.userId) process.env['R3CALL_USER_ID'] = cli.flags.userId;
 
 const apiKey =
-	cli.flags.apiKey || process.env['R3CALL_API_KEY'] || process.env['MEM0_API_KEY'];
+	cli.flags.apiKey ||
+	process.env['R3CALL_API_KEY'] ||
+	process.env['MEM0_API_KEY'];
 
 const command = cli.input[0];
 const text = cli.input.slice(1).join(' ');

@@ -117,7 +117,7 @@ It's open source because this problem shouldn't exist."
 
 ## Comparison Table (Honest Version)
 
-| Feature             | r3     | Raw Mem0 API | Vector DBs |
+| Feature             | r3         | Raw Mem0 API | Vector DBs |
 | ------------------- | ---------- | ------------ | ---------- |
 | Setup Time          | 30 seconds | 10 minutes   | Hours      |
 | Configuration       | Zero       | API keys     | Complex    |

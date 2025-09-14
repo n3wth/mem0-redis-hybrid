@@ -60,6 +60,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
    - Update website documentation if applicable
 
 5. **Ensure all tests pass** before submitting
+
    ```bash
    npm test
    npm run lint
@@ -126,8 +127,8 @@ npm test
 
 ```typescript
 // 1. Imports (grouped and ordered)
-import { readFile } from 'fs/promises';
-import type { Config } from './types';
+import { readFile } from "fs/promises";
+import type { Config } from "./types";
 
 // 2. Constants
 const DEFAULT_TIMEOUT = 5000;
@@ -145,9 +146,7 @@ interface SearchParams {
  * @returns Array of matching memories.
  * @throws {Error} If search fails.
  */
-export async function searchMemory(
-  params: SearchParams
-): Promise<Memory[]> {
+export async function searchMemory(params: SearchParams): Promise<Memory[]> {
   const { query, prefer_cache = true } = params;
 
   try {
@@ -159,8 +158,8 @@ export async function searchMemory(
 
     return await performSearch(query);
   } catch (error) {
-    logger.error('Search failed', { error, params });
-    throw new SearchError('Memory search failed', { cause: error });
+    logger.error("Search failed", { error, params });
+    throw new SearchError("Memory search failed", { cause: error });
   }
 }
 ```
@@ -174,19 +173,19 @@ export async function searchMemory(
 - Test edge cases and error conditions
 
 ```typescript
-describe('searchMemory', () => {
-  it('should return cached results when prefer_cache is true', async () => {
+describe("searchMemory", () => {
+  it("should return cached results when prefer_cache is true", async () => {
     // Arrange
-    const mockCache = jest.fn().mockResolvedValue([{ id: '1' }]);
+    const mockCache = jest.fn().mockResolvedValue([{ id: "1" }]);
 
     // Act
     const result = await searchMemory({
-      query: 'test',
-      prefer_cache: true
+      query: "test",
+      prefer_cache: true,
     });
 
     // Assert
-    expect(mockCache).toHaveBeenCalledWith('test');
+    expect(mockCache).toHaveBeenCalledWith("test");
     expect(result).toHaveLength(1);
   });
 });
@@ -355,6 +354,7 @@ Reviewers will check for:
 ### Contributors
 
 All contributors are recognized in:
+
 - The project's contributors page
 - Release notes for significant contributions
 - Special mentions for exceptional contributions
@@ -362,6 +362,7 @@ All contributors are recognized in:
 ### Types of Contributions
 
 We value all contributions including:
+
 - Code contributions
 - Documentation improvements
 - Bug reports and testing

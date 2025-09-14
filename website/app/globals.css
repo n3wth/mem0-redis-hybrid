@@ -98,7 +98,8 @@
 }
 
 @keyframes aurora {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(100%);
     opacity: 0;
   }
@@ -115,7 +116,8 @@
 }
 
 @keyframes gradient {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -155,15 +157,18 @@
 
 /* Apply parallax on scroll */
 .parallax-back {
-  transform: translate(-50%, -50%) translateY(calc(var(--scroll-y, 0) * -5px)) scale(calc(1 - var(--scroll-y, 0) * 0.02));
+  transform: translate(-50%, -50%) translateY(calc(var(--scroll-y, 0) * -5px))
+    scale(calc(1 - var(--scroll-y, 0) * 0.02));
 }
 
 .parallax-mid {
-  transform: translate(-50%, -50%) translateY(calc(var(--scroll-y, 0) * -10px)) scale(calc(1 - var(--scroll-y, 0) * 0.03));
+  transform: translate(-50%, -50%) translateY(calc(var(--scroll-y, 0) * -10px))
+    scale(calc(1 - var(--scroll-y, 0) * 0.03));
 }
 
 .parallax-front {
-  transform: translate(-50%, -50%) translateY(calc(var(--scroll-y, 0) * -15px)) scale(calc(1 - var(--scroll-y, 0) * 0.04));
+  transform: translate(-50%, -50%) translateY(calc(var(--scroll-y, 0) * -15px))
+    scale(calc(1 - var(--scroll-y, 0) * 0.04));
 }
 
 .glass-effect {

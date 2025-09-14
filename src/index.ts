@@ -2419,8 +2419,10 @@ server.setRequestHandler(
                 throw new Error(`API error: ${response.status}`);
               }
 
-              const data = await response.json() as any;
-              memories = Array.isArray(data) ? data : (data.results || data.memories || []);
+              const data = (await response.json()) as any;
+              memories = Array.isArray(data)
+                ? data
+                : data.results || data.memories || [];
             } catch (error: any) {
               return {
                 content: [
@@ -2449,7 +2451,9 @@ server.setRequestHandler(
               const fs = await import("fs/promises");
               const fileContent = await fs.readFile(file_path, "utf-8");
               const data = JSON.parse(fileContent);
-              memories = Array.isArray(data) ? data : (data.results || data.memories || []);
+              memories = Array.isArray(data)
+                ? data
+                : data.results || data.memories || [];
             } catch (error: any) {
               return {
                 content: [
@@ -2485,7 +2489,10 @@ server.setRequestHandler(
 
                 // Check for duplicates if enabled
                 if (skip_duplicates) {
-                  const duplicateCheck = await checkForDuplicate(content, user_id);
+                  const duplicateCheck = await checkForDuplicate(
+                    content,
+                    user_id,
+                  );
                   if (duplicateCheck && duplicateCheck.isDuplicate) {
                     importStats.duplicates++;
                     importStats.skipped++;

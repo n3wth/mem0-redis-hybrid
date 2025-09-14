@@ -953,10 +953,7 @@ Updated: ${new Date().toISOString()}`;
   }
 
   private async exportData() {
-    const exportPath = path.join(
-      process.cwd(),
-      `r3-export-${Date.now()}.json`,
-    );
+    const exportPath = path.join(process.cwd(), `r3-export-${Date.now()}.json`);
 
     const exportData = {
       timestamp: new Date().toISOString(),
@@ -1190,11 +1187,7 @@ Updated: ${new Date().toISOString()}`;
         user_id: "demo",
         metadata: {
           entities: {
-            technologies: [
-              { text: "r3" },
-              { text: "Redis" },
-              { text: "Mem0" },
-            ],
+            technologies: [{ text: "r3" }, { text: "Redis" }, { text: "Mem0" }],
             projects: [{ text: "r3" }],
           },
         },

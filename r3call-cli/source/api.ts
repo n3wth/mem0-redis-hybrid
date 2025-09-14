@@ -16,10 +16,10 @@ const getHeaders = (apiKey?: string) => {
 		? {
 				Authorization: `Bearer ${apiKey}`,
 				'Content-Type': 'application/json',
-		  }
+			}
 		: {
 				'Content-Type': 'application/json',
-		  };
+			};
 };
 
 export const loadMemories = async (apiKey?: string): Promise<Memory[]> => {
@@ -31,9 +31,12 @@ export const loadMemories = async (apiKey?: string): Promise<Memory[]> => {
 	return response.data.memories || [];
 };
 
-export const searchMemories = async (query: string, apiKey?: string): Promise<Memory[]> => {
+export const searchMemories = async (
+	query: string,
+	apiKey?: string,
+): Promise<Memory[]> => {
 	if (!query.trim()) return [];
-    const headers = getHeaders(apiKey);
+	const headers = getHeaders(apiKey);
 	const response = await axios.post(
 		`${API_BASE}/search`,
 		{
@@ -46,9 +49,12 @@ export const searchMemories = async (query: string, apiKey?: string): Promise<Me
 	return response.data.results || [];
 };
 
-export const addMemory = async (content: string, apiKey?: string): Promise<void> => {
+export const addMemory = async (
+	content: string,
+	apiKey?: string,
+): Promise<void> => {
 	if (!content.trim()) return;
-    const headers = getHeaders(apiKey);
+	const headers = getHeaders(apiKey);
 	await axios.post(
 		`${API_BASE}/add`,
 		{
@@ -59,8 +65,10 @@ export const addMemory = async (content: string, apiKey?: string): Promise<void>
 	);
 };
 
-export const deleteMemory = async (memoryId: string, apiKey?: string): Promise<void> => {
-    const headers = getHeaders(apiKey);
+export const deleteMemory = async (
+	memoryId: string,
+	apiKey?: string,
+): Promise<void> => {
+	const headers = getHeaders(apiKey);
 	await axios.delete(`${API_BASE}/memory/${memoryId}`, {headers});
 };
-

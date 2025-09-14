@@ -5,6 +5,7 @@ A native macOS menu bar application for managing your personal memory system. Bu
 ## Features
 
 ### 🧠 Memory Management
+
 - **View all memories** in a clean, organized interface
 - **Add new memories** with rich metadata support
 - **Edit existing memories** with full content and metadata editing
@@ -12,6 +13,7 @@ A native macOS menu bar application for managing your personal memory system. Bu
 - **Search and filter** memories by content, project, tags, and more
 
 ### 📊 Smart Organization
+
 - **Project-based organization** - group memories by project
 - **Tag system** - add multiple tags to categorize memories
 - **Directory tracking** - associate memories with file system locations
@@ -19,6 +21,7 @@ A native macOS menu bar application for managing your personal memory system. Bu
 - **Usage statistics** - track how often memories are used
 
 ### 🔍 Advanced Search & Filtering
+
 - **Real-time search** across memory content, tags, and metadata
 - **Project filtering** - view memories by specific projects
 - **Tag filtering** - filter by one or multiple tags
@@ -26,12 +29,14 @@ A native macOS menu bar application for managing your personal memory system. Bu
 - **Smart suggestions** - see available projects and tags
 
 ### 📈 Analytics & Insights
+
 - **Memory statistics** - total count, projects, tags
 - **Usage tracking** - see most frequently used memories
 - **Recent activity** - quick access to recently added memories
 - **Project breakdown** - understand your memory distribution
 
 ### 🎨 Native macOS Experience
+
 - **Menu bar integration** - always accessible from the menu bar
 - **Native SwiftUI interface** - follows macOS design guidelines
 - **Keyboard shortcuts** - efficient navigation and editing
@@ -41,18 +46,21 @@ A native macOS menu bar application for managing your personal memory system. Bu
 ## Installation
 
 ### Prerequisites
+
 - macOS 12.0 or later
 - Xcode 14.0 or later (for building from source)
 
 ### Building from Source
 
 1. **Clone the repository** (if not already done):
+
    ```bash
    git clone <repository-url>
    cd r3/r3-swift-app
    ```
 
 2. **Run the setup script**:
+
    ```bash
    ./setup_project.sh
    ```
@@ -78,6 +86,7 @@ A native macOS menu bar application for managing your personal memory system. Bu
 ## Database Integration
 
 The app automatically connects to your existing r3 memory database at:
+
 ```
 /Users/oliver/mcp-servers/r3/data/memories.db
 ```
@@ -125,6 +134,7 @@ CREATE TABLE memories (
 ### Adding Memories
 
 When adding a new memory, you can specify:
+
 - **Content** - the main memory text
 - **Project** - associate with a specific project
 - **Directory** - link to a file system location
@@ -145,17 +155,20 @@ When adding a new memory, you can specify:
 ## Architecture
 
 ### Models
+
 - **Memory** - Core memory data structure
 - **MemoryMetadata** - Extended metadata for memories
 - **MemoryStore** - Database operations and state management
 
 ### Views
+
 - **MemoryListView** - Main memory list interface
 - **AddMemoryView** - Form for adding new memories
 - **EditMemoryView** - Form for editing existing memories
 - **FilterView** - Advanced filtering and sorting options
 
 ### Key Features
+
 - **SQLite integration** - Direct database access for performance
 - **SwiftUI** - Modern, declarative UI framework
 - **Combine** - Reactive programming for data flow
@@ -164,6 +177,7 @@ When adding a new memory, you can specify:
 ## Development
 
 ### Project Structure
+
 ```
 MenuBarApp/
 ├── Models/
@@ -189,6 +203,7 @@ MenuBarApp/
 ### Testing
 
 The app includes comprehensive error handling and validation:
+
 - Database connection errors
 - Invalid data handling
 - User input validation
@@ -206,6 +221,7 @@ The app includes comprehensive error handling and validation:
 ### Debug Mode
 
 Enable debug logging by setting the environment variable:
+
 ```bash
 export R3CALL_DEBUG=1
 ```
@@ -225,6 +241,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Support
 
 For issues and questions:
+
 1. Check the troubleshooting section
 2. Search existing issues
 3. Create a new issue with detailed information
