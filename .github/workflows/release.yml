@@ -75,24 +75,24 @@ jobs:
           name: v${{ steps.version.outputs.new_version }}
           generate_release_notes: true
           body: |
-            ## 🚀 Recall v${{ steps.version.outputs.new_version }}
+            ## 🚀 R3call v${{ steps.version.outputs.new_version }}
 
             Lightning-fast memory layer for AI applications with sub-5ms response times.
 
             ### 📦 Installation
             ```bash
-            npm install @n3wth/recall@${{ steps.version.outputs.new_version }}
+            npm install r3call@${{ steps.version.outputs.new_version }}
             ```
 
             ### 🔧 Claude Desktop Setup
             ```bash
-            npx @n3wth/recall
+            npx r3call
             ```
 
             ### 📚 Documentation
-            - [Getting Started](https://recall.newth.ai/docs/quickstart)
-            - [API Reference](https://recall.newth.ai/docs/api-reference)
-            - [Examples](https://recall.newth.ai/docs/examples)
+            - [Getting Started](https://r3call.newth.ai/docs/quickstart)
+            - [API Reference](https://r3call.newth.ai/docs/api-reference)
+            - [Examples](https://r3call.newth.ai/docs/examples)
 
             ### What's Changed
             See below for auto-generated changelog.

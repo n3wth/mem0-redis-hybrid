@@ -1,6 +1,6 @@
 'use client'
 
-import { Check, Zap, Shield, ArrowRight, Code, Database, Lock, Globe, Sparkles, Cpu, Layers, Gauge } from 'lucide-react'
+import { Check, Zap, Shield, ArrowRight, Code, Database, Lock, Globe, Sparkles, Cpu, Layers, Gauge, Copy, Sun, RefreshCw, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useState, lazy, Suspense } from 'react'
 import { Navigation } from '@/components/Navigation'
@@ -18,23 +18,36 @@ const ShimmerButton = lazy(() => import('@/components/magicui/shimmer-button').t
 const Meteors = lazy(() => import('@/components/magicui/meteors').then(module => ({ default: module.Meteors })))
 const Particles = lazy(() => import('@/components/magicui/particles').then(module => ({ default: module.Particles })))
 const Background3D = lazy(() => import('@/components/Background3D').then(module => ({ default: module.Background3D })))
+const BorderBeam = lazy(() => import('@/components/magicui/border-beam').then(module => ({ default: module.BorderBeam })))
+const ShineBorder = lazy(() => import('@/components/magicui/shine-border').then(module => ({ default: module.ShineBorder })))
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('node')
+  const [copied, setCopied] = useState(false)
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   const codeExamples = {
     node: `import { Recall } from 'r3call';
 
-// Zero configuration - uses embedded Redis automatically
-const client = new Recall();
+// Zero configuration - works immediately
+const recall = new Recall();
 
-// Store memory locally (no cloud needed)
-const response = await client.memories.add({
-  content: 'User prefers dark mode UI',
-  metadata: { user_id: 'user_123' }
+// Store memory locally
+await recall.add({
+  content: 'User prefers TypeScript and dark mode themes',
+  userId: 'user_123'
 });
 
-console.log(response.id);`,
+// Retrieve memories instantly
+const memories = await recall.search({
+  query: 'What are the user preferences?',
+  userId: 'user_123'
+});`,
     python: `from r3call import Recall
 
 # Zero configuration - works out of the box
@@ -58,11 +71,13 @@ print(response.id)`,
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="flex flex-col min-h-screen bg-black">
       <Navigation />
 
-      {/* Hero - Clean and minimal with enhanced effects */}
-      <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+      {/* Main content wrapper */}
+      <main className="flex-1">
+        {/* Hero - Clean and minimal with enhanced effects */}
+        <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
         {/* Floating dots */}
         <FloatingDots count={30} />
 
@@ -91,74 +106,81 @@ print(response.id)`,
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
               </span>
-              Claude Code + Gemini CLI Ready
+              Open Source • Built on Mem0 • MIT License
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-6">
-              <span className="text-white">Your AI never forgets</span>
+              <span className="text-white">Stop repeating yourself</span>
               <br />
               <GradientText gradient="from-gray-400 to-gray-600" className="inline-block">
-                what matters most
+                to Claude every morning
               </GradientText>
             </h1>
 
             <p className="mx-auto max-w-2xl text-lg text-gray-400 mb-10 font-light">
-              Stop repeating yourself. r3call remembers your coding style, project
-              architecture, and personal preferences—turning Claude and Gemini into
-              AI assistants that truly know you. Sub-5ms retrieval. Zero context loss.
+              I got tired of explaining my project context every session. So I built r3call -
+              a zero-config memory layer that gives Claude and Gemini permanent memory.
+              Works instantly. Runs locally. Just one command to start.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/docs/quickstart"
-                className="group inline-flex items-center gap-2 px-6 py-3 text-base font-medium rounded-lg bg-white text-black hover:bg-gray-100 transition-all"
+              <button
+                onClick={() => copyToClipboard('npx r3call')}
+                className="group relative inline-flex items-center gap-2 px-6 py-3 text-base font-medium rounded-lg bg-white text-black transition-all cursor-pointer overflow-hidden hover:scale-105"
               >
-                Get started
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-              <Link
-                href="/docs/introduction"
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+
+                <code className="font-mono relative">npx r3call</code>
+                {copied ? (
+                  <Check className="h-4 w-4 text-green-600 relative" />
+                ) : (
+                  <Copy className="h-4 w-4 text-gray-600 group-hover:text-black transition-colors relative" />
+                )}
+              </button>
+              <a
+                href="https://github.com/n3wth/r3call"
                 className="px-6 py-3 text-base font-medium rounded-lg border border-white/20 text-white hover:bg-white/5 transition-all"
               >
-                Documentation
-              </Link>
+                View on GitHub
+              </a>
             </div>
 
-            {/* Animated metrics */}
+            {/* Animated metrics - contextualized */}
             <div className="mt-16 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 max-w-2xl mx-auto">
               <div className="text-center">
                 <div className="text-xl sm:text-2xl font-light text-white mb-1">
                   <AnimatedCounter to={5} suffix="ms" prefix="<" duration={2} />
                 </div>
-                <div className="text-xs text-gray-500 uppercase tracking-wider">Latency</div>
+                <div className="text-xs text-gray-500">Faster than autocomplete</div>
               </div>
               <div className="text-center">
                 <div className="text-xl sm:text-2xl font-light text-white mb-1">
-                  <AnimatedCounter to={99.9} decimals={1} suffix="%" duration={2.5} />
+                  <AnimatedCounter to={0} suffix="" duration={2.5} />
                 </div>
-                <div className="text-xs text-gray-500 uppercase tracking-wider">Uptime</div>
+                <div className="text-xs text-gray-500">Configuration needed</div>
               </div>
               <div className="text-center">
                 <div className="text-xl sm:text-2xl font-light text-white mb-1">
-                  <AnimatedCounter to={1000000} suffix="/s" duration={3} />
+                  <AnimatedCounter to={100} suffix="%" duration={3} />
                 </div>
-                <div className="text-xs text-gray-500 uppercase tracking-wider">Throughput</div>
+                <div className="text-xs text-gray-500">TypeScript coverage</div>
               </div>
               <div className="text-center">
                 <div className="text-xl sm:text-2xl font-light text-white mb-1">
-                  <AnimatedCounter to={12} duration={2} />
+                  <AnimatedCounter to={1} suffix="" duration={2} />
                 </div>
-                <div className="text-xs text-gray-500 uppercase tracking-wider">Regions</div>
+                <div className="text-xs text-gray-500">Command to start</div>
               </div>
             </div>
           </div>
+          </div>
         </div>
-      </div>
 
-      {/* Interactive Terminal Demo */}
-      <section className="py-24 border-t border-white/5 relative overflow-hidden">
-        <Meteors number={20} />
-        <Container size="lg">
+        {/* Interactive Terminal Demo */}
+        <section className="py-32 border-t border-white/5 relative overflow-hidden">
+          <Meteors number={20} />
+          <Container size="lg">
           <div className="max-w-4xl mx-auto relative z-10">
             <div className="mb-12 text-center">
               <h2 className="text-3xl font-normal text-white mb-3">
@@ -172,12 +194,12 @@ print(response.id)`,
               <TerminalDemo />
             </Suspense>
           </div>
-        </Container>
-      </section>
+          </Container>
+        </section>
 
-      {/* Code Example - Clean tabs */}
-      <section className="py-24 border-t border-white/5">
-        <Container size="lg">
+        {/* Code Example - Clean tabs */}
+        <section className="py-32 border-t border-white/5">
+          <Container size="lg">
           <div className="max-w-4xl mx-auto">
             <div className="mb-12">
               <h2 className="text-3xl font-normal text-white mb-3">
@@ -217,12 +239,12 @@ print(response.id)`,
               </div>
             </div>
           </div>
-        </Container>
-      </section>
+          </Container>
+        </section>
 
-      {/* Features - Stunning Bento Grid */}
-      <section className="py-24 border-t border-white/5 relative">
-        <Container size="lg">
+        {/* Features - Stunning Bento Grid */}
+        <section className="py-32 border-t border-white/5 relative">
+          <Container size="lg">
           <div className="mb-12">
             <h2 className="text-3xl font-normal text-white mb-3">
               Built for scale, designed for speed
@@ -234,101 +256,202 @@ print(response.id)`,
 
           <BentoGrid>
             <BentoCard
-              title="Lightning-fast recall"
-              description="Two-tier intelligent caching. Hot memories in 2ms. Everything else under 5ms."
+              title="Sub-5ms Response Times"
+              description="Redis L1 cache with intelligent tiering. Median response in 2ms, 99th percentile under 5ms."
               icon={<Zap className="h-5 w-5 text-yellow-400" />}
               gradient="from-yellow-900/20 to-orange-900/20"
               span="col-span-2"
             >
               <div className="mt-4 flex items-center gap-4">
                 <div className="text-2xl font-light text-white">
-                  <AnimatedCounter to={2} suffix="ms" duration={1.5} />
+                  <AnimatedCounter to={5} suffix="ms" prefix="<" duration={1.5} />
                 </div>
-                <div className="text-xs text-gray-500">Hot cache response</div>
+                <div className="text-xs text-gray-500">P99 response time</div>
               </div>
             </BentoCard>
 
             <BentoCard
-              title="Never lose context"
-              description="Automatic failover and circuit breakers. Your memories persist."
+              title="99.9% Uptime"
+              description="Automatic failover to cloud storage. Service availability SLA guaranteed."
               icon={<Shield className="h-5 w-5 text-blue-400" />}
               gradient="from-blue-900/20 to-cyan-900/20"
             />
 
             <BentoCard
-              title="Always in sync"
-              description="Real-time Pub/Sub updates. Background sync every 5 minutes."
+              title="Unlimited Scale"
+              description="Handle millions of requests per second. 10:1 memory compression ratio."
               icon={<Database className="h-5 w-5 text-purple-400" />}
               gradient="from-purple-900/20 to-pink-900/20"
             />
 
             <BentoCard
-              title="Global by default"
-              description="12 edge locations worldwide. Your AI remembers everything, everywhere."
+              title="AI-Native"
+              description="Semantic search and context management. Works with Gemini, Claude, GPT, and any LLM."
               icon={<Globe className="h-5 w-5 text-green-400" />}
               gradient="from-green-900/20 to-teal-900/20"
               span="col-span-2"
             >
               <div className="mt-4 grid grid-cols-3 gap-2">
-                {['US-East', 'EU-West', 'AP-South'].map((region) => (
-                  <div key={region} className="text-xs text-gray-400 bg-white/5 rounded px-2 py-1">
-                    {region}
+                {['Gemini', 'Claude', 'GPT'].map((model) => (
+                  <div key={model} className="text-xs text-gray-400 bg-white/5 rounded px-2 py-1">
+                    {model}
                   </div>
                 ))}
               </div>
             </BentoCard>
 
             <BentoCard
-              title="Developer-first"
-              description="Full TypeScript support. Autocomplete everything."
+              title="100% TypeScript"
+              description="Full type safety and IntelliSense support. Zero-config with embedded Redis."
               icon={<Code className="h-5 w-5 text-indigo-400" />}
               gradient="from-indigo-900/20 to-blue-900/20"
             />
 
             <BentoCard
-              title="Enterprise-grade security"
-              description="SOC 2 Type II certified. End-to-end encryption."
+              title="Local-First Mode"
+              description="Works offline with embedded Redis server. No cloud dependency required."
               icon={<Lock className="h-5 w-5 text-red-400" />}
               gradient="from-red-900/20 to-orange-900/20"
             />
 
             <BentoCard
-              title="AI-Native Architecture"
-              description="Purpose-built for LLMs with semantic search and vector indexing."
+              title="Easy Integration"
+              description="MCP protocol support. Direct API access. Works with any framework."
               icon={<Sparkles className="h-5 w-5 text-pink-400" />}
               gradient="from-pink-900/20 to-purple-900/20"
             />
           </BentoGrid>
-        </Container>
-      </section>
+          </Container>
+        </section>
 
-      {/* CTA - Minimal */}
-      <section className="py-24 border-t border-white/5">
-        <Container size="sm">
+        {/* Personal Story Section */}
+        <section className="py-32 border-t border-white/5 relative overflow-hidden">
+          {/* Background effects */}
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-gradient-to-b from-purple-900/5 via-transparent to-blue-900/5" />
+          </div>
+
+          <Container size="md">
+            <div className="relative">
+              {/* Card with subtle glow */}
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition duration-1000" />
+
+                <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-10 border border-white/10">
+                  <h3 className="text-2xl font-medium text-white mb-10">
+                    Why I built this
+                  </h3>
+
+                  <div className="space-y-8">
+                    {/* Pain points */}
+                    <div className="space-y-6">
+                      <div className="flex items-start gap-4">
+                        <div className="p-2 rounded-lg bg-gradient-to-br from-orange-500/10 to-yellow-500/10 border border-orange-500/20">
+                          <Sun className="h-5 w-5 text-orange-400" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-gray-300">Every morning:</p>
+                          <p className="text-gray-500 mt-1">
+                            "Claude, I'm using Next.js 14 with TypeScript, Tailwind, and..."
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-4">
+                        <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
+                          <RefreshCw className="h-5 w-5 text-blue-400" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-gray-300">Every context switch:</p>
+                          <p className="text-gray-500 mt-1">
+                            "Let me explain my project structure again..."
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-4">
+                        <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20">
+                          <Plus className="h-5 w-5 text-purple-400" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-gray-300">Every new session:</p>
+                          <p className="text-gray-500 mt-1">
+                            Starting from zero. Again.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Solution */}
+                    <div className="pt-8 border-t border-white/10">
+                      <p className="text-lg text-white leading-relaxed">
+                        r3call solves this. Your AI remembers everything - your stack, your style,
+                        your preferences. It's open source because this problem shouldn't exist.
+                      </p>
+                    </div>
+
+                    {/* Author */}
+                    <div className="pt-4">
+                      <a
+                        href="https://github.com/n3wth"
+                        className="inline-flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors group"
+                      >
+                        <span>— Oliver</span>
+                        <span className="opacity-60 group-hover:opacity-100 transition-opacity">
+                          (View my work on GitHub
+                          <ArrowRight className="inline h-3 w-3 ml-1 transition-transform group-hover:translate-x-0.5" />
+                          )
+                        </span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        {/* CTA - Minimal */}
+        <section className="py-32 border-t border-white/5">
+          <Container size="sm">
           <div className="text-center">
             <h2 className="text-3xl font-normal text-white mb-3">
-              Give your AI perfect memory
+              Try it in 30 seconds
             </h2>
             <p className="text-gray-400 mb-8">
-              Join developers who've eliminated context switching forever. One command to start.
+              Zero configuration. Works offline. Open source.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/docs/quickstart"
-                className="px-6 py-3 bg-white text-black font-medium rounded-lg transition-all hover:bg-gray-100"
+              <button
+                onClick={() => copyToClipboard('npx r3call')}
+                className="group relative inline-flex items-center gap-2 px-6 py-3 font-mono font-medium rounded-lg border border-white/20 bg-white text-black transition-all cursor-pointer hover:scale-105 overflow-hidden"
               >
-                Get started →
-              </Link>
+                {/* Rainbow gradient border effect */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 blur-lg" />
+                </div>
+                <div className="absolute inset-[1px] bg-white rounded-lg" />
+
+                <span className="relative flex items-center gap-2">
+                  npx r3call
+                  {copied ? (
+                    <Check className="h-4 w-4 text-green-600" />
+                  ) : (
+                    <Copy className="h-4 w-4 text-gray-600 group-hover:text-black transition-colors" />
+                  )}
+                </span>
+              </button>
               <a
                 href="https://github.com/n3wth/r3call"
-                className="px-6 py-3 text-white font-medium rounded-lg border border-white/20 transition-all hover:bg-white/5"
+                className="px-6 py-3 text-white font-medium rounded-lg border border-white/20 transition-all hover:bg-white/5 hover:border-white/30"
               >
-                View on GitHub
+                Star on GitHub
               </a>
             </div>
           </div>
         </Container>
-      </section>
+        </section>
+      </main>
 
       <Footer />
     </div>

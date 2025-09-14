@@ -30,7 +30,9 @@ export function AnimatedCounter({
       ? latest.toFixed(decimals)
       : Math.round(latest).toLocaleString()
   })
-  const [displayValue, setDisplayValue] = useState(from.toString())
+  const [displayValue, setDisplayValue] = useState(
+    decimals > 0 ? from.toFixed(decimals) : Math.round(from).toLocaleString()
+  )
 
   useEffect(() => {
     if (inView) {
@@ -56,6 +58,7 @@ export function AnimatedCounter({
       initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5 }}
+      suppressHydrationWarning
     >
       {prefix}
       {displayValue}

@@ -19,13 +19,24 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - name: Publish to npm
+        run: npm publish --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Verify npm package
         run: |
-          echo "Package: @n3wth/recall"
+          echo "Package: r3call"
           echo "Registry: https://registry.npmjs.org"
-          echo "Repository: https://github.com/n3wth/recall"
+          echo "Repository: https://github.com/n3wth/r3call"
 
       # This helps GitHub detect the npm package
       - name: Package metadata
         run: |
-          echo "::notice title=NPM Package::@n3wth/recall is published to npm"
+          echo "::notice title=NPM Package::r3call is published to npm"
