@@ -1,6 +1,6 @@
 {
   "name": "@n3wth/r3",
-  "version": "1.2.11",
+  "version": "1.3.0",
   "description": "Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence (by n3wth)",
   "main": "dist/index.js",
   "module": "src/index.ts",
