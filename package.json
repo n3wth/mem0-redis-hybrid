@@ -2,24 +2,25 @@
   "name": "@newth.ai/r3call",
   "version": "1.2.1",
   "description": "Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence",
-  "main": "index.js",
-  "module": "index.js",
+  "main": "dist/index.js",
+  "module": "src/index.ts",
   "type": "module",
   "bin": {
-    "recall": "index.js",
-    "recall-cli": "cli.js"
+    "recall": "dist/index.js",
+    "recall-cli": "dist/cli.js"
   },
   "scripts": {
-    "start": "node index.js",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
     "test": "node test/run-tests.js",
     "test:watch": "node --test --watch test/test-suite.js",
-    "dev": "node --watch index.js",
-    "cli": "node cli.js",
+    "cli": "node dist/cli.js",
+    "prepublishOnly": "npm run build",
     "benchmark": "node benchmark/index.js",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepublishOnly": "NPM_PUBLISH=true npm test || true",
     "version": "npm run format && git add -A",
     "postversion": "git push && git push --tags",
     "release": "./scripts/auto-release.sh",
@@ -94,5 +95,10 @@
         "default": "false"
       }
     }
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.3",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
   }
 }
