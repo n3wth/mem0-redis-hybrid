@@ -1164,7 +1164,7 @@ server.setRequestHandler(
                 content: [
                   {
                     type: "text",
-                    text: `⚠️ Duplicate detected (${Math.round(duplicateCheck.similarity! * 100)}% similar)\nExisting memory ID: ${duplicateCheck.existingId}\nExisting: "${duplicateCheck.existingMemory?.substring(0, 100)}..."\n\nUse skip_duplicate_check: true to force add.`,
+                    text: `⚠ Duplicate (${Math.round(duplicateCheck.similarity! * 100)}% match)\nID: ${duplicateCheck.existingId?.substring(0, 8)}\nUse skip_duplicate_check: true to override`,
                   },
                 ],
               };
@@ -1264,7 +1264,7 @@ server.setRequestHandler(
               content: [
                 {
                   type: "text",
-                  text: `✓ Memory queued for async processing (job: ${jobId}). Will be available shortly.`,
+                  text: `✓ Memory queued\nID: ${jobId.substring(0, 8)}\nStatus: Processing...`,
                 },
               ],
             };
@@ -1287,7 +1287,7 @@ server.setRequestHandler(
               content: [
                 {
                   type: "text",
-                  text: `✓ Added ${result.length} memory item(s) to mem0 cloud${args.priority === "high" ? " with immediate caching" : ""}`,
+                  text: `✓ ${result.length} ${result.length === 1 ? 'memory' : 'memories'} saved${args.priority === "high" ? " (priority cache)" : ""}`,
                 },
               ],
             };
@@ -1305,22 +1305,33 @@ server.setRequestHandler(
             (r) => r.source === "redis_cache",
           ).length;
           const cloudCount = results.filter(
-            (r) => r.source === "mem0_cloud",
+            (r) => r.source === "mem0_cloud" || r.source === "local",
           ).length;
 
-          // Show relevance scores if available
-          const resultsWithScores = results.map((r) => {
-            if (r.relevance_score) {
-              return { ...r, relevance_score: r.relevance_score };
-            }
-            return r;
-          });
+          // Simplified source label with symbols
+          const sourceInfo = cacheCount > 0 && cloudCount > 0
+            ? `⚡ ${cacheCount} cache | ☁ ${cloudCount} ${MODE === "local" ? "local" : "cloud"}`
+            : cacheCount > 0
+            ? `⚡ cache hit`
+            : MODE === "local"
+            ? `💾 local`
+            : `☁ cloud`;
+
+          // Compact results display with cache indicators
+          const compactResults = results.map((r, idx) => {
+            const preview = r.memory ?
+              r.memory.substring(0, 80).replace(/\n/g, ' ') +
+              (r.memory.length > 80 ? '...' : '') : '';
+            const sourceSymbol = r.source === "redis_cache" ? "⚡" :
+                               r.source === "local" ? "💾" : "☁";
+            return `${sourceSymbol} ${idx + 1}. [${r.id?.substring(0, 8) || 'unknown'}] ${preview}`;
+          }).join('\n');
 
           return {
             content: [
               {
                 type: "text",
-                text: `Found ${results.length} results (${cacheCount} from cache, ${cloudCount} from cloud):\n${JSON.stringify(resultsWithScores, null, 2)}`,
+                text: `${results.length} results (${sourceInfo}):\n${compactResults}`,
               },
             ],
           };
@@ -1391,19 +1402,11 @@ server.setRequestHandler(
           if (args.include_cache_stats && redisClient) {
             try {
               const cacheKeys = await redisClient.keys("memory:*");
-              const accessKeys = await redisClient.keys("access:*");
               const keywordKeys = await redisClient.keys("keyword:*");
-              const searchCacheKeys = await redisClient.keys("search:*");
 
-              stats = `\n\nCache Stats:
-- ${cacheKeys.length} memories cached
-- ${accessKeys.length} access counters
-- ${keywordKeys.length} keyword indexes
-- ${searchCacheKeys.length} cached searches
-- ${pendingMemories.size} pending async operations
-- ${jobQueue.size} active jobs`;
+              stats = ` | ${cacheKeys.length} cached, ${keywordKeys.length} indexed`;
             } catch (error) {
-              stats = "\nCache stats unavailable";
+              stats = "";
             }
           }
 
@@ -1452,11 +1455,17 @@ server.setRequestHandler(
             response.truncated = true;
           }
 
+          // More concise response format with source symbols
+          const sourceSymbol = source === "cache" ? "⚡" :
+                              MODE === "local" ? "💾" : "☁";
+          const sourceLabel = source === "cache" ? "cache hit" :
+                             MODE === "local" ? "local" : "cloud";
+
           return {
             content: [
               {
                 type: "text",
-                text: `Memories: ${memories.length} (limit: ${limit}, source: ${source})${stats}\n\n${JSON.stringify(response, null, 2)}`,
+                text: `${sourceSymbol} ${memories.length} memories (${sourceLabel})${stats}`,
               },
             ],
           };
@@ -1491,7 +1500,7 @@ server.setRequestHandler(
             content: [
               {
                 type: "text",
-                text: `✓ Memory ${memoryId} deleted and cache invalidated`,
+                text: `✓ Deleted ${memoryId.substring(0, 8)}`,
               },
             ],
           };
@@ -1582,13 +1591,21 @@ server.setRequestHandler(
             })),
           }));
 
+          const totalDuplicates = duplicates.reduce((sum, g) => sum + g.duplicates.length, 0);
+          const compactSummary = duplicates
+            .slice(0, 3)
+            .map(g => `• ${g.primary.id.substring(0, 8)}: ${g.duplicates.length} duplicate(s)`)
+            .join('\n');
+
+          const message = isDryRun
+            ? `Found ${totalDuplicates} duplicates in ${duplicates.length} groups\n${compactSummary}${duplicates.length > 3 ? `\n...and ${duplicates.length - 3} more groups` : ''}\n\nUse dry_run: false to delete`
+            : `✓ Deleted ${deleteCount} duplicates`;
+
           return {
             content: [
               {
                 type: "text",
-                text: isDryRun
-                  ? `Found ${duplicates.length} groups of duplicates (${duplicates.reduce((sum, g) => sum + g.duplicates.length, 0)} total duplicates)\n\n${JSON.stringify(summary, null, 2)}\n\nRun with dry_run: false to delete duplicates.`
-                  : `Deleted ${deleteCount} duplicate memories from ${duplicates.length} groups.\n\n${JSON.stringify(summary, null, 2)}`,
+                text: message,
               },
             ],
           };
@@ -1654,7 +1671,7 @@ server.setRequestHandler(
             content: [
               {
                 type: "text",
-                text: `✓ Cache optimized: ${cached} total memories cached\n- L1 (hot): ${l1Count} memories\n- L2 (warm): ${l2Count} memories`,
+                text: `✓ Cache optimized\n${l1Count} hot | ${l2Count} warm | ${cached} total`,
               },
             ],
           };
@@ -1690,29 +1707,22 @@ server.setRequestHandler(
               totalAccess += parseInt(count || "0");
             }
 
-            const stats = {
-              cached_memories: cacheKeys.length,
-              access_counters: accessKeys.length,
-              keyword_indexes: keywordKeys.length,
-              cached_searches: searchCacheKeys.length,
-              total_accesses: totalAccess,
-              estimated_hit_rate:
-                cacheKeys.length > 0
-                  ? `${Math.min(100, (totalAccess / cacheKeys.length) * 10).toFixed(1)}%`
-                  : "0%",
-              redis_memory_usage:
-                info.split("used_memory_human:")[1]?.split("\r\n")[0] ||
-                "unknown",
-              pending_jobs: jobQueue.size,
-              pending_memories: pendingMemories.size,
-              top_accessed: accessCounts,
-            };
+            const hitRate = cacheKeys.length > 0
+              ? Math.min(100, (totalAccess / cacheKeys.length) * 10).toFixed(0)
+              : "0";
+
+            const memUsage = info.split("used_memory_human:")[1]?.split("\r\n")[0] || "?";
+
+            const topItems = accessCounts
+              .slice(0, 3)
+              .map(item => `${item.key.substring(0, 8)}: ${item.count}x`)
+              .join(", ");
 
             return {
               content: [
                 {
                   type: "text",
-                  text: `Cache Performance Stats:\n${JSON.stringify(stats, null, 2)}`,
+                  text: `Cache Stats\n───────────\n${cacheKeys.length} memories | ${keywordKeys.length} keywords\n${hitRate}% hit rate | ${memUsage} RAM\nTop: ${topItems || "none"}${pendingMemories.size > 0 ? `\n${pendingMemories.size} pending` : ""}`,
                 },
               ],
             };
@@ -1729,25 +1739,24 @@ server.setRequestHandler(
         }
 
         case "sync_status": {
-          const status = {
-            redis_connected: !!redisClient,
-            pubsub_connected: !!pubSubClient,
-            active_jobs: jobQueue.size,
-            pending_memories: pendingMemories.size,
-            pending_details: Array.from(pendingMemories.entries()).map(
-              ([id, data]) => ({
-                id,
-                priority: data.priority,
-                waiting_time: `${Math.round((Date.now() - data.timestamp) / 1000)}s`,
-              }),
-            ),
-          };
+          const pendingList = Array.from(pendingMemories.entries())
+            .slice(0, 3)
+            .map(([id, data]) =>
+              `• ${id.substring(0, 8)} (${data.priority}, ${Math.round((Date.now() - data.timestamp) / 1000)}s)`
+            ).join('\n');
+
+          const status = [
+            `Redis: ${redisClient ? '✓' : '✗'}`,
+            `PubSub: ${pubSubClient ? '✓' : '✗'}`,
+            jobQueue.size > 0 ? `Jobs: ${jobQueue.size}` : null,
+            pendingMemories.size > 0 ? `Pending: ${pendingMemories.size}\n${pendingList}` : null,
+          ].filter(Boolean).join('\n');
 
           return {
             content: [
               {
                 type: "text",
-                text: `Sync Status:\n${JSON.stringify(status, null, 2)}`,
+                text: status,
               },
             ],
           };
