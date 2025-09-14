@@ -1,9 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
-import { RecallLogo } from './RecallLogo'
 
 export function Navigation() {
   return (
@@ -15,15 +13,9 @@ export function Navigation() {
           <div className="flex items-center">
             <Link
               href="/"
-              className="group flex items-center gap-2.5 text-2xl font-bold text-white transition-transform duration-200 hover:scale-105"
+              className="text-2xl font-bold text-white transition-transform duration-200 hover:scale-105"
             >
-              <div className="relative">
-                <RecallLogo size={42} color="#ffffff" animated={false} />
-                <div className="absolute inset-0 bg-white/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-              </div>
-              <span className="tracking-tight bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                r3call
-              </span>
+              r3call
             </Link>
             <div className="hidden md:ml-10 md:flex md:space-x-2">
               <Link
