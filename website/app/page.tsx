@@ -17,6 +17,7 @@ import {
   Sun,
   RefreshCw,
   Plus,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, lazy, Suspense } from "react";
@@ -33,6 +34,7 @@ import {
 } from "@/components/TextReveal";
 import { FloatingDots } from "@/components/FloatingDots";
 import { MemoryVisualization } from "@/components/MemoryVisualization";
+import { MemoryComparison } from "@/components/MemoryComparison";
 // Lazy load heavy components
 const TerminalDemo = lazy(() =>
   import("@/components/TerminalDemo").then((module) => ({
@@ -156,29 +158,25 @@ client.memories.add(
           <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
             <div className="mx-auto max-w-4xl">
               {/* Updated badge with AI features */}
-              <div className="mb-6 inline-flex flex-col sm:flex-row items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500/10 to-blue-500/10 px-4 py-2 text-sm font-medium text-white border border-emerald-500/30">
-                <span className="bg-gradient-to-r from-emerald-400 to-blue-400 text-transparent bg-clip-text font-semibold">
-                  AI Intelligence with Semantic Search & Knowledge Graphs
-                </span>
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/[0.03] backdrop-blur-sm px-3 py-1 text-xs font-mono text-gray-400 border border-white/[0.08]">
+                <span>MCP Protocol</span>
+                <span className="text-gray-600">•</span>
+                <span>Redis + Mem0</span>
               </div>
 
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-8 leading-[1.15]">
-                <span className="text-white block">Persistent memory for</span>
-                <GradientText
-                  gradient="from-gray-400 to-gray-600"
-                  className="inline-block mt-1"
-                >
-                  AI assistants
-                </GradientText>
+                <span className="text-white block">Your AI forgets everything</span>
+                <span className="bg-gradient-to-r from-gray-400 to-gray-600 bg-clip-text text-transparent inline-block mt-1">
+                  every morning
+                </span>
               </h1>
 
               <p className="mx-auto max-w-2xl text-base sm:text-lg text-gray-400 mb-10 font-light">
-                Stop re-explaining your context. r3call gives LLMs intelligent
-                memory with
-                <span className="text-white"> real vector embeddings</span>,
-                <span className="text-white"> entity extraction</span>, and
-                <span className="text-white"> knowledge graphs</span>. Works
-                with Claude Desktop, Gemini CLI, and any MCP-compatible client.
+                r3call is a local MCP server that gives Claude, GPT, and Gemini actual memory.
+                Not chat history. Not context windows. Real semantic memory using
+                <span className="text-white"> vector embeddings</span> and
+                <span className="text-white"> knowledge graphs</span> that persist between sessions.
+                One command, zero configuration, runs on your machine.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -206,177 +204,42 @@ client.memories.add(
                 </Link>
               </div>
 
-              {/* Stats - Minimal version */}
-              <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 mx-auto max-w-2xl sm:w-full">
+              {/* Stats - Balanced grid version */}
+              <div className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-8 max-w-3xl mx-auto">
                 <div className="text-center">
-                  <div className="text-xl sm:text-2xl font-light text-white mb-1">
+                  <div className="text-xl font-light text-white">
                     &lt; 1 min
                   </div>
-                  <div className="text-xs text-gray-400">To get started</div>
+                  <div className="text-sm text-gray-400">Setup time</div>
                 </div>
+
                 <div className="text-center">
-                  <div className="text-xl sm:text-2xl font-light text-white mb-1">
-                    <AnimatedCounter to={0} suffix="" duration={2.5} />
+                  <div className="text-xl font-light text-white">
+                    0
                   </div>
-                  <div className="text-xs text-gray-400">Config files</div>
+                  <div className="text-sm text-gray-400">Config files</div>
                 </div>
+
                 <div className="text-center">
-                  <div className="text-xl sm:text-2xl font-light text-white mb-1">
-                    Local-first
+                  <div className="text-xl font-light text-white">
+                    100%
                   </div>
-                  <div className="text-xs text-gray-400">Design</div>
+                  <div className="text-sm text-gray-400">Local</div>
                 </div>
+
                 <div className="text-center">
-                  <div className="text-xl sm:text-2xl font-light text-white mb-1">
-                    <AnimatedCounter to={1} suffix="" duration={2} />
+                  <div className="text-xl font-light text-white">
+                    1
                   </div>
-                  <div className="text-xs text-gray-400">Command</div>
+                  <div className="text-sm text-gray-400">Command</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* The Context Problem Section - MOVED UP */}
-        <section className="py-32 border-t border-white/5 relative overflow-hidden">
-          {/* Background effects */}
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-gradient-to-b from-purple-900/5 via-transparent to-blue-900/5" />
-          </div>
-
-          {/* Modern split layout inspired by Every.to and OpenAI */}
-          <Container size="lg">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-normal text-white mb-4">
-                The context problem
-              </h2>
-              <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-                Every conversation starts from zero. Your carefully built
-                context vanishes the moment you close the window.
-              </p>
-            </div>
-
-            <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
-              {/* Before - Without r3call */}
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-500/[0.02] to-gray-600/[0.02] rounded-2xl" />
-                <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-8 border border-white/10 h-full hover:border-white/20 transition-colors">
-                  <div className="mb-8">
-                    <h3 className="text-xl font-medium text-white">
-                      Without memory
-                    </h3>
-                    <p className="text-sm text-gray-400 mt-1">
-                      Constant repetition
-                    </p>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="relative">
-                      <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-gray-500/30 via-gray-500/20 to-transparent" />
-                      <div className="pl-6 space-y-3">
-                        <div className="bg-gradient-to-r from-gray-500/[0.05] to-transparent rounded-xl p-4 border border-gray-500/10">
-                          <p className="text-xs font-mono text-gray-400 mb-2">
-                            Work context
-                          </p>
-                          <p className="text-sm text-gray-300">
-                            "I'm building a React dashboard with TypeScript..."
-                          </p>
-                        </div>
-                        <div className="bg-gradient-to-r from-gray-500/[0.05] to-transparent rounded-xl p-4 border border-gray-500/10">
-                          <p className="text-xs font-mono text-gray-400 mb-2">
-                            Personal task
-                          </p>
-                          <p className="text-sm text-gray-300">
-                            "Remember my daughter Emma's science project?"
-                          </p>
-                        </div>
-                        <div className="bg-gradient-to-r from-gray-500/[0.05] to-transparent rounded-xl p-4 border border-gray-500/10">
-                          <p className="text-xs font-mono text-gray-400 mb-2">
-                            Next session
-                          </p>
-                          <p className="text-sm text-gray-300">
-                            "Wait, what were the project requirements?"
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-8 pt-6 border-t border-white/5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <RefreshCw className="h-4 w-4 animate-spin-slow" />
-                          <span>Endless loop</span>
-                        </div>
-                        <span className="text-xs text-gray-400/60 font-mono">
-                          Time lost daily
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* After - With r3call */}
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.03] to-blue-600/[0.03] rounded-2xl" />
-                <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-8 border border-white/10 h-full hover:border-white/20 transition-colors">
-                  <div className="mb-8">
-                    <h3 className="text-xl font-medium text-white">
-                      With r3call
-                    </h3>
-                    <p className="text-sm text-gray-400 mt-1">
-                      Continuous context
-                    </p>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="relative">
-                      <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-blue-500/30 via-blue-500/20 to-transparent" />
-                      <div className="pl-6 space-y-3">
-                        <div className="bg-gradient-to-r from-blue-500/[0.05] to-transparent rounded-xl p-4 border border-blue-500/10">
-                          <p className="text-xs font-mono text-blue-400 mb-2">
-                            Initial setup
-                          </p>
-                          <p className="text-sm text-gray-300">
-                            AI learns your work, family, and preferences
-                          </p>
-                        </div>
-                        <div className="bg-gradient-to-r from-blue-500/[0.05] to-transparent rounded-xl p-4 border border-blue-500/10">
-                          <p className="text-xs font-mono text-blue-400 mb-2">
-                            Every session
-                          </p>
-                          <p className="text-sm text-gray-300">
-                            Continues exactly where you left off
-                          </p>
-                        </div>
-                        <div className="bg-gradient-to-r from-blue-500/[0.05] to-transparent rounded-xl p-4 border border-blue-500/10">
-                          <p className="text-xs font-mono text-blue-400 mb-2">
-                            Over time
-                          </p>
-                          <p className="text-sm text-gray-300">
-                            Remembers your projects, people, and patterns
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-8 pt-6 border-t border-white/5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <Check className="h-4 w-4 text-blue-400" />
-                          <span>Always ready</span>
-                        </div>
-                        <span className="text-xs text-blue-400/60 font-mono">
-                          Full context retention
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Container>
-        </section>
+        {/* The Context Problem Section - Interactive */}
+        <MemoryComparison />
 
         {/* Interactive Terminal Demo */}
         <section className="py-32 border-t border-white/5 relative overflow-hidden">
@@ -464,16 +327,15 @@ client.memories.add(
               <BentoCard
                 title="AI Intelligence Engine"
                 description="Real vector embeddings, entity extraction, and knowledge graphs - all running locally"
-                icon={<Sparkles className="h-6 w-6 text-emerald-400" />}
+                icon={<Sparkles className="h-6 w-6 text-gray-400 transition-colors duration-500 group-hover:text-emerald-400" />}
                 gradient="from-emerald-500/20 to-blue-500/20"
                 span="lg:col-span-3"
-                className="border-emerald-500/30"
-              />
+                              />
 
               <BentoCard
                 title="Semantic Search"
                 description="Find memories by meaning, not just keywords"
-                icon={<Cpu className="h-5 w-5 text-cyan-400" />}
+                icon={<Cpu className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-cyan-400" />}
                 gradient="from-cyan-900/20 to-blue-900/20"
                 span="lg:col-span-2"
               />
@@ -481,21 +343,21 @@ client.memories.add(
               <BentoCard
                 title="Knowledge Graph"
                 description="Build connections between people, projects, and technologies"
-                icon={<Layers className="h-5 w-5 text-purple-400" />}
+                icon={<Layers className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-purple-400" />}
                 gradient="from-purple-900/20 to-indigo-900/20"
               />
 
               <BentoCard
                 title="<10ms Latency"
                 description="Lightning fast local processing with optimized embeddings"
-                icon={<Gauge className="h-5 w-5 text-orange-400" />}
+                icon={<Gauge className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-orange-400" />}
                 gradient="from-orange-900/20 to-red-900/20"
               />
 
               <BentoCard
                 title="Redis-powered caching"
                 description="In-memory data store for sub-millisecond response times"
-                icon={<Zap className="h-5 w-5 text-yellow-400" />}
+                icon={<Zap className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-yellow-400" />}
                 gradient="from-yellow-900/20 to-orange-900/20"
                 span="lg:col-span-2"
               />
@@ -503,7 +365,7 @@ client.memories.add(
               <BentoCard
                 title="Automatic failover"
                 description="Works offline with local Redis, syncs when online"
-                icon={<Shield className="h-5 w-5 text-blue-400" />}
+                icon={<Shield className="h-5 w-5 text-gray-400 transition-colors duration-500 group-hover:text-blue-400" />}
                 gradient="from-blue-900/20 to-cyan-900/20"
               />
 

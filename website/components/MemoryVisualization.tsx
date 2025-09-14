@@ -66,7 +66,7 @@ const memoryTypes = {
 function DataStream({ from, to, color }: { from: { x: number; y: number }, to: { x: number; y: number }, color: string }) {
   return (
     <motion.circle
-      r="2"
+      r="3"
       fill={color}
       filter="url(#glow)"
       initial={{
@@ -80,12 +80,19 @@ function DataStream({ from, to, color }: { from: { x: number; y: number }, to: {
         opacity: [0, 1, 1, 0]
       }}
       transition={{
-        duration: 2,
+        duration: 1.5,
         ease: "linear",
         repeat: Infinity,
-        repeatDelay: Math.random() * 3
+        repeatDelay: Math.random() * 2
       }}
-    />
+    >
+      <animate
+        attributeName="r"
+        values="2;4;2"
+        dur="1.5s"
+        repeatCount="indefinite"
+      />
+    </motion.circle>
   );
 }
 
@@ -94,6 +101,7 @@ export function MemoryVisualization() {
   const [connections, setConnections] = useState<Connection[]>([]);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [activeConnections, setActiveConnections] = useState<Set<string>>(new Set());
+  const [showcaseNode, setShowcaseNode] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number>();
 
@@ -103,28 +111,76 @@ export function MemoryVisualization() {
     const newNodes: MemoryNode[] = [];
     const newConnections: Connection[] = [];
 
-    // Create a more organized layout - use full space
+    // Create a more spread out layout using full viewport
     const centerX = 50;
     const centerY = 50;
-    const baseRadius = 35; // Increased for better space usage
 
-    // Create central knowledge nodes
+    // Create nodes for each type with better distribution
     types.forEach((type, typeIndex) => {
-      const angle = (typeIndex * 2 * Math.PI) / types.length - Math.PI / 2;
-      const typeRadius = baseRadius + (Math.random() * 10 - 5);
-
-      // Create 4-6 nodes per type for richer visualization
-      const nodeCount = Math.floor(Math.random() * 3) + 4;
+      // Create 5-7 nodes per type for richer visualization
+      const nodeCount = Math.floor(Math.random() * 3) + 5;
 
       for (let i = 0; i < nodeCount; i++) {
-        const nodeAngle = angle + (i - nodeCount / 2) * 0.4; // Increased spread
-        const nodeRadius = typeRadius + (Math.random() * 15 - 7.5); // More variation
         const importance = Math.random() * 0.5 + 0.5;
+
+        // Mix of distribution strategies for better coverage
+        let x, y;
+
+        if (i === 0) {
+          // Place first node of each type in corners for guaranteed corner coverage
+          const corners = [
+            { x: 15, y: 15 }, // top-left
+            { x: 85, y: 15 }, // top-right
+            { x: 15, y: 85 }, // bottom-left
+            { x: 85, y: 85 }, // bottom-right
+            { x: 50, y: 10 }, // top-center
+          ];
+          const corner = corners[typeIndex % corners.length];
+          x = corner.x + (Math.random() - 0.5) * 10;
+          y = corner.y + (Math.random() - 0.5) * 10;
+        } else if (i === 1 || i === 2) {
+          // Place some nodes along the edges
+          const edge = Math.random();
+          if (edge < 0.25) {
+            // Top edge
+            x = Math.random() * 70 + 15;
+            y = Math.random() * 15 + 5;
+          } else if (edge < 0.5) {
+            // Bottom edge
+            x = Math.random() * 70 + 15;
+            y = Math.random() * 15 + 80;
+          } else if (edge < 0.75) {
+            // Left edge
+            x = Math.random() * 15 + 5;
+            y = Math.random() * 50 + 25;
+          } else {
+            // Right edge
+            x = Math.random() * 15 + 80;
+            y = Math.random() * 50 + 25;
+          }
+        } else {
+          // Distribute remaining nodes in a ring pattern but wider
+          const angle = (typeIndex * 2 * Math.PI) / types.length + (i * Math.PI / 4);
+          const radius = 30 + Math.random() * 20; // Wider radius range
+          x = centerX + Math.cos(angle) * radius;
+          y = centerY + Math.sin(angle) * radius;
+
+          // Push nodes away from center text area
+          if (Math.abs(x - 50) < 25 && Math.abs(y - 50) < 20) {
+            // If too close to center, push outward
+            x = x < 50 ? x - 15 : x + 15;
+            y = y < 50 ? y - 10 : y + 10;
+          }
+        }
+
+        // Ensure nodes stay within bounds
+        x = Math.max(5, Math.min(95, x));
+        y = Math.max(5, Math.min(95, y));
 
         const node: MemoryNode = {
           id: `${type}-${i}`,
-          x: centerX + Math.cos(nodeAngle) * nodeRadius,
-          y: centerY + Math.sin(nodeAngle) * nodeRadius,
+          x,
+          y,
           type,
           label: memoryTypes[type].labels[i % memoryTypes[type].labels.length],
           size: 3 + importance * 5,
@@ -198,7 +254,7 @@ export function MemoryVisualization() {
     setConnections(newConnections);
 
     // Animate active connections - much less frequent
-    const interval = setInterval(() => {
+    const connectionInterval = setInterval(() => {
       setActiveConnections(prev => {
         const next = new Set<string>();
         newConnections.forEach(conn => {
@@ -210,7 +266,36 @@ export function MemoryVisualization() {
       });
     }, 3000); // Slower interval
 
-    return () => clearInterval(interval);
+    // Showcase nodes in safe areas only - continuous rotation
+    let showcaseIndex = 0;
+    const showcaseInterval = setInterval(() => {
+      // Only showcase nodes in the corners/edges where there's no text
+      const safeNodes = newNodes.filter(node => {
+        // Top-left and top-right corners (above the hero text)
+        const inTopCorners = node.y < 25 && (node.x < 20 || node.x > 80);
+
+        // Bottom-left and bottom-right corners (below the stats)
+        const inBottomCorners = node.y > 75 && (node.x < 20 || node.x > 80);
+
+        // Far left and far right edges (beside the content)
+        const onSideEdges = (node.x < 15 || node.x > 85) && node.y > 30 && node.y < 70;
+
+        return inTopCorners || inBottomCorners || onSideEdges;
+      });
+
+      if (safeNodes.length > 0) {
+        // Show next label (overlapping with fade)
+        const nodeToShowcase = safeNodes[showcaseIndex % safeNodes.length];
+        setShowcaseNode(nodeToShowcase.id);
+
+        showcaseIndex = (showcaseIndex + 1) % safeNodes.length;
+      }
+    }, 2500); // Continuous rotation every 2.5 seconds
+
+    return () => {
+      clearInterval(connectionInterval);
+      clearInterval(showcaseInterval);
+    };
   }, []);
 
   // Calculate node positions for smooth floating animation
@@ -262,9 +347,9 @@ export function MemoryVisualization() {
                 x2={`${toNode.x}%`}
                 y2={`${toNode.y}%`}
               >
-                <stop offset="0%" stopColor={fromNode.color} stopOpacity={0.6} />
-                <stop offset="50%" stopColor={fromNode.color} stopOpacity={0.3} />
-                <stop offset="100%" stopColor={toNode.color} stopOpacity={0.6} />
+                <stop offset="0%" stopColor={fromNode.color} stopOpacity={0.8} />
+                <stop offset="50%" stopColor={fromNode.color} stopOpacity={0.5} />
+                <stop offset="100%" stopColor={toNode.color} stopOpacity={0.8} />
               </linearGradient>
             );
           })}
@@ -292,8 +377,8 @@ export function MemoryVisualization() {
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{
                   pathLength: 1,
-                  opacity: isHighlighted ? 0.8 : (isActive ? 0.6 : conn.strength * 0.3),
-                  strokeWidth: isActive ? 2 : 1
+                  opacity: isHighlighted ? 0.9 : (isActive ? 0.8 : conn.strength * 0.5),
+                  strokeWidth: isActive ? 2.5 : 1.5
                 }}
                 transition={{
                   pathLength: { duration: 2, ease: "easeInOut" },
@@ -336,7 +421,7 @@ export function MemoryVisualization() {
               }}
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{
-                scale: isHighlighted ? 1.3 : (isConnected ? 1.1 : 1),
+                scale: isHighlighted ? 1.3 : (showcaseNode === node.id ? 1.15 : (isConnected ? 1.1 : 1)),
                 opacity: 1,
                 y: [0, -5, 0], // Gentle floating
               }}
@@ -400,31 +485,61 @@ export function MemoryVisualization() {
                 }}
               />
 
-              {/* Label with enhanced styling */}
+              {/* Label with enhanced styling - on hover or showcase */}
               <AnimatePresence>
-                {isHighlighted && (
+                {(isHighlighted || showcaseNode === node.id) && (
                   <motion.div
-                    className="absolute whitespace-nowrap text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-md"
+                    className="absolute whitespace-nowrap text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-md pointer-events-none z-50"
                     style={{
-                      top: '120%',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
+                      // Position based on node location to avoid overlaps
+                      ...(node.y < 30 ? {
+                        // Top nodes - label below
+                        top: '120%',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                      } : node.y > 70 ? {
+                        // Bottom nodes - label above
+                        bottom: '120%',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                      } : node.x < 30 ? {
+                        // Left nodes - label to the right
+                        top: '50%',
+                        left: '120%',
+                        transform: 'translateY(-50%)',
+                      } : node.x > 70 ? {
+                        // Right nodes - label to the left
+                        top: '50%',
+                        right: '120%',
+                        transform: 'translateY(-50%)',
+                      } : {
+                        // Center nodes - label above
+                        bottom: '120%',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                      }),
                       backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                      border: `1px solid ${node.color}60`,
+                      border: `1px solid ${node.color}40`,
                       color: node.color,
-                      boxShadow: `0 4px 12px rgba(0, 0, 0, 0.5), 0 0 20px ${node.glow}`
+                      boxShadow: `0 2px 8px rgba(0, 0, 0, 0.5), 0 0 12px ${node.glow}40`
                     }}
-                    initial={{ opacity: 0, y: -10, scale: 0.8 }}
+                    initial={{ opacity: 0, y: -5, scale: 0.9 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -10, scale: 0.8 }}
-                    transition={{ duration: 0.2 }}
+                    exit={{ opacity: 0, y: 5, scale: 0.9 }}
+                    transition={{
+                      duration: 0.8,
+                      ease: "easeInOut"
+                    }}
                   >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                       <div
-                        className="w-2 h-2 rounded-full animate-pulse"
-                        style={{ backgroundColor: node.color }}
+                        className="w-1.5 h-1.5 rounded-full"
+                        style={{
+                          backgroundColor: node.color,
+                          opacity: isHighlighted ? 1 : 0.7
+                        }}
                       />
-                      {node.label}
+                      <span className="text-[11px]">{node.label}</span>
                     </div>
                   </motion.div>
                 )}
