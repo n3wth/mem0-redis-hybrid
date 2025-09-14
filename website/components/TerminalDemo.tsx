@@ -13,7 +13,7 @@ const demos = [
     commands: [
       { type: 'typing', text: '$ claude --project my-nextjs-app', delay: 0 },
       { type: 'animated', text: 'Claude Code v1.0.5 • Model: Claude 3.5 Sonnet', className: 'text-gray-400', delay: 1500 },
-      { type: 'animated', text: '✓ MCP server \'r3call\' connected (Redis + Mem0)', className: 'text-green-500', delay: 2000 },
+      { type: 'animated', text: '✓ MCP server \'r3call\' connected (hybrid memory active)', className: 'text-green-500', delay: 2000 },
       { type: 'animated', text: 'You: Remember I prefer React with TypeScript, Tailwind CSS, and Vitest for testing', className: 'text-gray-400', delay: 3000, userText: true },
       { type: 'animated', text: 'Claude: I\'ll remember your development stack preferences.', className: 'text-gray-400', delay: 4500, assistantText: true },
       { type: 'animated', text: '[Memory stored: 3ms • Priority: high • TTL: persistent]', className: 'text-gray-500 text-xs', delay: 5000 },
@@ -28,12 +28,12 @@ const demos = [
       { type: 'typing', text: '$ gemini --save "Oliver uses r3call for knowledge management"', delay: 0 },
       { type: 'animated', text: 'Gemini CLI with r3call context • Model: Gemini 1.5 Pro', className: 'text-gray-400', delay: 1500 },
       { type: 'animated', text: '✓ Saved to r3call and GEMINI.md', className: 'text-green-500', delay: 2500 },
-      { type: 'animated', text: '[Memory synced: Redis cache + Mem0 cloud]', className: 'text-gray-500 text-xs', delay: 3000 },
+      { type: 'animated', text: '[Memory synced: L1 cache + L2 persistence]', className: 'text-gray-500 text-xs', delay: 3000 },
       { type: 'typing', text: '$ gemini -p "@./ explain my knowledge system"', delay: 4000 },
       { type: 'animated', text: '📚 Retrieving context from r3call...', className: 'text-blue-400', delay: 5500 },
       { type: 'animated', text: 'Based on your setup, you use r3call which combines:', className: 'text-gray-400', delay: 6500 },
       { type: 'animated', text: '• L1 Cache: Redis (sub-5ms responses)', className: 'text-gray-300', delay: 7000 },
-      { type: 'animated', text: '• L2 Storage: Mem0 cloud (persistent)', className: 'text-gray-300', delay: 7500 },
+      { type: 'animated', text: '• L2 Storage: Cloud persistence', className: 'text-gray-300', delay: 7500 },
       { type: 'animated', text: '• Smart routing with cache optimization', className: 'text-gray-300', delay: 8000 },
       { type: 'animated', text: '[Context enhanced with 3 relevant memories]', className: 'text-gray-500 text-xs', delay: 8500 },
     ]
