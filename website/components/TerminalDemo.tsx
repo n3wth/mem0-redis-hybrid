@@ -87,8 +87,8 @@ export function TerminalDemo() {
   const demo = demos[currentDemo]
 
   return (
-    <div className="w-full h-auto min-h-[400px] sm:h-[500px] flex flex-col items-center justify-center p-2 sm:p-4">
-      <div className="text-center mb-4">
+    <div className="w-full h-[600px] flex flex-col items-center justify-start p-2 sm:p-4">
+      <div className="text-center mb-4 h-[60px] flex flex-col justify-center">
         <h3 className="text-lg font-semibold text-white mb-1">
           {demo.title}
         </h3>
@@ -111,7 +111,8 @@ export function TerminalDemo() {
         </div>
       </div>
 
-      <Terminal key={key}>
+      <div className="w-full flex-1 flex items-center justify-center overflow-hidden">
+        <Terminal key={key} className="h-[480px] w-full max-w-4xl">
         {demo.commands.map((cmd, index) => {
           if (cmd.type === 'typing') {
             return (
@@ -136,7 +137,8 @@ export function TerminalDemo() {
             )
           }
         })}
-      </Terminal>
+        </Terminal>
+      </div>
     </div>
   );
 }
