@@ -110,17 +110,16 @@ print(response.id)`,
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-normal tracking-tight mb-6">
-              <span className="text-white">Stop repeating yourself</span>
+              <span className="text-white">Your AI assistant</span>
               <br />
               <GradientText gradient="from-gray-400 to-gray-600" className="inline-block">
-                to Gemini and Claude
+                finally remembers you
               </GradientText>
             </h1>
 
             <p className="mx-auto max-w-2xl text-lg text-gray-400 mb-10 font-light">
-              I got tired of explaining my project context every session. So I built r3call -
-              a zero-config memory layer that gives Gemini and Claude permanent memory.
-              Works instantly. Runs locally. Just one command to start.
+              Give Gemini and Claude persistent memory. No more explaining your tech stack every morning.
+              No more repeating context after lunch. Just seamless conversations that build on yesterday's work.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -150,27 +149,27 @@ print(response.id)`,
             <div className="mt-16 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 max-w-2xl mx-auto">
               <div className="text-center">
                 <div className="text-xl sm:text-2xl font-light text-white mb-1">
-                  Fast
+                  <AnimatedCounter to={30} suffix="s" duration={2} />
                 </div>
-                <div className="text-xs text-gray-500">Local Redis caching</div>
+                <div className="text-xs text-gray-500">To get started</div>
               </div>
               <div className="text-center">
                 <div className="text-xl sm:text-2xl font-light text-white mb-1">
                   <AnimatedCounter to={0} suffix="" duration={2.5} />
                 </div>
-                <div className="text-xs text-gray-500">Configuration needed</div>
+                <div className="text-xs text-gray-500">Config files</div>
               </div>
               <div className="text-center">
                 <div className="text-xl sm:text-2xl font-light text-white mb-1">
                   <AnimatedCounter to={100} suffix="%" duration={3} />
                 </div>
-                <div className="text-xs text-gray-500">TypeScript coverage</div>
+                <div className="text-xs text-gray-500">Local-first</div>
               </div>
               <div className="text-center">
                 <div className="text-xl sm:text-2xl font-light text-white mb-1">
                   <AnimatedCounter to={1} suffix="" duration={2} />
                 </div>
-                <div className="text-xs text-gray-500">Command to start</div>
+                <div className="text-xs text-gray-500">Command</div>
               </div>
             </div>
           </div>
@@ -184,10 +183,10 @@ print(response.id)`,
           <div className="max-w-4xl mx-auto relative z-10">
             <div className="mb-12 text-center">
               <h2 className="text-3xl font-normal text-white mb-3">
-                Works with Gemini CLI & Claude Code
+                See it in action
               </h2>
               <p className="text-gray-400">
-                See real-world examples from your daily workflow
+                Real examples with Gemini CLI and Claude Code
               </p>
             </div>
             <Suspense fallback={<div className="bg-gray-900 rounded-lg p-6 animate-pulse h-64" />}>
@@ -203,10 +202,10 @@ print(response.id)`,
           <div className="max-w-4xl mx-auto">
             <div className="mb-12">
               <h2 className="text-3xl font-normal text-white mb-3">
-                Start building in seconds
+                Works with your stack
               </h2>
               <p className="text-gray-400">
-                Drop-in SDKs for your stack. Type-safe. Zero configuration.
+                Native SDKs with full TypeScript support
               </p>
             </div>
 
@@ -247,61 +246,61 @@ print(response.id)`,
           <Container size="lg">
           <div className="mb-12">
             <h2 className="text-3xl font-normal text-white mb-3">
-              Features that actually matter
+              Built for developers, by a developer
             </h2>
             <p className="text-gray-400">
-              Local-first memory with cloud backup. Simple, fast, reliable.
+              Every feature addresses a real pain point from daily AI coding
             </p>
           </div>
 
           <BentoGrid>
             <BentoCard
-              title="Fast Local Caching"
-              description="Redis L1 cache for low-latency responses. Optimized for AI workloads."
+              title="Lightning Fast"
+              description="Local Redis cache means instant responses, no network latency"
               icon={<Zap className="h-5 w-5 text-yellow-400" />}
               gradient="from-yellow-900/20 to-orange-900/20"
               span="col-span-2"
             />
 
             <BentoCard
-              title="Automatic Failover"
-              description="Falls back to cloud storage when Redis is unavailable. No data loss."
+              title="Always Available"
+              description="Seamless failover between local and cloud storage"
               icon={<Shield className="h-5 w-5 text-blue-400" />}
               gradient="from-blue-900/20 to-cyan-900/20"
             />
 
             <BentoCard
-              title="Efficient Storage"
-              description="Smart compression and intelligent caching strategies."
+              title="Smart Storage"
+              description="Intelligent compression keeps memory usage minimal"
               icon={<Database className="h-5 w-5 text-purple-400" />}
               gradient="from-purple-900/20 to-pink-900/20"
             />
 
             <BentoCard
-              title="AI-Native"
-              description="Semantic search and context management. Works with Gemini, Claude, GPT, and any LLM."
+              title="Universal Compatibility"
+              description="Works with Gemini, Claude, GPT-4, and any LLM you prefer"
               icon={<Globe className="h-5 w-5 text-green-400" />}
               gradient="from-green-900/20 to-teal-900/20"
               span="col-span-2"
             />
 
             <BentoCard
-              title="100% TypeScript"
-              description="Full type safety and IntelliSense support. Zero-config with embedded Redis."
+              title="TypeScript Native"
+              description="Full type safety with autocomplete that just works"
               icon={<Code className="h-5 w-5 text-indigo-400" />}
               gradient="from-indigo-900/20 to-blue-900/20"
             />
 
             <BentoCard
-              title="Local-First Mode"
-              description="Works offline with embedded Redis server. No cloud dependency required."
+              title="Works Offline"
+              description="No internet? No problem. Everything runs locally"
               icon={<Lock className="h-5 w-5 text-red-400" />}
               gradient="from-red-900/20 to-orange-900/20"
             />
 
             <BentoCard
-              title="Easy Integration"
-              description="MCP protocol support. Direct API access. Works with any framework."
+              title="One-Line Setup"
+              description="MCP protocol means it just works with Claude Desktop"
               icon={<Sparkles className="h-5 w-5 text-pink-400" />}
               gradient="from-pink-900/20 to-purple-900/20"
             />
@@ -324,7 +323,7 @@ print(response.id)`,
 
                 <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-10 border border-white/10">
                   <h3 className="text-2xl font-medium text-white mb-10">
-                    Why I built this
+                    The problem was personal
                   </h3>
 
                   <div className="space-y-8">
@@ -370,8 +369,9 @@ print(response.id)`,
                     {/* Solution */}
                     <div className="pt-8 border-t border-white/10">
                       <p className="text-lg text-white leading-relaxed">
-                        r3call solves this. Your AI remembers everything - your stack, your style,
-                        your preferences. It's open source because this problem shouldn't exist.
+                        So I built r3call. Now my AI remembers everything - my stack, my patterns,
+                        my preferences. One command, and you're done. Open source, because
+                        we all deserve AI that actually helps.
                       </p>
                     </div>
 
@@ -401,10 +401,10 @@ print(response.id)`,
           <Container size="sm">
           <div className="text-center">
             <h2 className="text-3xl font-normal text-white mb-3">
-              Try it in 30 seconds
+              Ready to give your AI memory?
             </h2>
             <p className="text-gray-400 mb-8">
-              Zero configuration. Works offline. Open source.
+              Join hundreds of developers who never repeat themselves
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
