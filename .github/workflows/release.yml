@@ -47,7 +47,8 @@ jobs:
         run: |
           NEW_VERSION=$(npm version ${{ github.event.inputs.version }} --no-git-tag-version)
           echo "new_version=${NEW_VERSION#v}" >> $GITHUB_OUTPUT
-          git add package.json package-lock.json
+          npm run sync-version
+          git add package.json package-lock.json website/lib/version.ts
           git commit -m "chore(release): ${NEW_VERSION}
 
           - Intelligent memory layer for AI applications
