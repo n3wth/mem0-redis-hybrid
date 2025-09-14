@@ -3,9 +3,9 @@
 export const PACKAGE_VERSION = "1.2.9";
 
 export function getPackageVersion(): string {
-  return PACKAGE_VERSION;
+  return PACKAGE_VERSION
 }
 
 export function getLatestVersion(): string {
-  return PACKAGE_VERSION;
+  return PACKAGE_VERSION
 }
