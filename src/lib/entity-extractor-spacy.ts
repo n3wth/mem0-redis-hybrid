@@ -295,15 +295,31 @@ export class EntityExtractor {
   private inferRelationType(context: string): string {
     const lowercaseContext = context.toLowerCase();
 
-    if (lowercaseContext.includes("work") || lowercaseContext.includes("employ")) {
+    if (
+      lowercaseContext.includes("work") ||
+      lowercaseContext.includes("employ")
+    ) {
       return "WORKS_FOR";
-    } else if (lowercaseContext.includes("manage") || lowercaseContext.includes("lead")) {
+    } else if (
+      lowercaseContext.includes("manage") ||
+      lowercaseContext.includes("lead")
+    ) {
       return "MANAGES";
-    } else if (lowercaseContext.includes("friend") || lowercaseContext.includes("colleague")) {
+    } else if (
+      lowercaseContext.includes("friend") ||
+      lowercaseContext.includes("colleague")
+    ) {
       return "KNOWS";
-    } else if (lowercaseContext.includes("married") || lowercaseContext.includes("husband") || lowercaseContext.includes("wife")) {
+    } else if (
+      lowercaseContext.includes("married") ||
+      lowercaseContext.includes("husband") ||
+      lowercaseContext.includes("wife")
+    ) {
       return "MARRIED_TO";
-    } else if (lowercaseContext.includes("live") || lowercaseContext.includes("located")) {
+    } else if (
+      lowercaseContext.includes("live") ||
+      lowercaseContext.includes("located")
+    ) {
       return "LOCATED_IN";
     } else {
       return "RELATED_TO";
