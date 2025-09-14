@@ -86,12 +86,12 @@ export function LogoEffectSlideshow() {
   return (
     <Link
       href="/"
-      className="relative inline-block text-2xl font-semibold text-white"
+      className="relative inline-block text-3xl font-semibold text-white"
       style={{ fontFamily: "var(--font-brand)" }}
     >
       {/* The actual logo text (always visible) */}
       <span className="relative z-10">
-        r<span className="relative top-[0.15em]">3</span>call
+        r<span className="relative top-[0.15em] text-2xl">3</span>
       </span>
 
       {/* Animated overlay effects with fade transitions */}

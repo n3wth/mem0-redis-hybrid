@@ -89,7 +89,7 @@ export default function Home() {
   };
 
   const codeExamples = {
-    node: `import { Recall } from 'r3call';
+    node: `import { Recall } from 'r3';
 
 // Zero configuration - works immediately
 const recall = new Recall();
@@ -111,7 +111,7 @@ const context = await recall.search({
   query: 'What framework am I using?',
   userId: 'work'
 });`,
-    python: `from r3call import Recall
+    python: `from r3 import Recall
 
 # Works with any LLM via MCP protocol
 client = Recall()
@@ -127,7 +127,7 @@ client.memories.add(
     content="Team standup is 9am PST on Tuesdays",
     metadata={"type": "schedule"}
 )`,
-    curl: `curl https://api.r3call.newth.ai/v1/memories \\
+    curl: `curl https://api.r3.newth.ai/v1/memories \\
   -H "Authorization: Bearer $MEM0_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -185,23 +185,19 @@ client.memories.add(
                   Context that persists across every AI conversation. Works with Claude, GPT, and Gemini.
                 </span>
                 <span className="hidden sm:inline">
-                  Transform stateless AI into a contextual powerhouse. r3call combines
-                  <span className="text-white font-medium"> sub-millisecond caching</span> with
-                  <span className="text-white font-medium"> semantic memory storage</span> to create
-                  continuity across every conversation. Compatible with all major AI assistants.
-                  Deploy in seconds, configure nothing.
+                  r3 combines <span className="text-white font-medium">sub-millisecond caching</span> with <span className="text-white font-medium">semantic memory storage</span> to create continuity across every conversation. Compatible with all major AI assistants. Deploy in seconds, configure nothing.
                 </span>
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <button
-                  onClick={() => copyToClipboard("npx r3call")}
+                  onClick={() => copyToClipboard("npx r3")}
                   className="group relative inline-flex items-center gap-2 px-6 py-3 text-base font-medium rounded-lg bg-white text-black transition-all cursor-pointer overflow-hidden hover:scale-105"
                 >
                   {/* Shimmer effect */}
                   <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
 
-                  <code className="font-mono relative">npx r3call</code>
+                  <code className="font-mono relative">npx r3</code>
                   {copied ? (
                     <Check className="h-4 w-4 text-green-600 relative" />
                   ) : (
@@ -431,10 +427,10 @@ client.memories.add(
                   </p>
                   <div className="flex justify-center">
                     <button
-                      onClick={() => copyToClipboard("npx r3call")}
+                      onClick={() => copyToClipboard("npx r3")}
                       className="group inline-flex items-center gap-2 px-6 py-3 text-base font-medium rounded-lg bg-white text-black transition-all hover:scale-105"
                     >
-                      <code className="font-mono">npx r3call</code>
+                      <code className="font-mono">npx r3</code>
                       {copied ? (
                         <Check className="h-4 w-4 text-green-600" />
                       ) : (

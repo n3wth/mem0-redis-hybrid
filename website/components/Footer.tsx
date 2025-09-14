@@ -12,7 +12,7 @@ export function Footer() {
             Documentation
           </a>
           <a
-            href="https://github.com/n3wth/r3call"
+            href="https://github.com/n3wth/r3"
             className="text-sm text-gray-300 hover:text-white transition-colors px-3 py-2 min-h-[44px] flex items-center"
           >
             GitHub

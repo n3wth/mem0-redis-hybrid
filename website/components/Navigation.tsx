@@ -14,7 +14,7 @@ export function Navigation() {
   const navItems = [
     { href: "/docs/introduction", text: "Documentation" },
     { href: "/docs/api-reference", text: "API" },
-    { href: "https://github.com/n3wth/r3call", text: "GitHub", external: true },
+    { href: "https://github.com/n3wth/r3", text: "GitHub", external: true },
   ];
 
   return (

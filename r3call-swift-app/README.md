@@ -1,6 +1,6 @@
-# r3call Mac App
+# r3 Mac App
 
-A native macOS menu bar application for managing your personal memory system. Built with SwiftUI and integrated with your existing r3call memory database.
+A native macOS menu bar application for managing your personal memory system. Built with SwiftUI and integrated with your existing r3 memory database.
 
 ## Features
 
@@ -49,7 +49,7 @@ A native macOS menu bar application for managing your personal memory system. Bu
 1. **Clone the repository** (if not already done):
    ```bash
    git clone <repository-url>
-   cd r3call/r3call-swift-app
+   cd r3/r3-swift-app
    ```
 
 2. **Run the setup script**:
@@ -77,9 +77,9 @@ A native macOS menu bar application for managing your personal memory system. Bu
 
 ## Database Integration
 
-The app automatically connects to your existing r3call memory database at:
+The app automatically connects to your existing r3 memory database at:
 ```
-/Users/oliver/mcp-servers/r3call/data/memories.db
+/Users/oliver/mcp-servers/r3/data/memories.db
 ```
 
 If the database doesn't exist at that location, it will create a new one in your Documents folder.

@@ -105,7 +105,7 @@ class MemoryGraphManager {
     // Initialize blessed screen with compatibility settings
     this.screen = blessed.screen({
       smartCSR: true,
-      title: "r3call Memory Graph Manager",
+      title: "r3 Memory Graph Manager",
       fullUnicode: true,
       dockBorders: true,
       ignoreDockContrast: true,
@@ -132,7 +132,7 @@ class MemoryGraphManager {
       left: 0,
       width: "100%",
       height: 3,
-      content: `{center}${chalk.cyan.bold("r3call Memory Graph Manager v1.3.0")}{/center}\n{center}[↑↓] Navigate  [Enter] View Details  [Tab] Switch Panel  [/] Search  [E] Exa  [Q] Quit{/center}`,
+      content: `{center}${chalk.cyan.bold("r3 Memory Graph Manager v1.3.0")}{/center}\n{center}[↑↓] Navigate  [Enter] View Details  [Tab] Switch Panel  [/] Search  [E] Exa  [Q] Quit{/center}`,
       tags: true,
       border: {
         type: "line",
@@ -955,7 +955,7 @@ Updated: ${new Date().toISOString()}`;
   private async exportData() {
     const exportPath = path.join(
       process.cwd(),
-      `r3call-export-${Date.now()}.json`,
+      `r3-export-${Date.now()}.json`,
     );
 
     const exportData = {
@@ -1185,29 +1185,29 @@ Updated: ${new Date().toISOString()}`;
       },
       {
         id: "sample-2",
-        memory: "r3call uses Redis for caching and Mem0 for persistence",
+        memory: "r3 uses Redis for caching and Mem0 for persistence",
         created_at: new Date().toISOString(),
         user_id: "demo",
         metadata: {
           entities: {
             technologies: [
-              { text: "r3call" },
+              { text: "r3" },
               { text: "Redis" },
               { text: "Mem0" },
             ],
-            projects: [{ text: "r3call" }],
+            projects: [{ text: "r3" }],
           },
         },
       },
       {
         id: "sample-3",
-        memory: "TypeScript is used for building the r3call project",
+        memory: "TypeScript is used for building the r3 project",
         created_at: new Date().toISOString(),
         user_id: "demo",
         metadata: {
           entities: {
             technologies: [{ text: "TypeScript" }],
-            projects: [{ text: "r3call" }],
+            projects: [{ text: "r3" }],
           },
         },
       },
@@ -1321,7 +1321,7 @@ Updated: ${new Date().toISOString()}`;
     console.warn = originalWarn;
     console.error = originalError;
 
-    this.log(chalk.cyan.bold("r3call Memory Graph Manager Starting..."));
+    this.log(chalk.cyan.bold("r3 Memory Graph Manager Starting..."));
 
     // Load initial data
     await this.loadMemories();
@@ -1340,11 +1340,11 @@ async function main() {
 // Handle process arguments
 if (process.argv.includes("--help")) {
   console.log(`
-r3call Memory Graph Manager
+r3 Memory Graph Manager
 
 Usage:
-  npx r3call --manage     Launch the visual memory manager
-  npx r3call-manage       Direct launch
+  npx r3 --manage     Launch the visual memory manager
+  npx r3-manage       Direct launch
 
 Environment Variables:
   MEM0_API_KEY           Mem0 API key for cloud sync

@@ -1,13 +1,12 @@
 {
-  "name": "r3call",
+  "name": "r3",
   "version": "1.2.10",
-  "description": "Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence",
+  "description": "Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence (by n3wth)",
   "main": "dist/index.js",
   "module": "src/index.ts",
   "type": "module",
   "bin": {
-    "r3call": "dist/cli-main.js",
-    "recall": "dist/cli-main.js"
+    "r3": "dist/cli-main.js"
   },
   "scripts": {
     "build": "tsc",
@@ -47,12 +46,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/n3wth/r3call.git"
+    "url": "git+https://github.com/n3wth/r3.git"
   },
   "bugs": {
-    "url": "https://github.com/n3wth/r3call/issues"
+    "url": "https://github.com/n3wth/r3/issues"
   },
-  "homepage": "https://r3call.newth.ai",
+  "homepage": "https://r3.newth.ai",
   "engines": {
     "node": ">=18.0.0"
   },

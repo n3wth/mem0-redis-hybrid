@@ -7,7 +7,7 @@ import meow from "meow";
 const cli = meow(
   `
 	Usage
-	  $ r3call [command] [options]
+	  $ r3 [command] [options]
 
 	Commands
 	  serve         Start MCP server (default)
@@ -21,10 +21,10 @@ const cli = meow(
 	  --version     Show version
 
 	Examples
-	  $ r3call                    # Start MCP server
-	  $ r3call ui                 # Launch interactive UI
-	  $ r3call manage             # Launch advanced UI
-	  $ r3call ui --api-url https://api.r3call.com
+	  $ r3                    # Start MCP server
+	  $ r3 ui                 # Launch interactive UI
+	  $ r3 manage             # Launch advanced UI
+	  $ r3 ui --api-url https://api.r3.com
 
 	Environment Variables:
 	  R3CALL_API_KEY   API key for authentication
@@ -76,7 +76,7 @@ async function main() {
 
     default:
       console.error(`Unknown command: ${command}`);
-      console.log('Run "r3call --help" for usage information');
+      console.log('Run "r3 --help" for usage information');
       process.exit(1);
   }
 }

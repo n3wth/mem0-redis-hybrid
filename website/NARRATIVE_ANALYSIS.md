@@ -1,4 +1,4 @@
-# r3call Homepage Narrative Analysis
+# r3 Homepage Narrative Analysis
 
 ## Current State Analysis
 
@@ -64,12 +64,12 @@ This is the emotional pain point we're not addressing.
 - **Their position**: General-purpose vector storage
 - **Our differentiation**: Purpose-built for LLM memory, no setup
 
-### Why r3call Exists
+### Why r3 Exists
 
 We're not just wrapping Mem0 - we're solving a specific problem:
 
 - **Mem0**: Platform for building memory systems
-- **r3call**: Ready-to-use memory for Claude/Gemini users
+- **r3**: Ready-to-use memory for Claude/Gemini users
 - Like Vercel is to Next.js deployment
 
 ## Proposed Narrative Structure
@@ -84,7 +84,7 @@ We're not just wrapping Mem0 - we're solving a specific problem:
 
 ### 3. Solution Bridge (Technical + Simple)
 
-"r3call gives Claude and Gemini perfect memory. One command. Zero config."
+"r3 gives Claude and Gemini perfect memory. One command. Zero config."
 
 ### 4. Proof Points (Credibility)
 
@@ -115,7 +115,7 @@ Not features, but what users can DO:
 
 ```
 Headline: "Stop repeating yourself to AI"
-Subhead: "r3call remembers everything, so Claude and Gemini don't forget anything. Your context, preferences, and project details persist across every session."
+Subhead: "r3 remembers everything, so Claude and Gemini don't forget anything. Your context, preferences, and project details persist across every session."
 ```
 
 **Option 2: Benefit-First**
@@ -191,7 +191,7 @@ _Works offline. No cloud dependency. Privacy by default._
 
 - "Give Claude memory in 30 seconds"
 - "Start remembering now"
-- "npx r3call - that's it"
+- "npx r3 - that's it"
 
 ## Missing Elements
 
@@ -203,7 +203,7 @@ _Works offline. No cloud dependency. Privacy by default._
 
 ### 2. Comparison Table
 
-- r3call vs Mem0 vs Vector DBs vs Nothing
+- r3 vs Mem0 vs Vector DBs vs Nothing
 - Show clear wins
 
 ### 3. Use Cases
@@ -246,4 +246,4 @@ The current narrative is too technical and assumes users already understand the 
 3. Prove we can deliver
 4. Make action effortless
 
-The story should be: "You have a problem (context loss) → Here's the dream (perfect memory) → We make it real (r3call) → Start now (one command)"
+The story should be: "You have a problem (context loss) → Here's the dream (perfect memory) → We make it real (r3) → Start now (one command)"

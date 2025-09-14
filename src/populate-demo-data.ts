@@ -7,8 +7,8 @@ const demoMemories = [
     content:
       'docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"',
     user_id: "oliver",
-    project: "r3call",
-    directory: "/Users/oliver/projects/r3call",
+    project: "r3",
+    directory: "/Users/oliver/projects/r3",
     tags: ["docker", "containers", "debug"],
     metadata: {
       category: "docker",
@@ -21,8 +21,8 @@ const demoMemories = [
   {
     content: "npm run build && npm run test",
     user_id: "oliver",
-    project: "r3call",
-    directory: "/Users/oliver/projects/r3call",
+    project: "r3",
+    directory: "/Users/oliver/projects/r3",
     tags: ["build", "test", "npm"],
     metadata: {
       category: "build",
@@ -35,8 +35,8 @@ const demoMemories = [
   {
     content: "git log --oneline --graph --decorate --all",
     user_id: "oliver",
-    project: "r3call",
-    directory: "/Users/oliver/projects/r3call",
+    project: "r3",
+    directory: "/Users/oliver/projects/r3",
     tags: ["git", "history", "visualization"],
     metadata: {
       category: "git",
@@ -77,8 +77,8 @@ const demoMemories = [
   {
     content: "exa --tree --level=2 --icons --git-ignore",
     user_id: "oliver",
-    project: "r3call",
-    directory: "/Users/oliver/projects/r3call",
+    project: "r3",
+    directory: "/Users/oliver/projects/r3",
     tags: ["file-listing", "tree", "modern"],
     metadata: {
       category: "files",
@@ -163,8 +163,8 @@ const demoMemories = [
   {
     content: 'bat package.json | grep -E "(scripts|dependencies)"',
     user_id: "oliver",
-    project: "r3call",
-    directory: "/Users/oliver/projects/r3call",
+    project: "r3",
+    directory: "/Users/oliver/projects/r3",
     tags: ["package", "json", "inspection"],
     metadata: {
       category: "inspection",
@@ -206,8 +206,8 @@ const demoMemories = [
     content:
       'git add . && git commit -m "feat: awesome memory manager implementation" && git push',
     user_id: "oliver",
-    project: "r3call",
-    directory: "/Users/oliver/projects/r3call",
+    project: "r3",
+    directory: "/Users/oliver/projects/r3",
     tags: ["git", "commit", "push"],
     metadata: {
       category: "git",
@@ -236,7 +236,7 @@ async function populateDemoData() {
     console.log(
       `\n🎉 Successfully added ${demoMemories.length} demo memories!`,
     );
-    console.log("💡 Now run: npx r3call-manage");
+    console.log("💡 Now run: npx r3-manage");
     console.log("");
     console.log("Try these commands:");
     console.log("  /docker     - Search Docker commands");

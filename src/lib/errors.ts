@@ -1,5 +1,5 @@
 /**
- * Custom error classes for r3call
+ * Custom error classes for r3
  * Provides structured error handling with context and recovery strategies
  */
 

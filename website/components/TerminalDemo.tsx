@@ -20,7 +20,7 @@ const demos = [
       },
       {
         type: "animated",
-        text: "✓ MCP server 'r3call' connected (hybrid memory active)",
+        text: "✓ MCP server 'r3' connected (hybrid memory active)",
         className: "text-green-500",
         delay: 2000,
       },
@@ -71,18 +71,18 @@ const demos = [
     commands: [
       {
         type: "typing",
-        text: '$ gemini --save "Oliver uses r3call for knowledge management"',
+        text: '$ gemini --save "Oliver uses r3 for knowledge management"',
         delay: 0,
       },
       {
         type: "animated",
-        text: "Gemini CLI with r3call context • Model: Gemini 1.5 Pro",
+        text: "Gemini CLI with r3 context • Model: Gemini 1.5 Pro",
         className: "text-gray-400",
         delay: 1500,
       },
       {
         type: "animated",
-        text: "✓ Saved to r3call and GEMINI.md",
+        text: "✓ Saved to r3 and GEMINI.md",
         className: "text-green-500",
         delay: 2500,
       },
@@ -99,13 +99,13 @@ const demos = [
       },
       {
         type: "animated",
-        text: "📚 Retrieving context from r3call...",
+        text: "📚 Retrieving context from r3...",
         className: "text-blue-400",
         delay: 5500,
       },
       {
         type: "animated",
-        text: "Based on your setup, you use r3call which combines:",
+        text: "Based on your setup, you use r3 which combines:",
         className: "text-gray-400",
         delay: 6500,
       },
@@ -140,7 +140,7 @@ const demos = [
     commands: [
       {
         type: "typing",
-        text: '$ claude mcp add r3call "npx r3call"',
+        text: '$ claude mcp add r3 "npx r3"',
         delay: 0,
       },
       {
@@ -151,7 +151,7 @@ const demos = [
       },
       {
         type: "animated",
-        text: "✓ MCP server 'r3call' added to claude_config.json",
+        text: "✓ MCP server 'r3' added to claude_config.json",
         className: "text-green-500",
         delay: 2500,
       },
@@ -208,7 +208,7 @@ const demos = [
       { type: "typing", text: "$ gemini check", delay: 0 },
       {
         type: "animated",
-        text: "Running 4 parallel checks with r3call context...",
+        text: "Running 4 parallel checks with r3 context...",
         className: "text-blue-400",
         delay: 1500,
       },
@@ -243,7 +243,7 @@ const demos = [
       },
       {
         type: "animated",
-        text: "Analyzing with r3call-enhanced context...",
+        text: "Analyzing with r3-enhanced context...",
         className: "text-blue-400",
         delay: 6500,
       },

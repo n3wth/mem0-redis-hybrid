@@ -1,37 +1,30 @@
-# Claude Instructions for r3call Project
-
-## CRITICAL: Read STYLE_GUIDE.md First
-
-**MANDATORY**: Always read and follow the style guide at `STYLE_GUIDE.md` before making any changes to this project.
+# Claude Instructions for r3 Project
 
 ## Key Rules
 
 1. **NO EMOJIS** - Never use emojis in any context within this project
-2. **Brand Name** - Always use "Newth.ai" not "Newth"
+2. **Brand Name** - Always use "r3"
 3. **Current Year** - Use 2025 in copyright notices
 4. **Professional Tone** - Maintain technical, clear communication
 
 ## Project Structure
 
 ```
-recall/
-├── index.js           # Main MCP server entry point
-├── cli.js            # CLI tool for testing
-├── lib/              # Core library modules
+r3/
+├── src/              # Source code
 ├── test/             # Test files
 ├── docs/             # Documentation
 ├── assets/           # Images and static assets
 ├── website/          # Documentation website
-└── STYLE_GUIDE.md    # Style guidelines (READ THIS)
+└── package.json      # Project metadata
 ```
 
 ## Development Workflow
 
-1. Read STYLE_GUIDE.md before any work
-2. Follow existing code patterns
-3. Test changes with `npm test`
-4. Use the unified release workflow via GitHub Actions
-5. Never commit directly to npm - use the release workflow
+1. Follow existing code patterns
+2. Test changes with `npm test`
+3. Use the unified release workflow via GitHub Actions
+4. Never commit directly to npm - use the release workflow
 
 ## Release Process
 
@@ -59,18 +52,15 @@ npm run release:major
 
 When updating documentation:
 
-1. Check STYLE_GUIDE.md first
-2. Remove any emojis if found
-3. Use clear, technical language
-4. Test all code examples
-5. Update both README and website docs if needed
+1. Use clear, technical language
+2. Test all code examples
+3. Update both README and website docs if needed
 
 ## Common Mistakes to Avoid
 
 - Adding emojis to documentation
 - Using "Newth" instead of "Newth.ai"
 - Publishing directly to npm (use GitHub Actions)
-- Not reading STYLE_GUIDE.md
 - Adding decorative elements to professional documentation
 
 ## Testing
@@ -85,7 +75,6 @@ node test/test-suite.js
 
 ## Important Files
 
-- `STYLE_GUIDE.md` - Style and formatting rules (NO EMOJIS)
 - `README.md` - Main documentation (keep professional)
 - `.github/workflows/release.yml` - Unified release process
 - `package.json` - Version and dependencies

@@ -29,20 +29,20 @@ npm link  # Optional: to use globally
 ./dist/cli.js
 
 # Or if linked globally
-r3call-cli
+r3-cli
 ```
 
 ### With API Configuration
 
 ```bash
 # Custom API endpoint
-r3call-cli --api-url https://api.r3call.com
+r3-cli --api-url https://api.r3.com
 
 # With authentication
-R3CALL_API_KEY=your-api-key r3call-cli
+R3CALL_API_KEY=your-api-key r3-cli
 
 # Custom user ID
-r3call-cli --user-id myuser
+r3-cli --user-id myuser
 ```
 
 ### Environment Variables
@@ -109,7 +109,7 @@ Built with:
 ## Project Structure
 
 ```
-r3call-cli/
+r3-cli/
 ├── source/
 │   ├── app.tsx          # Main React component
 │   ├── cli.tsx          # CLI entry point

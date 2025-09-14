@@ -65,7 +65,7 @@ export function RecallLogo({
           fontWeight="600"
           fill="currentColor"
         >
-          r3call
+          r3
         </text>
       </svg>
     );

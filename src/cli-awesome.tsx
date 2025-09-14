@@ -410,7 +410,7 @@ const AwesomeMemoryManager: React.FC = () => {
       >
         <Box marginBottom={1}>
           <Text color="cyan" bold>
-            r3call AWESOME Memory Manager
+            r3 AWESOME Memory Manager
           </Text>
         </Box>
         <Box>
@@ -444,7 +444,7 @@ const AwesomeMemoryManager: React.FC = () => {
         marginBottom={1}
       >
         <Text bold color="cyan">
-          r3call AWESOME
+          r3 AWESOME
         </Text>
         <Text dimColor> | </Text>
         <Text color="green">{state.stats.total} memories</Text>

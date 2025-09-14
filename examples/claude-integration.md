@@ -1,23 +1,23 @@
 # Claude Integration Examples
 
-## Setting up r3call with Claude Desktop
+## Setting up r3 with Claude Desktop
 
 ### 1. Install the package
 
 ```bash
-npm install -g r3call
+npm install -g r3
 ```
 
 ### 2. Configure Claude Desktop
 
-Add to your `claude_desktop_config.json`:
+Add to your `~/.claude/claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
-    "r3call": {
+    "r3": {
       "command": "npx",
-      "args": ["r3call"],
+      "args": ["r3"],
       "env": {
         "MEM0_API_KEY": "your-mem0-api-key",
         "MEM0_USER_ID": "your-user-id",
@@ -34,49 +34,48 @@ Once configured, you can use these commands in Claude:
 
 ```javascript
 // Add a memory
-await use_mcp_tool("r3call", "add_memory", {
+await use_mcp_tool("r3", "add_memory", {
   content: "User prefers Python over JavaScript for data science",
   metadata: { category: "preferences", domain: "programming" },
-  priority: "high",
 });
 
 // Search memories
-await use_mcp_tool("r3call", "search_memory", {
+await use_mcp_tool("r3", "search_memory", {
   query: "programming preferences",
-  prefer_cache: true,
+});
+
+// Get all memories
+await use_mcp_tool("r3", "get_all_memories", {});
+
+// Delete a memory
+await use_mcp_tool("r3", "delete_memory", {
+  memoryId: "memory_id_to_delete",
 });
 
 // Get cache statistics
-await use_mcp_tool("r3call", "cache_stats", {});
+await use_mcp_tool("r3", "cache_stats", {});
 ```
 
 ## Advanced Integration Patterns
 
-### Pattern 1: Context Building
+### Context Building
+
+Before generating a response, you can search for relevant memories to build context.
 
 ```javascript
 // Build context from memories before responding
-const memories = await use_mcp_tool("r3call", "search_memory", {
+const memories = await use_mcp_tool("r3", "search_memory", {
   query: "user project requirements",
   limit: 10,
 });
 
 // Use memories to enhance responses
-const context = memories.results.map((m) => m.memory).join("\n");
+const context = memories.results.map((m) => m.content).join("\n");
 ```
 
-### Pattern 2: Async Memory Storage
+### Storing Conversation History
 
-```javascript
-// Store memories asynchronously for better performance
-await use_mcp_tool("r3call", "add_memory", {
-  content: "Complex technical discussion about microservices",
-  async: true,
-  priority: "normal",
-});
-```
-
-### Pattern 3: Batch Operations
+You can store the conversation history at the end of each interaction.
 
 ```javascript
 // Store conversation history in batch
@@ -86,81 +85,39 @@ const messages = [
   { role: "user", content: "I need help with state management" },
 ];
 
-await use_mcp_tool("r3call", "add_memory", {
-  messages: messages,
+await use_mcp_tool("r3", "add_memory", {
+  content: JSON.stringify(messages),
   metadata: { session: "tech-discussion", date: new Date().toISOString() },
-});
-```
-
-### Pattern 4: Cache Optimization
-
-```javascript
-// Periodically optimize cache for frequently accessed memories
-await use_mcp_tool("r3call", "optimize_cache", {});
-
-// Warm up cache with common queries
-await use_mcp_tool("r3call", "warmup_cache", {
-  queries: ["user preferences", "project requirements", "technical stack"],
-});
-```
-
-### Pattern 5: Export and Backup
-
-```javascript
-// Export memories for backup
-const backup = await use_mcp_tool("r3call", "export_memories", {
-  format: "json",
-});
-
-// Save to file or external storage
-// ...
-
-// Later, import memories
-await use_mcp_tool("r3call", "import_memories", {
-  data: backup.data,
-  format: "json",
 });
 ```
 
 ## Performance Tips
 
-1. **Use `prefer_cache: true`** for frequently accessed queries
-2. **Enable async mode** for non-critical memory additions
-3. **Batch related memories** to reduce API calls
-4. **Optimize cache regularly** to maintain performance
-5. **Monitor cache stats** to understand usage patterns
+1. **Use semantic search**: Semantic search is powerful, but can be slower than keyword search. Use it when you need to find memories by meaning, not just keywords.
+2. **Batch related memories**: If you have multiple memories to add, consider adding them in a single call if the API supports it in the future.
+3. **Monitor cache stats**: Use the `cache_stats` tool to understand usage patterns and optimize your caching strategy.
 
 ## Troubleshooting
 
 ### Redis Connection Issues
 
-If Redis is not available, the server falls back to mem0-only mode:
+If Redis is not available, the server falls back to mem0-only mode. You can check the health of the server using the `health` tool if it's available.
 
 ```javascript
 // Check health status
-const health = await use_mcp_tool("r3call", "health", {});
+const health = await use_mcp_tool("r3", "health", {});
 console.log(health.redis); // false if Redis is down
 ```
 
 ### Memory Limits
 
-Monitor memory usage and clean up when needed:
-
-```javascript
-// Clear specific cache patterns
-await use_mcp_tool("r3call", "clear_cache", {
-  pattern: "search:*old-queries*",
-});
-
-// Delete old memories
-const allMemories = await use_mcp_tool("r3call", "get_all_memories", {});
-// Filter and delete old ones
-```
+Be mindful of the number of memories you store. You can use the `get_all_memories` and `delete_memory` tools to manage your memories.
 
 ## Best Practices
 
-1. **Categorize memories** with metadata for better organization
-2. **Use priority levels** to optimize cache placement
-3. **Implement regular cleanup** for old or irrelevant memories
-4. **Monitor performance** through cache statistics
-5. **Handle errors gracefully** with fallback strategies
+1. **Categorize memories**: Use metadata to categorize memories for better organization and retrieval.
+2. **Implement regular cleanup**: Periodically review and remove old or irrelevant memories.
+3. **Monitor performance**: Use the `cache_stats` tool to monitor performance and identify bottlenecks.
+4. **Handle errors gracefully**: Implement fallback strategies in case of errors.
+
+```

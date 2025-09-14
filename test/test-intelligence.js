@@ -49,7 +49,7 @@ async function testEntityExtraction() {
 
   const extractor = new EntityExtractor(true);
   const result = await extractor.extract(
-    "The r3call project uses TypeScript and Redis. It integrates with Node.js.",
+    "The r3 project uses TypeScript and Redis. It integrates with Node.js.",
   );
 
   if (result.entities.technologies.length === 0) {

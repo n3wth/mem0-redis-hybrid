@@ -1,0 +1,148 @@
+/* Orbiting particles */
+@keyframes orbit-1 {
+  from { transform: rotate(0deg) translateX(20px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(20px) rotate(-360deg); }
+}
+
+@keyframes orbit-2 {
+  from { transform: rotate(0deg) translateX(25px) rotate(0deg); }
+  to { transform: rotate(-360deg) translateX(25px) rotate(360deg); }
+}
+
+@keyframes orbit-3 {
+  from { transform: rotate(0deg) translateX(18px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(18px) rotate(-360deg); }
+}
+
+.animate-orbit-1 {
+  animation: orbit-1 4s linear infinite;
+}
+
+.animate-orbit-2 {
+  animation: orbit-2 6s linear infinite;
+}
+
+.animate-orbit-3 {
+  animation: orbit-3 5s linear infinite;
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% { transform: translateX(-100%) skewX(-12deg); }
+  100% { transform: translateX(200%) skewX(-12deg); }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Subtle morph */
+@keyframes subtle-morph {
+  0%, 100% { border-radius: 20% 80% 80% 20% / 20% 20% 80% 80%; transform: scale(1); }
+  50% { border-radius: 80% 20% 20% 80% / 80% 80% 20% 20%; transform: scale(1.05); }
+}
+
+.animate-subtle-morph {
+  animation: subtle-morph 8s ease-in-out infinite;
+}
+
+/* Breathing glow */
+@keyframes breathe {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+/* Data flow */
+@keyframes data-flow {
+  0% { transform: translateX(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+.animate-data-flow {
+  animation: data-flow 3s linear infinite;
+}
+
+/* Quantum dots */
+@keyframes quantum-1 {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  25% {
+    opacity: 0.8;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes quantum-2 {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes quantum-3 {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  75% {
+    opacity: 0.8;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes quantum-4 {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  37% {
+    opacity: 0.8;
+    transform: scale(1.5);
+  }
+}
+
+.animate-quantum-1 {
+  animation: quantum-1 3s ease-in-out infinite;
+}
+
+.animate-quantum-2 {
+  animation: quantum-2 3s ease-in-out infinite;
+}
+
+.animate-quantum-3 {
+  animation: quantum-3 3s ease-in-out infinite;
+}
+
+.animate-quantum-4 {
+  animation: quantum-4 3s ease-in-out infinite;
+}
+
+/* Animated border spin */
+@keyframes border-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-border-spin {
+  animation: border-spin 4s linear infinite;
+  width: 200%;
+  height: 200%;
+  position: absolute;
+  top: -50%;
+  left: -50%;
+}

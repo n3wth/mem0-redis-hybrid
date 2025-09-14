@@ -127,7 +127,7 @@ export function DocsHeader() {
                       Client API
                     </div>
                     <div className="text-xs text-gray-500">
-                      Complete API reference for the r3call client
+                      Complete API reference for the r3 client
                     </div>
                   </a>
                   <a

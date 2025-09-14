@@ -4,7 +4,7 @@ export async function GET() {
 Allow: /
 Disallow: /api/
 
-Sitemap: https://r3call.newth.ai/sitemap.xml`,
+Sitemap: https://r3.newth.ai/sitemap.xml`,
     {
       headers: {
         "Content-Type": "text/plain",

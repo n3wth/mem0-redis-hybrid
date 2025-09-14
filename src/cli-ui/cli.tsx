@@ -7,7 +7,7 @@ import App from "./app.js";
 const cli = meow(
   `
 	Usage
-	  $ r3call-cli
+	  $ r3-cli
 
 	Options
 		--api-url   R3CALL API URL (default: http://localhost:3030)
@@ -15,9 +15,9 @@ const cli = meow(
 		--help      Show help
 
 	Examples
-	  $ r3call-cli
-	  $ r3call-cli --api-url https://api.r3call.com
-	  $ R3CALL_API_KEY=your-key r3call-cli
+	  $ r3-cli
+	  $ r3-cli --api-url https://api.r3.com
+	  $ R3CALL_API_KEY=your-key r3-cli
 
 	Environment Variables:
 	  R3CALL_API_KEY   API key for authentication

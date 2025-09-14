@@ -11,6 +11,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import fetch from "node-fetch";
 import * as crypto from "crypto";
+import { createClient, RedisClientType } from "redis";
 
 // Type definitions
 interface Memory {
@@ -69,9 +70,15 @@ interface MemoryProcessMessage {
 
 // Configuration
 const MEM0_API_KEY = process.env.MEM0_API_KEY;
+const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
 const QUIET_MODE =
   process.env.QUIET_MODE !== "false" &&
   (!process.stdin.isTTY || process.env.NODE_ENV === "production"); // Default to quiet for MCP
+
+// Redis clients
+let redisClient: RedisClientType | null = null;
+let pubSubClient: RedisClientType | null = null;
+let subscriberClient: RedisClientType | null = null;
 
 // Intelligence mode configuration - Enhanced by default!
 let INTELLIGENCE_MODE =
@@ -1101,7 +1108,7 @@ log(`API Base: ${MEM0_BASE_URL}`);
 
 const server = new Server(
   {
-    name: "r3call",
+    name: "r3",
     version: "1.2.9",
   },
   {
@@ -2314,7 +2321,7 @@ function debugLog(message: string, data?: any) {
 }
 
 export async function startServer() {
-  log("🚀 Starting r3call server...");
+  log("🚀 Starting r3 server...");
   debugLog("Process arguments:", process.argv);
   debugLog("Environment mode:", { MODE, MEM0_API_KEY: !!MEM0_API_KEY });
 
@@ -2346,7 +2353,7 @@ export async function startServer() {
       .catch((error) => {
         debugLog("Redis initialization failed:", error);
       });
-    log("✓ r3call MCP Server v2.0 running successfully");
+    log("✓ r3 MCP Server v2.0 running successfully");
     log(`  Mode: ${MODE.toUpperCase()}`);
     log(`  Redis: ${redisClient ? "Connected" : "Fallback"}`);
     log(`  Vector Search: ${localMemory ? "Enabled" : "Disabled"}`);

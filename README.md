@@ -1,8 +1,8 @@
-# r3call
+# r3 (by n3wth)
 
-[![npm version](https://badge.fury.io/js/r3call.svg)](https://www.npmjs.com/package/r3call)
+[![npm version](https://badge.fury.io/js/r3.svg)](https://www.npmjs.com/package/r3)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Documentation](https://img.shields.io/badge/docs-r3call.newth.ai-blue)](https://r3call.newth.ai)
+[![Documentation](https://img.shields.io/badge/docs-r3.newth.ai-blue)](https://r3.newth.ai)
 
 > Intelligent Memory Layer for AI Applications - Built for Gemini, Claude, and all LLMs
 
@@ -14,7 +14,7 @@
 - 🔌 **Easy integration** - Works with Gemini, Claude, GPT, and any LLM
 - 💻 **100% TypeScript** - Full type safety and IntelliSense support
 - 🏠 **Local-first** - Works offline with embedded Redis server
-- 📦 **Zero configuration** - Just run `npx r3call` to get started
+- 📦 **Zero configuration** - Just run `npx r3` to get started
 
 ### New AI Intelligence Features (v1.3.0)
 
@@ -42,26 +42,26 @@
 
 ```bash
 # Just run it! Zero configuration needed
-npx r3call
+npx r3
 ```
 
-That's it! r3call automatically starts with an embedded Redis server. No setup required.
+That's it! r3 automatically starts with an embedded Redis server. No setup required.
 
 ### Installation Options
 
 ```bash
 # For frequent use, install globally:
-npm install -g r3call
-r3call
+npm install -g r3
+r3
 
 # Or add to your project:
-npm install r3call
+npm install r3
 ```
 
 ### Basic Usage
 
 ```typescript
-import { Recall } from "r3call";
+import { Recall } from "r3";
 
 // Zero configuration - works immediately
 const recall = new Recall();
@@ -90,7 +90,7 @@ const recall = new Recall({
 
 ## Usage with Gemini CLI
 
-Integrate r3call with Google's Gemini CLI for powerful memory-enhanced AI workflows:
+Integrate r3 with Google's Gemini CLI for powerful memory-enhanced AI workflows:
 
 ```bash
 # Set environment variables
@@ -98,19 +98,19 @@ export MEM0_API_KEY="your_mem0_api_key"
 export REDIS_URL="redis://localhost:6379"
 
 # Use with Gemini for context-aware responses
-gemini "Remember: User prefers Python over JavaScript" | npx r3call add
-gemini "What are my coding preferences?" | npx r3call search
+gemini "Remember: User prefers Python over JavaScript" | npx r3 add
+gemini "What are my coding preferences?" | npx r3 search
 
 # Advanced integration with piping
-echo "Project uses TypeScript and React" | npx r3call add --userId project-123
-gemini "Generate component based on project stack" --context "$(npx r3call get --userId project-123)"
+echo "Project uses TypeScript and React" | npx r3 add --userId project-123
+gemini "Generate component based on project stack" --context "$(npx r3 get --userId project-123)"
 ```
 
 ## Usage with Claude Code
 
 ```bash
 # Quick install via Claude Code CLI
-claude mcp add r3call "npx r3call"
+claude mcp add r3 "npx r3"
 
 # Claude Code will now remember context across sessions
 # Available commands in Claude:
@@ -126,9 +126,9 @@ Add to `~/.claude/claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
-    "r3call": {
+    "r3": {
       "command": "npx",
-      "args": ["r3call"],
+      "args": ["r3"],
       "env": {
         "MEM0_API_KEY": "your_mem0_api_key",
         "REDIS_URL": "redis://localhost:6379"
@@ -142,13 +142,13 @@ Add to `~/.claude/claude_desktop_config.json`:
 
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://r3call.newth.ai/architecture-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://r3call.newth.ai/architecture-light.svg">
-    <img src="https://r3call.newth.ai/architecture-dark.svg" alt="r3call Architecture" width="100%" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://r3.newth.ai/architecture-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://r3.newth.ai/architecture-light.svg">
+    <img src="https://r3.newth.ai/architecture-dark.svg" alt="r3 Architecture" width="100%" />
   </picture>
 </div>
 
-r3call implements a multi-tier caching strategy designed for AI workloads:
+r3 implements a multi-tier caching strategy designed for AI workloads:
 
 ```
 ┌─────────────┐      ┌──────────────┐      ┌─────────────┐
@@ -210,7 +210,7 @@ if (!health.redis.connected) {
 
 ```typescript
 // app/api/memory/route.ts
-import { Recall } from "r3call";
+import { Recall } from "r3";
 import { NextResponse } from "next/server";
 
 const recall = new Recall({
@@ -258,7 +258,7 @@ class RecallMemory(BaseChatMemory):
 
 ```typescript
 import { createAI } from "ai";
-import { Recall } from "r3call";
+import { Recall } from "r3";
 
 const recall = new Recall({ apiKey: process.env.MEM0_API_KEY! });
 
@@ -279,7 +279,7 @@ export const ai = createAI({
 
 ## Performance Characteristics
 
-r3call is designed for speed with local Redis caching. In local development:
+r3 is designed for speed with local Redis caching. In local development:
 
 - Redis provides fast in-memory caching
 - Automatic compression for larger entries
@@ -290,7 +290,7 @@ _Note: Actual performance depends on your Redis setup and network conditions._
 
 ## AI Intelligence Features
 
-r3call now includes advanced AI capabilities that automatically enhance your memory storage:
+r3 now includes advanced AI capabilities that automatically enhance your memory storage:
 
 ### Automatic Entity Extraction
 
@@ -308,13 +308,13 @@ Build a connected knowledge graph from your memories:
 
 ```bash
 # Extract entities from text
-npx r3call extract-entities "Sarah from Marketing works on the Dashboard project with React"
+npx r3 extract-entities "Sarah from Marketing works on the Dashboard project with React"
 
 # Query your knowledge graph
-npx r3call get-knowledge-graph --entity-type "people"
+npx r3 get-knowledge-graph --entity-type "people"
 
 # Find connections between entities
-npx r3call find-connections --from "Sarah" --to "Dashboard"
+npx r3 find-connections --from "Sarah" --to "Dashboard"
 ```
 
 ### Semantic Search with Relevance Scoring
@@ -348,7 +348,7 @@ const recall = new Recall({
 
 ### MCP Tools for Claude/LLMs
 
-When using r3call as an MCP server, these tools are available:
+When using r3 as an MCP server, these tools are available:
 
 - `extract_entities` - Extract entities and relationships from text
 - `get_knowledge_graph` - Retrieve knowledge graph nodes and edges
@@ -404,7 +404,7 @@ interface RecallConfig {
 
 ## MCP Tools
 
-When integrated with Claude Desktop, r3call provides these tools:
+When integrated with Claude Desktop, r3 provides these tools:
 
 - **`add_memory`** - Store information with intelligent categorization
 - **`search_memory`** - Find relevant context using semantic search
@@ -467,7 +467,7 @@ LOG_LEVEL=info                   # Logging verbosity
 
 ## Monitoring
 
-r3call includes basic monitoring capabilities through the `cacheStats()` and `health()` methods. Future versions may include more comprehensive metrics and health check endpoints.
+r3 includes basic monitoring capabilities through the `cacheStats()` and `health()` methods. Future versions may include more comprehensive metrics and health check endpoints.
 
 ## Troubleshooting
 
@@ -494,7 +494,7 @@ docker run -d -p 6379:6379 redis:alpine
 <details>
 <summary><b>High latency on first request</b></summary>
 
-This is normal cold start behavior. r3call pre-warms connections:
+This is normal cold start behavior. r3 pre-warms connections:
 
 ```typescript
 // Pre-warm on startup
@@ -534,7 +534,7 @@ We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guideline
 
 ```bash
 # Development setup
-git clone https://github.com/n3wth/r3call.git
+git clone https://github.com/n3wth/r3.git
 cd recall
 npm install
 npm run dev
@@ -548,20 +548,20 @@ gh pr create
 
 ## Support
 
-- **Documentation**: [r3call.newth.ai](https://r3call.newth.ai)
-- **Issue Tracker**: [GitHub Issues](https://github.com/n3wth/r3call/issues)
+- **Documentation**: [r3.newth.ai](https://r3.newth.ai)
+- **Issue Tracker**: [GitHub Issues](https://github.com/n3wth/r3/issues)
 
 ## License
 
-MIT © 2025 r3call Contributors
+MIT © 2025 r3 Contributors
 
 ---
 
 <div align="center">
   <p>A personal project to solve my own Claude context problem</p>
   <p>
-    <a href="https://r3call.newth.ai">Website</a> •
-    <a href="https://github.com/n3wth/r3call">GitHub</a> •
-    <a href="https://www.npmjs.com/package/r3call">npm</a>
+    <a href="https://r3.newth.ai">Website</a> •
+    <a href="https://github.com/n3wth/r3">GitHub</a> •
+    <a href="https://www.npmjs.com/package/r3">npm</a>
   </p>
 </div>

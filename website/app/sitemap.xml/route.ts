@@ -1,5 +1,5 @@
 export async function GET() {
-  const baseUrl = "https://r3call.newth.ai";
+  const baseUrl = "https://r3.newth.ai";
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

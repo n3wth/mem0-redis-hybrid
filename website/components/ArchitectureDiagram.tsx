@@ -13,7 +13,7 @@ export function ArchitectureDiagram() {
   return (
     <div className="py-12">
       <div className="space-y-8">
-        {/* Horizontal flow: Claude → MCP → r3call */}
+        {/* Horizontal flow: Claude → MCP → r3 */}
         <div className="flex flex-col md:flex-row items-center justify-center gap-4 flex-wrap">
           <div className="flex items-center gap-3 px-5 py-3 rounded-lg bg-gradient-to-r from-purple-900/20 to-purple-800/20 border border-purple-500/20">
             <Monitor className="h-5 w-5 text-purple-400" />
@@ -32,11 +32,11 @@ export function ArchitectureDiagram() {
 
           <div className="flex items-center gap-3 px-5 py-3 rounded-lg bg-gradient-to-r from-blue-900/20 to-blue-800/20 border border-blue-500/20">
             <Server className="h-5 w-5 text-blue-400" />
-            <span className="text-white font-medium">r3call Server</span>
+            <span className="text-white font-medium">r3 Server</span>
           </div>
         </div>
 
-        {/* Vertical flow: r3call → Redis → Mem0 */}
+        {/* Vertical flow: r3 → Redis → Mem0 */}
         <div className="flex justify-center">
           <div className="flex flex-col items-center gap-4">
             <ArrowDown className="h-5 w-5 text-gray-500" />

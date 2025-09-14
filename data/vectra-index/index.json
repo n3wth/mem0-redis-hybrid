@@ -5,7 +5,7 @@
     {
       "id": "9bc0123c-7cba-48b6-acbc-f8a1309ea3e9",
       "metadata": {
-        "content": "Testing r3call MCP server functionality - basic memory storage test. Current project: r3call memory management system with Redis cache and Mem0 backend. I'll remember that.",
+        "content": "Testing r3 MCP server functionality - basic memory storage test. Current project: r3 memory management system with Redis cache and Mem0 backend. I'll remember that.",
         "user_id": "oliver",
         "created_at": "2025-09-14T09:54:17.871Z",
         "priority": "normal",
@@ -80,7 +80,7 @@
     {
       "id": "1629b11b-e7db-4cda-9553-34ff74fbafaa",
       "metadata": {
-        "content": "Testing r3call MCP server functionality - this is a test memory to verify the system is working properly. Current time: 2025-01-14 afternoon testing session. I'll remember that.",
+        "content": "Testing r3 MCP server functionality - this is a test memory to verify the system is working properly. Current time: 2025-01-14 afternoon testing session. I'll remember that.",
         "user_id": "oliver",
         "created_at": "2025-09-14T09:56:06.679Z",
         "priority": "normal",
@@ -159,7 +159,7 @@
     {
       "id": "b624bd84-cc93-4249-9b5e-da1573316d8e",
       "metadata": {
-        "content": "Testing r3call MCP server functionality. This is a test memory entry to verify the storage system is working correctly. Date: 2025-01-14 I'll remember that.",
+        "content": "Testing r3 MCP server functionality. This is a test memory entry to verify the storage system is working correctly. Date: 2025-01-14 I'll remember that.",
         "user_id": "oliver",
         "created_at": "2025-09-14T09:59:03.615Z",
         "priority": "normal",
@@ -555,7 +555,7 @@
     {
       "id": "f42dcb94-b930-4138-bc0d-fb470845973f",
       "metadata": {
-        "content": "Testing r3call MCP server integration. This is a test memory added on 2025-01-14 to verify the system is working correctly. I'll remember that.",
+        "content": "Testing r3 MCP server integration. This is a test memory added on 2025-01-14 to verify the system is working correctly. I'll remember that.",
         "user_id": "oliver",
         "created_at": "2025-09-14T10:10:11.312Z",
         "priority": "normal",
@@ -628,7 +628,7 @@
     {
       "id": "00a964d4-d39b-4b93-82c3-86886cb863c3",
       "metadata": {
-        "content": "Test memory: r3call is working properly with Redis cache and Mem0 cloud storage I'll remember that.",
+        "content": "Test memory: r3 is working properly with Redis cache and Mem0 cloud storage I'll remember that.",
         "user_id": "oliver",
         "created_at": "2025-09-14T10:25:10.679Z",
         "priority": "normal",

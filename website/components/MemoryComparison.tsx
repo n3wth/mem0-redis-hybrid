@@ -93,7 +93,7 @@ export function MemoryComparison() {
                   : 'text-gray-400 hover:text-white'
               }`}
             >
-              Without r3call
+              Without r3
             </button>
             <button
               onClick={() => setIsWithMemory(true)}
@@ -103,7 +103,7 @@ export function MemoryComparison() {
                   : 'text-gray-400 hover:text-white'
               }`}
             >
-              With r3call
+              With r3
             </button>
           </div>
         </div>

@@ -25,7 +25,7 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "r3call - Intelligent Memory API | Sub-5ms Response Times",
+  title: "r3 - Intelligent Memory API | Sub-5ms Response Times (by n3wth)",
   description:
     "Hybrid memory system combining Redis caching with cloud persistence. Sub-5ms response times with 99.9% uptime SLA. Build context-aware AI applications with intelligent memory.",
   keywords: [
@@ -36,25 +36,25 @@ export const metadata: Metadata = {
     "hybrid storage",
     "low latency",
   ],
-  authors: [{ name: "r3call" }],
-  creator: "r3call",
-  publisher: "r3call",
-  metadataBase: new URL("https://r3call.newth.ai"),
+  authors: [{ name: "n3wth" }],
+  creator: "n3wth",
+  publisher: "n3wth",
+  metadataBase: new URL("https://r3.newth.ai"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "r3call - Intelligent Memory API",
+    title: "r3 - Intelligent Memory API (by n3wth)",
     description:
       "Hybrid memory system combining Redis caching with cloud persistence. Sub-5ms response times with 99.9% uptime SLA.",
-    url: "https://r3call.newth.ai",
-    siteName: "r3call",
+    url: "https://r3.newth.ai",
+    siteName: "r3",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Recall - Intelligent Memory API",
+        alt: "r3 - Intelligent Memory API",
       },
     ],
     locale: "en_US",
@@ -62,11 +62,11 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "r3call - Intelligent Memory API",
+    title: "r3 - Intelligent Memory API (by n3wth)",
     description:
       "Sub-5ms response times with 99.9% uptime SLA. Hybrid memory system for AI applications.",
     images: ["/og-image.jpg"],
-    creator: "@recall_api",
+    creator: "@n3wth",
   },
   robots: {
     index: true,

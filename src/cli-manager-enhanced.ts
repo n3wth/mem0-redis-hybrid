@@ -133,7 +133,7 @@ class EnhancedMemoryManager {
 
     this.screen = blessed.screen({
       smartCSR: true,
-      title: "r3call Memory Manager Pro",
+      title: "r3 Memory Manager Pro",
       fullUnicode: true,
       dockBorders: true,
       ignoreDockContrast: true,
@@ -179,7 +179,7 @@ class EnhancedMemoryManager {
     });
 
     const title = `{center}${chalk.hex(this.currentTheme.primary).bold("╔═══════════════════════════════════════╗")}{/center}
-{center}${chalk.hex(this.currentTheme.accent).bold("║  r3call Memory Manager Pro v2.0  ║")}{/center}
+{center}${chalk.hex(this.currentTheme.accent).bold("║  r3 Memory Manager Pro v2.0  ║")}{/center}
 {center}${chalk.hex(this.currentTheme.primary).bold("╚═══════════════════════════════════════╝")}{/center}`;
 
     titleBox.setContent(title);
@@ -928,7 +928,7 @@ Updated: ${new Date().toISOString()}`;
     this.screen.destroy();
     this.screen = blessed.screen({
       smartCSR: true,
-      title: "r3call Memory Manager Pro",
+      title: "r3 Memory Manager Pro",
       fullUnicode: true,
       terminal: "xterm-256color",
     });
@@ -943,7 +943,7 @@ Updated: ${new Date().toISOString()}`;
   private toggleHelp() {
     if (this.helpBox.hidden) {
       const helpContent = `
-${chalk.hex(this.currentTheme.accent).bold("r3call Memory Manager Pro - Help")}
+${chalk.hex(this.currentTheme.accent).bold("r3 Memory Manager Pro - Help")}
 ${chalk.hex(this.currentTheme.dim)("─".repeat(40))}
 
 ${chalk.hex(this.currentTheme.primary).bold("Navigation:")}

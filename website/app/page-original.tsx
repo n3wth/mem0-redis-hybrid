@@ -85,7 +85,7 @@ export default function Home() {
   };
 
   const codeExamples = {
-    node: `import { Recall } from 'r3call';
+    node: `import { Recall } from 'r3';
 
 // Zero configuration - works immediately
 const recall = new Recall();
@@ -101,7 +101,7 @@ const memories = await recall.search({
   query: 'What are the user preferences?',
   userId: 'user_123'
 });`,
-    python: `from r3call import Recall
+    python: `from r3 import Recall
 
 # Zero configuration - works out of the box
 client = Recall()
@@ -112,7 +112,7 @@ response = client.memories.add(
 )
 
 print(response.id)`,
-    curl: `curl https://api.r3call.newth.ai/v1/memories \\
+    curl: `curl https://api.r3.newth.ai/v1/memories \\
   -H "Authorization: Bearer $MEM0_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -181,13 +181,13 @@ print(response.id)`,
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <button
-                  onClick={() => copyToClipboard("npx r3call")}
+                  onClick={() => copyToClipboard("npx r3")}
                   className="group relative inline-flex items-center gap-2 px-6 py-3 text-base font-medium rounded-lg bg-white text-black transition-all cursor-pointer overflow-hidden hover:scale-105"
                 >
                   {/* Shimmer effect */}
                   <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
 
-                  <code className="font-mono relative">npx r3call</code>
+                  <code className="font-mono relative">npx r3</code>
                   {copied ? (
                     <Check className="h-4 w-4 text-green-600 relative" />
                   ) : (
@@ -195,7 +195,7 @@ print(response.id)`,
                   )}
                 </button>
                 <a
-                  href="https://github.com/n3wth/r3call"
+                  href="https://github.com/n3wth/r3"
                   className="px-6 py-3 text-base font-medium rounded-lg border border-white/20 text-white hover:bg-white/5 transition-all"
                 >
                   View on GitHub
@@ -390,7 +390,7 @@ print(response.id)`,
             </div>
 
             <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
-              {/* Before - Without r3call */}
+              {/* Before - Without r3 */}
               <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-to-br from-gray-500/[0.02] to-gray-600/[0.02] rounded-2xl" />
                 <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-8 border border-white/10 h-full hover:border-white/20 transition-colors">
@@ -449,13 +449,13 @@ print(response.id)`,
                 </div>
               </div>
 
-              {/* After - With r3call */}
+              {/* After - With r3 */}
               <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.03] to-blue-600/[0.03] rounded-2xl" />
                 <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-8 border border-white/10 h-full hover:border-white/20 transition-colors">
                   <div className="mb-8">
                     <h3 className="text-xl font-medium text-white">
-                      With r3call
+                      With r3
                     </h3>
                     <p className="text-sm text-gray-500 mt-1">
                       Continuous context
@@ -523,10 +523,10 @@ print(response.id)`,
                   </p>
                   <div className="flex justify-center">
                     <button
-                      onClick={() => copyToClipboard("npx r3call")}
+                      onClick={() => copyToClipboard("npx r3")}
                       className="group inline-flex items-center gap-2 px-6 py-3 text-base font-medium rounded-lg bg-white text-black transition-all hover:scale-105"
                     >
-                      <code className="font-mono">npx r3call</code>
+                      <code className="font-mono">npx r3</code>
                       {copied ? (
                         <Check className="h-4 w-4 text-green-600" />
                       ) : (

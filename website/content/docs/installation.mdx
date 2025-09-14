@@ -14,33 +14,33 @@ title: Installation
 
 ```bash
 # Run immediately with npx
-npx r3call
+npx r3
 
 # Or install globally
-npm install -g r3call
-r3call
+npm install -g r3
+r3
 ```
 
-r3call automatically starts an embedded Redis server - no setup needed!
+r3 automatically starts an embedded Redis server - no setup needed!
 
 ## Package Installation
 
 ### npm
 
 ```bash
-npm install r3call
+npm install r3
 ```
 
 ### Yarn
 
 ```bash
-yarn add r3call
+yarn add r3
 ```
 
 ### pnpm
 
 ```bash
-pnpm add r3call
+pnpm add r3
 ```
 
 ## Optional Configuration
@@ -64,7 +64,7 @@ Add to `~/.claude/claude_desktop_config.json`:
   "mcpServers": {
     "recall": {
       "command": "npx",
-      "args": ["r3call"],
+      "args": ["r3"],
       "env": {
         "MEM0_API_KEY": "your-api-key",
         "REDIS_URL": "redis://localhost:6379"

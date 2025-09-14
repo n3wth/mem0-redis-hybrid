@@ -5,15 +5,15 @@ title: Quick Start
 
 # Quick Start
 
-Get r3call running in 30 seconds - zero configuration required.
+Get r3 running in 30 seconds - zero configuration required.
 
-## Step 1: Run r3call
+## Step 1: Run r3
 
 ```bash
-npx r3call
+npx r3
 ```
 
-That's it! r3call automatically starts with an embedded Redis server. No setup needed.
+That's it! r3 automatically starts with an embedded Redis server. No setup needed.
 
 ## Step 2: Configure Claude Desktop
 
@@ -34,7 +34,7 @@ Add this simple configuration:
   "mcpServers": {
     "recall": {
       "command": "npx",
-      "args": ["r3call"]
+      "args": ["r3"]
       // No environment variables needed!
     }
   }
@@ -83,7 +83,7 @@ Want to backup memories to the cloud? Add a Mem0 API key:
   "mcpServers": {
     "recall": {
       "command": "npx",
-      "args": ["r3call"],
+      "args": ["r3"],
       "env": {
         "MEM0_API_KEY": "mem0_..." // Get free at mem0.ai
       }
@@ -101,7 +101,7 @@ For production or shared Redis:
   "mcpServers": {
     "recall": {
       "command": "npx",
-      "args": ["r3call"],
+      "args": ["r3"],
       "env": {
         "REDIS_URL": "redis://your-redis-server:6379"
       }

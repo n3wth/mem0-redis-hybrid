@@ -165,7 +165,7 @@ const App = () => {
     return (
       <Box flexDirection="column" alignItems="center" paddingY={2}>
         <Gradient name="rainbow">
-          <BigText text="r3call" font="chrome" />
+          <BigText text="r3" font="chrome" />
         </Gradient>
         <Box marginTop={1}>
           <Text color="cyan">
@@ -287,7 +287,7 @@ const App = () => {
       {/* Header */}
       <Box borderStyle="round" borderColor="cyan" paddingX={1} marginBottom={1}>
         <Gradient name="rainbow">
-          <Text bold>r3call Memory Manager</Text>
+          <Text bold>r3 Memory Manager</Text>
         </Gradient>
         <Text> | </Text>
         <Text color="green">{memories.length} memories</Text>

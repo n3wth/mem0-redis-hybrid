@@ -1,15 +1,10 @@
-# Contributing to Mem0-Redis Hybrid MCP Server
+# Contributing to r3
 
-First off, thank you for considering contributing to the Mem0-Redis Hybrid MCP Server! It's people like you that make this tool better for everyone.
+Thank you for your interest in contributing to r3. This document provides comprehensive guidelines for contributing to the project. We value all contributions, from bug reports to feature implementations.
 
 ## Code of Conduct
 
-By participating in this project, you are expected to uphold our Code of Conduct:
-
-- Be respectful and inclusive
-- Welcome newcomers and help them get started
-- Focus on constructive criticism
-- Accept feedback gracefully
+This project and everyone participating in it is governed by the [r3 Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to the project maintainers.
 
 ## How Can I Contribute?
 
@@ -34,12 +29,56 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ### Pull Requests
 
+#### Before You Start
+
+1. **Check existing issues and PRs** to avoid duplicate work
+2. **Discuss major changes** in an issue before implementation
+3. **Read the architecture documentation** to understand the codebase
+
+#### PR Process
+
 1. **Fork the repository** and create your branch from `main`
+   - Feature branches: `feature/description`
+   - Bug fixes: `fix/issue-number-description`
+   - Documentation: `docs/description`
+
 2. **Write clear, commented code** following the existing style
+   - Use TypeScript for all new code
+   - Follow the established patterns in the codebase
+   - Keep functions small and focused
+   - Add JSDoc comments for public APIs
+
 3. **Add tests** for any new functionality
+   - Unit tests for individual functions
+   - Integration tests for feature interactions
+   - Aim for >80% code coverage on new code
+
 4. **Update documentation** as needed
+   - Update README.md for user-facing changes
+   - Update inline code comments
+   - Add/update JSDoc comments
+   - Update website documentation if applicable
+
 5. **Ensure all tests pass** before submitting
+   ```bash
+   npm test
+   npm run lint
+   npm run typecheck
+   ```
+
 6. **Write a clear PR description** explaining your changes
+   - Link to related issues
+   - Describe the problem and solution
+   - Include screenshots for UI changes
+   - List any breaking changes
+
+#### PR Review Process
+
+- PRs require at least one approving review
+- Address all feedback constructively
+- Keep PRs focused - one feature/fix per PR
+- Rebase on main if conflicts arise
+- Squash commits before merging when appropriate
 
 ## Development Process
 
@@ -47,18 +86,14 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ```bash
 # Clone your fork
-git clone https://github.com/your-username/recall.git
-cd recall
+git clone https://github.com/your-username/r3.git
+cd r3
 
 # Add upstream remote
-git remote add upstream https://github.com/n3wth/r3call.git
+git remote add upstream https://github.com/n3wth/r3.git
 
 # Install dependencies
 npm install
-
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your Mem0 API key and Redis URL
 ```
 
 ### Running Tests
@@ -66,121 +101,295 @@ cp .env.example .env
 ```bash
 # Run all tests
 npm test
-
-# Run specific test file
-node test.js
-
-# Run cache invalidation tests
-node test-cache-invalidation.js
 ```
 
 ### Code Style
 
-- Use ES6+ features (arrow functions, const/let, template literals)
-- Keep functions small and focused
-- Add JSDoc comments for public methods
-- Use meaningful variable and function names
-- Prefer async/await over callbacks
+#### General Guidelines
 
-Example:
+- **TypeScript**: Use TypeScript for all code
+- **ES Modules**: Use import/export syntax
+- **Async/Await**: Prefer over callbacks and raw promises
+- **Error Handling**: Always handle errors appropriately
+- **No Console Logs**: Use proper logging utilities
+- **No Emojis**: Maintain professional code and documentation
 
-```javascript
+#### Naming Conventions
+
+- **Files**: kebab-case (e.g., `memory-manager.ts`)
+- **Classes**: PascalCase (e.g., `MemoryManager`)
+- **Functions/Methods**: camelCase (e.g., `searchMemory`)
+- **Constants**: UPPER_SNAKE_CASE (e.g., `MAX_RETRY_COUNT`)
+- **Interfaces**: PascalCase with 'I' prefix discouraged
+
+#### Code Organization
+
+```typescript
+// 1. Imports (grouped and ordered)
+import { readFile } from 'fs/promises';
+import type { Config } from './types';
+
+// 2. Constants
+const DEFAULT_TIMEOUT = 5000;
+
+// 3. Types/Interfaces
+interface SearchParams {
+  query: string;
+  prefer_cache?: boolean;
+}
+
+// 4. Main implementation
 /**
- * Searches memories with caching strategy
- * @param {Object} params - Search parameters
- * @param {string} params.query - Search query
- * @param {boolean} params.prefer_cache - Use cache-first strategy
- * @returns {Promise<Array>} Array of matching memories
+ * Searches memories with a caching strategy.
+ * @param params - Search parameters.
+ * @returns Array of matching memories.
+ * @throws {Error} If search fails.
  */
-async function searchMemory({ query, prefer_cache = true }) {
-  // Implementation
+export async function searchMemory(
+  params: SearchParams
+): Promise<Memory[]> {
+  const { query, prefer_cache = true } = params;
+
+  try {
+    // Implementation with proper error handling
+    if (prefer_cache) {
+      const cached = await checkCache(query);
+      if (cached) return cached;
+    }
+
+    return await performSearch(query);
+  } catch (error) {
+    logger.error('Search failed', { error, params });
+    throw new SearchError('Memory search failed', { cause: error });
+  }
 }
 ```
 
-### Testing Guidelines
+#### Testing Standards
 
-- Write tests for new features
-- Ensure existing tests still pass
+- Write tests alongside code changes
+- Use descriptive test names
+- Follow AAA pattern (Arrange, Act, Assert)
+- Mock external dependencies
 - Test edge cases and error conditions
-- Mock external services (Mem0 API, Redis) when appropriate
-- Aim for high code coverage
+
+```typescript
+describe('searchMemory', () => {
+  it('should return cached results when prefer_cache is true', async () => {
+    // Arrange
+    const mockCache = jest.fn().mockResolvedValue([{ id: '1' }]);
+
+    // Act
+    const result = await searchMemory({
+      query: 'test',
+      prefer_cache: true
+    });
+
+    // Assert
+    expect(mockCache).toHaveBeenCalledWith('test');
+    expect(result).toHaveLength(1);
+  });
+});
+```
 
 ### Commit Messages
 
-Follow conventional commit format:
+#### Conventional Commit Format
 
 ```
 type(scope): subject
 
-body
+body (optional)
 
-footer
+footer (optional)
 ```
 
-Types:
+#### Types
 
 - `feat`: New feature
 - `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting, etc)
-- `refactor`: Code refactoring
-- `test`: Test additions or changes
+- `docs`: Documentation only changes
+- `style`: Code style changes (formatting, missing semicolons, etc)
+- `refactor`: Code change that neither fixes a bug nor adds a feature
 - `perf`: Performance improvements
-- `chore`: Build process or auxiliary tool changes
+- `test`: Adding missing tests or correcting existing tests
+- `build`: Changes to build system or external dependencies
+- `ci`: Changes to CI configuration files and scripts
+- `chore`: Other changes that don't modify src or test files
+- `revert`: Reverts a previous commit
 
-Example:
+#### Scope Examples
+
+- `cache`: Caching system
+- `mcp`: MCP server implementation
+- `cli`: Command-line interface
+- `docs`: Documentation
+- `deps`: Dependencies
+- `config`: Configuration
+
+#### Subject Guidelines
+
+- Use imperative mood ("add" not "adds" or "added")
+- Don't capitalize first letter
+- No period at the end
+- Limit to 50 characters
+
+#### Body Guidelines
+
+- Wrap at 72 characters
+- Explain what and why, not how
+- Include motivation for change
+- Contrast with previous behavior
+
+#### Footer Guidelines
+
+- Reference issues: `Closes #123`, `Fixes #456`
+- Note breaking changes: `BREAKING CHANGE: description`
+- Co-authors: `Co-authored-by: Name <email>`
+
+#### Examples
 
 ```
-feat(cache): Add two-tier caching system
+feat(cache): implement two-tier caching system
 
-Implemented L1 (hot) and L2 (warm) cache tiers with different TTLs
-to optimize memory usage and response times.
+Added L1 (hot) and L2 (warm) cache tiers with configurable TTLs
+to optimize memory usage and reduce response times.
+
+- L1 cache: 5-minute TTL for frequently accessed data
+- L2 cache: 1-hour TTL for less frequent access
+- Automatic promotion/demotion between tiers
 
 Closes #123
+```
+
+```
+fix(mcp): handle connection timeouts gracefully
+
+Previously, connection timeouts would cause the entire server
+to crash. Now implements exponential backoff and retry logic.
+
+Fixes #456
+```
+
+```
+docs: update installation instructions for Windows
+
+Added specific instructions for Windows users including
+PowerShell commands and common troubleshooting steps.
 ```
 
 ## Project Structure
 
 ```
-recall/
-├── index.js              # Main server implementation
-├── test.js               # Primary test suite
-├── test-cache-invalidation.js  # Cache invalidation tests
-├── package.json          # Dependencies and scripts
-├── README.md            # Documentation
-├── LICENSE              # MIT license
-└── CONTRIBUTING.md      # This file
+r3/
+├── src/                  # Source code
+│   ├── core/             # Core memory engine
+│   ├── handlers/         # Tool handlers
+│   ├── lib/              # Library modules
+│   └── types/            # TypeScript types
+├── test/                 # Test files
+├── docs/                 # Documentation
+├── website/              # Documentation website
+└── package.json          # Project metadata
 ```
 
 ### Key Components
 
 - **MCP Server**: Handles communication with Claude/other clients
-- **Cache Manager**: Manages Redis caching layers (L1/L2)
-- **Job Queue**: Handles async memory processing
-- **Pub/Sub System**: Manages cache invalidation
-- **Background Sync**: Keeps cache fresh with periodic updates
+- **Cache Manager**: Manages Redis caching layers
+- **Vector Embeddings**: Handles semantic search and entity extraction
+- **Knowledge Graph**: Builds and queries the knowledge graph
 
 ## Release Process
 
-1. Update version in `package.json`
-2. Update CHANGELOG.md with release notes
-3. Create a pull request with version bump
-4. After merge, create a GitHub release
-5. Publish to npm (maintainers only)
+The release process is automated using GitHub Actions. To create a new release, use the following commands:
 
-## Getting Help
+```bash
+# Trigger a new release via the release script
+npm run release:patch
+npm run release:minor
+npm run release:major
+```
 
-- Check the [README](README.md) for usage documentation
-- Search [existing issues](https://github.com/n3wth/r3call/issues)
-- Join discussions in [GitHub Discussions](https://github.com/n3wth/r3call/discussions)
-- Ask questions in issues with the `question` label
+This will automatically bump the version, create a new git tag, and publish the package to npm.
+
+## Review Process
+
+### Code Review Guidelines
+
+Reviewers will check for:
+
+1. **Functionality**: Does the code do what it's supposed to?
+2. **Tests**: Are there adequate tests? Do they pass?
+3. **Documentation**: Is the code well-documented?
+4. **Style**: Does it follow our coding standards?
+5. **Performance**: Are there any performance concerns?
+6. **Security**: Are there any security implications?
+7. **Breaking Changes**: Are changes backward compatible?
+
+### Review Timeline
+
+- Initial review within 48 hours
+- Follow-up reviews within 24 hours of changes
+- Approved PRs merged within 24 hours
+
+## Community Guidelines
+
+### Communication
+
+- Be respectful and constructive
+- Assume good intentions
+- Welcome newcomers
+- Provide context in discussions
+- Focus on facts and technical merit
+
+### Decision Making
+
+- Technical decisions made through discussion
+- Major changes require issue discussion first
+- Breaking changes need maintainer approval
+- Community input valued and considered
 
 ## Recognition
 
-Contributors will be recognized in:
+### Contributors
 
-- The project README
-- Release notes for their contributions
-- GitHub's contributor graph
+All contributors are recognized in:
+- The project's contributors page
+- Release notes for significant contributions
+- Special mentions for exceptional contributions
 
-Thank you for contributing! 🎉
+### Types of Contributions
+
+We value all contributions including:
+- Code contributions
+- Documentation improvements
+- Bug reports and testing
+- Design and UX feedback
+- Community support and mentoring
+- Security research
+
+## Getting Help
+
+### Resources
+
+- **Documentation**: [README.md](../README.md) and [website docs](https://r3.newth.ai/docs)
+- **Issues**: [GitHub Issues](https://github.com/n3wth/r3/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/n3wth/r3/discussions)
+- **Security**: [Security Policy](SECURITY.md)
+
+### Getting Started
+
+1. **Good First Issues**: Look for issues labeled `good-first-issue`
+2. **Help Wanted**: Check issues labeled `help-wanted`
+3. **Documentation**: Start with documentation improvements
+4. **Tests**: Add missing tests
+5. **Examples**: Create usage examples
+
+### Questions?
+
+- Open an issue with the `question` label
+- Start a discussion in GitHub Discussions
+- Review existing Q&A in discussions
+
+Thank you for contributing to r3. Your efforts help make this tool better for everyone in the community!

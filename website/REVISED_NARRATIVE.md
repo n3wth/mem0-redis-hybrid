@@ -1,8 +1,8 @@
-# Revised Homepage Narrative for r3call (Early-Stage Project)
+# Revised Homepage Narrative for r3 (Early-Stage Project)
 
 ## Context: Pet Project Reality
 
-Since r3call is an early-stage pet project without established users, we need a different narrative approach:
+Since r3 is an early-stage pet project without established users, we need a different narrative approach:
 
 - **Lean into the innovation** (technical elegance, zero-config)
 - **Personal story** (built by developer who faced this problem)
@@ -17,7 +17,7 @@ Since r3call is an early-stage pet project without established users, we need a 
 
 ```
 Headline: "Give your AI permanent memory"
-Subhead: "I got tired of repeating context to Claude every session. So I built r3call - a zero-config memory layer that just works. Try it with one command."
+Subhead: "I got tired of repeating context to Claude every session. So I built r3 - a zero-config memory layer that just works. Try it with one command."
 Badge: "Open Source • Built on Mem0"
 ```
 
@@ -25,7 +25,7 @@ Badge: "Open Source • Built on Mem0"
 
 ```
 Headline: "Your Claude sessions shouldn't start from zero"
-Subhead: "r3call adds persistent memory to any LLM. Local-first, zero configuration, works instantly. An open source project built for developers like you."
+Subhead: "r3 adds persistent memory to any LLM. Local-first, zero configuration, works instantly. An open source project built for developers like you."
 ```
 
 **Option 3: Technical Innovation**
@@ -86,7 +86,7 @@ Add a personal touch:
 "I use Claude Code every day. Every morning, I'd spend 5 minutes
 explaining my project structure, preferences, and context. Again.
 
-r3call solves this. Your AI remembers everything - your project
+r3 solves this. Your AI remembers everything - your project
 structure, coding style, even that specific naming convention
 you explained last week.
 
@@ -99,7 +99,7 @@ It's open source because this problem shouldn't exist."
 
 ### Primary CTA
 
-"Try it now - npx r3call"
+"Try it now - npx r3"
 (Lower commitment than "Get Started")
 
 ### Secondary CTAs
@@ -117,7 +117,7 @@ It's open source because this problem shouldn't exist."
 
 ## Comparison Table (Honest Version)
 
-| Feature             | r3call     | Raw Mem0 API | Vector DBs |
+| Feature             | r3     | Raw Mem0 API | Vector DBs |
 | ------------------- | ---------- | ------------ | ---------- |
 | Setup Time          | 30 seconds | 10 minutes   | Hours      |
 | Configuration       | Zero       | API keys     | Complex    |
@@ -129,10 +129,10 @@ It's open source because this problem shouldn't exist."
 ## FAQ Section (Early Stage)
 
 **Q: How is this different from using Mem0 directly?**
-A: r3call provides zero-config setup, embedded Redis for local development, and direct MCP integration. Think of it as Mem0 made simple for Claude/Gemini users.
+A: r3 provides zero-config setup, embedded Redis for local development, and direct MCP integration. Think of it as Mem0 made simple for Claude/Gemini users.
 
 **Q: Is it production-ready?**
-A: r3call is built on production-proven infrastructure (Mem0 + Redis). The core is solid, and we're actively improving based on feedback.
+A: r3 is built on production-proven infrastructure (Mem0 + Redis). The core is solid, and we're actively improving based on feedback.
 
 **Q: Who maintains this?**
 A: It's an open source project maintained by developers who use it daily. Contributions welcome!
@@ -183,7 +183,7 @@ A: Open an issue on GitHub! We're responsive and grateful for feedback.
 ## The Story Arc (Simplified)
 
 1. **Problem**: "You know that feeling when Claude forgets everything?"
-2. **Solution**: "I built r3call to fix this"
+2. **Solution**: "I built r3 to fix this"
 3. **How**: "Zero-config memory layer, works instantly"
 4. **Proof**: "Try it yourself in 30 seconds"
 5. **Join**: "It's open source, let's make it better together"
@@ -199,14 +199,14 @@ A: Open an issue on GitHub! We're responsive and grateful for feedback.
   <h1>Your AI shouldn't forget everything overnight</h1>
 
   <p className="subtitle">
-    r3call gives Claude and Gemini persistent memory. Zero configuration,
+    r3 gives Claude and Gemini persistent memory. Zero configuration,
     works offline, starts instantly. Built by developers tired of repeating
     themselves.
   </p>
 
   <div className="cta-group">
     <button className="primary">
-      <Terminal /> npx r3call
+      <Terminal /> npx r3
     </button>
     <a href="github" className="secondary">
       View on GitHub →

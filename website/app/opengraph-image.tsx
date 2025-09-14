@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "r3call - Intelligent Memory for AI";
+export const alt = "r3 - Intelligent Memory for AI (by n3wth)";
 export const size = {
   width: 1200,
   height: 630,
@@ -33,7 +33,7 @@ export default async function Image() {
             textAlign: "center",
           }}
         >
-          r3call
+          r3
         </div>
         <div
           style={{
