@@ -3,118 +3,112 @@ order: 1
 title: Introduction
 ---
 
-# Introduction
+# Recall Documentation
 
-Recall is a high-performance memory layer that gives AI applications instant access to contextual information. Built for production workloads that demand speed, reliability, and scale.
+Add persistent memory to AI applications. Store context in Redis, sync to the cloud, retrieve in milliseconds.
 
-## What is Recall?
+## Start building
 
-Recall provides a persistent memory layer for AI applications, combining the speed of local caching with the durability of cloud storage. It's designed to work seamlessly with LLMs, chatbots, and AI agents that need to maintain context across sessions.
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+  <a href="/docs/quickstart" className="block p-6 rounded-lg border border-white/10 hover:border-white/20 transition-colors">
+    <h3 className="text-lg font-medium text-white mb-2">Quickstart →</h3>
+    <p className="text-gray-400 text-sm">Add memory to Claude Desktop in 2 minutes</p>
+  </a>
 
-```typescript
-import { createClient } from '@n3wth/recall';
+  <a href="/docs/api/client" className="block p-6 rounded-lg border border-white/10 hover:border-white/20 transition-colors">
+    <h3 className="text-lg font-medium text-white mb-2">API Reference →</h3>
+    <p className="text-gray-400 text-sm">Complete reference for all MCP tools</p>
+  </a>
+</div>
 
-const recall = await createClient({
-  apiKey: 'mem0_...',
-  redis: 'redis://localhost:6379'
-});
+## How Recall works
 
-// Store context
-await recall.add('User prefers executive summaries');
+Recall is an MCP server that gives Claude Desktop persistent memory. Your conversations are stored locally in Redis for instant access and backed up to Mem0's cloud for permanence.
 
-// Retrieve relevant memories
-const context = await recall.search('summarization style');
-// Returns in &lt;5ms from cache
-```
-
-## Key Benefits
-
-### Lightning Fast
-**Sub-5ms response times** from cache with automatic tiering between memory layers. Your AI applications respond instantly without waiting for external API calls.
-
-### Always Available
-**99.9% uptime SLA** with automatic failover. If Redis is unavailable, Recall seamlessly falls back to cloud storage, ensuring your application never loses context.
-
-### Infinitely Scalable
-From prototype to production, Recall scales with your needs. Handle **millions of requests per second** without infrastructure changes.
-
-### AI-Native
-Built specifically for AI workloads with semantic search, vector embeddings, and automatic deduplication. Works perfectly with OpenAI, Anthropic, and open-source models.
-
-## How It Works
-
-Recall uses a multi-tier architecture optimized for AI workloads:
-
-- **L1 Cache** - Hot data stored in Redis with 24-hour TTL
-- **L2 Cache** - Warm data with 7-day TTL for less frequent access
-- **Cloud Storage** - Permanent storage in Mem0 cloud with vector search
-
-<ArchitectureDiagram />
-
-## Use Cases
-
-### Conversational AI
-Maintain conversation history and user preferences across chat sessions. Perfect for customer support bots, virtual assistants, and interactive AI applications.
-
-### Personalization
-Store user preferences, behavior patterns, and interaction history to deliver personalized experiences without repeatedly asking for the same information.
-
-### Knowledge Management
-Build persistent knowledge bases that AI agents can query instantly. Ideal for documentation assistants, research tools, and expert systems.
-
-### Session Management
-Handle stateful interactions across multiple sessions and devices. Essential for multi-step workflows, form assistants, and guided experiences.
-
-## Quick Example
-
-Here's how Recall transforms a simple chatbot into a context-aware assistant:
-
-```typescript
-import { Recall } from '@n3wth/recall';
-import OpenAI from 'openai';
-
-const recall = new Recall({ apiKey: process.env.MEM0_API_KEY });
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-async function chat(message: string, userId: string) {
-  // Get relevant context
-  const memories = await recall.search({
-    query: message,
-    userId,
-    limit: 5
-  });
-
-  // Build context-aware prompt
-  const context = memories.map(m => m.content).join('\n');
-
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4',
-    messages: [
-      { role: 'system', content: `Context:\n${context}` },
-      { role: 'user', content: message }
-    ]
-  });
-
-  // Store the interaction
-  await recall.add({
-    content: `User: ${message}\nAssistant: ${response.choices[0].message.content}`,
-    userId
-  });
-
-  return response.choices[0].message.content;
+```json
+// ~/.claude/claude_desktop_config.json
+{
+  "mcpServers": {
+    "recall": {
+      "command": "npx",
+      "args": ["@n3wth/recall"],
+      "env": {
+        "MEM0_API_KEY": "mem0_...",
+        "REDIS_URL": "redis://localhost:6379"
+      }
+    }
+  }
 }
 ```
 
-## Next Steps
+Once configured, Claude can remember context across conversations:
 
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-  <a href="/docs/installation" className="block p-6 rounded-lg border border-white/10 hover:border-white/20 transition-colors">
-    <h3 className="text-lg font-medium text-white mb-2">Installation →</h3>
-    <p className="text-gray-400 text-sm">Get Recall running in your environment in under 5 minutes.</p>
-  </a>
+```
+You: Remember that I prefer TypeScript over JavaScript
+Claude: I'll remember your preference for TypeScript.
 
-  <a href="/docs/api-reference" className="block p-6 rounded-lg border border-white/10 hover:border-white/20 transition-colors">
-    <h3 className="text-lg font-medium text-white mb-2">API Reference →</h3>
-    <p className="text-gray-400 text-sm">Explore all available methods and configuration options.</p>
-  </a>
-</div>
+[New conversation]
+You: What language should I use for this project?
+Claude: Based on your preferences, I'd recommend TypeScript.
+```
+
+## Architecture
+
+```
+Claude Desktop → MCP Protocol → Recall Server
+                                      ↓
+                              Redis (L1 Cache)
+                                      ↓
+                              Mem0 Cloud (L2)
+```
+
+**Response times:**
+- Cache hit: &lt;5ms
+- Cache miss: ~200ms
+- First store: ~10ms
+
+## Core concepts
+
+### Memories
+Each memory contains:
+- **Content**: The information to remember
+- **User ID**: Who it belongs to
+- **Priority**: How important it is (affects caching)
+- **Metadata**: Additional context
+
+### Caching layers
+1. **L1 (Redis)**: Hot data, 24-hour TTL
+2. **L2 (Cloud)**: Permanent storage with vector search
+
+### MCP tools
+Recall provides these tools to Claude:
+- `add_memory`: Store new information
+- `search_memory`: Find relevant context
+- `get_all_memories`: List all memories
+- `delete_memory`: Remove specific memory
+- `cache_stats`: Monitor performance
+
+## When to use Recall
+
+**Good for:**
+- User preferences and settings
+- Conversation history
+- Facts about users or projects
+- Context that should persist
+
+**Not for:**
+- Sensitive data (use encryption)
+- Large files (use object storage)
+- Real-time data (use streaming)
+
+## Pricing
+
+Recall itself is free and open source. You'll need:
+- **Redis**: Free locally, ~$15/mo for Redis Cloud
+- **Mem0**: Free tier includes 10,000 memories
+
+## Get help
+
+- [GitHub Issues](https://github.com/n3wth/recall/issues)
+- [Discord Community](https://discord.gg/recall)
+- [API Status](https://status.mem0.ai)

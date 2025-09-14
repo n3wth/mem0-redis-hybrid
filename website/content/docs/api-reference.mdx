@@ -5,194 +5,442 @@ title: API Reference
 
 # API Reference
 
-## Client Initialization
+Complete reference for all MCP tools available in Recall.
 
-```typescript
-import { Recall } from '@n3wth/recall';
+## Tools overview
 
-const memory = new Recall({
-  redis: 'redis://localhost:6379',
-  apiKey: process.env.MEM0_API_KEY,
-  userId: 'user-123',
-  cacheStrategy: 'aggressive'
-});
-```
+Recall provides these tools to Claude Desktop through the MCP protocol:
 
-## Core Methods
+| Tool | Description | Response time |
+|------|-------------|---------------|
+| `add_memory` | Store new information | &lt;10ms |
+| `search_memory` | Find relevant memories | &lt;5ms (cache) |
+| `get_all_memories` | List all memories | &lt;50ms |
+| `update_memory` | Modify existing memory | &lt;10ms |
+| `delete_memory` | Remove a memory | &lt;10ms |
+| `delete_all_memories` | Clear all memories | &lt;100ms |
+| `get_memory_history` | View memory changes | &lt;20ms |
+| `cache_stats` | Get performance metrics | &lt;1ms |
+| `optimize_cache` | Reorganize cache | &lt;500ms |
+| `health_check` | Check system status | &lt;5ms |
 
-### add(params)
+## add_memory
 
-Add a new memory to the system.
+Store new information in the memory system.
 
-```typescript
-await memory.add({
-  content: string | { role: string, content: string }[],
-  metadata?: object,
-  priority?: 'low' | 'normal' | 'high' | 'critical',
-  async?: boolean,
-  user_id?: string
-})
-```
+### Parameters
 
-**Returns**: `{ id: string, status: 'queued' | 'completed' }`
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `content` | string | No* | Text content to remember |
+| `messages` | array | No* | Conversation messages to remember |
+| `user_id` | string | No | User identifier (default: from env) |
+| `priority` | string | No | `critical`, `high`, `medium`, `low` (default: `medium`) |
+| `metadata` | object | No | Additional context |
+| `async` | boolean | No | Process in background (default: `true`) |
 
-### search(params)
+*Either `content` or `messages` is required.
 
-Search for relevant memories.
+### Example
 
-```typescript
-await memory.search({
-  query: string,
-  limit?: number,
-  user_id?: string,
-  prefer_cache?: boolean,
-  metadata_filter?: object
-})
-```
-
-**Returns**: `{ memories: Memory[], source: 'cache' | 'cloud' }`
-
-### get(id)
-
-Retrieve a specific memory by ID.
-
-```typescript
-await memory.get(id: string)
-```
-
-**Returns**: `Memory | null`
-
-### update(id, params)
-
-Update an existing memory.
-
-```typescript
-await memory.update(id: string, {
-  content: string,
-  metadata?: object
-})
-```
-
-**Returns**: `{ success: boolean }`
-
-### delete(id)
-
-Delete a memory and clear from all cache layers.
-
-```typescript
-await memory.delete(id: string)
-```
-
-**Returns**: `{ success: boolean }`
-
-## Cache Management
-
-### cache.stats()
-
-Get cache performance metrics.
-
-```typescript
-await memory.cache.stats()
-```
-
-**Returns**:
-```typescript
+```json
 {
-  hits: number,
-  misses: number,
-  hit_rate: number,
-  l1_size: number,
-  l2_size: number,
-  memory_usage: string,
-  top_accessed: string[]
-}
-```
-
-### cache.optimize()
-
-Optimize cache by promoting frequently accessed memories.
-
-```typescript
-await memory.cache.optimize({
-  force_refresh?: boolean,
-  max_memories?: number
-})
-```
-
-### cache.clear()
-
-Clear all cached data.
-
-```typescript
-await memory.cache.clear()
-```
-
-## Configuration Options
-
-### Cache Strategies
-
-- **aggressive**: Maximum caching, ideal for read-heavy workloads
-- **balanced**: Standard caching with moderate TTLs
-- **conservative**: Minimal caching, prioritizes data freshness
-
-### TTL Configuration
-
-```typescript
-{
-  cache: {
-    ttl: {
-      l1: 86400,    // 24 hours
-      l2: 604800,   // 7 days
-      search: 300   // 5 minutes
+  "tool": "add_memory",
+  "parameters": {
+    "content": "User prefers dark mode and 14px font size",
+    "priority": "high",
+    "metadata": {
+      "category": "preferences",
+      "updated": "2024-01-15"
     }
   }
 }
 ```
 
-### Connection Options
+### Response
 
-```typescript
+```json
 {
-  redis: {
-    url: string,
-    maxRetries: number,
-    connectionTimeout: number,
-    enableOfflineQueue: boolean
+  "memory_id": "mem_abc123xyz",
+  "message": "Memory added successfully",
+  "cached": true
+}
+```
+
+## search_memory
+
+Find memories using semantic search.
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | Yes | Search query |
+| `user_id` | string | No | Filter by user |
+| `limit` | number | No | Max results (default: 10) |
+| `prefer_cache` | boolean | No | Skip cloud if in cache (default: `true`) |
+| `metadata_filter` | object | No | Filter by metadata |
+
+### Example
+
+```json
+{
+  "tool": "search_memory",
+  "parameters": {
+    "query": "user preferences for UI",
+    "limit": 5,
+    "metadata_filter": {
+      "category": "preferences"
+    }
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "results": [
+    {
+      "memory": "User prefers dark mode and 14px font size",
+      "metadata": {
+        "category": "preferences",
+        "updated": "2024-01-15"
+      },
+      "score": 0.92,
+      "id": "mem_abc123xyz",
+      "created_at": "2024-01-15T10:30:00Z",
+      "user_id": "default"
+    }
+  ],
+  "source": "cache"
+}
+```
+
+## get_all_memories
+
+Retrieve all memories for a user.
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | string | No | User identifier (default: from env) |
+
+### Example
+
+```json
+{
+  "tool": "get_all_memories",
+  "parameters": {
+    "user_id": "sarah_chen"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "memories": [
+    {
+      "id": "mem_abc123xyz",
+      "memory": "User prefers dark mode",
+      "hash": "a1b2c3d4",
+      "metadata": null,
+      "created_at": "2024-01-15T10:30:00Z",
+      "updated_at": "2024-01-15T10:30:00Z",
+      "user_id": "sarah_chen"
+    }
+  ],
+  "source": "cache",
+  "count": 1
+}
+```
+
+## update_memory
+
+Modify an existing memory.
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `memory_id` | string | Yes | Memory ID to update |
+| `content` | string | Yes | New content |
+| `metadata` | object | No | New metadata |
+
+### Example
+
+```json
+{
+  "tool": "update_memory",
+  "parameters": {
+    "memory_id": "mem_abc123xyz",
+    "content": "User strongly prefers dark mode",
+    "metadata": {
+      "emphasized": true
+    }
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Memory updated successfully"
+}
+```
+
+## delete_memory
+
+Remove a specific memory.
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `memory_id` | string | Yes | Memory ID to delete |
+
+### Example
+
+```json
+{
+  "tool": "delete_memory",
+  "parameters": {
+    "memory_id": "mem_abc123xyz"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Memory deleted successfully"
+}
+```
+
+## delete_all_memories
+
+Clear all memories for a user.
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | string | No | User identifier (default: from env) |
+
+### Example
+
+```json
+{
+  "tool": "delete_all_memories",
+  "parameters": {
+    "user_id": "sarah_chen"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "deleted": 42,
+  "message": "Deleted 42 memories"
+}
+```
+
+## get_memory_history
+
+View the change history of a memory.
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `memory_id` | string | Yes | Memory ID |
+
+### Example
+
+```json
+{
+  "tool": "get_memory_history",
+  "parameters": {
+    "memory_id": "mem_abc123xyz"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "history": [
+    {
+      "version": 1,
+      "content": "User prefers dark mode",
+      "timestamp": "2024-01-15T10:30:00Z",
+      "action": "created"
+    },
+    {
+      "version": 2,
+      "content": "User strongly prefers dark mode",
+      "timestamp": "2024-01-15T11:00:00Z",
+      "action": "updated"
+    }
+  ],
+  "message": "Retrieved 2 history entries"
+}
+```
+
+## cache_stats
+
+Get cache performance metrics.
+
+### Parameters
+
+None
+
+### Example
+
+```json
+{
+  "tool": "cache_stats",
+  "parameters": {}
+}
+```
+
+### Response
+
+```json
+{
+  "hits": 1234,
+  "misses": 56,
+  "hit_rate": "95.7%",
+  "size": 789,
+  "max_size": 10000,
+  "memory_usage": "4.2MB",
+  "evictions": 12,
+  "avg_response_time": "3.2ms",
+  "connection_pool": {
+    "active": 2,
+    "idle": 8,
+    "waiting": 0
+  }
+}
+```
+
+## optimize_cache
+
+Reorganize cache based on access patterns.
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `force_refresh` | boolean | No | Force refresh all entries (default: `false`) |
+| `max_memories` | number | No | Max memories to optimize (default: 1000) |
+
+### Example
+
+```json
+{
+  "tool": "optimize_cache",
+  "parameters": {
+    "force_refresh": true,
+    "max_memories": 500
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "promoted": 45,
+  "demoted": 23,
+  "expired": 12,
+  "duration": "234ms",
+  "memory_freed": "1.2MB"
+}
+```
+
+## health_check
+
+Check system component status.
+
+### Parameters
+
+None
+
+### Example
+
+```json
+{
+  "tool": "health_check",
+  "parameters": {}
+}
+```
+
+### Response
+
+```json
+{
+  "redis": true,
+  "mem0": true,
+  "cache": {
+    "l1_size": 456,
+    "l2_size": 1234,
+    "hit_rate": "94.3%"
   },
-  mem0: {
-    apiKey: string,
-    baseUrl: string,
-    timeout: number
+  "uptime": "3d 14h 22m",
+  "memory": {
+    "used": "45.6MB",
+    "rss": "128MB"
   }
 }
 ```
 
-## Error Handling
+## Error responses
 
-```typescript
-try {
-  await memory.add({ content: 'test' })
-} catch (error) {
-  if (error.code === 'REDIS_CONNECTION_FAILED') {
-    // Handle Redis failure
-  } else if (error.code === 'MEM0_API_ERROR') {
-    // Handle API error
+All tools can return errors:
+
+```json
+{
+  "error": "Redis connection failed",
+  "code": "REDIS_CONNECTION_ERROR",
+  "details": {
+    "host": "localhost",
+    "port": 6379
   }
 }
 ```
 
-## Event Subscriptions
+Common error codes:
 
-```typescript
-memory.on('cache:hit', (key) => {
-  console.log(`Cache hit for ${key}`)
-})
+| Code | Description |
+|------|-------------|
+| `REDIS_CONNECTION_ERROR` | Can't connect to Redis |
+| `MEM0_API_ERROR` | Mem0 API request failed |
+| `INVALID_PARAMETERS` | Missing or invalid parameters |
+| `MEMORY_NOT_FOUND` | Memory ID doesn't exist |
+| `RATE_LIMIT_EXCEEDED` | Too many requests |
 
-memory.on('cache:miss', (key) => {
-  console.log(`Cache miss for ${key}`)
-})
+## Rate limits
 
-memory.on('sync:complete', (stats) => {
-  console.log(`Synced ${stats.count} memories`)
-})
-```
+- **Add operations**: 100/minute
+- **Search operations**: 500/minute
+- **Delete operations**: 50/minute
+- **Cache operations**: No limit
+
+## Performance tips
+
+1. **Use priority levels** - Mark important memories as `high` or `critical`
+2. **Enable async mode** - For non-critical additions
+3. **Batch operations** - Use messages array for conversations
+4. **Cache first** - Set `prefer_cache: true` for searches
+5. **Optimize regularly** - Run `optimize_cache` weekly
