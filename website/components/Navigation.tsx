@@ -22,7 +22,7 @@ export function Navigation() {
                 <div className="absolute inset-0 bg-white/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </div>
               <span className="tracking-tight bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                Recall
+                r3call
               </span>
             </Link>
             <div className="hidden md:ml-10 md:flex md:space-x-2">

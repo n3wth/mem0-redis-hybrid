@@ -106,7 +106,7 @@ print(response.id)`,
             </h1>
 
             <p className="mx-auto max-w-2xl text-lg text-gray-400 mb-10 font-light">
-              Stop repeating yourself. Recall remembers your coding style, project
+              Stop repeating yourself. r3call remembers your coding style, project
               architecture, and personal preferences—turning Claude and Gemini into
               AI assistants that truly know you. Sub-5ms retrieval. Zero context loss.
             </p>

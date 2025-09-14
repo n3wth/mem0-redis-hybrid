@@ -18,21 +18,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Recall - Intelligent Memory API | Sub-5ms Response Times",
+  title: "r3call - Intelligent Memory API | Sub-5ms Response Times",
   description: "Hybrid memory system combining Redis caching with cloud persistence. Sub-5ms response times with 99.9% uptime SLA. Build context-aware AI applications with intelligent memory.",
   keywords: ["memory API", "Redis cache", "AI memory", "context API", "hybrid storage", "low latency"],
-  authors: [{ name: "Recall" }],
-  creator: "Recall",
-  publisher: "Recall",
+  authors: [{ name: "r3call" }],
+  creator: "r3call",
+  publisher: "r3call",
   metadataBase: new URL("https://recall.newth.ai"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Recall - Intelligent Memory API",
+    title: "r3call - Intelligent Memory API",
     description: "Hybrid memory system combining Redis caching with cloud persistence. Sub-5ms response times with 99.9% uptime SLA.",
     url: "https://recall.newth.ai",
-    siteName: "Recall",
+    siteName: "r3call",
     images: [
       {
         url: "/og-image.jpg",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Recall - Intelligent Memory API",
+    title: "r3call - Intelligent Memory API",
     description: "Sub-5ms response times with 99.9% uptime SLA. Hybrid memory system for AI applications.",
     images: ["/og-image.jpg"],
     creator: "@recall_api",

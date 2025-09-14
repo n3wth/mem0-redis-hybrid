@@ -36,7 +36,7 @@ export function RecallLogo({
           <circle cx="0" cy="0" r="18" fill="none" stroke={color} strokeWidth="1.5"/>
           <circle cx="0" cy="0" r="24" fill="none" stroke={color} strokeWidth="1"/>
         </g>
-        <text x="50" y="37" fontFamily="-apple-system, system-ui, sans-serif" fontSize="32" fontWeight="600" fill="currentColor">Recall</text>
+        <text x="50" y="37" fontFamily="-apple-system, system-ui, sans-serif" fontSize="32" fontWeight="600" fill="currentColor">r3call</text>
       </svg>
     )
   }

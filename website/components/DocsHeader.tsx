@@ -100,7 +100,7 @@ export function DocsHeader() {
                   </a>
                   <a href="/docs/api/client" className="block px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">
                     <div className="text-sm font-medium text-white">Client API</div>
-                    <div className="text-xs text-gray-500">Complete API reference for the Recall client</div>
+                    <div className="text-xs text-gray-500">Complete API reference for the r3call client</div>
                   </a>
                   <a href="/docs/examples/chatbot-memory" className="block px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">
                     <div className="text-sm font-medium text-white">Chatbot with Memory</div>
