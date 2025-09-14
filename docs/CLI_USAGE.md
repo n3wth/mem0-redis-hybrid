@@ -68,7 +68,7 @@ gemini "Generate component based on project stack" --context "$(npx r3 get --use
 
 ```bash
 # Quick install via Claude Code CLI
-claude mcp add r3 "npx r3"
+claude mcp add @n3wth/r3 "npx @n3wth/r3"
 
 # Claude Code will now remember context across sessions
 # Available commands in Claude:

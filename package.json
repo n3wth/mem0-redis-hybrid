@@ -1,5 +1,5 @@
 {
-  "name": "r3",
+  "name": "@n3wth/r3",
   "version": "1.2.10",
   "description": "Intelligent memory API with hybrid caching - Redis for speed, Mem0 for permanence (by n3wth)",
   "main": "dist/index.js",

@@ -240,7 +240,7 @@ client.memories.add(
                   className="text-center"
                 >
                   <div className="text-xl sm:text-2xl font-light text-white">
-                    <AnimatedCounter end={5} suffix="ms" duration={1.5} />
+                    <AnimatedCounter to={5} suffix="ms" duration={1.5} />
                   </div>
                   <div className="text-xs sm:text-sm text-white/60">Response time</div>
                 </motion.div>
@@ -264,7 +264,7 @@ client.memories.add(
                   className="text-center sm:block hidden"
                 >
                   <div className="text-xl sm:text-2xl font-light text-white">
-                    <AnimatedCounter end={100} suffix="%" duration={1.5} />
+                    <AnimatedCounter to={100} suffix="%" duration={1.5} />
                   </div>
                   <div className="text-xs sm:text-sm text-white/60">Privacy-first</div>
                 </motion.div>
@@ -276,7 +276,7 @@ client.memories.add(
                   className="text-center sm:block hidden"
                 >
                   <div className="text-xl sm:text-2xl font-light text-white">
-                    <AnimatedCounter end={0} duration={1.5} />
+                    <AnimatedCounter to={0} duration={1.5} />
                   </div>
                   <div className="text-xs sm:text-sm text-white/60">Configuration</div>
                 </motion.div>

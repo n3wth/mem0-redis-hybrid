@@ -1,6 +1,6 @@
 # r3 (by n3wth)
 
-[![npm version](https://badge.fury.io/js/r3.svg)](https://www.npmjs.com/package/r3)
+[![npm version](https://badge.fury.io/js/%40n3wth%2Fr3.svg)](https://www.npmjs.com/package/@n3wth/r3)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-r3.newth.ai-blue)](https://r3.newth.ai)
 
@@ -110,7 +110,7 @@ gemini "Generate component based on project stack" --context "$(npx r3 get --use
 
 ```bash
 # Quick install via Claude Code CLI
-claude mcp add r3 "npx r3"
+claude mcp add @n3wth/r3 "npx @n3wth/r3"
 
 # Claude Code will now remember context across sessions
 # Available commands in Claude:
