@@ -32,6 +32,7 @@ import {
   TypewriterText,
 } from "@/components/TextReveal";
 import { FloatingDots } from "@/components/FloatingDots";
+import { MemoryVisualization } from "@/components/MemoryVisualization";
 // Lazy load heavy components
 const TerminalDemo = lazy(() =>
   import("@/components/TerminalDemo").then((module) => ({
@@ -142,25 +143,15 @@ client.memories.add(
       <main className="flex-1">
         {/* Hero - Clean and minimal with enhanced effects */}
         <div className="relative min-h-[75vh] flex items-center justify-center overflow-visible py-16 md:py-20">
-          {/* Floating dots */}
-          <FloatingDots count={30} />
+          {/* Memory visualization - the main attraction */}
+          <MemoryVisualization />
 
-          {/* Animated gradient background */}
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,100,255,0.13),transparent_50%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(100,150,255,0.13),transparent_50%)]" />
+          {/* Subtle animated gradient background */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-black to-blue-900/10" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,100,255,0.05),transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(100,150,255,0.05),transparent_50%)]" />
           </div>
-
-          {/* Floating particles */}
-          <Suspense fallback={<div className="absolute inset-0" />}>
-            <Particles
-              className="absolute inset-0"
-              quantity={40}
-              color="#8b5cf6"
-              size={0.6}
-            />
-          </Suspense>
 
           <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
             <div className="mx-auto max-w-4xl">
