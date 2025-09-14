@@ -1,38 +1,39 @@
 # r3call
 
-<div align="center">
-  <img src="https://r3call.newth.ai/og-image.png" alt="r3call - Intelligent Memory for AI" width="100%" />
+[![npm version](https://img.shields.io/npm/v/r3call)](https://www.npmjs.com/package/r3call)
+[![npm downloads](https://img.shields.io/npm/dm/r3call)](https://www.npmjs.com/package/r3call)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Documentation](https://img.shields.io/badge/docs-r3call.newth.ai-blue)](https://r3call.newth.ai/docs)
 
-  <h3>Intelligent Memory Layer for AI Applications</h3>
-  <p>Sub-5ms response times · Automatic failover · Built for scale</p>
+> Intelligent Memory Layer for AI Applications - Sub-5ms response times with automatic failover
 
-  <p>
-    <a href="https://www.npmjs.com/package/r3call"><img src="https://img.shields.io/npm/v/r3call?style=flat&colorA=000000&colorB=000000" alt="npm version" /></a>
-    <a href="https://www.npmjs.com/package/r3call"><img src="https://img.shields.io/npm/dm/r3call?style=flat&colorA=000000&colorB=000000" alt="npm downloads" /></a>
-    <a href="https://github.com/n3wth/r3call/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-black?style=flat&colorA=000000&colorB=000000" alt="license" /></a>
-    <a href="https://r3call.newth.ai/docs"><img src="https://img.shields.io/badge/docs-r3call.newth.ai-black?style=flat&colorA=000000&colorB=000000" alt="documentation" /></a>
-  </p>
-</div>
+## Features
 
-## Why r3call?
+- 🚀 **Sub-5ms response times** - Redis L1 cache with intelligent tiering
+- 🛡️ **99.9% uptime** - Automatic failover to cloud storage
+- 📈 **Unlimited scale** - Handle millions of requests per second
+- 🧠 **AI-native** - Semantic search and context management
+- 🔌 **Easy integration** - Works with Claude, GPT, and any LLM
 
-Modern AI applications need memory that's both **fast** and **persistent**. r3call delivers enterprise-grade memory infrastructure that scales with your application—from prototypes to production.
+## Table of Contents
 
-- **Lightning Fast**: Sub-5ms p99 latency with intelligent caching
-- **Bulletproof Reliability**: Automatic failover with 99.9% uptime SLA
-- **Infinite Scale**: Handle millions of requests per second
-- **AI-Native**: Purpose-built for LLMs with semantic search
-- **Drop-in Integration**: Works with Claude, GPT, and any LLM
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Usage with Claude Desktop](#usage-with-claude-desktop)
+- [Architecture](#architecture)
+- [API Reference](#api-reference)
+- [Examples](#real-world-examples)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Quick Start
-
-### Installation
+## Installation
 
 ```bash
 npm install r3call
 ```
 
-### Basic Usage
+## Quick Start
 
 ```typescript
 import { Recall } from 'r3call';
@@ -56,19 +57,14 @@ const memories = await recall.search({
 });
 ```
 
-### Claude Desktop Integration
-
-Transform Claude into a personalized AI assistant that remembers your preferences, context, and conversations.
-
-#### Option 1: Claude Code CLI (Recommended)
+## Usage with Claude Desktop
 
 ```bash
+# Quick install via Claude Code CLI
 claude mcp add r3call "npx r3call"
 ```
 
-#### Option 2: Manual Configuration
-
-Add to `~/.claude/claude_desktop_config.json`:
+Or add to `~/.claude/claude_desktop_config.json`:
 
 ```json
 {
