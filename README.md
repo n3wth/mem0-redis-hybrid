@@ -42,7 +42,7 @@
 
 ```bash
 # Just run it! Zero configuration needed
-npx r3
+npx @n3wth/r3
 ```
 
 That's it! r3 automatically starts with an embedded Redis server. No setup required.
@@ -51,11 +51,11 @@ That's it! r3 automatically starts with an embedded Redis server. No setup requi
 
 ```bash
 # For frequent use, install globally:
-npm install -g r3
+npm install -g @n3wth/r3
 r3
 
 # Or add to your project:
-npm install r3
+npm install @n3wth/r3
 ```
 
 ### Basic Usage
