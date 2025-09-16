@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: r3-mcp-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - mcp_network
+    restart: unless-stopped
+
+  mcp-server:
+    build: .
+    container_name: r3-mcp-server
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - MEM0_API_KEY=${MEM0_API_KEY}
+      - MCP_AUTH_TOKEN=${MCP_AUTH_TOKEN}
+      - MCP_USER_ID=${MCP_USER_ID:-oliver}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - redis
+    networks:
+      - mcp_network
+    restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: r3-mcp-tunnel
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    environment:
+      - TUNNEL_METRICS=0.0.0.0:2000
+    networks:
+      - mcp_network
+    restart: unless-stopped
+    depends_on:
+      - mcp-server
+
+volumes:
+  redis_data:
+
+networks:
+  mcp_network:
+    driver: bridge

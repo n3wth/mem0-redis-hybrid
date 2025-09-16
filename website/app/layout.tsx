@@ -51,9 +51,9 @@ export const metadata: Metadata = {
     siteName: "r3",
     images: [
       {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
+        url: "https://r3.newth.ai/og-image.png",
+        width: 1280,
+        height: 720,
         alt: "r3 - Intelligent Memory API",
       },
     ],
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     title: "r3 - Intelligent Memory API (by n3wth)",
     description:
       "Sub-5ms response times with 99.9% uptime SLA. Hybrid memory system for AI applications.",
-    images: ["/og-image.jpg"],
+    images: ["https://r3.newth.ai/og-image.png"],
     creator: "@n3wth",
   },
   robots: {
