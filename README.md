@@ -556,14 +556,3 @@ gh pr create
 ## License
 
 MIT © 2025 r3 Contributors
-
----
-
-<div align="center">
-  <p>A personal project to solve my own Claude context problem</p>
-  <p>
-    <a href="https://r3.newth.ai">Website</a> •
-    <a href="https://github.com/n3wth/r3">GitHub</a> •
-    <a href="https://www.npmjs.com/package/r3">npm</a>
-  </p>
-</div>
