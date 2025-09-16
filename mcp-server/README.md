@@ -24,14 +24,17 @@ Remote MCP server for integrating r3 memory system with ChatGPT connectors and A
 ### Setup
 
 1. **Clone and navigate to MCP server directory:**
+
    ```bash
    cd /path/to/r3/mcp-server
    ```
 
 2. **Run Cloudflare setup:**
+
    ```bash
    ./setup-cloudflare.sh
    ```
+
    This will:
    - Install cloudflared if needed
    - Create a Cloudflare tunnel
@@ -41,6 +44,7 @@ Remote MCP server for integrating r3 memory system with ChatGPT connectors and A
 
 3. **Configure API keys:**
    Edit `.env` file and add your actual API keys:
+
    ```bash
    MEM0_API_KEY=your_actual_mem0_key
    OPENAI_API_KEY=your_actual_openai_key
@@ -56,17 +60,20 @@ Remote MCP server for integrating r3 memory system with ChatGPT connectors and A
 If you prefer manual deployment or need to deploy on a remote server:
 
 1. **Copy files to your server:**
+
    ```bash
    scp -r mcp-server/ user@your-server:/home/user/
    ```
 
 2. **SSH into your server:**
+
    ```bash
    ssh user@your-server
    cd mcp-server
    ```
 
 3. **Create .env file:**
+
    ```bash
    cat > .env << EOF
    CLOUDFLARE_TUNNEL_TOKEN=your_tunnel_token
@@ -158,12 +165,15 @@ response = requests.post(
 ## Available MCP Tools
 
 ### search
+
 Search through r3 memories.
 
 **Parameters:**
+
 - `query` (string, required): Search query
 
 **Returns:**
+
 ```json
 {
   "results": [
@@ -177,12 +187,15 @@ Search through r3 memories.
 ```
 
 ### fetch
+
 Retrieve a specific memory by ID.
 
 **Parameters:**
+
 - `id` (string, required): Memory ID
 
 **Returns:**
+
 ```json
 {
   "id": "memory_id",
@@ -200,21 +213,25 @@ Retrieve a specific memory by ID.
 ## Monitoring
 
 ### View logs:
+
 ```bash
 docker-compose logs -f
 ```
 
 ### Check service status:
+
 ```bash
 docker-compose ps
 ```
 
 ### Test health endpoint:
+
 ```bash
 curl http://localhost:8000/health
 ```
 
 ### Monitor Redis:
+
 ```bash
 docker-compose exec redis redis-cli
 > INFO stats
@@ -224,6 +241,7 @@ docker-compose exec redis redis-cli
 ## Troubleshooting
 
 ### MCP server not responding:
+
 ```bash
 # Check logs
 docker-compose logs mcp-server
@@ -233,6 +251,7 @@ docker-compose restart mcp-server
 ```
 
 ### Cloudflare tunnel issues:
+
 ```bash
 # Check tunnel status
 docker-compose logs cloudflared
@@ -242,6 +261,7 @@ docker-compose restart cloudflared
 ```
 
 ### Redis connection errors:
+
 ```bash
 # Test Redis
 docker-compose exec redis redis-cli ping
@@ -261,18 +281,21 @@ docker-compose exec redis redis-cli FLUSHDB
 ## Development
 
 ### Local testing without Cloudflare:
+
 ```bash
 # Start only Redis and MCP server
 docker-compose up redis mcp-server
 ```
 
 ### Run server directly (for development):
+
 ```bash
 pip install -r requirements.txt
 python server.py
 ```
 
 ### Test MCP protocol:
+
 ```bash
 # Test search
 curl -X POST http://localhost:8000/sse/ \
