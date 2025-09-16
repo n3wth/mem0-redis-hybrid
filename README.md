@@ -6,6 +6,8 @@
 
 > Intelligent Memory Layer for AI Applications - Built for Gemini, Claude, and all LLMs
 
+<img src="website/public/og-image.png" />
+
 ## Features
 
 - 🚀 **Fast local caching** - Redis L1 cache for low-latency responses
