@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-r3.newth.ai-blue)](https://r3.newth.ai)
 
-> Intelligent Memory Layer for AI Apps. Built for Gemini, Claude and all LLMs.
+Intelligent memory MCP for AI apps
 
 <img src="website/public/og-image.png" />
 
