@@ -495,8 +495,9 @@ export class MemoryEngine {
   }
 
   getCacheStats(): CacheStats {
+    const totalRequests = this.stats.hits + this.stats.misses;
     this.stats.hitRate =
-      (this.stats.hits / (this.stats.hits + this.stats.misses)) * 100;
+      totalRequests > 0 ? (this.stats.hits / totalRequests) * 100 : 0;
     this.stats.memory = process.memoryUsage().heapUsed;
     return { ...this.stats };
   }
